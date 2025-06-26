@@ -74,6 +74,8 @@ private:
 	class CPrototype_Manager*		m_pPrototype_Manager = { nullptr };
 	class CObject_Manager*			m_pObject_Manager = { nullptr };
 	class CRenderer*				m_pRenderer = { nullptr };
+	class CPicking* m_pPicking = { nullptr };
+	class CKey_Manager* m_pKey_Manager = { nullptr };
 
 public:
 	void Release_Engine();

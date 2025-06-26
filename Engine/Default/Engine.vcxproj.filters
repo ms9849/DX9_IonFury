@@ -88,6 +88,12 @@
     <Filter Include="01.Uitility\08.FMod">
       <UniqueIdentifier>{8960129e-8d76-4297-98ed-06bab054952c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Uitility\05.Component\Texture\Fonts">
+      <UniqueIdentifier>{3bb61b4e-b9b3-4a4d-9aee-f0ef7deba1c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Uitility\05.Component\Animation">
+      <UniqueIdentifier>{16c1783f-43b4-4dbf-a8a6-923b6a97abb0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -180,6 +186,12 @@
     <ClInclude Include="..\Public\Key_Manager.h">
       <Filter>01.Uitility\07.Key</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Fonts.h">
+      <Filter>01.Uitility\05.Component\Texture\Fonts</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Animation.h">
+      <Filter>01.Uitility\05.Component\Animation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -253,6 +265,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Key_Manager.cpp">
       <Filter>01.Uitility\07.Key</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Fonts.cpp">
+      <Filter>01.Uitility\05.Component\Texture\Fonts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Animation.cpp">
+      <Filter>01.Uitility\05.Component\Animation</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

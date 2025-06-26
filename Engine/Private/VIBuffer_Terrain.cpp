@@ -1,4 +1,5 @@
 #include "VIBuffer_Terrain.h"
+#include "GameInstance.h"
 
 CVIBuffer_Terrain::CVIBuffer_Terrain(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CVIBuffer { pGraphic_Device }

@@ -25,7 +25,6 @@ public:
 public:
 	void Render_Begin(D3DXCOLOR Color);
 	void Render_End(HWND hWnd = nullptr);
-	void Draw_Font(const _tchar* pText);
 #pragma endregion
 
 #pragma region TIMER_MANAGER
@@ -47,13 +46,12 @@ public:
 #pragma region OBJECT_MANAGER
 	CComponent* Get_Component(_uint iLevelIndex, const _wstring& strLayerTag, const _wstring& strComponentTag, _uint iIndex = 0);
 	HRESULT Add_GameObject_ToLayer(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, _uint iLayerLevelIndex, const _wstring& strLayerTag, void* pArg = nullptr);
+	class CGameObject* Find_GameObject_ToLayer(_uint iLayerLevelIndex, const _wstring& strLayerTag, void* pArg = nullptr);
 #pragma endregion
-
 
 #pragma region RENDERER
 	HRESULT Add_RenderGroup(RENDER eRenderGroup, class CGameObject* pRenderObject);
 #pragma endregion
-
 
 #pragma region PICKING
 	void Transform_Picking_ToLocalSpace(const _float4x4* pWorldMatrixInverse);
@@ -68,6 +66,7 @@ public:
 	// 누른 타이밍 딱 한 번 만
 	bool		Key_Down(_uint _iKey);
 #pragma endregion
+
 private:
 	class CGraphic_Device*			m_pGraphic_Device = { nullptr };
 	class CTimer_Manager*			m_pTimer_Manager = { nullptr };
@@ -75,8 +74,8 @@ private:
 	class CPrototype_Manager*		m_pPrototype_Manager = { nullptr };
 	class CObject_Manager*			m_pObject_Manager = { nullptr };
 	class CRenderer*				m_pRenderer = { nullptr };
-	class CPicking*					m_pPicking = { nullptr };
-	class CKey_Manager*				m_pKey_Manager = { nullptr };
+	class CPicking* m_pPicking = { nullptr };
+	class CKey_Manager* m_pKey_Manager = { nullptr };
 
 public:
 	void Release_Engine();

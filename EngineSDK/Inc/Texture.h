@@ -21,6 +21,7 @@ public:
 
 public:
 	HRESULT Set_Texture(_uint iTextureIndex);
+	_uint	Get_Texture_Length();
 
 private:
 	_uint									m_iNumTextures = {};
