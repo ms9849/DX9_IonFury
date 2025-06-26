@@ -34,11 +34,6 @@ void CSky::Priority_Update(_float fTimeDelta)
 
 void CSky::Update(_float fTimeDelta)
 {
-
-}
-
-void CSky::Late_Update(_float fTimeDelta)
-{
 	_float4x4			ViewMatrix = {};
 
 	m_pGraphic_Device->GetTransform(D3DTS_VIEW, &ViewMatrix);
@@ -47,6 +42,10 @@ void CSky::Late_Update(_float fTimeDelta)
 	m_pTransformCom->Set_State(STATE::POSITION, *reinterpret_cast<_float3*>(&ViewMatrix.m[3]));
 
 	m_pGameInstance->Add_RenderGroup(RENDER::PRIORITY, this);
+}
+
+void CSky::Late_Update(_float fTimeDelta)
+{
 }
 
 HRESULT CSky::Render()

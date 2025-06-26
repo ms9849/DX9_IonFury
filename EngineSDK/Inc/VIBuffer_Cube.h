@@ -16,9 +16,6 @@ public:
 	virtual HRESULT Initialize(void* pArg) override;
 
 public:
-	virtual _bool Picking(class CTransform* pTransform, _float3* pOut)  override;
-
-public:
 	static CVIBuffer_Cube* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
 	virtual CComponent* Clone(void* pArg) override;
 	virtual void Free() override;

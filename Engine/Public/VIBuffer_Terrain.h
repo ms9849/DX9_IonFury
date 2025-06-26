@@ -16,9 +16,6 @@ public:
 	virtual HRESULT Initialize_Prototype(const _tchar* pHeightFilePath);
 	virtual HRESULT Initialize(void* pArg) override;
 
-public:
-	virtual _bool Picking(class CTransform* pTransform, _float3* pOut) override;
-
 
 public:
 	static CVIBuffer_Terrain* Create(LPDIRECT3DDEVICE9 pGraphic_Device, _uint iNumVerticesX, _uint iNumVerticesZ);

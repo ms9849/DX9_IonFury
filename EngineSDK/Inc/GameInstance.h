@@ -53,12 +53,6 @@ public:
 	HRESULT Add_RenderGroup(RENDER eRenderGroup, class CGameObject* pRenderObject);
 #pragma endregion
 
-#pragma region PICKING
-	void Transform_Picking_ToLocalSpace(const _float4x4* pWorldMatrixInverse);
-	_bool Picking_InWorldSpace(const _float3& vPointA, const _float3& vPointB, const _float3& vPointC, _float3* pOut);
-	_bool Picking_InLocalSpace(const _float3& vPointA, const _float3& vPointB, const _float3& vPointC, _float3* pOut);
-#pragma endregion
-
 #pragma region KEY_MANAGER
 	bool		Key_Pressing(_uint _iKey);
 	// ¥≠∑∂¥Ÿ∞° ∂√¿ª ∂ß
@@ -74,7 +68,6 @@ private:
 	class CPrototype_Manager*		m_pPrototype_Manager = { nullptr };
 	class CObject_Manager*			m_pObject_Manager = { nullptr };
 	class CRenderer*				m_pRenderer = { nullptr };
-	class CPicking* m_pPicking = { nullptr };
 	class CKey_Manager* m_pKey_Manager = { nullptr };
 
 public:

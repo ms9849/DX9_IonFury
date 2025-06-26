@@ -14,13 +14,13 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(Ready_Lights()))
 		return E_FAIL;
 
-	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
-		return E_FAIL;
-
 	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
 		return E_FAIL;
 
 	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
+		return E_FAIL;
+
+	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
 	if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"))))
@@ -58,9 +58,6 @@ void CLevel_GamePlay::Update(_float fTimeDelta)
 	//	m_CameraSettings.isCanTurn = true;
 	//	m_CameraSettings.vLimitDistance = _float3{ 0.f, 1.f, -1.f };
 	//}
-
-	m_pCamera->Camera_Configure(m_CameraSettings);
-
 	// UI에 값 업데이트 해줘야함
 #pragma region UI
 	m_pUIHp->Set_Hp(m_pPlayer->Get_Player_Info().iHp);
@@ -114,7 +111,6 @@ HRESULT CLevel_GamePlay::Ready_Lights()
 
 	m_pGraphic_Device->SetRenderState(D3DRS_LIGHTING, TRUE);
 
-
 	return S_OK;
 }
 HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const _wstring& strLayerTag)
@@ -145,6 +141,18 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _wstring& strLayerTag)
 		return E_FAIL;
 
 	m_pCamera = dynamic_cast<CCamera*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Camera")));
+	Safe_AddRef(m_pCamera);
+
+	m_pCamera->Camera_Configure_Clear(m_CameraSettings);
+	m_CameraSettings.pTarget = dynamic_cast<CPlayer*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player")));
+	m_CameraSettings.isChaseTarget = true;
+	m_CameraSettings.isSyncLook = true;
+	m_CameraSettings.isMouseFixCenter = true;
+	m_CameraSettings.isCanTurn = true;
+	//m_CameraSettings.vLimitDistance = _float3{ 0.f, 0.f, -1.f };
+	SetCursorPos(g_iWinSizeX * 0.5f, g_iWinSizeY * 0.5f);
+
+	m_pCamera->Camera_Configure(m_CameraSettings);
 
 	return S_OK;
 }
@@ -156,15 +164,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Player(const _wstring& strLayerTag)
 		return E_FAIL;
 	
 	m_pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player")));
-
-	m_pCamera->Camera_Configure_Clear(m_CameraSettings);
-	m_CameraSettings.pTarget = dynamic_cast<CPlayer*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player")));
-	m_CameraSettings.isChaseTarget = true;
-	m_CameraSettings.isSyncLook = true;
-	m_CameraSettings.isMouseFixCenter = true;
-	m_CameraSettings.isCanTurn = true;
-	//m_CameraSettings.vLimitDistance = _float3{ 0.f, 0.f, -1.f };
-	SetCursorPos(g_iWinSizeX * 0.5f, g_iWinSizeY * 0.5f);
+	Safe_AddRef(m_pPlayer);
 
 	return S_OK;
 }
@@ -277,4 +277,5 @@ void CLevel_GamePlay::Free()
 	__super::Free();
 
 	Safe_Release(m_pCamera);
+	Safe_Release(m_pPlayer);
 }
