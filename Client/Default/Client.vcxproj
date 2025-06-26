@@ -154,8 +154,14 @@
     <ClInclude Include="..\public\MainApp.h" />
     <ClInclude Include="..\Public\Monster.h" />
     <ClInclude Include="..\Public\Player.h" />
+    <ClInclude Include="..\Public\Player_Hand.h" />
     <ClInclude Include="..\Public\Sky.h" />
     <ClInclude Include="..\public\Terrain.h" />
+    <ClInclude Include="..\Public\UIBullets.h" />
+    <ClInclude Include="..\Public\UIFont.h" />
+    <ClInclude Include="..\Public\UIHp.h" />
+    <ClInclude Include="..\Public\UIInteraction.h" />
+    <ClInclude Include="..\Public\UIText.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Resource.h" />
@@ -172,8 +178,14 @@
     <ClCompile Include="..\private\MainApp.cpp" />
     <ClCompile Include="..\Private\Monster.cpp" />
     <ClCompile Include="..\Private\Player.cpp" />
+    <ClCompile Include="..\Private\Player_Hand.cpp" />
     <ClCompile Include="..\Private\Sky.cpp" />
     <ClCompile Include="..\private\Terrain.cpp" />
+    <ClCompile Include="..\Private\UIBullets.cpp" />
+    <ClCompile Include="..\Private\UIFont.cpp" />
+    <ClCompile Include="..\Private\UIHp.cpp" />
+    <ClCompile Include="..\Private\UIInteraction.cpp" />
+    <ClCompile Include="..\Private\UIText.cpp" />
     <ClCompile Include="Client.cpp" />
   </ItemGroup>
   <ItemGroup>

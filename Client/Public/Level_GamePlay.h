@@ -2,6 +2,11 @@
 
 #include "Client_Defines.h"
 #include "Level.h"
+#include "Camera.h"
+#include "Player.h"
+#include "UIHp.h"
+#include "UIBullets.h"
+#include "UIInteraction.h"
 
 NS_BEGIN(Client)
 
@@ -23,8 +28,15 @@ private:
 	HRESULT Ready_Layer_Player(const _wstring& strLayerTag);
 	HRESULT Ready_Layer_Monster(const _wstring& strLayerTag);
 	HRESULT Ready_Layer_Effect(const _wstring& strLayerTag);
+	HRESULT Ready_Layer_UI(const _wstring& strLayerTag);
 
-
+private:
+	CCamera* m_pCamera{ nullptr };
+	CPlayer* m_pPlayer{ nullptr };
+	CUIHp* m_pUIHp{ nullptr };
+	CUIBullets* m_pUIBullets{ nullptr };
+	CUIInteraction* m_pUIInteraction{ nullptr };
+	CCamera::CAMERA_CONFIG m_CameraSettings;
 
 public:
 	static CLevel_GamePlay* Create(LPDIRECT3DDEVICE9 pGraphic_Device, LEVEL eLevelID);

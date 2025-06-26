@@ -1,3 +1,4 @@
+#pragma once
 
 #include "GameObject.h"
 
@@ -9,6 +10,10 @@ public:
 	typedef struct tagUIObject 
 	{
 		_float		fX{}, fY{}, fSizeX{}, fSizeY{};
+		_uint		iTextLength{};
+		_uint		iLayerLevelIndex{};
+		_wstring	strLayerTag{};
+		_wstring	strFontType{};
 	}UIOBJECT_DESC;
 
 protected:

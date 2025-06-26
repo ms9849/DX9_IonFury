@@ -3,7 +3,6 @@
 CGraphic_Device::CGraphic_Device() 
     : m_pSDK(nullptr), m_pGraphicDev(nullptr)
 {
-
 }
 
 HRESULT CGraphic_Device::Ready_GraphicDev(HWND hWnd, WINMODE eMode, _uint iSizeX, _uint iSizeY, LPDIRECT3DDEVICE9* ppGraphicDev)
@@ -61,34 +60,6 @@ HRESULT CGraphic_Device::Ready_GraphicDev(HWND hWnd, WINMODE eMode, _uint iSizeX
     if (FAILED(m_pSDK->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hWnd, dwFlag, &d3dpp, &m_pGraphicDev)))
         return E_FAIL;
 
-    /*
-    INT Height;
-    UINT Width;
-    UINT Weight;
-    UINT MipLevels;
-    BOOL Italic;
-    BYTE CharSet;
-    BYTE OutputPrecision;
-    BYTE Quality;
-    BYTE PitchAndFamily;
-    WCHAR FaceName[LF_FACESIZE];
-    */
-
-    D3DXFONT_DESC           FontDesc{};
-    FontDesc.Height = 50;
-    FontDesc.Width = 50;
-    FontDesc.Weight = FW_BOLD;
-    FontDesc.MipLevels = 1;
-    FontDesc.Italic = 0;
-    FontDesc.CharSet = HANGEUL_CHARSET;
-    lstrcpy(FontDesc.FaceName, TEXT("¹èÂîÃ¼"));
-
-    if (FAILED(D3DXCreateFontIndirect(m_pGraphicDev, &FontDesc, &m_pFont)))
-        return E_FAIL;
-
-    if (FAILED(D3DXCreateSprite(m_pGraphicDev, &m_pSprite)))
-        return E_FAIL;
-
     *ppGraphicDev = m_pGraphicDev;
 
     Safe_AddRef(m_pGraphicDev);
@@ -119,18 +90,6 @@ void CGraphic_Device::Render_End(HWND hWnd)
 {
     m_pGraphicDev->EndScene();
     m_pGraphicDev->Present(NULL, NULL, hWnd, NULL);
-}
-
-void CGraphic_Device::Render_Font(const _tchar* pText)
-{
-    /*m_pSprite->SetTransform();*/
-    m_pSprite->Begin(D3DXSPRITE_ALPHABLEND);    
-
-    RECT          rcText{0, 0, 200, 200};
-
-    m_pFont->DrawTextW(m_pSprite, pText, lstrlen(pText), &rcText, DT_CENTER, D3DXCOLOR(1.f, 1.f, 1.f, 1.f));
-
-    m_pSprite->End();
 }
 
 CGraphic_Device* CGraphic_Device::Create(HWND hWnd, WINMODE eMode, _uint iSizeX, _uint iSizeY, LPDIRECT3DDEVICE9* ppGraphicDev)

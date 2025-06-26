@@ -49,6 +49,27 @@
     <Filter Include="02.GameObjects\Effect">
       <UniqueIdentifier>{af38a2a6-7b75-4f3f-9696-df037f43253b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\Player\Player_Hand">
+      <UniqueIdentifier>{6b2efc96-1da8-47e3-a7fa-8fdb2ab53f72}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\UI">
+      <UniqueIdentifier>{ba81d2a5-c33a-4436-ae51-1f76e6d7bedb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\UI\UIBullets">
+      <UniqueIdentifier>{b2778655-5315-423d-9581-bda67c628166}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\UI\UIText">
+      <UniqueIdentifier>{f2aef345-cb8f-4925-8661-f95e7fbad457}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\UI\UIHp">
+      <UniqueIdentifier>{d30c38d3-a5e0-49e5-a64c-03680cbd8dbd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\UI\UIInteraction">
+      <UniqueIdentifier>{15499bef-d39d-4bad-bb72-3a62a7dec1d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\UI\UIFont">
+      <UniqueIdentifier>{d0bdf7b4-40b9-43f2-878c-1acdb601b7e2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -101,6 +122,24 @@
     </ClInclude>
     <ClInclude Include="..\Public\Effect.h">
       <Filter>02.GameObjects\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Player_Hand.h">
+      <Filter>02.GameObjects\Player\Player_Hand</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIInteraction.h">
+      <Filter>02.GameObjects\UI\UIInteraction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIHp.h">
+      <Filter>02.GameObjects\UI\UIHp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIText.h">
+      <Filter>02.GameObjects\UI\UIText</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIFont.h">
+      <Filter>02.GameObjects\UI\UIFont</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIBullets.h">
+      <Filter>02.GameObjects\UI\UIBullets</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -155,6 +194,24 @@
     </ClCompile>
     <ClCompile Include="..\Private\Effect.cpp">
       <Filter>02.GameObjects\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Player_Hand.cpp">
+      <Filter>02.GameObjects\Player\Player_Hand</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIInteraction.cpp">
+      <Filter>02.GameObjects\UI\UIInteraction</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIBullets.cpp">
+      <Filter>02.GameObjects\UI\UIBullets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIFont.cpp">
+      <Filter>02.GameObjects\UI\UIFont</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIHp.cpp">
+      <Filter>02.GameObjects\UI\UIHp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIText.cpp">
+      <Filter>02.GameObjects\UI\UIText</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

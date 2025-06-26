@@ -112,11 +112,6 @@ void CGameInstance::Render_End(HWND hWnd)
 	m_pGraphic_Device->Render_End(hWnd);
 }
 
-void CGameInstance::Draw_Font(const _tchar* pText)
-{
-	m_pGraphic_Device->Render_Font(pText);
-}
-
 #pragma endregion
 
 #pragma region TIMER_MANAGER
@@ -172,6 +167,12 @@ HRESULT CGameInstance::Add_GameObject_ToLayer(_uint iPrototypeLevelIndex, const 
 {
 	return m_pObject_Manager->Add_GameObject_ToLayer(iPrototypeLevelIndex, strPrototypeTag, iLayerLevelIndex, strLayerTag, pArg);
 }
+
+CGameObject* CGameInstance::Find_GameObject_ToLayer(_uint iLayerLevelIndex, const _wstring& strLayerTag, void* pArg)
+{
+	return m_pObject_Manager->Find_GameObject_ToLayer(iLayerLevelIndex, strLayerTag, pArg);
+}
+
 
 #pragma endregion
 

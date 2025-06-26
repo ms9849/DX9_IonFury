@@ -16,6 +16,11 @@ CComponent* CLayer::Get_Component(const _wstring& strComponentTag, _uint iIndex)
 	
 }
 
+CGameObject* CLayer::Find_GameObject()
+{
+	return m_GameObjects.back();
+}
+
 HRESULT CLayer::Add_GameObject(CGameObject* pGameObject)
 {
 	if (nullptr == pGameObject)

@@ -1,6 +1,7 @@
 #include "Camera.h"
 
 #include "GameInstance.h"
+#include "Player.h"
 
 CCamera::CCamera(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CGameObject { pGraphic_Device }
@@ -10,6 +11,35 @@ CCamera::CCamera(LPDIRECT3DDEVICE9 pGraphic_Device)
 CCamera::CCamera(const CCamera& Prototype)
 	: CGameObject{ Prototype }
 {
+}
+
+void CCamera::Camera_Configure(const CAMERA_CONFIG& settings)
+{
+	if (settings.pTarget)
+	{
+		m_pTarget = settings.pTarget;
+		if (settings.isChaseTarget)
+		{
+			Chase_Target(settings.vLimitDistance, settings.isSyncLook, settings.isCanTurn, settings.isMouseFixCenter);
+		}
+	}
+	else
+	{
+		if (settings.isCanTurn)
+		{
+			Camera_Turn(settings.isMouseFixCenter);
+		}
+	}
+}
+
+void CCamera::Camera_Configure_Clear(CAMERA_CONFIG& settings)
+{
+	settings.pTarget = nullptr;
+	settings.isMouseFixCenter = false;
+	settings.isSyncLook = false;
+	settings.vLimitDistance = _float3{ 0.f, 0.f, 0.f };
+	settings.isChaseTarget = false;
+	settings.isCanTurn = false;
 }
 
 HRESULT CCamera::Initialize_Prototype()
@@ -37,19 +67,26 @@ HRESULT CCamera::Initialize(void* pArg)
 	/* 투영스페이스 변환행렬 */
 	D3DXMatrixPerspectiveFovLH(&m_ProjMatrix, m_fFov, m_fAspect, m_fNear, m_fFar);
 
-	POINT		ptMouse{};
+	/*POINT		ptMouse{};
 
 	GetCursorPos(&ptMouse);
 
 	ScreenToClient(g_hWnd, &ptMouse);
 
-	m_vOldMouse = _float2(ptMouse.x, ptMouse.y);
-	
+	m_vOldMouse = _float2(ptMouse.x, ptMouse.y);*/
+
 	return S_OK;
 }
 
 void CCamera::Priority_Update(_float fTimeDelta)
 {
+	m_fTimeDelta = fTimeDelta;
+}
+
+void CCamera::Update(_float fTimeDelta)
+{
+	m_fTimeDelta = fTimeDelta;
+	//if (m_update) m_update();
 	/* 카메라의 움직임에 대한 처리를 모두 수행한다. */
 
 	//1000 1011 1101 1111 
@@ -57,72 +94,70 @@ void CCamera::Priority_Update(_float fTimeDelta)
 
 	//1000 0000 0000 0000
 	//0000 0000 0000 0000
-
-	
-
-	if (GetKeyState('W') & 0x8000)
-	{
-		m_pTransformCom->Go_Straight(fTimeDelta);
-	}
-	if (GetKeyState('S') & 0x8000)
-	{
-		m_pTransformCom->Go_Backward(fTimeDelta);
-	}
-	if (GetKeyState('A') & 0x8000)
-	{
-		m_pTransformCom->Go_Left(fTimeDelta);
-	}
-	if (GetKeyState('D') & 0x8000)
-	{
-		m_pTransformCom->Go_Right(fTimeDelta);
-	}
-
-	POINT		ptMouse{};
-
-	GetCursorPos(&ptMouse);
-
-	ScreenToClient(g_hWnd, &ptMouse);
-
-	_float			fMove = {};
-
-
-	if (fMove = ptMouse.x - m_vOldMouse.x)
-	{
-		m_pTransformCom->Turn(_float3(0.f, 1.f, 0.f), fTimeDelta * fMove * m_fSensor);
-	}
-
-	if (fMove = ptMouse.y - m_vOldMouse.y)
-	{
-		m_pTransformCom->Turn(m_pTransformCom->Get_State(STATE::RIGHT), fTimeDelta * fMove * m_fSensor);
-	}
-
-
-
-	
-
-
-	/**/
-
-	m_pGraphic_Device->SetTransform(D3DTS_VIEW, m_pTransformCom->Get_WorldMatrixInvPtr());
-	m_pGraphic_Device->SetTransform(D3DTS_PROJECTION, D3DXMatrixPerspectiveFovLH(&m_ProjMatrix, m_fFov, m_fAspect, m_fNear, m_fFar));
-
-
-	m_vOldMouse = _float2(ptMouse.x, ptMouse.y);
-}
-
-void CCamera::Update(_float fTimeDelta)
-{
-
 }
 
 void CCamera::Late_Update(_float fTimeDelta)
 {
-
+	m_fTimeDelta = fTimeDelta;
+	m_pGraphic_Device->SetTransform(D3DTS_VIEW, m_pTransformCom->Get_WorldMatrixInvPtr());
+	m_pGraphic_Device->SetTransform(D3DTS_PROJECTION, D3DXMatrixPerspectiveFovLH(&m_ProjMatrix, m_fFov, m_fAspect, m_fNear, m_fFar));
 }
 
 HRESULT CCamera::Render()
 {
 	return S_OK;
+}
+
+void CCamera::Camera_Turn(bool isMouseFixCenter)
+{
+	POINT		ptMouse{};
+
+	if (isMouseFixCenter)
+	{
+		GetCursorPos(&ptMouse);
+		SetCursorPos(g_iWinSizeX * 0.5f, g_iWinSizeY * 0.5f);
+		//GetCursorPos(&ptMouse);
+
+		m_fMove = { (_float)ptMouse.x - g_iWinSizeX * 0.5f, (_float)ptMouse.y - g_iWinSizeY * 0.5f };
+	}
+	else
+	{
+		GetCursorPos(&ptMouse);
+		ScreenToClient(g_hWnd, &ptMouse);
+
+		m_fMove = { (_float)ptMouse.x - m_vOldMouse.x, (_float)ptMouse.y - m_vOldMouse.y};
+	}
+
+	// 이게 카메라 회전
+	m_pTransformCom->Turn(_float3{0.f, 1.f, 0.f}, m_fTimeDelta * m_fMove.x * m_fSensor);
+	m_pTransformCom->Turn(m_pTransformCom->Get_State(STATE::RIGHT), m_fTimeDelta * m_fMove.y * m_fSensor);
+	
+	m_vOldMouse = _float2(ptMouse.x, ptMouse.y);
+}
+
+void CCamera::Chase_Target(_float3 vLimitDistance, bool isSyncLook, bool isCanTurn, bool isMouseFixCenter)
+{
+	CTransform* pTargetTransform = dynamic_cast<CTransform*>(m_pTarget->Find_Component(TEXT("Com_Transform")));
+
+	if (isCanTurn)
+	{		
+		Camera_Turn(isMouseFixCenter);
+
+		if (isSyncLook)
+		{
+			// 이건 카메라 방향벡터들 플레이어꺼랑 같게 맞추는부분
+			m_pTransformCom->Set_State(STATE::UP, pTargetTransform->Get_State(STATE::UP));
+			m_pTransformCom->Set_State(STATE::LOOK, pTargetTransform->Get_State(STATE::LOOK));
+			m_pTransformCom->Set_State(STATE::RIGHT, pTargetTransform->Get_State(STATE::RIGHT));
+
+			// 이게 카메라에 의한 플레이어 회전
+			pTargetTransform->Turn(_float3{ 0.f, 1.f, 0.f }, m_fTimeDelta * m_fMove.x * m_fSensor);
+			pTargetTransform->Turn(pTargetTransform->Get_State(STATE::RIGHT), m_fTimeDelta * m_fMove.y * m_fSensor);
+		}
+	}
+
+	m_pTransformCom->Set_State(STATE::POSITION,
+		pTargetTransform->Get_State(STATE::POSITION) + vLimitDistance);
 }
 
 HRESULT CCamera::Ready_Components(void* pArg)

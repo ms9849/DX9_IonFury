@@ -158,7 +158,6 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _tchar* pHeightFilePath)
 	}
 
 
-
 	if (FAILED(m_pGraphic_Device->CreateIndexBuffer(m_iIndexStride * m_iNumIndices, 0, m_eIndexFormat, D3DPOOL_MANAGED, &m_pIB, nullptr)))
 		return E_FAIL;
 
