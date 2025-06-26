@@ -55,6 +55,11 @@ HRESULT CTexture::Set_Texture(_uint iTextureIndex)
 	return S_OK;
 }
 
+_uint CTexture::Get_Texture_Length()
+{
+	return m_iNumTextures;
+}
+
 CTexture* CTexture::Create(LPDIRECT3DDEVICE9 pGraphic_Device, TEXTURE eType, const _tchar* pTextureFilePath, _uint iNumTextures)
 {
 	CTexture* pInstance = new CTexture(pGraphic_Device);

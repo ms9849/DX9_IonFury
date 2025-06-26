@@ -27,7 +27,6 @@ HRESULT CUIObject::Initialize(void* pArg)
 	m_fSizeX = pDesc->fSizeX;
 	m_fSizeY = pDesc->fSizeY;
 
-
 	D3DVIEWPORT9		ViewportDesc{};
 	m_pGraphic_Device->GetViewport(&ViewportDesc);
 
@@ -63,7 +62,6 @@ void CUIObject::Update_Transform(CTransform* pTransform)
 {
 	pTransform->Set_Scale(_float3(m_fSizeX, m_fSizeY, 1.f));
 	pTransform->Set_State(STATE::POSITION, _float3(m_fX - m_fWinSizeX * 0.5f, -m_fY + m_fWinSizeY * 0.5f, 0.f));
-
 }
 
 HRESULT CUIObject::Begin()

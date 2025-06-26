@@ -1,8 +1,10 @@
 #pragma once
 
 #include "Texture.h"
+#include "Fonts.h"
 #include "Transform.h"
 #include "VIBuffer_Cube.h"
+#include "Animation.h"
 #include "VIBuffer_Rect.h"
 #include "VIBuffer_Terrain.h"
 

@@ -18,10 +18,25 @@ public:
 		_float		fFov{};
 		_float		fNear{}, fFar{};
 	}CAMERA_DESC;
+
+	typedef struct tagCameraSettings
+	{
+		CGameObject* pTarget{ nullptr };
+		bool	isChaseTarget{ false };
+		_float3 vLimitDistance{ 0.f, 0.f, 0.f };
+		bool	isSyncLook{ false };
+		bool	isMouseFixCenter{ false };
+		bool	isCanTurn{ false };
+	}CAMERA_CONFIG;
+
 private:
 	CCamera(LPDIRECT3DDEVICE9 pGraphic_Device);
 	CCamera(const CCamera& Prototype);
 	virtual ~CCamera() = default;
+
+public:
+	void Camera_Configure(const CAMERA_CONFIG& settings);
+	void Camera_Configure_Clear(CAMERA_CONFIG& settings);
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -33,6 +48,7 @@ public:
 
 private:
 	class CTransform*				m_pTransformCom = { nullptr };
+	class CTransform*				m_pTargetTransformCom = { nullptr };
 	_float4x4						m_ProjMatrix = { };
 
 	_float							m_fFov = {};
@@ -40,11 +56,21 @@ private:
 	_float							m_fNear = {};
 	_float							m_fFar = {};
 
+	_float							m_fTimeDelta = {};
 private:
 	_float2							m_vOldMouse = {};
+	_float2							m_fMove = {};
 	_float							m_fSensor = { 0.2f };
+	class CGameObject*				m_pTarget = { nullptr };
+
+private:
+	//std::function<void()> m_update;
+	void Camera_Turn(bool isMouseFixCenter);
+	void Chase_Target(_float3 vLimitDistance, bool isSyncLook, bool isCanTurn, bool isMouseFixCenter);
+
 private:
 	HRESULT Ready_Components(void* pArg);
+
 public:
 	static CCamera* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
 	virtual CGameObject* Clone(void* pArg) override;

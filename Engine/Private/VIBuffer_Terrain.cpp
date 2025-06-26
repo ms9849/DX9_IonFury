@@ -1,5 +1,4 @@
 #include "VIBuffer_Terrain.h"
-#include "GameInstance.h"
 
 CVIBuffer_Terrain::CVIBuffer_Terrain(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CVIBuffer { pGraphic_Device }
@@ -156,7 +155,6 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _tchar* pHeightFilePath)
 			pVertices[iIndex].vTexcoord = _float2(j / (m_iNumVerticesX - 1.f) * 50.f, i / (m_iNumVerticesZ - 1.f) * 50.f);
 		}
 	}
-
 
 
 	if (FAILED(m_pGraphic_Device->CreateIndexBuffer(m_iIndexStride * m_iNumIndices, 0, m_eIndexFormat, D3DPOOL_MANAGED, &m_pIB, nullptr)))

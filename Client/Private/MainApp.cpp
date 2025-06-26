@@ -8,11 +8,9 @@
 /*
 대재훈의 은총 이 얼마나 관대한가
 */
-Client::CMainApp::CMainApp()	
+Client::CMainApp::CMainApp()
 	: m_pGameInstance { CGameInstance::GetInstance() }
 {
-	
-
 	Safe_AddRef(m_pGameInstance);
 }
 
@@ -50,8 +48,6 @@ HRESULT Client::CMainApp::Render()
 	m_pGameInstance->Render_Begin(D3DXCOLOR(0.f, 0.f, 1.f, 1.f));
 
 	m_pGameInstance->Draw();
-
-	m_pGameInstance->Draw_Font(TEXT("짜증 나네"));
 
 	m_pGameInstance->Render_End();
 
@@ -96,6 +92,50 @@ HRESULT CMainApp::Ready_Prototypes()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Camera"),
 		CCamera::Create(m_pGraphic_Device))))
 		return E_FAIL;
+
+#pragma region 폰트 텍스처
+	/* For.Prototype_Component_Fonts_Default */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Fonts_Default"),
+		CFonts::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Fonts/Default/Text_%d.png"), DefaultFontSet, 38))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Fonts_Gray */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Fonts_Gray"),
+		CFonts::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Fonts/Gray/Text_%d.png"), GrayFontSet, 37))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Fonts_Primary */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Fonts_Primary"),
+		CFonts::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Fonts/Primary/Text_%d.png"), PrimaryFontSet, 94))))
+		return E_FAIL;
+#pragma endregion
+
+#pragma region 플레이어 애니메이션 텍스처
+	// 플레이어 애니메이션 컴포넌트
+	/* For.Prototype_Component_Animation_Player */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Animation_Player"),
+		CAnimation::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	// 권총
+	/* For.Prototype_Component_Player_Pistol_Idle */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Player_Pistol_Idle"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Player/Pistol/Idle_%d.png"), 1))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Player_Pistol_Reload */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Player_Pistol_Reload"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Player/Pistol/Reload_%d.png"), 19))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Player_Pistol_Shoot */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Player_Pistol_Shoot"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Player/Pistol/Shoot_%d.png"), 5))))
+		return E_FAIL;
+#pragma endregion
+
+
+	
 
 	return S_OK;
 }

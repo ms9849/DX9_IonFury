@@ -49,6 +49,22 @@ HRESULT CObject_Manager::Add_GameObject_ToLayer(_uint iPrototypeLevelIndex, cons
 	return S_OK;
 }
 
+CGameObject* CObject_Manager::Find_GameObject_ToLayer(_uint iLayerLevelIndex, const _wstring& strLayerTag, void* pArg)
+{
+	CGameObject* pGameObject{ nullptr };
+	CLayer* pLayer = Find_Layer(iLayerLevelIndex, strLayerTag);
+
+	if (nullptr == pLayer)
+	{
+		return pGameObject;
+	}
+	else
+	{
+		pGameObject = pLayer->Find_GameObject();
+		return pGameObject;
+	}
+}
+
 void CObject_Manager::Priority_Update(_float fTimeDelta)
 {
 	for (size_t i = 0; i < m_iNumLevels; i++)
