@@ -24,6 +24,10 @@ HRESULT CMonster::Initialize(void* pArg)
 	CLandObject::LANDOBJECT_DESC			Desc{};
 	Desc.pLandTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_BackGround"), TEXT("Com_Transform")));
 	Desc.pLandVIBuffer = static_cast<CVIBuffer*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_BackGround"), TEXT("Com_VIBuffer")));
+	m_pPlayerTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player"), TEXT("Com_Transform")));
+
+	if (m_pPlayerTransform == nullptr)
+		return E_FAIL;
 
 	if (FAILED(__super::Initialize(&Desc)))
 		return E_FAIL;
@@ -53,6 +57,27 @@ void CMonster::Update(_float fTimeDelta)
 			int a = 10;
 	}
 
+	if (m_pSightCom->Check_Sight(fTimeDelta) == 2)
+	{
+		m_pTextureCom = m_sTexture[TEXT("Monster_Back")];
+		m_pTextureCom->Set_Texture(0);
+	}
+	else if (m_pSightCom->Check_Sight(fTimeDelta) == 1)
+	{
+		m_pTextureCom = m_sTexture[TEXT("Monster_Front")];
+		m_pTextureCom->Set_Texture(0);
+	}
+	else if (m_pSightCom->Check_Sight(fTimeDelta) == 3)
+	{
+		m_pTextureCom = m_sTexture[TEXT("Monster_Rotate")];
+		m_pTextureCom->Set_Texture(0);
+	}
+	else if (m_pSightCom->Check_Sight(fTimeDelta) == 4)
+	{
+		m_pTextureCom = m_sTexture[TEXT("Monster_Rotate")];
+		m_pTextureCom->Set_Texture(0);
+	}
+
 	SetUp_OnTerrain(m_pTransformCom, 0.5f);
 }
 
@@ -67,7 +92,10 @@ HRESULT CMonster::Render()
 {
 	m_pTransformCom->Set_Transform();
 
-	m_pTextureCom->Set_Texture(0);
+	//m_pTextureCom->Set_Texture(0);
+	m_pTextureCom->Set_Texture(m_iNum++);
+	if (m_iNum > 3)
+		m_iNum = 0;
 
 	if (FAILED(Begin_RenderState()))
 		return E_FAIL;
@@ -89,14 +117,34 @@ HRESULT CMonster::Ready_Components()
 		return E_FAIL;
 
 	/* Com_Texture */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Monster"),
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Monster_Front"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
+
+	m_sTexture.emplace(TEXT("Monster_Front"), m_pTextureCom);
+
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Monster_Back"),
+		TEXT("Com_Texture1"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
+		return E_FAIL;
+
+	m_sTexture.emplace(TEXT("Monster_Back"), m_pTextureCom);
+
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Monster_Rotate"),
+		TEXT("Com_Texture2"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
+		return E_FAIL;
+
+	m_sTexture.emplace(TEXT("Monster_Rotate"), m_pTextureCom);
 
 	/* Com_VIBuffer */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_Rect"),
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
 		return E_FAIL;	
+
+	/* Com_Sight */
+	CSight::SIGHT_DESC		SightDesc{ 5.f, D3DXToRadian(90.0f), m_pPlayerTransform, m_pTransformCom };
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Sight"),
+		TEXT("Com_Sight"), reinterpret_cast<CComponent**>(&m_pSightCom), &SightDesc)))
+		return E_FAIL;
 
 	return S_OK;
 }

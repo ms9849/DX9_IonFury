@@ -7,6 +7,7 @@ NS_BEGIN(Engine)
 class CTexture;
 class CTransform;
 class CVIBuffer_Rect;
+class CSight;
 NS_END
 
 NS_BEGIN(Client)
@@ -30,13 +31,17 @@ private:
 	CTexture*				m_pTextureCom = { nullptr };
 	CTransform*				m_pTransformCom = { nullptr };	
 	CVIBuffer_Rect*			m_pVIBufferCom = { nullptr };
-
+	CSight* m_pSightCom = { nullptr };
+	CTransform* m_pPlayerTransform = { nullptr };
 	
+	int						m_iNum = 0;
+
 private:
 	HRESULT Ready_Components();
 	HRESULT Begin_RenderState();
 	HRESULT End_RenderState();
 
+	map<const _wstring, CTexture*> m_sTexture;
 
 public:
 	static CMonster* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
