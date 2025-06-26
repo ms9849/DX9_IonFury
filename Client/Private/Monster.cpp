@@ -50,12 +50,12 @@ void CMonster::Priority_Update(_float fTimeDelta)
 
 void CMonster::Update(_float fTimeDelta)
 {
-	if (GetKeyState(VK_LBUTTON) & 0x8000)
-	{
-		_float3		vOut;
-		if (true == m_pVIBufferCom->Picking(m_pTransformCom, &vOut))
-			int a = 10;
-	}
+	//if (GetKeyState(VK_LBUTTON) & 0x8000)
+	//{
+	//	_float3		vOut;
+	//	if (true == m_pVIBufferCom->Picking(m_pTransformCom, &vOut))
+	//		int a = 10;
+	//}
 
 	if (m_pSightCom->Check_Sight(fTimeDelta) == 2)
 	{
@@ -79,6 +79,7 @@ void CMonster::Update(_float fTimeDelta)
 	}
 
 	SetUp_OnTerrain(m_pTransformCom, 0.5f);
+	//SetUp_OnTerrain(m_pTransformCom, 0.5f);
 }
 
 void CMonster::Late_Update(_float fTimeDelta)

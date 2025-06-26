@@ -165,4 +165,11 @@ void CUIFont::Free()
 	//Safe_Release(m_pFontsCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pVIBufferCom);
+
+	for(auto& iter : m_pFontsComs)
+	{
+		Safe_Release(iter.second);
+	}
+
+	m_pFontsComs.clear();
 }

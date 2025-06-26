@@ -229,43 +229,6 @@ HRESULT CVIBuffer_Terrain::Initialize(void* pArg)
 	return S_OK;
 }
 
-_bool CVIBuffer_Terrain::Picking(CTransform* pTransform, _float3* pOut)
-{
-	/* 마우스 정보를 지형의 로컬로 변환시킨다. */
-	m_pGameInstance->Transform_Picking_ToLocalSpace(pTransform->Get_WorldMatrixInvPtr());
-
-	_uint	iNumIndices = {};
-
-	for (size_t i = 0; i < m_iNumVerticesZ - 1; i++)
-	{
-		for (size_t j = 0; j < m_iNumVerticesX - 1; j++)
-		{
-			_uint	iIndex = i * m_iNumVerticesX + j;
-
-			_uint	iIndices[4] = {
-				iIndex + m_iNumVerticesX,
-				iIndex + m_iNumVerticesX + 1,
-				iIndex + 1,
-				iIndex
-			};
-
-			if (true == m_pGameInstance->Picking_InLocalSpace(m_pVertexPositions[iIndices[0]], m_pVertexPositions[iIndices[1]], m_pVertexPositions[iIndices[2]], pOut))
-			{
-				D3DXVec3TransformCoord(pOut, pOut, pTransform->Get_WorldMatrixPtr());
-				return true;
-			}
-
-			if (true == m_pGameInstance->Picking_InLocalSpace(m_pVertexPositions[iIndices[0]], m_pVertexPositions[iIndices[2]], m_pVertexPositions[iIndices[3]], pOut))
-			{
-				D3DXVec3TransformCoord(pOut, pOut, pTransform->Get_WorldMatrixPtr());
-				return true;
-			}
-		}
-	}
-
-	return false;
-}
-
 CVIBuffer_Terrain* CVIBuffer_Terrain::Create(LPDIRECT3DDEVICE9 pGraphic_Device, _uint iNumVerticesX, _uint iNumVerticesZ)
 {
 	CVIBuffer_Terrain* pInstance = new CVIBuffer_Terrain(pGraphic_Device);

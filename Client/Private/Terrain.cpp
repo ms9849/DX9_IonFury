@@ -37,8 +37,6 @@ void CTerrain::Update(_float fTimeDelta)
 	if (GetKeyState(VK_LBUTTON) & 0x8000)
 	{
 		_float3		vPickPos{};
-		if (m_pVIBufferCom->Picking(m_pTransformCom, &vPickPos))
-			int a = 10;
 	}
 	
 }

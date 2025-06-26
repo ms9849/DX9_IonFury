@@ -49,7 +49,9 @@ void CPlayer_Hand::Update(_float fTimeDelta)
 
 void CPlayer_Hand::Late_Update(_float fTimeDelta)
 {
-	// 공부 해야함
+
+	/*
+		// 공부 해야함
 	// 크자이공부 중 이공부 만 한거
 	_float4x4 handMatrix{}, CameraMatrix{};
 	D3DXMatrixIdentity(&handMatrix);
@@ -80,6 +82,25 @@ void CPlayer_Hand::Late_Update(_float fTimeDelta)
 	m_pTransformCom->Set_State(STATE::RIGHT, (_float3)&handMatrix.m[0][0]);
 	m_pTransformCom->Set_State(STATE::UP, (_float3)&handMatrix.m[1][0]);
 	m_pTransformCom->Set_State(STATE::LOOK, (_float3)&handMatrix.m[2][0]);
+	m_pTransformCom->Set_State(STATE::POSITION, vHandPos);
+	*/
+
+	_float3 vHandPos = {};
+	_float4x4 CameraMatrix{};
+
+	//handMatrix = *m_pTransformCom->Get_WorldMatrixPtr();
+
+	vHandPos = m_pAnimationCom->Get_Animation()->Poses[m_pAnimationCom->Get_Frame_Index()];
+	vHandPos += { 0.75f, -0.6f, 1.5f };
+
+	m_pGraphic_Device->GetTransform(D3DTS_VIEW, &CameraMatrix);
+	D3DXMatrixInverse(&CameraMatrix, nullptr, &CameraMatrix);
+	
+	D3DXVec3TransformCoord(&vHandPos, &vHandPos, &CameraMatrix);
+
+	m_pTransformCom->Set_State(STATE::RIGHT, *(_float3 *)&CameraMatrix.m[0][0]);
+	m_pTransformCom->Set_State(STATE::UP, *(_float3 *)&CameraMatrix.m[1][0]);
+	m_pTransformCom->Set_State(STATE::LOOK, *(_float3 *)&CameraMatrix.m[2][0]);
 	m_pTransformCom->Set_State(STATE::POSITION, vHandPos);
 
 	m_pGameInstance->Add_RenderGroup(RENDER::BLEND, this);
@@ -272,4 +293,10 @@ void CPlayer_Hand::Free()
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pVIBufferCom);
 
+	for (auto& iter : m_pTextureComs)
+	{
+		Safe_Release(iter.second);
+	}
+
+	m_pTextureComs.clear();
 }

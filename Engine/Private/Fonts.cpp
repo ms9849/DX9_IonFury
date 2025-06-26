@@ -83,4 +83,6 @@ void CFonts::Free()
 
 	for (auto& pFont : m_Fonts)
 		Safe_Release(pFont.second);
+
+	m_Fonts.clear();
 }

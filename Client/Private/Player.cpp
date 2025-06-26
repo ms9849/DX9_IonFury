@@ -79,7 +79,7 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 		//m_iCurrentAnimation = ENUM_CLASS(ANIMATION::PISTOL_RELOAD);
 		m_pRightHand->Set_Current_Animation(TEXT("Pistol_Reload"));
 	}
-	if (GetKeyState(VK_LBUTTON) & 0x8000)
+	if (m_pGameInstance->Key_Down(VK_LEFT))
 	{
 		m_tInfo.iBullets -= 1;
 		m_pRightHand->Set_Current_Animation(TEXT("Pistol_Shoot"));

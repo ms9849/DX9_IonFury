@@ -47,6 +47,8 @@ public:
 	virtual HRESULT Render() override;
 
 private:
+	CAMERA_CONFIG					m_pCameraConfig{};
+
 	class CTransform*				m_pTransformCom = { nullptr };
 	class CTransform*				m_pTargetTransformCom = { nullptr };
 	_float4x4						m_ProjMatrix = { };

@@ -7,7 +7,6 @@
 #include "Timer_Manager.h"
 #include "Renderer.h"
 #include "Key_Manager.h"
-#include "Picking.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
 
@@ -41,10 +40,6 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& EngineDesc, LPDIRECT
 	if (nullptr == m_pRenderer)
 		return E_FAIL;
 
-	m_pPicking = CPicking::Create(*ppOut, EngineDesc.hWnd);
-	if (nullptr == m_pPicking)
-		return E_FAIL;
-
 	m_pKey_Manager = CKey_Manager::Create();
 	if (nullptr == m_pKey_Manager)
 		return E_FAIL;
@@ -55,8 +50,6 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& EngineDesc, LPDIRECT
 void CGameInstance::Update_Engine(_float fTimeDelta)
 {
 	m_pObject_Manager->Priority_Update(fTimeDelta);
-
-	m_pPicking->Update();
 
 	m_pObject_Manager->Update(fTimeDelta);
 
@@ -185,22 +178,7 @@ HRESULT CGameInstance::Add_RenderGroup(RENDER eRenderGroup, CGameObject* pRender
 
 #pragma endregion
 
-#pragma region PICKING
-
-void CGameInstance::Transform_Picking_ToLocalSpace(const _float4x4* pWorldMatrixInverse)
-{
-	m_pPicking->Transform_ToLocalSpace(pWorldMatrixInverse);
-}
-
-_bool CGameInstance::Picking_InWorldSpace(const _float3& vPointA, const _float3& vPointB, const _float3& vPointC, _float3* pOut)
-{
-	return m_pPicking->Picking_InWorldSpace(vPointA, vPointB, vPointC, pOut);
-}
-
-_bool CGameInstance::Picking_InLocalSpace(const _float3& vPointA, const _float3& vPointB, const _float3& vPointC, _float3* pOut)
-{
-	return m_pPicking->Picking_InLocalSpace(vPointA, vPointB, vPointC, pOut);
-}
+#pragma region KEY_MANAGER
 
 bool CGameInstance::Key_Pressing(_uint _iKey)
 {
@@ -223,7 +201,6 @@ void CGameInstance::Release_Engine()
 {
 	DestroyInstance();
 
-	Safe_Release(m_pPicking);
 	Safe_Release(m_pTimer_Manager);
 	Safe_Release(m_pRenderer);
 	Safe_Release(m_pPrototype_Manager);
@@ -236,6 +213,4 @@ void CGameInstance::Release_Engine()
 void CGameInstance::Free()
 {
 	__super::Free();
-
-	
 }
