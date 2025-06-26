@@ -94,6 +94,9 @@
     <Filter Include="01.Uitility\05.Component\Animation">
       <UniqueIdentifier>{16c1783f-43b4-4dbf-a8a6-923b6a97abb0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Uitility\05.Component\Sight">
+      <UniqueIdentifier>{30d34e09-958e-430b-80ab-7b8ecc5319a5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -192,6 +195,9 @@
     <ClInclude Include="..\Public\Animation.h">
       <Filter>01.Uitility\05.Component\Animation</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Sight.h">
+      <Filter>01.Uitility\05.Component\Sight</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -271,6 +277,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Animation.cpp">
       <Filter>01.Uitility\05.Component\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Sight.cpp">
+      <Filter>01.Uitility\05.Component\Sight</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
