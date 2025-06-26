@@ -43,7 +43,6 @@ private:
 
     _wstring m_strFrameKey{ TEXT("Pistol_Idle") };
     map<const _wstring, CAnimation::FRAME_DESC> m_Frames;
-    //vector<_uint> m_iAnimationFrames{};
 
     const _wstring m_strFrameKeys[3] = {
         TEXT("Pistol_Idle"), TEXT("Pistol_Reload"), TEXT("Pistol_Shoot")

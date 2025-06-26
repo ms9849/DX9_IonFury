@@ -93,6 +93,11 @@ HRESULT CMainApp::Ready_Prototypes()
 		CCamera::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Animation */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Animation"),
+		CAnimation::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
 #pragma region 폰트 텍스처
 	/* For.Prototype_Component_Fonts_Default */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Fonts_Default"),
@@ -111,12 +116,6 @@ HRESULT CMainApp::Ready_Prototypes()
 #pragma endregion
 
 #pragma region 플레이어 애니메이션 텍스처
-	// 플레이어 애니메이션 컴포넌트
-	/* For.Prototype_Component_Animation_Player */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Animation_Player"),
-		CAnimation::Create(m_pGraphic_Device))))
-		return E_FAIL;
-
 	// 권총
 	/* For.Prototype_Component_Player_Pistol_Idle */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Player_Pistol_Idle"),
@@ -135,23 +134,19 @@ HRESULT CMainApp::Ready_Prototypes()
 #pragma endregion
 
 #pragma region 몬스터 애니메이션 텍스처
-
 	/* For.Prototype_Component_Texture_Monster */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Monster_Front"),
-		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Monster/Soldier_Front_%d.png"), 4))))
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Monster_Soldier_Front"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Monster/Soldier/Front_%d.png"), 4))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Monster_Back"),
-		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Monster/Soldier_Back_%d.png"), 4))))
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Monster_Soldier_Back"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Monster/Soldier/Back_%d.png"), 4))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Monster_Rotate"),
-		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Monster/Soldier_Rotate_%d.png"), 12))))
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Monster_Soldier_Rotate"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Monster/Soldier/Rotate_%d.png"), 12))))
 		return E_FAIL;
 #pragma endregion
-
-
-	
 
 	return S_OK;
 }
