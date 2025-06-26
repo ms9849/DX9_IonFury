@@ -35,6 +35,9 @@ HRESULT CMonster::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
+	if (FAILED(Ready_Animations()))
+		return E_FAIL;
+
 	m_pTransformCom->Set_State(STATE::POSITION, _float3(
 		m_pGameInstance->Random(0.f, 20.f), 
 		0.f, 
@@ -59,24 +62,23 @@ void CMonster::Update(_float fTimeDelta)
 
 	if (m_pSightCom->Check_Sight(fTimeDelta) == 2)
 	{
-		m_pTextureCom = m_sTexture[TEXT("Monster_Back")];
-		m_pTextureCom->Set_Texture(0);
+		m_strFrameKey = TEXT("Soldier_Back");
 	}
 	else if (m_pSightCom->Check_Sight(fTimeDelta) == 1)
 	{
-		m_pTextureCom = m_sTexture[TEXT("Monster_Front")];
-		m_pTextureCom->Set_Texture(0);
+		m_strFrameKey = TEXT("Soldier_Front");
 	}
 	else if (m_pSightCom->Check_Sight(fTimeDelta) == 3)
 	{
-		m_pTextureCom = m_sTexture[TEXT("Monster_Rotate")];
-		m_pTextureCom->Set_Texture(0);
+		m_strFrameKey = TEXT("Soldier_Rotate");
 	}
 	else if (m_pSightCom->Check_Sight(fTimeDelta) == 4)
 	{
-		m_pTextureCom = m_sTexture[TEXT("Monster_Rotate")];
-		m_pTextureCom->Set_Texture(0);
+		m_strFrameKey = TEXT("Soldier_Rotate");
 	}
+
+	auto iter = m_Frames.find(m_strFrameKey);
+	m_pAnimationCom->Set_Animation(&iter->second);
 
 	SetUp_OnTerrain(m_pTransformCom, 0.5f);
 	//SetUp_OnTerrain(m_pTransformCom, 0.5f);
@@ -84,9 +86,8 @@ void CMonster::Update(_float fTimeDelta)
 
 void CMonster::Late_Update(_float fTimeDelta)
 {
-	
-
 	m_pGameInstance->Add_RenderGroup(RENDER::NONBLEND, this);
+	m_pAnimationCom->Play_Animation(fTimeDelta / 1.1f);
 }
 
 HRESULT CMonster::Render()
@@ -94,9 +95,12 @@ HRESULT CMonster::Render()
 	m_pTransformCom->Set_Transform();
 
 	//m_pTextureCom->Set_Texture(0);
-	m_pTextureCom->Set_Texture(m_iNum++);
+	/*m_pTextureCom->Set_Texture(m_iNum++);
 	if (m_iNum > 3)
-		m_iNum = 0;
+		m_iNum = 0;*/
+
+	auto iter = m_pTextureComs.find(m_strFrameKey);
+	iter->second->Set_Texture(m_pAnimationCom->Get_Frame_Index());
 
 	if (FAILED(Begin_RenderState()))
 		return E_FAIL;
@@ -105,6 +109,28 @@ HRESULT CMonster::Render()
 
 	if (FAILED(End_RenderState()))
 		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CMonster::Ready_Animations()
+{
+	CAnimation::FRAME_DESC Desc{};
+	auto iter = m_pTextureComs.find(TEXT("Soldier_Back"));
+
+	//Soldier_Back
+	Desc.iEnd = iter->second->Get_Texture_Length();
+	m_Frames.emplace(TEXT("Soldier_Back"), Desc);
+
+	//Soldier_Front
+	iter = m_pTextureComs.find(TEXT("Soldier_Front"));
+	Desc.iEnd = iter->second->Get_Texture_Length();
+	m_Frames.emplace(TEXT("Soldier_Front"), Desc);
+
+	//Soldier_Rotate
+	iter = m_pTextureComs.find(TEXT("Soldier_Rotate"));
+	Desc.iEnd = iter->second->Get_Texture_Length();
+	m_Frames.emplace(TEXT("Soldier_Rotate"), Desc);
 
 	return S_OK;
 }
@@ -118,23 +144,28 @@ HRESULT CMonster::Ready_Components()
 		return E_FAIL;
 
 	/* Com_Texture */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Monster_Front"),
-		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
+	for (size_t i = 0; i < (sizeof(m_strFrameKeys) / sizeof(m_strFrameKeys[0])); ++i)
+	{
+		_tchar strPrototypeTag[256];
+		_tchar strComponentTag[256];
+
+		CTexture* pTextureCom{ nullptr };
+
+		wsprintf(strPrototypeTag, TEXT("Prototype_Component_Texture_Monster_%s"), m_strFrameKeys[i].c_str());
+		wsprintf(strComponentTag, TEXT("Com_%s_Texture"), m_strFrameKeys[i].c_str());
+
+		if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), strPrototypeTag,
+			strComponentTag, reinterpret_cast<CComponent**>(&pTextureCom))))
+			return E_FAIL;
+		Safe_AddRef(pTextureCom);
+
+		m_pTextureComs.emplace(m_strFrameKeys[i], pTextureCom);
+	}
+
+	/* Com_Animation */
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Animation"),
+		TEXT("Com_Animation"), reinterpret_cast<CComponent**>(&m_pAnimationCom))))
 		return E_FAIL;
-
-	m_sTexture.emplace(TEXT("Monster_Front"), m_pTextureCom);
-
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Monster_Back"),
-		TEXT("Com_Texture1"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
-		return E_FAIL;
-
-	m_sTexture.emplace(TEXT("Monster_Back"), m_pTextureCom);
-
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Monster_Rotate"),
-		TEXT("Com_Texture2"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
-		return E_FAIL;
-
-	m_sTexture.emplace(TEXT("Monster_Rotate"), m_pTextureCom);
 
 	/* Com_VIBuffer */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_Rect"),
@@ -217,8 +248,12 @@ void CMonster::Free()
 {
 	__super::Free();
 
-	Safe_Release(m_pTextureCom);
+	//Safe_Release(m_pTextureCom);
+	Safe_Release(m_pAnimationCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pVIBufferCom);
-
+	for (auto& iter : m_pTextureComs)
+	{
+		Safe_Release(iter.second);
+	}
 }

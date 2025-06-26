@@ -162,11 +162,14 @@ HRESULT CPlayer_Hand::Ready_Components()
 		if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), strPrototypeTag,
 			strComponentTag, reinterpret_cast<CComponent**>(&pTextureCom))))
 			return E_FAIL;
+		
+		Safe_AddRef(pTextureCom);
 
 		m_pTextureComs.emplace(m_strFrameKeys[i], pTextureCom);
 	}
+
 	/* Com_Animation */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Animation_Player"),
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Animation"),
 			TEXT("Com_Animation"), reinterpret_cast<CComponent**>(&m_pAnimationCom))))
 		return E_FAIL;
 
@@ -217,10 +220,9 @@ HRESULT CPlayer_Hand::Ready_Animations()
 
 	m_Frames.emplace(TEXT("Pistol_Reload"), Desc);
 
+	// Pistol_Shoot
 	iter = m_pTextureComs.find(TEXT("Pistol_Shoot"));
-	// Pistol_Reload
 	Desc.iEnd = iter->second->Get_Texture_Length();
-
 	m_Frames.emplace(TEXT("Pistol_Shoot"), Desc);
 
 	return S_OK;

@@ -2,9 +2,11 @@
 
 #include "Client_Defines.h"
 #include "LandObject.h"
+#include "Animation.h"
 
 NS_BEGIN(Engine)
 class CTexture;
+class CAnimation;
 class CTransform;
 class CVIBuffer_Rect;
 class CSight;
@@ -29,6 +31,7 @@ public:
 
 private:
 	CTexture*				m_pTextureCom = { nullptr };
+	CAnimation* m_pAnimationCom = { nullptr };
 	CTransform*				m_pTransformCom = { nullptr };	
 	CVIBuffer_Rect*			m_pVIBufferCom = { nullptr };
 	CSight* m_pSightCom = { nullptr };
@@ -38,10 +41,18 @@ private:
 
 private:
 	HRESULT Ready_Components();
+	HRESULT Ready_Animations();
 	HRESULT Begin_RenderState();
 	HRESULT End_RenderState();
 
-	map<const _wstring, CTexture*> m_sTexture;
+	map<const _wstring, CTexture*> m_pTextureComs;
+
+	_wstring m_strFrameKey{TEXT("Soldier_Front")};
+	map<const _wstring, CAnimation::FRAME_DESC> m_Frames;
+
+	const _wstring m_strFrameKeys[3] = {
+		TEXT("Soldier_Back"), TEXT("Soldier_Front"), TEXT("Soldier_Rotate")
+	};
 
 public:
 	static CMonster* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
