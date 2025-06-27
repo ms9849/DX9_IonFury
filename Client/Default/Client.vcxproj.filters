@@ -70,6 +70,9 @@
     <Filter Include="02.GameObjects\UI\UIFont">
       <UniqueIdentifier>{d0bdf7b4-40b9-43f2-878c-1acdb601b7e2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\CubeObject">
+      <UniqueIdentifier>{eeb56b9a-d74f-4cce-925d-8561e01fae5f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -140,6 +143,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\UIBullets.h">
       <Filter>02.GameObjects\UI\UIBullets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CubeObject.h">
+      <Filter>02.GameObjects\CubeObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -212,6 +218,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\UIText.cpp">
       <Filter>02.GameObjects\UI\UIText</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CubeObject.cpp">
+      <Filter>02.GameObjects\CubeObject</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

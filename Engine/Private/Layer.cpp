@@ -5,6 +5,11 @@ CLayer::CLayer()
 {
 }
 
+list<class CGameObject*> CLayer::Get_GameObjects()
+{
+	return m_GameObjects;
+}
+
 CComponent* CLayer::Get_Component(const _wstring& strComponentTag, _uint iIndex)
 {
 	auto	iter = m_GameObjects.begin();

@@ -20,6 +20,7 @@ public:
 
 	_float Random_Normal();
 	_float Random(_float fMin, _float fMax);
+	_bool CCW(_float3 vSrc, _float3 vDst);
 
 #pragma region GRAPHIC_DEVICE
 public:
@@ -47,6 +48,7 @@ public:
 	CComponent* Get_Component(_uint iLevelIndex, const _wstring& strLayerTag, const _wstring& strComponentTag, _uint iIndex = 0);
 	HRESULT Add_GameObject_ToLayer(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, _uint iLayerLevelIndex, const _wstring& strLayerTag, void* pArg = nullptr);
 	class CGameObject* Find_GameObject_ToLayer(_uint iLayerLevelIndex, const _wstring& strLayerTag, void* pArg = nullptr);
+	class CLayer* Find_Layer(_uint iLayerLevelIndex, const _wstring& strLayerTag);
 #pragma endregion
 
 #pragma region RENDERER
@@ -61,6 +63,18 @@ public:
 	bool		Key_Down(_uint _iKey);
 #pragma endregion
 
+#pragma region SOUND_MANAGER
+	void PlaySoundOnce(const TCHAR* pSoundKey, CHANNELID eID, float fVolume);
+	void PlayBGM(const TCHAR* pSoundKey, float fVolume);
+	void StopSound(CHANNELID eID);
+	void StopAll();
+	void SetChannelVolume(CHANNELID eID, float fVolume);
+#pragma endregion
+
+#pragma region COLLISION_MANAGER
+	void	Check_OBBCollision(const _wstring& strLayerTagSrc, const _wstring& strLayerTagDst, _uint iLayerLevel);
+#pragma endregion
+
 private:
 	class CGraphic_Device*			m_pGraphic_Device = { nullptr };
 	class CTimer_Manager*			m_pTimer_Manager = { nullptr };
@@ -69,6 +83,8 @@ private:
 	class CObject_Manager*			m_pObject_Manager = { nullptr };
 	class CRenderer*				m_pRenderer = { nullptr };
 	class CKey_Manager* m_pKey_Manager = { nullptr };
+	class CSound_Manager* m_pSound_Manager = { nullptr };
+	class CCollision_Manager* m_pCollision_Manager = { nullptr };
 
 public:
 	void Release_Engine();

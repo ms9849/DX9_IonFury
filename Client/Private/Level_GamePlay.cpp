@@ -26,6 +26,9 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"))))
 		return E_FAIL;
 
+	if (FAILED(Ready_Layer_Cube(TEXT("Layer_Cube"))))
+		return E_FAIL;
+
 	if (FAILED(Ready_Layer_UI(TEXT("Layer_UI"))))
 		return E_FAIL;
 
@@ -64,6 +67,8 @@ void CLevel_GamePlay::Update(_float fTimeDelta)
 	m_pUIBullets->Set_Bullets(m_pPlayer->Get_Player_Info().iBullets);
 	m_pUIInteraction->Set_Interaction(TEXT("Press [E] Key"));
 #pragma endregion
+
+	m_pGameInstance->Check_OBBCollision(TEXT("Layer_Cube"), TEXT("Layer_Player"), ENUM_CLASS(LEVEL::GAMEPLAY));
 }
 
 HRESULT CLevel_GamePlay::Render()
@@ -243,6 +248,15 @@ HRESULT CLevel_GamePlay::Ready_Layer_UI(const _wstring& strLayerTag)
 		return E_FAIL;
 
 	m_pUIInteraction = dynamic_cast<CUIInteraction*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag));
+
+	return S_OK;
+}
+
+HRESULT CLevel_GamePlay::Ready_Layer_Cube(const _wstring& strLayerTag)
+{
+	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_CubeObject"),
+		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag)))
+		return E_FAIL;
 
 	return S_OK;
 }

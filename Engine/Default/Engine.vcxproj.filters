@@ -85,9 +85,6 @@
     <Filter Include="01.Uitility\07.Key">
       <UniqueIdentifier>{7b59660b-f7cc-4033-9e51-8b5766619aeb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Uitility\08.FMod">
-      <UniqueIdentifier>{8960129e-8d76-4297-98ed-06bab054952c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Uitility\05.Component\Texture\Fonts">
       <UniqueIdentifier>{3bb61b4e-b9b3-4a4d-9aee-f0ef7deba1c8}</UniqueIdentifier>
     </Filter>
@@ -96,6 +93,18 @@
     </Filter>
     <Filter Include="01.Uitility\05.Component\Sight">
       <UniqueIdentifier>{30d34e09-958e-430b-80ab-7b8ecc5319a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.System\FMod">
+      <UniqueIdentifier>{8960129e-8d76-4297-98ed-06bab054952c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Uitility\08.Sound">
+      <UniqueIdentifier>{c2b551a2-866d-4a82-93de-aa761e075425}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Uitility\05.Component\BoxCollider">
+      <UniqueIdentifier>{fa74df16-4da6-4988-8aab-03f8bbc0708a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Uitility\09.Collision">
+      <UniqueIdentifier>{4ca02e40-4ddf-4adc-b9ea-26a7b8281ea1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -198,6 +207,39 @@
     <ClInclude Include="..\Public\Sight.h">
       <Filter>01.Uitility\05.Component\Sight</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\fmod.h">
+      <Filter>00.System\FMod</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\fmod.hpp">
+      <Filter>00.System\FMod</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\fmod_codec.h">
+      <Filter>00.System\FMod</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\fmod_common.h">
+      <Filter>00.System\FMod</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\fmod_dsp.h">
+      <Filter>00.System\FMod</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\fmod_dsp_effects.h">
+      <Filter>00.System\FMod</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\fmod_errors.h">
+      <Filter>00.System\FMod</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\fmod_output.h">
+      <Filter>00.System\FMod</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Sound_Manager.h">
+      <Filter>01.Uitility\08.Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\BoxCollider.h">
+      <Filter>01.Uitility\05.Component\BoxCollider</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Collision_Manager.h">
+      <Filter>01.Uitility\09.Collision</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -281,5 +323,25 @@
     <ClCompile Include="..\Private\Sight.cpp">
       <Filter>01.Uitility\05.Component\Sight</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Sound_Manager.cpp">
+      <Filter>01.Uitility\08.Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BoxCollider.cpp">
+      <Filter>01.Uitility\05.Component\BoxCollider</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Collision_Manager.cpp">
+      <Filter>01.Uitility\09.Collision</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Public\fmod.cs">
+      <Filter>00.System\FMod</Filter>
+    </None>
+    <None Include="..\Public\fmod_dsp.cs">
+      <Filter>00.System\FMod</Filter>
+    </None>
+    <None Include="..\Public\fmod_errors.cs">
+      <Filter>00.System\FMod</Filter>
+    </None>
   </ItemGroup>
 </Project>
