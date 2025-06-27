@@ -86,8 +86,8 @@ void CMonster::Update(_float fTimeDelta)
 
 void CMonster::Late_Update(_float fTimeDelta)
 {
-	m_pGameInstance->Add_RenderGroup(RENDER::NONBLEND, this);
 	m_pAnimationCom->Play_Animation(fTimeDelta / 1.1f);
+	m_pGameInstance->Add_RenderGroup(RENDER::NONBLEND, this);
 }
 
 HRESULT CMonster::Render()

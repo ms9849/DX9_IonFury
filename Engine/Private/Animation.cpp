@@ -38,7 +38,7 @@ _uint CAnimation::Get_Frame_Index()
 
 void CAnimation::Play_Animation(_float fTimeDelta)
 {
-	m_tFrame->fTime += m_tFrame->iEnd * fTimeDelta;
+	m_tFrame->fTime += m_tFrame->iEnd * (fTimeDelta / (((1 / 60.f) * m_tFrame->iFrameSpeed) * m_tFrame->iEnd));
 
 	if (m_tFrame->fTime >= m_tFrame->iEnd)
 	{
