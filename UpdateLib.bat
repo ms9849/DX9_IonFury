@@ -2,5 +2,8 @@
 
 xcopy			/y		.\Engine\Public\*.*					.\EngineSDK\Inc\
 
-xcopy			/y		.\Engine\Bin\Engine.dll				.\Client\Bin\
-xcopy			/y		.\Engine\Bin\Engine.lib				.\EngineSDK\Lib\
+xcopy			/y		.\Engine\Bin\Debug\Engine.dll				.\Client\Bin\Debug\
+xcopy			/y		.\Engine\Bin\Release\Engine.dll				.\Client\Bin\Release\
+
+xcopy			/y		.\Engine\Bin\Debug\Engine.lib				.\EngineSDK\Lib\Debug\
+xcopy			/y		.\Engine\Bin\Release\Engine.lib				.\EngineSDK\Lib\Release\
