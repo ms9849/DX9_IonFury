@@ -58,17 +58,17 @@ private:
 	_float							m_fNear = {};
 	_float							m_fFar = {};
 
-	_float							m_fTimeDelta = {};
 private:
 	_float2							m_vOldMouse = {};
 	_float2							m_fMove = {};
 	_float							m_fSensor = { 0.2f };
 	class CGameObject*				m_pTarget = { nullptr };
+	 _float3							m_vOldCameraLook{};
 
 private:
 	//std::function<void()> m_update;
-	void Camera_Turn(bool isMouseFixCenter);
-	void Chase_Target(_float3 vLimitDistance, bool isSyncLook, bool isCanTurn, bool isMouseFixCenter);
+	void Camera_Turn(bool isMouseFixCenter, _float fTimeDelta);
+	void Chase_Target(_float3 vLimitDistance, bool isSyncLook, bool isCanTurn, bool isMouseFixCenter, _float fTimeDelta);
 
 private:
 	HRESULT Ready_Components(void* pArg);

@@ -34,7 +34,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-	m_pTransformCom->Set_State(STATE::POSITION, _float3(0.f, 0.f, 0.f));
+	m_pTransformCom->Set_State(STATE::POSITION, _float3(500.f, 0.f, 500.f));
 
 	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Player_Hand"),
 		ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player_Right_Hand"))))
@@ -54,31 +54,31 @@ HRESULT CPlayer::Initialize(void* pArg)
 void CPlayer::Priority_Update(_float fTimeDelta)
 {
 
-	if (GetKeyState('W') & 0x8000)
+	if (m_pGameInstance->Key_Pressing('W'))
 	{
 		m_pTransformCom->Go_Straight(fTimeDelta);
 		m_pRightHand->Set_Current_Animation(TEXT("Pistol_Idle"));
 	}
-	if (GetKeyState('S') & 0x8000)
+	if (m_pGameInstance->Key_Pressing('S'))
 	{
 		m_pTransformCom->Go_Backward(fTimeDelta);
 		m_pRightHand->Set_Current_Animation(TEXT("Pistol_Idle"));
 	}
-	if (GetKeyState('A') & 0x8000)
+	if (m_pGameInstance->Key_Pressing('A'))
 	{
 		m_pTransformCom->Go_Left(fTimeDelta);
 		m_pRightHand->Set_Current_Animation(TEXT("Pistol_Idle"));
 	}
-	if (GetKeyState('D') & 0x8000)
+	if (m_pGameInstance->Key_Pressing('D'))
 	{
 		m_pTransformCom->Go_Right(fTimeDelta);
 		m_pRightHand->Set_Current_Animation(TEXT("Pistol_Idle"));
 	}
-	if (GetKeyState('R') & 0x8000)
+	if (m_pGameInstance->Key_Down('R'))
 	{
 		m_pRightHand->Set_Current_Animation(TEXT("Pistol_Reload"));
 	}
-	if (m_pGameInstance->Key_Down(MK_LBUTTON))
+	if (m_pGameInstance->Key_Down(VK_LBUTTON))
 	{
 		m_tInfo.iBullets -= 1;
 		m_pRightHand->Set_Current_Animation(TEXT("Pistol_Shoot"));
@@ -136,9 +136,9 @@ HRESULT CPlayer::Ready_Components()
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
 		return E_FAIL;	
 	/* Com_BoxCollider */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_BoxCollider"),
+	/*if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_BoxCollider"),
 		TEXT("Com_BoxCollider"), reinterpret_cast<CComponent**>(&m_pBoxColliderCom))))
-		return E_FAIL;
+		return E_FAIL;*/
 
 	return S_OK;
 }

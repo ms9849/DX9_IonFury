@@ -60,22 +60,22 @@ void CMonster::Update(_float fTimeDelta)
 	//		int a = 10;
 	//}
 
-	if (m_pSightCom->Check_Sight(fTimeDelta) == 2)
-	{
-		m_strFrameKey = TEXT("Soldier_Back");
-	}
-	else if (m_pSightCom->Check_Sight(fTimeDelta) == 1)
-	{
-		m_strFrameKey = TEXT("Soldier_Front");
-	}
-	else if (m_pSightCom->Check_Sight(fTimeDelta) == 3)
-	{
-		m_strFrameKey = TEXT("Soldier_Rotate");
-	}
-	else if (m_pSightCom->Check_Sight(fTimeDelta) == 4)
-	{
-		m_strFrameKey = TEXT("Soldier_Rotate");
-	}
+	//if (m_pSightCom->Check_Sight(fTimeDelta) == 2)
+	//{
+	//	m_strFrameKey = TEXT("Soldier_Back");
+	//}
+	//else if (m_pSightCom->Check_Sight(fTimeDelta) == 1)
+	//{
+	//	m_strFrameKey = TEXT("Soldier_Front");
+	//}
+	//else if (m_pSightCom->Check_Sight(fTimeDelta) == 3)
+	//{
+	//	m_strFrameKey = TEXT("Soldier_Rotate");
+	//}
+	//else if (m_pSightCom->Check_Sight(fTimeDelta) == 4)
+	//{
+	//	m_strFrameKey = TEXT("Soldier_Rotate");
+	//}
 
 	auto iter = m_Frames.find(m_strFrameKey);
 	m_pAnimationCom->Set_Animation(&iter->second);
