@@ -11,6 +11,7 @@ private:
 	virtual ~CLayer() = default;
 
 public:
+	list<class CGameObject*> Get_GameObjects();
 	class CComponent* Get_Component(const _wstring& strComponentTag, _uint iIndex = 0);
 	class CGameObject* Find_GameObject();
 

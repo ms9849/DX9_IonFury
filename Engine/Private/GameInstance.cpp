@@ -7,6 +7,8 @@
 #include "Timer_Manager.h"
 #include "Renderer.h"
 #include "Key_Manager.h"
+#include "Sound_Manager.h"
+#include "Collision_Manager.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
 
@@ -42,6 +44,14 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& EngineDesc, LPDIRECT
 
 	m_pKey_Manager = CKey_Manager::Create();
 	if (nullptr == m_pKey_Manager)
+		return E_FAIL;
+
+	m_pSound_Manager = CSound_Manager::Create();
+	if (nullptr == m_pSound_Manager)
+		return E_FAIL;
+
+	m_pCollision_Manager = CCollision_Manager::Create();
+	if (nullptr == m_pCollision_Manager)
 		return E_FAIL;
 
 	return S_OK;
@@ -91,6 +101,16 @@ _float CGameInstance::Random_Normal()
 _float CGameInstance::Random(_float fMin, _float fMax)
 {
 	return fMin + Random_Normal() * (fMax - fMin);	
+}
+
+_bool CGameInstance::CCW(_float3 vSrc, _float3 vDst)
+{
+	_float fSum = vSrc.x * vDst.y - vSrc.y * vDst.x;
+
+	if (fSum < 0) 
+		return true;
+
+	return false;
 }
 
 #pragma region GRAPHIC_DEVICE
@@ -166,7 +186,10 @@ CGameObject* CGameInstance::Find_GameObject_ToLayer(_uint iLayerLevelIndex, cons
 	return m_pObject_Manager->Find_GameObject_ToLayer(iLayerLevelIndex, strLayerTag, pArg);
 }
 
-
+CLayer* CGameInstance::Find_Layer(_uint iLayerLevelIndex, const _wstring& strLayerTag)
+{
+	return m_pObject_Manager->Find_Layer(iLayerLevelIndex, strLayerTag);
+}
 #pragma endregion
 
 #pragma region RENDERER
@@ -194,6 +217,41 @@ bool CGameInstance::Key_Down(_uint _iKey)
 {
 	return m_pKey_Manager->Key_Down(_iKey);
 }
+#pragma endregion
+
+#pragma region SOUND_MANAGER
+void CGameInstance::PlaySoundOnce(const TCHAR* pSoundKey, CHANNELID eID, float fVolume)
+{
+	m_pSound_Manager->PlaySoundOnce(pSoundKey, eID, fVolume);
+}
+
+void CGameInstance::PlayBGM(const TCHAR* pSoundKey, float fVolume)
+{
+	m_pSound_Manager->PlayBGM(pSoundKey, fVolume);
+}
+
+void CGameInstance::StopSound(CHANNELID eID)
+{
+	m_pSound_Manager->StopSound(eID);
+}
+
+void CGameInstance::StopAll()
+{
+	m_pSound_Manager->StopAll();
+}
+
+void CGameInstance::SetChannelVolume(CHANNELID eID, float fVolume)
+{
+	m_pSound_Manager->SetChannelVolume(eID, fVolume);
+}
+
+#pragma endregion
+
+#pragma region COLLISION_MANAGER
+void CGameInstance::Check_OBBCollision(const _wstring& strLayerTagSrc, const _wstring& strLayerTagDst, _uint iLayerLevel)
+{
+	m_pCollision_Manager->Check_OBBCollision(strLayerTagSrc, strLayerTagDst, iLayerLevel);
+}
 
 #pragma endregion
 
@@ -208,6 +266,7 @@ void CGameInstance::Release_Engine()
 	Safe_Release(m_pLevel_Manager);
 	Safe_Release(m_pGraphic_Device);
 	Safe_Release(m_pKey_Manager);
+	Safe_Release(m_pSound_Manager);
 }
 
 void CGameInstance::Free()

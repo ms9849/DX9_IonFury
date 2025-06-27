@@ -4,7 +4,7 @@
 
 #include "Level_Loading.h"
 #include "Camera.h"
-
+#include "CubeObject.h"
 /*
 대재훈의 은총 이 얼마나 관대한가
 */
@@ -73,11 +73,18 @@ HRESULT CMainApp::Start_Level(LEVEL eLevelID)
 	if (FAILED(m_pGameInstance->Change_Level(CLevel_Loading::Create(m_pGraphic_Device, LEVEL::LOADING, eLevelID))))
 		return E_FAIL;
 	
+	m_pGameInstance->PlayBGM(L"TEST.mp3", 1.f);
+
 	return S_OK;
 }
 
 HRESULT CMainApp::Ready_Prototypes()
 {
+	/* For.Prototype_Component_BoxCollider*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_BoxCollider"),
+		CBoxCollider::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
 	/* For.Prototype_Component_Transform*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Transform"),
 		CTransform::Create(m_pGraphic_Device))))
@@ -91,6 +98,11 @@ HRESULT CMainApp::Ready_Prototypes()
 	/* For.Prototype_GameObject_Camera */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Camera"),
 		CCamera::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_CubeObject */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_CubeObject"),
+		CCubeObject::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Animation */
