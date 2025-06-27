@@ -73,7 +73,7 @@ HRESULT CMainApp::Start_Level(LEVEL eLevelID)
 	if (FAILED(m_pGameInstance->Change_Level(CLevel_Loading::Create(m_pGraphic_Device, LEVEL::LOADING, eLevelID))))
 		return E_FAIL;
 	
-	m_pGameInstance->PlayBGM(L"TEST.mp3", 1.f);
+	//m_pGameInstance->PlayBGM(L"TEST.mp3", 1.f);
 
 	return S_OK;
 }

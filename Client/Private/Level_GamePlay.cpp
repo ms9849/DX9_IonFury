@@ -136,8 +136,8 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _wstring& strLayerTag)
 	CameraDesc.fFov = D3DXToRadian(60.0f);
 	CameraDesc.fNear = 0.1f;
 	CameraDesc.fFar = 300.f;
-	CameraDesc.vEye = _float3(0.f, 10.f, -10.f);
-	CameraDesc.vAt = _float3(0.f, 0.f, 0.f);
+	CameraDesc.vEye = dynamic_cast<CTransform*>(m_pPlayer->Find_Component(TEXT("Com_Transform")))->Get_State(STATE::POSITION);
+	CameraDesc.vAt = dynamic_cast<CTransform*>(m_pPlayer->Find_Component(TEXT("Com_Transform")))->Get_State(STATE::LOOK);
 	CameraDesc.fSpeedPerSec = 5.f;
 	CameraDesc.fRotationPerSec = D3DXToRadian(90.0f);
 
@@ -149,7 +149,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _wstring& strLayerTag)
 	Safe_AddRef(m_pCamera);
 
 	m_pCamera->Camera_Configure_Clear(m_CameraSettings);
-	m_CameraSettings.pTarget = dynamic_cast<CPlayer*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player")));
+	m_CameraSettings.pTarget = m_pPlayer;
 	m_CameraSettings.isChaseTarget = true;
 	m_CameraSettings.isSyncLook = true;
 	m_CameraSettings.isMouseFixCenter = true;

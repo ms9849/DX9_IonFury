@@ -81,7 +81,6 @@ void CMonster::Update(_float fTimeDelta)
 	m_pAnimationCom->Set_Animation(&iter->second);
 
 	SetUp_OnTerrain(m_pTransformCom, 0.5f);
-	//SetUp_OnTerrain(m_pTransformCom, 0.5f);
 }
 
 void CMonster::Late_Update(_float fTimeDelta)
