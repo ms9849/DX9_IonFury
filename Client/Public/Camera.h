@@ -63,7 +63,7 @@ private:
 	_float2							m_fMove = {};
 	_float							m_fSensor = { 0.2f };
 	class CGameObject*				m_pTarget = { nullptr };
-	 _float3							m_vOldCameraLook{};
+	 _float3						m_vOldCameraLook{};
 
 private:
 	//std::function<void()> m_update;

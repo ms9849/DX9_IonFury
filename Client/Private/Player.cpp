@@ -34,7 +34,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-	m_pTransformCom->Set_State(STATE::POSITION, _float3(500.f, 0.f, 500.f));
+	m_pTransformCom->Set_State(STATE::POSITION, _float3(0.f, 0.f, 0.f));
 
 	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Player_Hand"),
 		ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player_Right_Hand"))))
@@ -136,9 +136,9 @@ HRESULT CPlayer::Ready_Components()
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
 		return E_FAIL;	
 	/* Com_BoxCollider */
-	/*if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_BoxCollider"),
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_BoxCollider"),
 		TEXT("Com_BoxCollider"), reinterpret_cast<CComponent**>(&m_pBoxColliderCom))))
-		return E_FAIL;*/
+		return E_FAIL;
 
 	return S_OK;
 }
