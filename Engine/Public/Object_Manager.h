@@ -23,7 +23,10 @@ public:
 
 	/* 객체 가져오기 */
 	class CGameObject* Find_GameObject_ToLayer(_uint iLayerLevelIndex, const _wstring& strLayerTag, void* pArg);
+	/* 레이어 가져오기 */
+	class CLayer* Find_Layer(_uint iLayerLevelIndex, const _wstring& strLayerTag);
 
+public:
 	void Priority_Update(_float fTimeDelta);
 	void Update(_float fTimeDelta);
 	void Late_Update(_float fTimeDelta);	
@@ -36,8 +39,6 @@ private:
 	map<const _wstring, class CLayer*>* m_pLayers = { nullptr };
 	class CGameInstance*				m_pGameInstance = { nullptr };
 
-private:
-	class CLayer* Find_Layer(_uint iLayerLevelIndex, const _wstring& strLayerTag);
 
 public:
 	static CObject_Manager* Create(_uint iNumLevels);

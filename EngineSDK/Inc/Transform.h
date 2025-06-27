@@ -42,6 +42,7 @@ public:
 	virtual HRESULT Initialize(void* pArg) override;
 
 public:
+	void Add_Pos(const _float3 vSrc);
 	void Set_Scale(const _float3& vScale);
 	void Set_Transform();
 	_float3 Get_Scaled();

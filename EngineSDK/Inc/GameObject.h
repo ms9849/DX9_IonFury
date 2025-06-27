@@ -24,10 +24,14 @@ public:
 		return m_isDead;
 	}
 
+	_uint Get_ID() const {
+		return m_iObjectID;
+	}
+
 	class CComponent* Find_Component(const _wstring& strComponentTag);
 
 protected:
-	int							m_iData;
+	_uint						m_iObjectID = {};
 	LPDIRECT3DDEVICE9			m_pGraphic_Device = { nullptr };
 	class CGameInstance*		m_pGameInstance = { nullptr };
 	_bool						m_isDead = { false };

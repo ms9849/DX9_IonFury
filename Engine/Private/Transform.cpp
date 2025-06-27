@@ -30,6 +30,13 @@ HRESULT CTransform::Initialize(void* pArg)
     return S_OK;
 }
 
+void CTransform::Add_Pos(const _float3 vSrc)
+{
+	_float3 vPos = Get_State(STATE::POSITION);
+	vPos += vSrc;
+	Set_State(STATE::POSITION, vPos);
+}
+
 void CTransform::Set_Scale(const _float3& vScale)
 {
 	_float3		vRight = Get_State(STATE::RIGHT);

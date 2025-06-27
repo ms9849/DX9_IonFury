@@ -6,6 +6,7 @@
 
 NS_BEGIN(Engine)
 //class CTexture;
+class CBoxCollider;
 class CTransform;
 class CVIBuffer_Rect;
 NS_END
@@ -40,7 +41,7 @@ private:
 	//CTexture*				m_pTextureCom = { nullptr };
 	CTransform*				m_pTransformCom = { nullptr };	
 	CVIBuffer_Rect*			m_pVIBufferCom = { nullptr };
-	
+	CBoxCollider*			m_pBoxColliderCom = { nullptr };
 private:
 	HRESULT Ready_Components();
 	HRESULT Begin_RenderState();
