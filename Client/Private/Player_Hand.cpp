@@ -103,11 +103,11 @@ void CPlayer_Hand::Late_Update(_float fTimeDelta)
 	m_pTransformCom->Set_State(STATE::LOOK, *(_float3 *)&CameraMatrix.m[2][0]);
 	m_pTransformCom->Set_State(STATE::POSITION, vHandPos);
 
-	m_pGameInstance->Add_RenderGroup(RENDER::BLEND, this);
-
 	// 애니메이션 프레임 증가
 	// 프레임 전체 런타임 -> 상수로 제어해서 처리하기
-	 m_pAnimationCom->Play_Animation(fTimeDelta / 1.1f);
+	m_pAnimationCom->Play_Animation(fTimeDelta);
+
+	m_pGameInstance->Add_RenderGroup(RENDER::BLEND, this);
 }
 
 HRESULT CPlayer_Hand::Render()
@@ -223,6 +223,7 @@ HRESULT CPlayer_Hand::Ready_Animations()
 	// Pistol_Shoot
 	iter = m_pTextureComs.find(TEXT("Pistol_Shoot"));
 	Desc.iEnd = iter->second->Get_Texture_Length();
+	Desc.iFrameSpeed = 4;
 	m_Frames.emplace(TEXT("Pistol_Shoot"), Desc);
 
 	return S_OK;
