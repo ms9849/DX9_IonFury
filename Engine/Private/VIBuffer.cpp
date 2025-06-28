@@ -1,5 +1,7 @@
 #include "VIBuffer.h"
 
+#include "GameInstance.h"
+
 CVIBuffer::CVIBuffer(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CComponent { pGraphic_Device }
 {

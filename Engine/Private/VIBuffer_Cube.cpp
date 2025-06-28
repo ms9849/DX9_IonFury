@@ -61,7 +61,7 @@ HRESULT CVIBuffer_Cube::Initialize_Prototype()
 	if (FAILED(m_pGraphic_Device->CreateIndexBuffer(m_iIndexStride * m_iNumIndices, 0, m_eIndexFormat, D3DPOOL_MANAGED, &m_pIB, nullptr)))
 		return E_FAIL;
 
-	
+
 	_ushort* pIndices = { nullptr };
 
 	m_pIB->Lock(0, 0, reinterpret_cast<void**>(&pIndices), 0);
@@ -100,6 +100,54 @@ HRESULT CVIBuffer_Cube::Initialize(void* pArg)
 	return S_OK;
 }
 
+_bool CVIBuffer_Cube::Picking(CTransform* pTransform, _float3* pOut, _float3 vPos, _float3 vLook)
+{
+	_bool bPicked = false;
+	_float3 vClosestPoint = {};
+	_float fMinDist = FLT_MAX;
+
+	const _uint iNumTriangles = 12;
+	const _ushort Indices[36] = {
+		1, 5, 6,  1, 6, 2,
+		4, 0, 3,  4, 3, 7,
+		4, 5, 1,  4, 1, 0,
+		3, 2, 6,  3, 6, 7,
+		5, 4, 7,  5, 7, 6,
+		0, 1, 2,  0, 2, 3
+	};
+
+	for (_uint i = 0; i < iNumTriangles; ++i)
+	{
+		const _float3& v0 = m_pVertexPositions[Indices[i * 3]];
+		const _float3& v1 = m_pVertexPositions[Indices[i * 3 + 1]];
+		const _float3& v2 = m_pVertexPositions[Indices[i * 3 + 2]];
+
+		_float3 vTempOut;
+		if (m_pGameInstance->Picking_InLocalSpace(pTransform->Get_WorldMatrixInvPtr(), vPos, vLook, v0, v1, v2, &vTempOut))
+		{
+			_float3 vWorldOut;
+			D3DXVec3TransformCoord(&vWorldOut, &vTempOut, pTransform->Get_WorldMatrixPtr());
+
+			_float3 vDir = vWorldOut - vPos;
+			_float fLen = D3DXVec3Length(&vDir);
+
+			if (fLen < fMinDist)
+			{
+				fMinDist = fLen;
+				vClosestPoint = vWorldOut;
+				bPicked = true;
+			}
+		}
+	}
+
+	if (bPicked)
+	{
+		*pOut = vClosestPoint;
+	}
+
+	return bPicked;
+}
+
 CVIBuffer_Cube* CVIBuffer_Cube::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 {
 	CVIBuffer_Cube* pInstance = new CVIBuffer_Cube(pGraphic_Device);
@@ -129,6 +177,4 @@ CComponent* CVIBuffer_Cube::Clone(void* pArg)
 void CVIBuffer_Cube::Free()
 {
 	__super::Free();
-
-
 }

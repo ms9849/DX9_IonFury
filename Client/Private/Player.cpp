@@ -82,6 +82,7 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 	{
 		m_tInfo.iBullets -= 1;
 		m_pRightHand->Set_Current_Animation(TEXT("Pistol_Shoot"));
+		Calc_BulletDir();
 	}
 }
 
@@ -175,6 +176,38 @@ HRESULT CPlayer::End_RenderState()
 	m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
 
 	return S_OK;
+}
+
+void CPlayer::Calc_BulletDir()
+{
+	/*
+	1번, 룩 벡터를 가져온다 O
+
+	2번, 콜리전 매니저에 넘겨줘서 가장 가까운 충돌 지점을 찾는다
+
+	3번, 충돌 지점의 포인트를 받아온다
+
+	4번, 해당 포인트 -  위치 + Look + right 아주조금 해서 총알 생성
+
+	5번 충돌 지점의 포인트로 가는 방향 벡터로 발사 시킨다
+	*/
+
+	_float3 vCollisionPos{};
+	/*
+	현재 레벨의 아이디 가져올 방법을 떠올릴 것
+	*/
+	_float4x4 m_matView, m_matViewInv;
+
+	m_pGraphic_Device->GetTransform(D3DTS_VIEW, &m_matView);
+	D3DXMatrixInverse(&m_matViewInv, nullptr, &m_matView);
+
+	_float3 vCamPos = { m_matViewInv._41, m_matViewInv._42, m_matViewInv._43 };
+	_float3 vCamLook = { m_matViewInv._31, m_matViewInv._32, m_matViewInv._33 };
+
+	D3DXVec3Normalize(&vCamLook, &vCamLook);
+	m_pGameInstance->Check_LookCollision(vCamPos, vCamLook, TEXT("Layer_Cube"), ENUM_CLASS(LEVEL::GAMEPLAY), &vCollisionPos);
+	
+	int a = 10;
 }
 
 CPlayer* CPlayer::Create(LPDIRECT3DDEVICE9 pGraphic_Device)

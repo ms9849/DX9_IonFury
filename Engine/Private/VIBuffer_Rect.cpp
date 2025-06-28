@@ -81,6 +81,23 @@ HRESULT CVIBuffer_Rect::Initialize(void* pArg)
 	return S_OK;
 }
 
+_bool CVIBuffer_Rect::Picking(CTransform* pTransform, _float3* pOut, _float3 vPos, _float3 vLook)
+{
+	if (true == m_pGameInstance->Picking_InLocalSpace(pTransform->Get_WorldMatrixInvPtr(), vPos, vLook, m_pVertexPositions[0], m_pVertexPositions[1], m_pVertexPositions[2], pOut))
+	{
+		D3DXVec3TransformCoord(pOut, pOut, pTransform->Get_WorldMatrixPtr());
+		return true;
+	}
+
+	if (true == m_pGameInstance->Picking_InLocalSpace(pTransform->Get_WorldMatrixInvPtr(), vPos, vLook, m_pVertexPositions[0], m_pVertexPositions[2], m_pVertexPositions[3], pOut))
+	{
+		D3DXVec3TransformCoord(pOut, pOut, pTransform->Get_WorldMatrixPtr());
+		return true;
+	}
+
+	return false;
+}
+
 CVIBuffer_Rect* CVIBuffer_Rect::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 {
 	CVIBuffer_Rect* pInstance = new CVIBuffer_Rect(pGraphic_Device);
