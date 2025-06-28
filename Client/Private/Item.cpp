@@ -25,7 +25,11 @@ HRESULT CItem::Initialize(void* pArg)
 
 	if (FAILED(__super::Initialize(&Desc)))
 		return E_FAIL;
-	
+
+	/* Com_SphereCollider*/
+	if (FAILED(Ready_Collider()))
+		return E_FAIL;
+
 	return S_OK;
 }
 
