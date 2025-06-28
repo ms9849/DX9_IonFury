@@ -266,6 +266,10 @@ void CGameInstance::Check_LookCollision(_float3 vPos, _float3 vLook, const _wstr
 {
 	m_pCollision_Manager->Check_LookCollision(vPos, vLook, strLayerTagDst, iLayerLevel, vColisionPos);
 }
+void CGameInstance::Check_SphereCollision(const _wstring& strLayerTagSrc, const _wstring& strLayerTagDst, _uint iLayerLevel)
+{
+	m_pCollision_Manager->Check_SphereCollision(strLayerTagSrc, strLayerTagDst, iLayerLevel);
+}
 #pragma endregion 
 
 #pragma region PICKING

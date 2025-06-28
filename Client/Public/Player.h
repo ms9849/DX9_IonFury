@@ -6,6 +6,7 @@
 
 NS_BEGIN(Engine)
 //class CTexture;
+class CSphereCollider;
 class CBoxCollider;
 class CTransform;
 class CVIBuffer_Rect;
@@ -42,11 +43,13 @@ private:
 	CTransform*				m_pTransformCom = { nullptr };	
 	CVIBuffer_Rect*			m_pVIBufferCom = { nullptr };
 	CBoxCollider*			m_pBoxColliderCom = { nullptr };
+	CSphereCollider*		m_pSphereColliderCom = { nullptr };
+
 private:
 	HRESULT Ready_Components();
 	HRESULT Begin_RenderState();
 	HRESULT End_RenderState();
-	_float3 Calc_BulletDir();
+	_float3 Calc_BulletDir(_float3* vOffset);
 
 private:
 	PLAYER_INFO		m_tInfo{};
@@ -54,6 +57,9 @@ private:
 	CPlayer_Hand*	m_pLeftHand{ nullptr };
 	_uint			m_iCurrentAnimation{};
 
+public:
+	virtual void OnCollision(CGameObject* pDst, COLLISION eColType) override;
+	
 public:
 	static CPlayer* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
 	virtual CGameObject* Clone(void* pArg) override;

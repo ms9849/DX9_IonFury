@@ -79,6 +79,10 @@ HRESULT CItemArmor::Render()
 
 HRESULT CItemArmor::Ready_Components()
 {
+	/* Com_SphereCollider*/
+	if(FAILED(__super::Ready_Collider()))
+		return E_FAIL;
+
 	/* Com_Transform */
 	CTransform::TRANSFORM_DESC		TransformDesc{ 5.f, D3DXToRadian(90.0f) };
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Transform"),
@@ -117,6 +121,12 @@ HRESULT CItemArmor::End_RenderState()
 	m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
 
 	return S_OK;
+}
+
+void CItemArmor::OnCollision(CGameObject* pDst, COLLISION eColType)
+{
+	if (eColType == COLLISION::SPHERE)
+		int a = 10;
 }
 
 CItemArmor* CItemArmor::Create(LPDIRECT3DDEVICE9 pGraphic_Device)

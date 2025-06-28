@@ -106,6 +106,9 @@
     <Filter Include="01.Uitility\09.Collision">
       <UniqueIdentifier>{4ca02e40-4ddf-4adc-b9ea-26a7b8281ea1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Uitility\05.Component\SphereCollider">
+      <UniqueIdentifier>{71f8cbf4-0fe9-4a9d-a167-ff18adbd921a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -240,6 +243,9 @@
     <ClInclude Include="..\Public\Collision_Manager.h">
       <Filter>01.Uitility\09.Collision</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\SphereCollider.h">
+      <Filter>01.Uitility\05.Component\SphereCollider</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -331,6 +337,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Collision_Manager.cpp">
       <Filter>01.Uitility\09.Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SphereCollider.cpp">
+      <Filter>01.Uitility\05.Component\SphereCollider</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

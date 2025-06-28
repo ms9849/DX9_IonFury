@@ -12,6 +12,12 @@ protected:
 	virtual ~CGameObject() = default;
 
 public:
+	/*
+	충돌한 상대 객체와, 충돌 타입을 리턴
+	*/
+	virtual void OnCollision(CGameObject* pDst, COLLISION eColType);
+
+public:
 	virtual HRESULT Initialize_Prototype();
 	virtual HRESULT Initialize(void* pArg);
 	virtual void Priority_Update(_float fTimeDelta);

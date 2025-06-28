@@ -4,6 +4,7 @@
 #include "LandObject.h"
 
 NS_BEGIN(Engine)
+class CSphereCollider;
 class CTexture;
 class CTransform;
 class CVIBuffer_Rect;
@@ -31,6 +32,7 @@ protected:
     CTransform* m_pTransformCom = { nullptr };
     CTransform* m_pPlayerTransformCom = { nullptr };
     CVIBuffer_Rect* m_pVIBufferCom = { nullptr };
+    CSphereCollider* m_pSphereColliderCom = { nullptr };
 
     bool    _isGoUp{ false };
     _float  m_fItemOriginPosY{};
@@ -40,6 +42,9 @@ protected:
     virtual HRESULT Begin_RenderState();
     virtual HRESULT End_RenderState();
     void Item_Animation(_float fTimeDelta);
+
+protected:
+    virtual HRESULT Ready_Collider();
 
 protected:
     //static CItem* Create(LPDIRECT3DDEVICE9 pGraphic_Device);

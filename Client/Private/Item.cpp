@@ -1,4 +1,5 @@
 #include "Item.h"
+
 #include "GameInstance.h"
 
 CItem::CItem(LPDIRECT3DDEVICE9 pGraphic_Device)
@@ -75,4 +76,13 @@ void CItem::Item_Animation(_float fTimeDelta)
 	}
 
 	m_pTransformCom->Set_State(STATE::POSITION, vItemPos);
+}
+
+HRESULT CItem::Ready_Collider()
+{
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_SphereCollider"),
+		TEXT("Com_SphereCollider"), reinterpret_cast<CComponent**>(&m_pSphereColliderCom))))
+		return E_FAIL;
+
+	return S_OK;
 }
