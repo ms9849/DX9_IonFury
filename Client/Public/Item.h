@@ -1,0 +1,50 @@
+#pragma once  
+
+#include "Client_Defines.h"  
+#include "LandObject.h"
+
+NS_BEGIN(Engine)
+class CTexture;
+class CTransform;
+class CVIBuffer_Rect;
+NS_END
+
+NS_BEGIN(Client)
+
+class CItem abstract : public CLandObject
+{
+protected:
+    CItem(LPDIRECT3DDEVICE9 pGraphic_Device);
+    CItem(const CItem& Prototype);
+    virtual ~CItem() = default;
+
+protected:
+    virtual HRESULT Initialize_Prototype() override;
+    virtual HRESULT Initialize(void* pArg) override;
+    virtual void Priority_Update(_float fTimeDelta);
+    virtual void Update(_float fTimeDelta);
+    virtual void Late_Update(_float fTimeDelta);
+    virtual HRESULT Render();
+
+protected:
+    CTexture* m_pTextureCom = { nullptr };  
+    CTransform* m_pTransformCom = { nullptr };
+    CTransform* m_pPlayerTransformCom = { nullptr };
+    CVIBuffer_Rect* m_pVIBufferCom = { nullptr };
+
+    bool    _isGoUp{ false };
+    _float  m_fItemOriginPosY{};
+
+protected:
+    virtual HRESULT Ready_Components();
+    virtual HRESULT Begin_RenderState();
+    virtual HRESULT End_RenderState();
+    void Item_Animation(_float fTimeDelta);
+
+protected:
+    //static CItem* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
+    virtual CGameObject* Clone(void* pArg) = 0;
+    virtual void Free() {};
+};
+
+NS_END

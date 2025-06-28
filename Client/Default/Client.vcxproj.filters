@@ -79,6 +79,12 @@
     <Filter Include="02.GameObjects\Bullet">
       <UniqueIdentifier>{3050aedd-db94-46b6-9d3d-db15797f109d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\Item">
+      <UniqueIdentifier>{a4a9212a-30c1-4320-8b70-da1cdbf22e59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Item\ItemArmor">
+      <UniqueIdentifier>{d2d7d8ed-e494-4def-b127-8a8ebb2a844b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -158,6 +164,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\Bullet.h">
       <Filter>02.GameObjects\Bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Item.h">
+      <Filter>02.GameObjects\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ItemArmor.h">
+      <Filter>02.GameObjects\Item\ItemArmor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -239,6 +251,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Bullet.cpp">
       <Filter>02.GameObjects\Bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Item.cpp">
+      <Filter>02.GameObjects\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ItemArmor.cpp">
+      <Filter>02.GameObjects\Item\ItemArmor</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
