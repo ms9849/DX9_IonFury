@@ -54,31 +54,31 @@ HRESULT CPlayer::Initialize(void* pArg)
 void CPlayer::Priority_Update(_float fTimeDelta)
 {
 
-	if (GetKeyState('W') & 0x8000)
+	if (m_pGameInstance->Key_Pressing('W'))
 	{
 		m_pTransformCom->Go_Straight(fTimeDelta);
 		m_pRightHand->Set_Current_Animation(TEXT("Pistol_Idle"));
 	}
-	if (GetKeyState('S') & 0x8000)
+	if (m_pGameInstance->Key_Pressing('S'))
 	{
 		m_pTransformCom->Go_Backward(fTimeDelta);
 		m_pRightHand->Set_Current_Animation(TEXT("Pistol_Idle"));
 	}
-	if (GetKeyState('A') & 0x8000)
+	if (m_pGameInstance->Key_Pressing('A'))
 	{
 		m_pTransformCom->Go_Left(fTimeDelta);
 		m_pRightHand->Set_Current_Animation(TEXT("Pistol_Idle"));
 	}
-	if (GetKeyState('D') & 0x8000)
+	if (m_pGameInstance->Key_Pressing('D'))
 	{
 		m_pTransformCom->Go_Right(fTimeDelta);
 		m_pRightHand->Set_Current_Animation(TEXT("Pistol_Idle"));
 	}
-	if (GetKeyState('R') & 0x8000)
+	if (m_pGameInstance->Key_Down('R'))
 	{
 		m_pRightHand->Set_Current_Animation(TEXT("Pistol_Reload"));
 	}
-	if (m_pGameInstance->Key_Down(MK_LBUTTON))
+	if (m_pGameInstance->Key_Down(VK_LBUTTON))
 	{
 		m_tInfo.iBullets -= 1;
 		m_pRightHand->Set_Current_Animation(TEXT("Pistol_Shoot"));

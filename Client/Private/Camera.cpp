@@ -74,27 +74,24 @@ HRESULT CCamera::Initialize(void* pArg)
 
 void CCamera::Priority_Update(_float fTimeDelta)
 {
-	m_fTimeDelta = fTimeDelta;
 	m_pGraphic_Device->SetTransform(D3DTS_VIEW, m_pTransformCom->Get_WorldMatrixInvPtr());
 	m_pGraphic_Device->SetTransform(D3DTS_PROJECTION, D3DXMatrixPerspectiveFovLH(&m_ProjMatrix, m_fFov, m_fAspect, m_fNear, m_fFar));
 }
 
 void CCamera::Update(_float fTimeDelta)
 {
-	m_fTimeDelta = fTimeDelta;
-
 	if (m_pCameraConfig.pTarget)
 	{
 		if (m_pCameraConfig.isChaseTarget)
 		{
-			Chase_Target(m_pCameraConfig.vLimitDistance, m_pCameraConfig.isSyncLook, m_pCameraConfig.isCanTurn, m_pCameraConfig.isMouseFixCenter);
+			Chase_Target(m_pCameraConfig.vLimitDistance, m_pCameraConfig.isSyncLook, m_pCameraConfig.isCanTurn, m_pCameraConfig.isMouseFixCenter, fTimeDelta);
 		}
 	}
 	else
 	{
 		if (m_pCameraConfig.isCanTurn)
 		{
-			Camera_Turn(m_pCameraConfig.isMouseFixCenter);
+			Camera_Turn(m_pCameraConfig.isMouseFixCenter, fTimeDelta);
 		}
 	}
 
@@ -119,7 +116,7 @@ HRESULT CCamera::Render()
 	return S_OK;
 }
 
-void CCamera::Camera_Turn(bool isMouseFixCenter)
+void CCamera::Camera_Turn(bool isMouseFixCenter, _float fTimeDelta)
 {
 	POINT		ptMouse{};
 
@@ -127,7 +124,6 @@ void CCamera::Camera_Turn(bool isMouseFixCenter)
 	{
 		GetCursorPos(&ptMouse);
 		SetCursorPos(g_iWinSizeX * 0.5f, g_iWinSizeY * 0.5f);
-		//GetCursorPos(&ptMouse);
 
 		m_fMove = { (_float)ptMouse.x - g_iWinSizeX * 0.5f, (_float)ptMouse.y - g_iWinSizeY * 0.5f };
 	}
@@ -139,18 +135,63 @@ void CCamera::Camera_Turn(bool isMouseFixCenter)
 		m_fMove = { (_float)ptMouse.x - m_vOldMouse.x, (_float)ptMouse.y - m_vOldMouse.y};
 	}
 
-	// 이게 카메라 회전
-	m_pTransformCom->Turn(_float3{0.f, 1.f, 0.f}, m_fTimeDelta * m_fMove.x * m_fSensor);
-	m_pTransformCom->Turn(m_pTransformCom->Get_State(STATE::RIGHT), m_fTimeDelta * m_fMove.y * m_fSensor);
+	m_pTransformCom->Turn(_float3{0.f, 1.f, 0.f}, fTimeDelta * m_fMove.x * m_fSensor);
+	m_pTransformCom->Turn(m_pTransformCom->Get_State(STATE::RIGHT), fTimeDelta * m_fMove.y * m_fSensor);
+
+	// 카메라 회전 제한
+	/*_float3 vStd{ 0.f, 1.f, 0.f };
+	_float3 vCameraLook = m_pTransformCom->Get_State(STATE::LOOK);
+
+	D3DXVec3Normalize(&vCameraLook, &vCameraLook);
+	_float fDot = D3DXVec3Dot(&vStd, &vCameraLook);
+
+	_float3 vCross{};
+	D3DXVec3Cross(&vCross, &vStd, &vCameraLook);
+	D3DXVec3Normalize(&vCross, &vCross);
+
+	if (fDot < 0.8f && fDot > -0.8f)
+	{
+		m_pTransformCom->Turn(m_pTransformCom->Get_State(STATE::RIGHT), fTimeDelta * m_fMove.y * m_fSensor);
+		m_vOldCameraLook = vCameraLook;
+	}
+	else
+	{
+		if (fDot > 0.8f && m_fMove.y > 0)
+		{
+			m_pTransformCom->Set_State(STATE::LOOK, m_vOldCameraLook);
+		}
+		else if (fDot < -0.8f && m_fMove.y < 0)
+		{
+			m_pTransformCom->Set_State(STATE::LOOK, m_vOldCameraLook);
+		}
+	}*/
+
+	//// 차원이동
+	//if (vCross.y > 0)
+	//{
+	//	if (vCameraLook.y > 0.9f)
+	//	{
+	//		vCameraLook.y = 0.8f;
+	//		vCameraLook *= vCameraLookLength;
+	//		m_pTransformCom->Set_State(STATE::LOOK, vCameraLook);
+	//	}
+	//	else if (vCameraLook.y < -0.9f)
+	//	{
+	//		vCameraLook.y = -0.8f;
+	//		vCameraLook *= vCameraLookLength;
+	//		m_pTransformCom->Set_State(STATE::LOOK, vCameraLook);
+	//	}
+	//}
+		
 	
 	m_vOldMouse = _float2(ptMouse.x, ptMouse.y);
 }
 
-void CCamera::Chase_Target(_float3 vLimitDistance, bool isSyncLook, bool isCanTurn, bool isMouseFixCenter)
+void CCamera::Chase_Target(_float3 vLimitDistance, bool isSyncLook, bool isCanTurn, bool isMouseFixCenter, _float fTimeDelta)
 {
 	if (isCanTurn)
 	{		
-		Camera_Turn(isMouseFixCenter);
+		Camera_Turn(isMouseFixCenter, fTimeDelta);
 
 		if (isSyncLook)
 		{
@@ -160,8 +201,10 @@ void CCamera::Chase_Target(_float3 vLimitDistance, bool isSyncLook, bool isCanTu
 			//m_pTransformCom->Set_State(STATE::RIGHT, pTargetTransform->Get_State(STATE::RIGHT));
 
 			// 이게 카메라에 의한 플레이어 회전
-			m_pTargetTransformCom->Turn(_float3{ 0.f, 1.f, 0.f }, m_fTimeDelta * m_fMove.x * m_fSensor);
-			m_pTargetTransformCom->Turn(m_pTargetTransformCom->Get_State(STATE::RIGHT), m_fTimeDelta * m_fMove.y * m_fSensor);
+			//m_pTargetTransformCom->Turn(_float3{ 0.f, 1.f, 0.f }, fTimeDelta * m_fMove.x * m_fSensor);
+			//m_pTargetTransformCom->Turn(m_pTargetTransformCom->Get_State(STATE::RIGHT), fTimeDelta * m_fMove.y * m_fSensor);
+
+			m_pTargetTransformCom->Set_State(STATE::LOOK, m_pTransformCom->Get_State(STATE::LOOK));
 		}
 	}
 
