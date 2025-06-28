@@ -14,6 +14,13 @@ NS_END
 
 NS_BEGIN(Client)
 
+enum class MonsterState {
+	FRONT,
+	BACK,
+	ROTATE,
+	MOVE,
+};
+
 class CMonster final : public CLandObject
 {
 private:

@@ -53,6 +53,11 @@ void CTransform::Set_Transform()
 	m_pGraphic_Device->SetTransform(D3DTS_WORLD, &m_WorldMatrix);
 }
 
+void CTransform::Set_Transform(const _float4x4& matWorld)
+{
+	m_pGraphic_Device->SetTransform(D3DTS_WORLD, &matWorld);
+}
+
 _float3 CTransform::Get_Scaled()
 {
 	_float3		vRight = Get_State(STATE::RIGHT);

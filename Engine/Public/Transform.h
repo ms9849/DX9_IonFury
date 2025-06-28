@@ -45,6 +45,10 @@ public:
 	void Add_Pos(const _float3 vSrc);
 	void Set_Scale(const _float3& vScale);
 	void Set_Transform();
+	/*
+	* 자기 자신의 월드 행렬이 아니라 임의로 받아온 월드 행렬로 세팅
+	*/
+	void Set_Transform(const _float4x4& matWorld);
 	_float3 Get_Scaled();
 	
 
