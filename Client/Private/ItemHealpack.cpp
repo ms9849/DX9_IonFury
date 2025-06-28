@@ -1,22 +1,22 @@
-#include "ItemArmor.h"
+#include "ItemHealpack.h"
 #include "GameInstance.h"
 
-CItemArmor::CItemArmor(LPDIRECT3DDEVICE9 pGraphic_Device)
+CItemHealpack::CItemHealpack(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CItem{ pGraphic_Device }
 {
 }
 
-CItemArmor::CItemArmor(const CItemArmor& Prototype)
+CItemHealpack::CItemHealpack(const CItemHealpack& Prototype)
 	: CItem{ Prototype }
 {
 }
 
-HRESULT CItemArmor::Initialize_Prototype()
+HRESULT CItemHealpack::Initialize_Prototype()
 {
 	return S_OK;
 }
 
-HRESULT CItemArmor::Initialize(void* pArg)
+HRESULT CItemHealpack::Initialize(void* pArg)
 {
 	CLandObject::LANDOBJECT_DESC			Desc{};
 	Desc.pLandTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_BackGround"), TEXT("Com_Transform")));
@@ -28,7 +28,7 @@ HRESULT CItemArmor::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-	m_pTransformCom->Set_State(STATE::POSITION, _float3(25.f, 0.f, 5.f));
+	m_pTransformCom->Set_State(STATE::POSITION, _float3(20.f, 0.f, 3.f));
 
 	SetUp_OnTerrain(m_pTransformCom, 0.5f);
 
@@ -40,27 +40,27 @@ HRESULT CItemArmor::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CItemArmor::Priority_Update(_float fTimeDelta)
+void CItemHealpack::Priority_Update(_float fTimeDelta)
 {
 }
 
-void CItemArmor::Update(_float fTimeDelta)
+void CItemHealpack::Update(_float fTimeDelta)
 {
 	Item_Animation(fTimeDelta);
 	m_pTransformCom->LookAt(m_pPlayerTransformCom->Get_State(STATE::POSITION));
 }
 
-void CItemArmor::Late_Update(_float fTimeDelta)
+void CItemHealpack::Late_Update(_float fTimeDelta)
 {
 	//// 애니메이션 프레임 증가
 	//// 프레임 전체 런타임 -> 상수로 제어해서 처리하기
 	//m_pAnimationCom->Play_Animation(fTimeDelta);
 
 
- 	m_pGameInstance->Add_RenderGroup(RENDER::BLEND, this);
+	m_pGameInstance->Add_RenderGroup(RENDER::BLEND, this);
 }
 
-HRESULT CItemArmor::Render()
+HRESULT CItemHealpack::Render()
 {
 	m_pTransformCom->Set_Transform();
 
@@ -77,7 +77,7 @@ HRESULT CItemArmor::Render()
 	return S_OK;
 }
 
-HRESULT CItemArmor::Ready_Components()
+HRESULT CItemHealpack::Ready_Components()
 {
 	/* Com_Transform */
 	CTransform::TRANSFORM_DESC		TransformDesc{ 5.f, D3DXToRadian(90.0f) };
@@ -86,7 +86,7 @@ HRESULT CItemArmor::Ready_Components()
 		return E_FAIL;
 
 	/* Com_Texture */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Item_Armor_0"),
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Item_Healpack_0"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
@@ -98,7 +98,7 @@ HRESULT CItemArmor::Ready_Components()
 	return S_OK;
 }
 
-HRESULT CItemArmor::Begin_RenderState()
+HRESULT CItemHealpack::Begin_RenderState()
 {
 	/* 알파 테스트 : 픽셀의 알파를 비교해서 그린다 안그린다를 설정. */
 	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
@@ -110,7 +110,7 @@ HRESULT CItemArmor::Begin_RenderState()
 	return S_OK;
 }
 
-HRESULT CItemArmor::End_RenderState()
+HRESULT CItemHealpack::End_RenderState()
 {
 	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 
@@ -119,9 +119,9 @@ HRESULT CItemArmor::End_RenderState()
 	return S_OK;
 }
 
-CItemArmor* CItemArmor::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
+CItemHealpack* CItemHealpack::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 {
-	CItemArmor* pInstance = new CItemArmor(pGraphic_Device);
+	CItemHealpack* pInstance = new CItemHealpack(pGraphic_Device);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
@@ -132,20 +132,20 @@ CItemArmor* CItemArmor::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 	return pInstance;
 }
 
-CGameObject* CItemArmor::Clone(void* pArg)
+CGameObject* CItemHealpack::Clone(void* pArg)
 {
-	CItemArmor* pInstance = new CItemArmor(*this);
+	CItemHealpack* pInstance = new CItemHealpack(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Cloned : CItemArmor");
+		MSG_BOX("Failed to Cloned : CItemHealpack");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CItemArmor::Free()
+void CItemHealpack::Free()
 {
 	__super::Free();
 
