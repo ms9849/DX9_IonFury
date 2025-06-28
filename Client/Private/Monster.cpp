@@ -1,6 +1,7 @@
 #include "Monster.h"
 
 #include "GameInstance.h"
+#include "Bullet.h"
 
 CMonster::CMonster(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CLandObject{ pGraphic_Device }
@@ -56,7 +57,15 @@ void CMonster::Priority_Update(_float fTimeDelta)
 
 void CMonster::Update(_float fTimeDelta)
 {
-
+	if (m_fAccumulation > m_fCoolTime)
+	{
+		Attack();
+		m_fAccumulation = 0.f;
+	}
+	else
+	{
+		m_fAccumulation += fTimeDelta;
+	}
 	m_pSightCom->Check_Sight(fTimeDelta);
 	_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
 	vDiff.y = 0.f;
@@ -270,6 +279,20 @@ HRESULT CMonster::End_RenderState()
 	m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
 
 	return S_OK;
+}
+
+void CMonster::Attack()
+{
+	_float3 vDir = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
+	_float3 vPos = m_pTransformCom->Get_State(STATE::POSITION);
+	D3DXVec3Normalize(&vDir, &vDir);
+
+	CBullet::BULLET_DESC Desc;
+	Desc.vDir = vDir;
+	Desc.vPos = vPos;
+
+	m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Bullet"),
+		ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Bullet"), &Desc);
 }
 
 CMonster* CMonster::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
