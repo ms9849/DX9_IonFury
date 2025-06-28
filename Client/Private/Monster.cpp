@@ -43,6 +43,9 @@ HRESULT CMonster::Initialize(void* pArg)
 		0.f, 
 		m_pGameInstance->Random(0.f, 20.f)));
 
+	//m_pTransformCom->Rotation({0.f, 1.f, 0.f}, m_pGameInstance->Random(0.f, 180.f));
+	//m_pTransformCom->LookAt(m_pPlayerTransform->Get_State(STATE::POSITION));
+
 	return S_OK;
 }
 
@@ -53,32 +56,54 @@ void CMonster::Priority_Update(_float fTimeDelta)
 
 void CMonster::Update(_float fTimeDelta)
 {
-	//if (GetKeyState(VK_LBUTTON) & 0x8000)
-	//{
-	//	_float3		vOut;
-	//	if (true == m_pVIBufferCom->Picking(m_pTransformCom, &vOut))
-	//		int a = 10;
-	//}
 
-	if (m_pSightCom->Check_Sight(fTimeDelta) == 2)
+	m_pSightCom->Check_Sight(fTimeDelta);
+	_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
+	vDiff.y = 0.f;
+	D3DXVec3Normalize(&vDiff, &vDiff); // 정규화 필수
+
+	_float3 vMonsterLook = m_pTransformCom->Get_State(STATE::LOOK);
+	vMonsterLook.y = 0.f;
+	D3DXVec3Normalize(&vMonsterLook, &vMonsterLook);
+
+	// 내적: 각도용
+	_float dot = D3DXVec3Dot(&vMonsterLook, &vDiff);
+	dot = max(-1.f, min(1.f, dot)); // 안전 보정
+
+	// 외적: 왼쪽/오른쪽 판별
+	_float3 vCross;
+	D3DXVec3Cross(&vCross, &vMonsterLook, &vDiff);
+
+	// 시야각 90도 (45도 양방향)
+	_float fFov = cosf(D3DXToRadian(45.f));
+
+	if (vCross.y > 0)
 	{
-		m_strFrameKey = TEXT("Soldier_Back");
+		// 오른쪽
+		if (dot >= fFov)
+			m_strFrameKey = TEXT("Soldier_Front");
+		else if (dot > 0.f)
+			m_strFrameKey = TEXT("Soldier_Rotate");
+		else
+			m_strFrameKey = TEXT("Soldier_Back");
 	}
-	else if (m_pSightCom->Check_Sight(fTimeDelta) == 1)
+	else
 	{
-		m_strFrameKey = TEXT("Soldier_Front");
-	}
-	else if (m_pSightCom->Check_Sight(fTimeDelta) == 3)
-	{
-		m_strFrameKey = TEXT("Soldier_Rotate");
-	}
-	else if (m_pSightCom->Check_Sight(fTimeDelta) == 4)
-	{
-		m_strFrameKey = TEXT("Soldier_Rotate");
+		// 왼쪽
+		if (dot >= fFov)
+			m_strFrameKey = TEXT("Soldier_Front");
+		else if (dot > 0.f)
+			m_strFrameKey = TEXT("Soldier_Rotate");
+		else
+			m_strFrameKey = TEXT("Soldier_Back");
 	}
 
 	auto iter = m_Frames.find(m_strFrameKey);
 	m_pAnimationCom->Set_Animation(&iter->second);
+
+	/*szBuffer[128];
+	swprintf_s(szBuffer, L"몬스터 방향 벡터 x : %.1f, y : %.1f, z : %.1f\n", m_pTransformCom->Get_State(STATE::LOOK).x, m_pTransformCom->Get_State(STATE::LOOK).y, m_pTransformCom->Get_State(STATE::LOOK).z);
+	OutputDebugString(szBuffer);*/
 
 	SetUp_OnTerrain(m_pTransformCom, 0.5f);
 }
@@ -91,7 +116,34 @@ void CMonster::Late_Update(_float fTimeDelta)
 
 HRESULT CMonster::Render()
 {
-	m_pTransformCom->Set_Transform();
+	_float4x4 matWorldTemp = *m_pTransformCom->Get_WorldMatrixPtr();
+
+	/*
+	matWorldTemp? ->현재 트랜스폼의 위치와 회전값을 그대로 가져옴.
+
+	지금 이 상태에서 플레이어를 바라보게끔 회전만 시키면 되는 상황
+
+	실제 회전값과는 무관하게 플레이어를 바라보게만 만든 행렬
+	*/
+
+	_float3 fMonsterPos = m_pTransformCom->Get_State(STATE::POSITION);
+	_float3 fPlayerPos = m_pPlayerTransform->Get_State(STATE::POSITION);
+
+	_float3 fLook = fPlayerPos - fMonsterPos;
+	fLook.y = 0.0f;								// y축 회전용
+	D3DXVec3Normalize(&fLook, &fLook);
+
+	_float3 fUp = { 0.0f, 1.0f, 0.0f };
+
+	_float3 fRight;
+	D3DXVec3Cross(&fRight, &fUp, &fLook);
+	D3DXVec3Normalize(&fRight, &fRight);
+
+	memcpy(&matWorldTemp.m[0][0], &fRight, sizeof(_float3));
+	memcpy(&matWorldTemp.m[1][0], &fUp, sizeof(_float3));
+	memcpy(&matWorldTemp.m[2][0], &fLook, sizeof(_float3));
+
+	m_pTransformCom->Set_Transform(matWorldTemp);
 
 	//m_pTextureCom->Set_Texture(0);
 	/*m_pTextureCom->Set_Texture(m_iNum++);
@@ -195,6 +247,8 @@ HRESULT CMonster::Begin_RenderState()
 	//m_pGraphic_Device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
 	//m_pGraphic_Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 	//
+	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+
 	m_pGraphic_Device->SetRenderState(D3DRS_LIGHTING, FALSE);
 
 	/* 알파 테스트 : 픽셀의 알파를 비교해서 그린다 안그린다를 설정. */
@@ -209,6 +263,7 @@ HRESULT CMonster::Begin_RenderState()
 
 HRESULT CMonster::End_RenderState()
 {
+	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 	m_pGraphic_Device->SetRenderState(D3DRS_LIGHTING, TRUE);
 
 	// m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
