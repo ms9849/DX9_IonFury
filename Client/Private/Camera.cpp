@@ -122,6 +122,7 @@ void CCamera::Camera_Turn(bool isMouseFixCenter, _float fTimeDelta)
 
 	if (isMouseFixCenter)
 	{
+		ShowCursor(FALSE);
 		GetCursorPos(&ptMouse);
 		SetCursorPos(g_iWinSizeX * 0.5f, g_iWinSizeY * 0.5f);
 
@@ -136,10 +137,9 @@ void CCamera::Camera_Turn(bool isMouseFixCenter, _float fTimeDelta)
 	}
 
 	m_pTransformCom->Turn(_float3{0.f, 1.f, 0.f}, fTimeDelta * m_fMove.x * m_fSensor);
-	m_pTransformCom->Turn(m_pTransformCom->Get_State(STATE::RIGHT), fTimeDelta * m_fMove.y * m_fSensor);
 
 	// 카메라 회전 제한
-	/*_float3 vStd{ 0.f, 1.f, 0.f };
+	_float3 vStd{ 0.f, 1.f, 0.f };
 	_float3 vCameraLook = m_pTransformCom->Get_State(STATE::LOOK);
 
 	D3DXVec3Normalize(&vCameraLook, &vCameraLook);
@@ -152,19 +152,26 @@ void CCamera::Camera_Turn(bool isMouseFixCenter, _float fTimeDelta)
 	if (fDot < 0.8f && fDot > -0.8f)
 	{
 		m_pTransformCom->Turn(m_pTransformCom->Get_State(STATE::RIGHT), fTimeDelta * m_fMove.y * m_fSensor);
+		m_vOldCameraRight = vCross;
 		m_vOldCameraLook = vCameraLook;
+		D3DXVec3Cross(&m_vOldCameraUp, &vCameraLook, &vCross);
+		D3DXVec3Normalize(&m_vOldCameraUp, &m_vOldCameraUp);
 	}
 	else
 	{
 		if (fDot > 0.8f && m_fMove.y > 0)
 		{
+			m_pTransformCom->Set_State(STATE::RIGHT, m_vOldCameraRight);
+			m_pTransformCom->Set_State(STATE::UP, m_vOldCameraUp);
 			m_pTransformCom->Set_State(STATE::LOOK, m_vOldCameraLook);
 		}
 		else if (fDot < -0.8f && m_fMove.y < 0)
 		{
+			m_pTransformCom->Set_State(STATE::RIGHT, m_vOldCameraRight);
+			m_pTransformCom->Set_State(STATE::UP, m_vOldCameraUp);
 			m_pTransformCom->Set_State(STATE::LOOK, m_vOldCameraLook);
 		}
-	}*/
+	}
 
 	//// 차원이동
 	//if (vCross.y > 0)
