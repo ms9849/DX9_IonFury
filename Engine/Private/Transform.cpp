@@ -106,6 +106,16 @@ void CTransform::Go_Backward(_float fTimeDelta)
 	Set_State(STATE::POSITION, vPosition);
 }
 
+void CTransform::Go_Direction(const _float3& vDir, _float fTimeDelta)
+{
+	_float3		vPosition = Get_State(STATE::POSITION);
+	_float3		vDirection = vDir;
+
+	vPosition += *D3DXVec3Normalize(&vDirection, &vDirection) * m_fSpeedPerSec * fTimeDelta;
+
+	Set_State(STATE::POSITION, vPosition);
+}
+
 void CTransform::Rotation(const _float3& vAxis, _float fRadian)
 {
 	_float3		vScaled = Get_Scaled();
