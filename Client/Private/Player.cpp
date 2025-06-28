@@ -79,17 +79,21 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 	{
 		m_pRightHand->Set_Current_Animation(TEXT("Pistol_Reload"));
 	}
+
 	if (m_pGameInstance->Key_Down(VK_LBUTTON))
 	{
 		m_tInfo.iBullets -= 1;
 		m_pRightHand->Set_Current_Animation(TEXT("Pistol_Shoot"));
-		_float3 vDir = Calc_BulletDir();
+
+		_float3 vOffset = _float3{ 0.f, 0.f, 0.f };
+		_float3 vDir = Calc_BulletDir(&vOffset);
 		_float3 vPos = m_pTransformCom->Get_State(STATE::POSITION);
+
 		D3DXVec3Normalize(&vDir, &vDir);
 
 		CBullet::BULLET_DESC Desc;
 		Desc.vDir = vDir;
-		Desc.vPos = vPos;
+		Desc.vPos = vPos + vOffset;
 
 		m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Bullet"),
 			ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Bullet"), &Desc);
@@ -188,31 +192,38 @@ HRESULT CPlayer::End_RenderState()
 	return S_OK;
 }
 
-_float3 CPlayer::Calc_BulletDir()
+_float3 CPlayer::Calc_BulletDir(_float3* vOffset)
 {
-	_float3 vCollisionPos{0.f,0.f,0.f};
+	_float3 vCollisionPos{0.f, 0.f, 0.f};
 
 	//mat view Inv는 카메라의 월드 행렬.
 	_float4x4 m_matView, m_matViewInv;
 
 	m_pGraphic_Device->GetTransform(D3DTS_VIEW, &m_matView);
 	D3DXMatrixInverse(&m_matViewInv, nullptr, &m_matView);
-	
+
 	/*
 	vLook, vRight 가져와서 보정하기
 	*/
 	_float3 vCamPos = m_pTransformCom->Get_State(STATE::POSITION);
-	_float3 vCamLook = *(_float3 *)(&m_matViewInv.m[2][0]);
 	_float3 vCamRight = *(_float3 *)(&m_matViewInv.m[0][0]);
+	_float3 vCamLook = *(_float3*)(&m_matViewInv.m[2][0]);
+
 
 	D3DXVec3Normalize(&vCamLook, &vCamLook);
 	m_pGameInstance->Check_LookCollision(vCamPos, vCamLook, TEXT("Layer_Cube"), ENUM_CLASS(LEVEL::GAMEPLAY), &vCollisionPos);
+
+	*vOffset = (*D3DXVec3Normalize(&vCamLook, &vCamLook) / 10.f + (*D3DXVec3Normalize(&vCamRight, &vCamRight) / 10.f));
 
 	if (vCollisionPos == _float3{ 0.f, 0.f, 0.f })
 		return m_pTransformCom->Get_State(STATE::LOOK);
 
 	else
-		return (vCollisionPos - (vCamPos + *D3DXVec3Normalize(&vCamLook, &vCamLook) / 2.f + *D3DXVec3Normalize(&vCamRight, &vCamRight) / 2.f));
+	{
+		_float3 vDir = vCollisionPos - (vCamPos + *vOffset);
+		D3DXVec3Normalize(&vDir, &vDir);
+		return vDir;
+	}
 }
 
 CPlayer* CPlayer::Create(LPDIRECT3DDEVICE9 pGraphic_Device)

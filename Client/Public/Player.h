@@ -46,7 +46,7 @@ private:
 	HRESULT Ready_Components();
 	HRESULT Begin_RenderState();
 	HRESULT End_RenderState();
-	_float3 Calc_BulletDir();
+	_float3 Calc_BulletDir(_float3* vOffset);
 
 private:
 	PLAYER_INFO		m_tInfo{};

@@ -26,6 +26,9 @@ HRESULT CUIAim::Initialize(void* pArg)
 	m_tagDesc.fX = pTemp->fX;
 	m_tagDesc.fY = pTemp->fY;
 
+	m_tagDesc.fX += pTemp->fSizeX / 2.f;
+	m_tagDesc.fY += pTemp->fSizeY / 2.f;
+
 	if (FAILED(__super::Initialize(&m_tagDesc)))
 		return E_FAIL;
 
