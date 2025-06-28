@@ -119,6 +119,12 @@ HRESULT CItemArmor::End_RenderState()
 	return S_OK;
 }
 
+void CItemArmor::OnCollision(CGameObject* pDst, COLLISION eColType)
+{
+	if (eColType == COLLISION::SPHERE)
+		int a = 10;
+}
+
 CItemArmor* CItemArmor::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 {
 	CItemArmor* pInstance = new CItemArmor(pGraphic_Device);

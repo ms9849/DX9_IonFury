@@ -73,6 +73,7 @@ void CLevel_GamePlay::Update(_float fTimeDelta)
 #pragma endregion
 
 	m_pGameInstance->Check_OBBCollision(TEXT("Layer_Cube"), TEXT("Layer_Player"), ENUM_CLASS(LEVEL::GAMEPLAY));
+	m_pGameInstance->Check_SphereCollision(TEXT("Layer_Player"), TEXT("Layer_Items"), ENUM_CLASS(LEVEL::GAMEPLAY));
 }
 
 HRESULT CLevel_GamePlay::Render()

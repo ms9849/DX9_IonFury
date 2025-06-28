@@ -29,6 +29,7 @@ HRESULT CBullet::Initialize(void* pArg)
 
 	m_vDir = pDesc->vDir;
 	m_pTransformCom->Set_State(STATE::POSITION, pDesc->vPos);
+	m_pTransformCom->Set_Scale(_float3(0.1f, 0.1f, 0.1f));
 
 	return S_OK;
 }
@@ -56,6 +57,10 @@ HRESULT CBullet::Render()
 	m_pVIBufferCom->Render();
 
 	return S_OK;
+}
+
+void CBullet::OnCollision(CGameObject* pDst, COLLISION eColType)
+{
 }
 
 HRESULT CBullet::Ready_Components()

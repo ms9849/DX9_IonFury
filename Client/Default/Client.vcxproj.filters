@@ -91,6 +91,9 @@
     <Filter Include="02.GameObjects\Item\ItemHealpack">
       <UniqueIdentifier>{50880e45-07e6-4c6a-8b6d-d54276bffa13}</UniqueIdentifier>
     </Filter>
+    <Filter Include="97.BehaviorTree">
+      <UniqueIdentifier>{31f75f59-c90a-49cb-bc56-c1160a97b071}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -182,6 +185,9 @@
     </ClInclude>
     <ClInclude Include="..\public\ItemHealpack.h">
       <Filter>02.GameObjects\Item\ItemHealpack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\BehaviorNode.h">
+      <Filter>97.BehaviorTree</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -275,6 +281,9 @@
     </ClCompile>
     <ClCompile Include="..\private\ItemHealpack.cpp">
       <Filter>02.GameObjects\Item\ItemHealpack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BehaviorNode.cpp">
+      <Filter>97.BehaviorTree</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
