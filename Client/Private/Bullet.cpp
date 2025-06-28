@@ -56,7 +56,7 @@ CBullet* CBullet::Create(LPDIRECT3DDEVICE9 pGraphicDev)
 {
 	CBullet* pInstance = new CBullet(pGraphicDev);
 
-	if(FAILED(pInstance->Initialize()))
+	//if(FAILED(pInstance->Initialize()))
 	return nullptr;
 }
 

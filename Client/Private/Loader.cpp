@@ -12,6 +12,7 @@
 #include "UIFont.h"
 #include "UIBullets.h"
 #include "UIInteraction.h"
+#include "UIAim.h"
 
 #include "GameInstance.h"
 
@@ -141,6 +142,10 @@ HRESULT CLoader::Loading_For_GamePlay()
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/UI/Bullets/Bullets_%d.png"), 1))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Texture_Aim */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Aim"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/UI/Aim/Aim_0.png"), 1))))
+		return E_FAIL;
 	
 
 	m_strMessage = TEXT("모델를(을) 로딩 중 입니다.");
@@ -214,7 +219,7 @@ HRESULT CLoader::Loading_For_GamePlay()
 		CUIFont::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
-	/* For.Prototype_GameObject_UIWeapon */
+	/* For.Prototype_GameObject_UIBullets */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_UIBullets"),
 		CUIBullets::Create(m_pGraphic_Device))))
 		return E_FAIL;
@@ -222,6 +227,11 @@ HRESULT CLoader::Loading_For_GamePlay()
 	/* For.Prototype_GameObject_UIInteraction */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_UIInteraction"),
 		CUIInteraction::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UIAim */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_UIAim"),
+		CUIAim::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
 	m_strMessage = TEXT("로딩이 완료되었습니다..");

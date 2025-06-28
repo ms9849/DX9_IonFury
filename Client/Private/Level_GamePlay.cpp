@@ -249,6 +249,20 @@ HRESULT CLevel_GamePlay::Ready_Layer_UI(const _wstring& strLayerTag)
 
 	m_pUIInteraction = dynamic_cast<CUIInteraction*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag));
 
+	/* 상호작용 키 */
+	CUIObject::UIOBJECT_DESC Desc_Aim{};
+
+	Desc_Aim.fSizeX = 30.f;
+	Desc_Aim.fSizeY = 30.f;
+	Desc_Aim.fX = g_iWinSizeX * 0.5f - (Desc_Aim.fSizeX * 0.5f);
+	Desc_Aim.fY = g_iWinSizeY * 0.5f - (Desc_Aim.fSizeY * 0.5f);
+
+	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_UIAim"),
+		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag, &Desc_Aim)))
+		return E_FAIL;
+
+	m_pUIAim = dynamic_cast<CUIAim*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag));
+
 	return S_OK;
 }
 
