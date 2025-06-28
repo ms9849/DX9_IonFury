@@ -67,6 +67,7 @@ void CLevel_GamePlay::Update(_float fTimeDelta)
 	// UI에 값 업데이트 해줘야함
 #pragma region UI
 	m_pUIHp->Set_Hp(m_pPlayer->Get_Player_Info().iHp);
+	m_pUIArmor->Set_Armor(m_pPlayer->Get_Player_Info().iArmor);
 	m_pUIBullets->Set_Bullets(m_pPlayer->Get_Player_Info().iBullets);
 	m_pUIInteraction->Set_Interaction(TEXT("Press [E] Key"));
 #pragma endregion
@@ -214,6 +215,27 @@ HRESULT CLevel_GamePlay::Ready_Layer_UI(const _wstring& strLayerTag)
 		return E_FAIL;
 
 	m_pUIHp = dynamic_cast<CUIHp*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag));
+
+	/* 체력 */
+	CUIObject::UIOBJECT_DESC Desc_Armor{};
+
+	ws = to_wstring(m_pPlayer->Get_Player_Info().iArmor);
+
+	// UI전체 크기 및 위치
+	Desc_Armor.iTextLength = wcslen(ws.c_str());
+	Desc_Armor.fSizeX = 50.f + (50.f * Desc_Hp.iTextLength);
+	Desc_Armor.fSizeY = 50.f;
+	Desc_Armor.fX = 250.f;
+	Desc_Armor.fY = g_iWinSizeY - (Desc_Hp.fSizeY * 0.5f);
+	Desc_Armor.iLayerLevelIndex = ENUM_CLASS(LEVEL::GAMEPLAY);
+	Desc_Armor.strLayerTag = strLayerTag;
+	Desc_Armor.strFontType = TEXT("Default");
+
+	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_UIArmor"),
+		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag, &Desc_Armor)))
+		return E_FAIL;
+
+	m_pUIArmor = dynamic_cast<CUIArmor*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag));
 
 	/* 총알 */
 	CUIObject::UIOBJECT_DESC Desc_Bullets{};

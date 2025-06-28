@@ -1,23 +1,23 @@
-#include "UIHp.h"
+#include "UIArmor.h"
 
 #include "GameInstance.h"
 
-CUIHp::CUIHp(LPDIRECT3DDEVICE9 pGraphic_Device)
+CUIArmor::CUIArmor(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CUIObject{ pGraphic_Device }
 {
 }
 
-CUIHp::CUIHp(const CUIHp& Prototype)
+CUIArmor::CUIArmor(const CUIArmor& Prototype)
 	: CUIObject{ Prototype }
 {
 }
 
-HRESULT CUIHp::Initialize_Prototype()
+HRESULT CUIArmor::Initialize_Prototype()
 {
 	return S_OK;
 }
 
-HRESULT CUIHp::Initialize(void* pArg)
+HRESULT CUIArmor::Initialize(void* pArg)
 {
 	UIOBJECT_DESC* pTemp = static_cast<UIOBJECT_DESC*>(pArg);
 
@@ -58,26 +58,26 @@ HRESULT CUIHp::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CUIHp::Priority_Update(_float fTimeDelta)
+void CUIArmor::Priority_Update(_float fTimeDelta)
 {
 	int a = 10;
 }
 
-void CUIHp::Update(_float fTimeDelta)
+void CUIArmor::Update(_float fTimeDelta)
 {
 	__super::Update_Transform(m_pTransformCom);
 }
 
-void CUIHp::Late_Update(_float fTimeDelta)
+void CUIArmor::Late_Update(_float fTimeDelta)
 {
 	m_pGameInstance->Add_RenderGroup(RENDER::UI, this);
 }
 
-HRESULT CUIHp::Render()
+HRESULT CUIArmor::Render()
 {
 	m_pTransformCom->Set_Transform();
 
-	m_pTextureCom->Set_Texture(m_iHp / 20);
+	m_pTextureCom->Set_Texture(0);
 
 	m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
 	m_pGraphic_Device->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
@@ -95,16 +95,17 @@ HRESULT CUIHp::Render()
 	return S_OK;
 }
 
-void CUIHp::Set_Hp(_uint iNumber)
+void CUIArmor::Set_Armor(_uint iNumber)
 {
-	m_iHp = iNumber;
+	m_iArmor = iNumber;
+
 	_tchar ws[10];
-	swprintf(ws, 10, L"%03d", m_iHp);
+	swprintf(ws, 10, L"%03d", m_iArmor);
 
 	m_pText->Set_Text(ws);
 }
 
-HRESULT CUIHp::Ready_Components()
+HRESULT CUIArmor::Ready_Components()
 {
 	/* Com_Transform */
 	CTransform::TRANSFORM_DESC		TransformDesc{ 5.f, D3DXToRadian(90.0f) };
@@ -117,16 +118,16 @@ HRESULT CUIHp::Ready_Components()
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
 		return E_FAIL;
 	/* Com_Texture */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Hp"),
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Item_Armor_0"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-CUIHp* CUIHp::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
+CUIArmor* CUIArmor::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 {
-	CUIHp* pInstance = new CUIHp(pGraphic_Device);
+	CUIArmor* pInstance = new CUIArmor(pGraphic_Device);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
@@ -137,20 +138,20 @@ CUIHp* CUIHp::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 	return pInstance;
 }
 
-CGameObject* CUIHp::Clone(void* pArg)
+CGameObject* CUIArmor::Clone(void* pArg)
 {
-	CUIHp* pInstance = new CUIHp(*this);
+	CUIArmor* pInstance = new CUIArmor(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Cloned : CUIHp");
+		MSG_BOX("Failed to Cloned : CUIArmor");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CUIHp::Free()
+void CUIArmor::Free()
 {
 	__super::Free();
 

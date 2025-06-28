@@ -14,6 +14,7 @@
 #include "UIBullets.h"
 #include "UIInteraction.h"
 #include "UIAim.h"
+#include "UIArmor.h"
 #include "ItemArmor.h"
 
 #include "GameInstance.h"
@@ -213,6 +214,11 @@ HRESULT CLoader::Loading_For_GamePlay()
 	/* For.Prototype_GameObject_UIHp */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_UIHp"),
 		CUIHp::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UIArmor */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_UIArmor"),
+		CUIArmor::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_Effect */

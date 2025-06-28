@@ -27,7 +27,8 @@ HRESULT CPlayer::Initialize(void* pArg)
 	Desc.pLandVIBuffer = static_cast<CVIBuffer*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_BackGround"), TEXT("Com_VIBuffer")));
 
 	m_tInfo.iHp = 100;
-	m_tInfo.iBullets = 200;
+	m_tInfo.iArmor = 100;
+	m_tInfo.iBullets = 100;
 
 	if (FAILED(__super::Initialize(&Desc)))
 		return E_FAIL;
