@@ -79,10 +79,6 @@ HRESULT CItemArmor::Render()
 
 HRESULT CItemArmor::Ready_Components()
 {
-	/* Com_SphereCollider*/
-	if(FAILED(__super::Ready_Collider()))
-		return E_FAIL;
-
 	/* Com_Transform */
 	CTransform::TRANSFORM_DESC		TransformDesc{ 5.f, D3DXToRadian(90.0f) };
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Transform"),

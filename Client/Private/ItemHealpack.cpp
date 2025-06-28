@@ -119,6 +119,12 @@ HRESULT CItemHealpack::End_RenderState()
 	return S_OK;
 }
 
+void CItemHealpack::OnCollision(CGameObject* pDst, COLLISION eColType)
+{
+	if (eColType == COLLISION::SPHERE)
+		int a = 10;
+}
+
 CItemHealpack* CItemHealpack::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 {
 	CItemHealpack* pInstance = new CItemHealpack(pGraphic_Device);
