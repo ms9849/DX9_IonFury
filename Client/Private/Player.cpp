@@ -151,9 +151,15 @@ HRESULT CPlayer::Ready_Components()
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_Rect"),
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
 		return E_FAIL;	
+
 	/* Com_BoxCollider */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_BoxCollider"),
 		TEXT("Com_BoxCollider"), reinterpret_cast<CComponent**>(&m_pBoxColliderCom))))
+		return E_FAIL;
+
+	/* Com_SphereCollider */
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_SphereCollider"),
+		TEXT("Com_SphereCollider"), reinterpret_cast<CComponent**>(&m_pSphereColliderCom))))
 		return E_FAIL;
 
 	return S_OK;
@@ -227,6 +233,12 @@ _float3 CPlayer::Calc_BulletDir(_float3* vOffset)
 	}
 }
 
+void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType)
+{
+	if(eColType == COLLISION::SPHERE)
+		int a = 10;
+}
+
 CPlayer* CPlayer::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 {
 	CPlayer* pInstance = new CPlayer(pGraphic_Device);
@@ -260,5 +272,6 @@ void CPlayer::Free()
 	//Safe_Release(m_pTextureCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pVIBufferCom);
-
+	Safe_Release(m_pBoxColliderCom);
+	Safe_Release(m_pSphereColliderCom);
 }

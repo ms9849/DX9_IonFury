@@ -85,6 +85,11 @@ HRESULT CMainApp::Ready_Prototypes()
 		CBoxCollider::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_SphereCollider*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_SphereCollider"),
+		CSphereCollider::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
 	/* For.Prototype_Component_Transform*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Transform"),
 		CTransform::Create(m_pGraphic_Device))))

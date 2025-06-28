@@ -34,7 +34,7 @@ public:
 	virtual HRESULT Initialize(void* pArg);
 
 private:
-	_float m_fRadius = {};
+	_float m_fRadius = {1.f};
 	_float3 m_vLocalPos = {};
 
 public:

@@ -39,9 +39,39 @@ void CCollision_Manager::Check_OBBCollision(const _wstring& strLayerTagSrc, cons
 			{
  				CTransform* pTransformDst = static_cast<CTransform*>(pDst->Find_Component(TEXT("Com_Transform")));
 				pTransformDst->Add_Pos(vMTV);
+
+                pSrc->OnCollision(pDst, COLLISION::OBB);
+                pDst->OnCollision(pSrc, COLLISION::OBB);
 			}
 		}
 	}
+}
+
+void CCollision_Manager::Check_SphereCollision(const _wstring& strLayerTagSrc, const _wstring& strLayerTagDst, _uint iLayerLevel)
+{
+    CLayer* pSrcLayer = m_pGameInstance->Find_Layer(iLayerLevel, strLayerTagSrc);
+    CLayer* pDstLayer = m_pGameInstance->Find_Layer(iLayerLevel, strLayerTagDst);
+
+    if (pSrcLayer == nullptr || pDstLayer == nullptr)
+        return;
+
+    list<CGameObject*> GameObjectSrc = pSrcLayer->Get_GameObjects();
+    list<CGameObject*> GameObjectDst = pDstLayer->Get_GameObjects();
+
+    if (GameObjectSrc.empty() || GameObjectDst.empty())
+        return;
+
+    for (auto& pSrc : GameObjectSrc)
+    {
+        for (auto& pDst : GameObjectDst)
+        {
+            if (Sphere_Collision(pSrc, pDst))
+            {
+                pSrc->OnCollision(pDst, COLLISION::SPHERE);
+                pDst->OnCollision(pSrc, COLLISION::SPHERE);
+            }
+        }
+    }
 }
 
 void CCollision_Manager::Check_LookCollision(_float3 vPos, _float3 vLook, const _wstring& strLayerTagDst, _uint iLayerLevel, _float3* vColisionPos)
@@ -64,6 +94,24 @@ void CCollision_Manager::Check_LookCollision(_float3 vPos, _float3 vLook, const 
         if (Look_Collision(pDst, vColisionPos, vPos, vLook))
             int a = 10;
     }
+}
+
+_bool CCollision_Manager::Sphere_Collision(CGameObject* pSrc, CGameObject* pDst)
+{
+    CTransform* pTransformSrc = static_cast<CTransform*>(pSrc->Find_Component(TEXT("Com_Transform")));
+    CTransform* pTransformDst = static_cast<CTransform*>(pDst->Find_Component(TEXT("Com_Transform")));
+
+    CSphereCollider* pColliderSrc = static_cast<CSphereCollider*>(pSrc->Find_Component(TEXT("Com_SphereCollider")));
+    CSphereCollider* pColliderDst = static_cast<CSphereCollider*>(pDst->Find_Component(TEXT("Com_SphereCollider")));
+
+    _float4x4 matWorldSrc = *pTransformSrc->Get_WorldMatrixPtr();
+    _float4x4 matWorldDst = *pTransformDst->Get_WorldMatrixPtr();
+
+    // 두 정점 간의 거리 계산
+    _float3 vPosDiff = *(_float3*)&matWorldDst.m[3][0] - *(_float3*)&matWorldSrc.m[3][0];
+
+
+    return (pColliderSrc->Get_Radius() + pColliderDst->Get_Radius()) > D3DXVec3Length(&vPosDiff);
 }
 
 _bool CCollision_Manager::OBB_Collision(CGameObject* pSrc, CGameObject* pDst, _float3* vMTV)

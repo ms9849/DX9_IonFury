@@ -19,8 +19,13 @@ HRESULT CSphereCollider::Initialize_Prototype()
 
 HRESULT CSphereCollider::Initialize(void* pArg)
 {
+	if (pArg == nullptr)
+		return S_OK;
+
 	SPHERECOLLIDER_DESC* pDesc = static_cast<SPHERECOLLIDER_DESC*>(pArg);
+	
 	m_fRadius = pDesc->fRadius;
+	m_vLocalPos = pDesc->vLocalPos;
 
 	return S_OK;
 }
@@ -53,4 +58,5 @@ CComponent* CSphereCollider::Clone(void* pArg)
 
 void CSphereCollider::Free()
 {
+	__super::Free();
 }

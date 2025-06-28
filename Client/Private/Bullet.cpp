@@ -59,6 +59,10 @@ HRESULT CBullet::Render()
 	return S_OK;
 }
 
+void CBullet::OnCollision(CGameObject* pDst, COLLISION eColType)
+{
+}
+
 HRESULT CBullet::Ready_Components()
 {
 	/* Com_Transform */
