@@ -7,6 +7,7 @@
 #include "UIHp.h"
 #include "UIBullets.h"
 #include "UIInteraction.h"
+#include "UIAim.h"
 
 NS_BEGIN(Client)
 
@@ -37,6 +38,7 @@ private:
 	CUIHp* m_pUIHp{ nullptr };
 	CUIBullets* m_pUIBullets{ nullptr };
 	CUIInteraction* m_pUIInteraction{ nullptr };
+	CUIAim* m_pUIAim{ nullptr };
 	CCamera::CAMERA_CONFIG m_CameraSettings;
 
 public:

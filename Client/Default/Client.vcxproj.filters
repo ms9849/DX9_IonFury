@@ -73,6 +73,9 @@
     <Filter Include="02.GameObjects\CubeObject">
       <UniqueIdentifier>{eeb56b9a-d74f-4cce-925d-8561e01fae5f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\UI\UIAim">
+      <UniqueIdentifier>{e8e41816-d597-40f2-adc6-20c257ef6940}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObjects\Bullet">
       <UniqueIdentifier>{3050aedd-db94-46b6-9d3d-db15797f109d}</UniqueIdentifier>
     </Filter>
@@ -149,6 +152,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\CubeObject.h">
       <Filter>02.GameObjects\CubeObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\UIAim.h">
+      <Filter>02.GameObjects\UI\UIAim</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Bullet.h">
       <Filter>02.GameObjects\Bullet</Filter>
@@ -227,6 +233,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\CubeObject.cpp">
       <Filter>02.GameObjects\CubeObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\UIAim.cpp">
+      <Filter>02.GameObjects\UI\UIAim</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Bullet.cpp">
       <Filter>02.GameObjects\Bullet</Filter>
