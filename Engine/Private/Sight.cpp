@@ -33,17 +33,17 @@ HRESULT CSight::Initialize(void* pArg)
     return S_OK;
 }
 
-int CSight::Check_Sight(_float fTimeDelta)
+void CSight::Check_Sight(_float fTimeDelta)
 {
 	_float3 fDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransform->Get_State(STATE::POSITION);
 	_float fDist = D3DXVec3Length(&fDiff);
 
 	if (fDist > m_fRange)
-		return 0;
+		return;
 
 	_float3 fPlayerLook = m_pPlayerTransform->Get_State(STATE::LOOK);
 	_float3 fMonsterLook = m_pTransform->Get_State(STATE::LOOK);
-	_float3 fMonsterUp = m_pTransform->Get_State(STATE::UP);
+	_float3 fMonsterUp = _float3{ 0.f, 1.f, 0.f };
 
 	float fFov = cosf(m_fRotation * 0.5f);
 
@@ -58,57 +58,21 @@ int CSight::Check_Sight(_float fTimeDelta)
 	float fDegree = D3DXToDegree(fRadian);
 
 	_float3 fCross;
-	D3DXVec3Cross(&fCross, &fMonsterLook, &fDiff);
-
+	D3DXVec3Cross(&fCross, &fMonsterLook, &fDiff);				// 해당 값에서 y축 회전만 할수있도록 수정
 	if (fSign < 0)
 		fDegree *= -1;
 
-	/*wchar_t szBuffer[128];
-	wchar_t szBuffer_1[128];
-	swprintf_s(szBuffer, 128, L"fSign: %.2f도 ", fSign);
-	swprintf_s(szBuffer_1, 128, L"fFov: %.2f도\n", fFov);
-	OutputDebugString(szBuffer);
-	OutputDebugString(szBuffer_1);*/
+	_float3 yAxis = { 0.f, 1.f, 0.f };
 
 	if (fSign >= fFov)			// 범위에 들어온 상태
 	{
-		int a = 10;
-		
+		m_pTransform->Rotation(yAxis, fRadian);
 		m_pTransform->Chase(m_pPlayerTransform->Get_State(STATE::POSITION), fTimeDelta);
-		m_pTransform->Turn(fCross, fTimeDelta);
-		// 몬스터의 회전도 필요함
-		// 추후 특정 state로 전환할수 있도록 할것
-		return 1;
-	}
-	else if (fSign < 0)
-	{
-		// 뒷모습 출력
-		return 2;
-	}
-	else
-	{
-		// 시야 밖인 상황 플레이어의 위치를 체크하여 맞는 방향의 모습을 보여줘야 함
-		if (fCross.y > 0)		// 플레이어가 몬스터의 오른쪽
-		{
-			return 3;
-		}
-		else
-		{
-			return 4;
-		}
-	}
+		m_pTransform->LookAt(m_pPlayerTransform->Get_State(STATE::POSITION));
 
-	/*wchar_t szBuffer[128];
-	swprintf_s(szBuffer, 128, L"플레이어-몬스터 룩벡터 각도: %.2f도\n", fDegree);
-	OutputDebugString(szBuffer);*/
-
-	return 5;
+		return;
+	}
 }
-
-//void CSight::Set_Transform()
-//{
-//	m_pGraphic_Device->SetTransform(D3DTS_WORLD, &m_WorldMatrix);
-//}
 
 CSight* CSight::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 {
