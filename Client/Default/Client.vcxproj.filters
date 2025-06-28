@@ -88,6 +88,9 @@
     <Filter Include="02.GameObjects\UI\UIArmor">
       <UniqueIdentifier>{95f9bb18-d33f-4cb4-ad33-68d9d8f30be9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\Item\ItemHealpack">
+      <UniqueIdentifier>{50880e45-07e6-4c6a-8b6d-d54276bffa13}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -176,6 +179,9 @@
     </ClInclude>
     <ClInclude Include="..\public\UIArmor.h">
       <Filter>02.GameObjects\UI\UIArmor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ItemHealpack.h">
+      <Filter>02.GameObjects\Item\ItemHealpack</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -266,6 +272,9 @@
     </ClCompile>
     <ClCompile Include="..\private\UIArmor.cpp">
       <Filter>02.GameObjects\UI\UIArmor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ItemHealpack.cpp">
+      <Filter>02.GameObjects\Item\ItemHealpack</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
