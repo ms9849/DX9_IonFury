@@ -84,6 +84,7 @@ HRESULT CSky::Ready_Components()
 		return E_FAIL;	
 
 	return S_OK;
+
 }
 
 HRESULT CSky::Begin_RenderState()

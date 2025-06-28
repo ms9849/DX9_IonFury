@@ -52,6 +52,7 @@ public:
 	void Go_Left(_float fTimeDelta);
 	void Go_Right(_float fTimeDelta);
 	void Go_Backward(_float fTimeDelta);
+	void Go_Direction(const _float3& vDir, _float fTimeDelta);
 
 	/* 항등상태 기준으로 회전시킨다.  */
 	void Rotation(const _float3& vAxis, _float fRadian);
