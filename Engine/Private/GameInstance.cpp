@@ -9,6 +9,7 @@
 #include "Key_Manager.h"
 #include "Sound_Manager.h"
 #include "Collision_Manager.h"
+#include "Picking.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
 
@@ -52,6 +53,10 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& EngineDesc, LPDIRECT
 
 	m_pCollision_Manager = CCollision_Manager::Create();
 	if (nullptr == m_pCollision_Manager)
+		return E_FAIL;
+
+	m_pPicking = CPicking::Create(*ppOut, EngineDesc.hWnd);
+	if (nullptr == m_pPicking)
 		return E_FAIL;
 
 	return S_OK;
@@ -190,6 +195,10 @@ CLayer* CGameInstance::Find_Layer(_uint iLayerLevelIndex, const _wstring& strLay
 {
 	return m_pObject_Manager->Find_Layer(iLayerLevelIndex, strLayerTag);
 }
+map<const _wstring, class CLayer*> CGameInstance::Get_Layers_InLevel(_uint iLayerLevelIndex)
+{
+	return m_pObject_Manager->Get_Layers_InLevel(iLayerLevelIndex);
+}
 #pragma endregion
 
 #pragma region RENDERER
@@ -253,6 +262,23 @@ void CGameInstance::Check_OBBCollision(const _wstring& strLayerTagSrc, const _ws
 	m_pCollision_Manager->Check_OBBCollision(strLayerTagSrc, strLayerTagDst, iLayerLevel);
 }
 
+void CGameInstance::Check_LookCollision(_float3 vPos, _float3 vLook, const _wstring& strLayerTagDst, _uint iLayerLevel, _float3* vColisionPos)
+{
+	m_pCollision_Manager->Check_LookCollision(vPos, vLook, strLayerTagDst, iLayerLevel, vColisionPos);
+}
+#pragma endregion 
+
+#pragma region PICKING
+
+_bool CGameInstance::Picking_InWorldSpace(const _float3& vRayPos, const _float3& vRayDir, const _float3& vPointA, const _float3& vPointB, const _float3& vPointC, _float3* pOut)
+{
+	return m_pPicking->Picking_InWorldSpace(vRayPos, vRayDir, vPointA, vPointB, vPointC, pOut);
+}
+
+_bool CGameInstance::Picking_InLocalSpace(const _float4x4* pWorldMatrixInverse, const _float3& vRayPos, const _float3& vRayDir, const _float3& vPointA, const _float3& vPointB, const _float3& vPointC, _float3* pOut)
+{
+	return m_pPicking->Picking_InLocalSpace(pWorldMatrixInverse, vRayPos, vRayDir, vPointA, vPointB, vPointC, pOut);
+}
 #pragma endregion
 
 void CGameInstance::Release_Engine()
@@ -267,6 +293,7 @@ void CGameInstance::Release_Engine()
 	Safe_Release(m_pGraphic_Device);
 	Safe_Release(m_pKey_Manager);
 	Safe_Release(m_pSound_Manager);
+	Safe_Release(m_pPicking);
 }
 
 void CGameInstance::Free()

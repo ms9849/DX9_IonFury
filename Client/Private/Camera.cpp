@@ -217,6 +217,7 @@ HRESULT CCamera::Ready_Components(void* pArg)
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Transform"),
 		TEXT("Com_Transform"), reinterpret_cast<CComponent**>(&m_pTransformCom), pArg)))
 		return E_FAIL;
+
 	return S_OK;
 }
 

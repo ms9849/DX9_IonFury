@@ -274,3 +274,40 @@ void CVIBuffer_Terrain::Free()
 
 
 }
+
+_bool CVIBuffer_Terrain::Picking(CTransform* pTransform, _float3* pOut, _float3 vPos, _float3 vLook)
+{
+	_uint	iNumIndices = {};
+
+	for (size_t i = 0; i < m_iNumVerticesZ - 1; i++)
+	{
+		for (size_t j = 0; j < m_iNumVerticesX - 1; j++)
+		{
+			_uint	iIndex = i * m_iNumVerticesX + j;
+
+			_uint	iIndices[4] = {
+				iIndex + m_iNumVerticesX,
+				iIndex + m_iNumVerticesX + 1,
+				iIndex + 1,
+				iIndex
+			};
+
+			/*
+			육면체 중 가장 가까운 거리를 찾아야 하니까.. vPos를 기준으로 pOut과 가장 가까운지 체크
+			*/
+			if (true == m_pGameInstance->Picking_InLocalSpace(pTransform->Get_WorldMatrixInvPtr(), vPos, vLook, m_pVertexPositions[iIndices[0]], m_pVertexPositions[iIndices[1]], m_pVertexPositions[iIndices[2]], pOut))
+			{
+				D3DXVec3TransformCoord(pOut, pOut, pTransform->Get_WorldMatrixPtr());
+				return true;
+			}
+
+			if (true == m_pGameInstance->Picking_InLocalSpace(pTransform->Get_WorldMatrixInvPtr(), vPos, vLook, m_pVertexPositions[iIndices[0]], m_pVertexPositions[iIndices[2]], m_pVertexPositions[iIndices[3]], pOut))
+			{
+				D3DXVec3TransformCoord(pOut, pOut, pTransform->Get_WorldMatrixPtr());
+				return true;
+			}
+		}
+	}
+
+	return false;
+}

@@ -42,11 +42,28 @@ void CCollision_Manager::Check_OBBCollision(const _wstring& strLayerTagSrc, cons
 			}
 		}
 	}
-
 }
 
-void CCollision_Manager::Check_RayCollision()
+void CCollision_Manager::Check_LookCollision(_float3 vPos, _float3 vLook, const _wstring& strLayerTagDst, _uint iLayerLevel, _float3* vColisionPos)
 {
+    CLayer* pDstLayer = m_pGameInstance->Find_Layer(iLayerLevel, strLayerTagDst);
+
+    if (pDstLayer == nullptr)
+        return;
+
+    list<CGameObject*> GameObjectDst = pDstLayer->Get_GameObjects();
+
+    if (GameObjectDst.empty())
+        return;
+
+    for (auto& pDst : GameObjectDst)
+    {
+        /*
+        * vCollisionPos가 이전 값과 같으면 그냥 좀 길게 쏘도록 해야지?
+        */
+        if (Look_Collision(pDst, vColisionPos, vPos, vLook))
+            int a = 10;
+    }
 }
 
 _bool CCollision_Manager::OBB_Collision(CGameObject* pSrc, CGameObject* pDst, _float3* vMTV)
@@ -168,6 +185,13 @@ _bool CCollision_Manager::OBB_Collision(CGameObject* pSrc, CGameObject* pDst, _f
     return true;
 }
 
+_bool CCollision_Manager::Look_Collision(CGameObject* pDst, _float3* vCollisionPos, _float3 vPos, _float3 vLook)
+{
+    CVIBuffer* pBuffer = static_cast<CVIBuffer*>(pDst->Find_Component(TEXT("Com_VIBuffer")));
+    CTransform* pTransform = static_cast<CTransform*>(pDst->Find_Component(TEXT("Com_Transform")));
+
+    return (pBuffer->Picking(pTransform, vCollisionPos, vPos, vLook));
+}
 
 CCollision_Manager* CCollision_Manager::Create()
 {

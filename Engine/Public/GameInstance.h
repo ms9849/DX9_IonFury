@@ -49,6 +49,7 @@ public:
 	HRESULT Add_GameObject_ToLayer(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, _uint iLayerLevelIndex, const _wstring& strLayerTag, void* pArg = nullptr);
 	class CGameObject* Find_GameObject_ToLayer(_uint iLayerLevelIndex, const _wstring& strLayerTag, void* pArg = nullptr);
 	class CLayer* Find_Layer(_uint iLayerLevelIndex, const _wstring& strLayerTag);
+	map<const _wstring, class CLayer*> Get_Layers_InLevel(_uint iLayerLevelIndex);
 #pragma endregion
 
 #pragma region RENDERER
@@ -73,8 +74,14 @@ public:
 
 #pragma region COLLISION_MANAGER
 	void	Check_OBBCollision(const _wstring& strLayerTagSrc, const _wstring& strLayerTagDst, _uint iLayerLevel);
+	void	Check_LookCollision(_float3 vPos, _float3 vLook, const _wstring& strLayerTagDst, _uint iLayerLevel, _float3* vColisionPos);
 #pragma endregion
 
+#pragma region PICKING 
+	_bool Picking_InWorldSpace(const _float3& vRayPos, const _float3& vRayDir, const _float3& vPointA, const _float3& vPointB, const _float3& vPointC, _float3* pOut);
+	_bool Picking_InLocalSpace(const _float4x4* pWorldMatrixInverse, const _float3& vRayPos, const _float3& vRayDir, const _float3& vPointA, const _float3& vPointB, const _float3& vPointC, _float3* pOut);
+
+#pragma endregion
 private:
 	class CGraphic_Device*			m_pGraphic_Device = { nullptr };
 	class CTimer_Manager*			m_pTimer_Manager = { nullptr };
@@ -85,6 +92,7 @@ private:
 	class CKey_Manager* m_pKey_Manager = { nullptr };
 	class CSound_Manager* m_pSound_Manager = { nullptr };
 	class CCollision_Manager* m_pCollision_Manager = { nullptr };
+	class CPicking* m_pPicking = { nullptr };
 
 public:
 	void Release_Engine();
