@@ -2,6 +2,7 @@
 
 #include "GameInstance.h"
 #include "Bullet.h"
+#include "BehaviorNode.h"
 
 CMonster::CMonster(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CLandObject{ pGraphic_Device }
@@ -47,6 +48,27 @@ HRESULT CMonster::Initialize(void* pArg)
 	//m_pTransformCom->Rotation({0.f, 1.f, 0.f}, m_pGameInstance->Random(0.f, 180.f));
 	//m_pTransformCom->LookAt(m_pPlayerTransform->Get_State(STATE::POSITION));
 
+	SelectorNode* root = new SelectorNode();
+
+	//SequenceNode* SightSequence = new SequenceNode();
+	SequenceNode* AttackSequence = new SequenceNode();
+	AttackSequence->AddChild(new ConditionNode([this](float fTimeDelta) {
+		return this->m_pSightCom->Check_Sight(fTimeDelta);
+		}));
+
+	AttackSequence->AddChild(new ConditionNode([this](float fTimeDelta) {
+		m_fAccumulation += fTimeDelta;
+		return m_fAccumulation >= m_fCoolTime;
+		}));
+
+	AttackSequence->AddChild(new ActionNode([this]() {
+		this->Attack();
+		m_fAccumulation = 0.f;
+		}));
+
+	root->AddChild(AttackSequence);
+	m_pRoot = root;
+
 	return S_OK;
 }
 
@@ -57,7 +79,9 @@ void CMonster::Priority_Update(_float fTimeDelta)
 
 void CMonster::Update(_float fTimeDelta)
 {
-	if (m_fAccumulation > m_fCoolTime)
+	m_pRoot->Run(fTimeDelta);
+
+	/*if (m_fAccumulation > m_fCoolTime)
 	{
 		Attack();
 		m_fAccumulation = 0.f;
@@ -66,7 +90,7 @@ void CMonster::Update(_float fTimeDelta)
 	{
 		m_fAccumulation += fTimeDelta;
 	}
-	m_pSightCom->Check_Sight(fTimeDelta);
+	m_pSightCom->Check_Sight(fTimeDelta);*/
 	_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
 	vDiff.y = 0.f;
 	D3DXVec3Normalize(&vDiff, &vDiff); // 정규화 필수

@@ -3,6 +3,7 @@
 #include "Client_Defines.h"
 #include "LandObject.h"
 #include "Animation.h"
+#include "BehaviorNode.h"
 
 NS_BEGIN(Engine)
 class CTexture;
@@ -47,6 +48,7 @@ private:
 	int						m_iNum = 0;
 	_float m_fCoolTime = 3.f;
 	_float m_fAccumulation = 0.f;
+	BehaviorNode* m_pRoot = { nullptr };
 
 private:
 	HRESULT Ready_Components();
