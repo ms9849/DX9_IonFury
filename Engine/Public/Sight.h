@@ -28,7 +28,7 @@ public:
 	virtual HRESULT Initialize(void* pArg) override;
 
 public:	
-	void Check_Sight(_float fTimeDelta);
+	_bool Check_Sight(_float fTimeDelta);
 
 private:
 	_float				m_fRadian = {};
