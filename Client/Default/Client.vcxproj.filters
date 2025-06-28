@@ -85,6 +85,9 @@
     <Filter Include="02.GameObjects\Item\ItemArmor">
       <UniqueIdentifier>{d2d7d8ed-e494-4def-b127-8a8ebb2a844b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\UI\UIArmor">
+      <UniqueIdentifier>{95f9bb18-d33f-4cb4-ad33-68d9d8f30be9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -170,6 +173,9 @@
     </ClInclude>
     <ClInclude Include="..\public\ItemArmor.h">
       <Filter>02.GameObjects\Item\ItemArmor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\UIArmor.h">
+      <Filter>02.GameObjects\UI\UIArmor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -257,6 +263,9 @@
     </ClCompile>
     <ClCompile Include="..\private\ItemArmor.cpp">
       <Filter>02.GameObjects\Item\ItemArmor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\UIArmor.cpp">
+      <Filter>02.GameObjects\UI\UIArmor</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

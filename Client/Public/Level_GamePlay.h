@@ -8,6 +8,7 @@
 #include "UIBullets.h"
 #include "UIInteraction.h"
 #include "UIAim.h"
+#include "UIArmor.h"
 
 NS_BEGIN(Client)
 
@@ -37,6 +38,7 @@ private:
 	CCamera* m_pCamera{ nullptr };
 	CPlayer* m_pPlayer{ nullptr };
 	CUIHp* m_pUIHp{ nullptr };
+	CUIArmor* m_pUIArmor{ nullptr };
 	CUIBullets* m_pUIBullets{ nullptr };
 	CUIInteraction* m_pUIInteraction{ nullptr };
 	CUIAim* m_pUIAim{ nullptr };

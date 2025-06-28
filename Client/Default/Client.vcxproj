@@ -162,6 +162,7 @@
     <ClInclude Include="..\Public\Player_Hand.h" />
     <ClInclude Include="..\Public\Sky.h" />
     <ClInclude Include="..\public\Terrain.h" />
+    <ClInclude Include="..\public\UIArmor.h" />
     <ClInclude Include="..\Public\UIBullets.h" />
     <ClInclude Include="..\Public\UIFont.h" />
     <ClInclude Include="..\Public\UIHp.h" />
@@ -191,6 +192,7 @@
     <ClCompile Include="..\Private\Player_Hand.cpp" />
     <ClCompile Include="..\Private\Sky.cpp" />
     <ClCompile Include="..\private\Terrain.cpp" />
+    <ClCompile Include="..\private\UIArmor.cpp" />
     <ClCompile Include="..\Private\UIBullets.cpp" />
     <ClCompile Include="..\Private\UIFont.cpp" />
     <ClCompile Include="..\Private\UIHp.cpp" />
