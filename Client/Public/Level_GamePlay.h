@@ -31,6 +31,7 @@ private:
 	HRESULT Ready_Layer_Effect(const _wstring& strLayerTag);
 	HRESULT Ready_Layer_UI(const _wstring& strLayerTag);
 	HRESULT Ready_Layer_Cube(const _wstring& strLayerTag);
+	HRESULT Ready_Layer_Items(const _wstring& strLayerTag);
 
 private:
 	CCamera* m_pCamera{ nullptr };
