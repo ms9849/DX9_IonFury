@@ -16,12 +16,16 @@ public:
 	virtual HRESULT Initialize_Prototype(const _tchar* pHeightFilePath);
 	virtual HRESULT Initialize(void* pArg) override;
 
+public:
+	// CVIBuffer을(를) 통해 상속됨
+	_bool Picking(CTransform* pTransform, _float3* pOut, _float3 vPos, _float3 vLook) override;
 
 public:
 	static CVIBuffer_Terrain* Create(LPDIRECT3DDEVICE9 pGraphic_Device, _uint iNumVerticesX, _uint iNumVerticesZ);
 	static CVIBuffer_Terrain* Create(LPDIRECT3DDEVICE9 pGraphic_Device, const _tchar* pHeightFilePath);
 	virtual CComponent* Clone(void* pArg) override;
 	virtual void Free() override;
+
 };
 
 NS_END

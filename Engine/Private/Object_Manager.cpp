@@ -127,6 +127,11 @@ CLayer* CObject_Manager::Find_Layer(_uint iLayerLevelIndex, const _wstring& strL
 	return iter->second;
 }
 
+map<const _wstring, class CLayer*> CObject_Manager::Get_Layers_InLevel(_uint iLayerLevelIndex)
+{
+	return m_pLayers[iLayerLevelIndex];
+}
+
 CObject_Manager* CObject_Manager::Create(_uint iNumLevels)
 {
 	CObject_Manager* pInstance = new CObject_Manager();

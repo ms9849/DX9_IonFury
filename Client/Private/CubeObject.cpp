@@ -35,6 +35,11 @@ HRESULT CCubeObject::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
+	m_pTransformCom->Set_Scale(_float3{5.f, 5.f, 5.f});
+	m_pTransformCom->Set_State(STATE::POSITION, { 5.f, 0.f, 5.f });
+	m_pTransformCom->Rotation(m_pTransformCom->Get_State(STATE::LOOK), D3DXToRadian(30.f));
+
+
 	return S_OK;
 }
 
@@ -44,7 +49,7 @@ void CCubeObject::Priority_Update(_float fTimeDelta)
 
 void CCubeObject::Update(_float fTimeDelta)
 {
-	SetUp_OnTerrain(m_pTransformCom, 0.5f);
+	SetUp_OnTerrain(m_pTransformCom, 0.f);
 }
 
 void CCubeObject::Late_Update(_float fTimeDelta)

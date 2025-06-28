@@ -2,6 +2,9 @@
 
 #include "Client_Defines.h"
 #include "GameObject.h"
+/*
+final은 아닐 수 있음
+*/
 
 NS_BEGIN(Engine)
 class CTexture;
@@ -11,12 +14,12 @@ NS_END
 
 NS_BEGIN(Client)
 
-class CSky final : public CGameObject
+class CBullet final : public CGameObject
 {
 private:
-	CSky(LPDIRECT3DDEVICE9 pGraphic_Device);
-	CSky(const CSky& Prototype);
-	virtual ~CSky() = default;
+	CBullet(LPDIRECT3DDEVICE9 pGraphicDev);
+	CBullet(const CBullet& rhs);
+	virtual ~CBullet() = default;
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -27,18 +30,19 @@ public:
 	virtual HRESULT Render() override;
 
 private:
-	CTexture*				m_pTextureCom = { nullptr };
-	CTransform*				m_pTransformCom = { nullptr };	
-	CVIBuffer_Cube*			m_pVIBufferCom = { nullptr };
-	
+	CTexture* m_pTextureCom = { nullptr };
+	CTransform* m_pTransformCom = { nullptr };
+	CVIBuffer_Cube* m_pVIBufferCom = { nullptr };
+
+
 private:
 	HRESULT Ready_Components();
 	HRESULT Begin_RenderState();
 	HRESULT End_RenderState();
 
 public:
-	static CSky* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
-	virtual CGameObject* Clone(void* pArg) override;
+	static CBullet* Create(LPDIRECT3DDEVICE9 pGraphicDev);
+	virtual CBullet* Clone(void* pArg) override;
 	virtual void Free() override;
 };
 
