@@ -45,12 +45,15 @@ private:
 	CTransform* m_pPlayerTransform = { nullptr };
 	
 	int						m_iNum = 0;
+	_float m_fCoolTime = 3.f;
+	_float m_fAccumulation = 0.f;
 
 private:
 	HRESULT Ready_Components();
 	HRESULT Ready_Animations();
 	HRESULT Begin_RenderState();
 	HRESULT End_RenderState();
+	void Attack();
 
 	map<const _wstring, CTexture*> m_pTextureComs;
 

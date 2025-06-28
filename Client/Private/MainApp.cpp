@@ -74,8 +74,6 @@ HRESULT CMainApp::Start_Level(LEVEL eLevelID)
 		return E_FAIL;
 	
 	//m_pGameInstance->PlayBGM(L"TEST.mp3", 1.f);
-	m_pGameInstance->PlayBGM(L"TEST.mp3", 0.f);
->>>>>>> Stashed changes
 
 	return S_OK;
 }
