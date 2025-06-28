@@ -23,7 +23,7 @@ private:
 private:
 	typedef struct tagPlayerInfo
 	{
-		_uint iHp{}, iBullets{};
+		_uint iHp{}, iBullets{}, iArmor{};
 	}PLAYER_INFO;
 
 public:

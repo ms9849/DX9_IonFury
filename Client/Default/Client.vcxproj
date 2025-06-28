@@ -148,6 +148,8 @@
     <ClInclude Include="..\public\Camera.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
     <ClInclude Include="..\Public\CubeObject.h" />
+    <ClInclude Include="..\public\Item.h" />
+    <ClInclude Include="..\public\ItemArmor.h" />
     <ClInclude Include="..\public\UIAim.h" />
     <ClInclude Include="..\Public\Effect.h" />
     <ClInclude Include="..\Public\Level_GamePlay.h" />
@@ -160,6 +162,7 @@
     <ClInclude Include="..\Public\Player_Hand.h" />
     <ClInclude Include="..\Public\Sky.h" />
     <ClInclude Include="..\public\Terrain.h" />
+    <ClInclude Include="..\public\UIArmor.h" />
     <ClInclude Include="..\Public\UIBullets.h" />
     <ClInclude Include="..\Public\UIFont.h" />
     <ClInclude Include="..\Public\UIHp.h" />
@@ -174,7 +177,9 @@
     <ClCompile Include="..\private\BackGround.cpp" />
     <ClCompile Include="..\Private\Bullet.cpp" />
     <ClCompile Include="..\private\Camera.cpp" />
+    <ClCompile Include="..\private\ItemArmor.cpp" />
     <ClCompile Include="..\Private\CubeObject.cpp" />
+    <ClCompile Include="..\private\Item.cpp" />
     <ClCompile Include="..\private\UIAim.cpp" />
     <ClCompile Include="..\Private\Effect.cpp" />
     <ClCompile Include="..\Private\Level_GamePlay.cpp" />
@@ -187,6 +192,7 @@
     <ClCompile Include="..\Private\Player_Hand.cpp" />
     <ClCompile Include="..\Private\Sky.cpp" />
     <ClCompile Include="..\private\Terrain.cpp" />
+    <ClCompile Include="..\private\UIArmor.cpp" />
     <ClCompile Include="..\Private\UIBullets.cpp" />
     <ClCompile Include="..\Private\UIFont.cpp" />
     <ClCompile Include="..\Private\UIHp.cpp" />

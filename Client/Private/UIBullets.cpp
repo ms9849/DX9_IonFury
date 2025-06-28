@@ -97,7 +97,10 @@ void CUIBullets::Set_Bullets(_uint iNumber)
 {
 	m_iBullets = iNumber;
 
-	m_pText->Set_Text(iNumber);
+	_tchar ws[10];
+	swprintf(ws, 10, L"%03d", m_iBullets);
+
+	m_pText->Set_Text(ws);
 }
 
 HRESULT CUIBullets::Ready_Components()
