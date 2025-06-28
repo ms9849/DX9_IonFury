@@ -33,13 +33,13 @@ HRESULT CSight::Initialize(void* pArg)
     return S_OK;
 }
 
-void CSight::Check_Sight(_float fTimeDelta)
+_bool CSight::Check_Sight(_float fTimeDelta)
 {
 	_float3 fDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransform->Get_State(STATE::POSITION);
 	_float fDist = D3DXVec3Length(&fDiff);
 
 	if (fDist > m_fRange)
-		return;
+		return false;
 
 	_float3 fPlayerLook = m_pPlayerTransform->Get_State(STATE::LOOK);
 	_float3 fMonsterLook = m_pTransform->Get_State(STATE::LOOK);
@@ -70,8 +70,10 @@ void CSight::Check_Sight(_float fTimeDelta)
 		m_pTransform->Chase(m_pPlayerTransform->Get_State(STATE::POSITION), fTimeDelta);
 		m_pTransform->LookAt(m_pPlayerTransform->Get_State(STATE::POSITION));
 
-		return;
+		return true;
 	}
+
+	return false;
 }
 
 CSight* CSight::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
