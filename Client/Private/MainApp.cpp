@@ -73,11 +73,7 @@ HRESULT CMainApp::Start_Level(LEVEL eLevelID)
 	if (FAILED(m_pGameInstance->Change_Level(CLevel_Loading::Create(m_pGraphic_Device, LEVEL::LOADING, eLevelID))))
 		return E_FAIL;
 	
-<<<<<<< Updated upstream
 	//m_pGameInstance->PlayBGM(L"TEST.mp3", 1.f);
-=======
-	m_pGameInstance->PlayBGM(L"TEST.mp3", 0.f);
->>>>>>> Stashed changes
 
 	return S_OK;
 }

@@ -202,15 +202,9 @@ void CCamera::Chase_Target(_float3 vLimitDistance, bool isSyncLook, bool isCanTu
 
 		if (isSyncLook)
 		{
-			//// 이건 카메라 방향벡터들 플레이어꺼랑 같게 맞추는부분
-			//m_pTransformCom->Set_State(STATE::UP, pTargetTransform->Get_State(STATE::UP));
-			//m_pTransformCom->Set_State(STATE::LOOK, pTargetTransform->Get_State(STATE::LOOK));
-			//m_pTransformCom->Set_State(STATE::RIGHT, pTargetTransform->Get_State(STATE::RIGHT));
-
-			// 이게 카메라에 의한 플레이어 회전
-			//m_pTargetTransformCom->Turn(_float3{ 0.f, 1.f, 0.f }, fTimeDelta * m_fMove.x * m_fSensor);
-			//m_pTargetTransformCom->Turn(m_pTargetTransformCom->Get_State(STATE::RIGHT), fTimeDelta * m_fMove.y * m_fSensor);
-
+			//// 플레이어 방향 벡터를 카메라와 같게 맞춤
+			m_pTargetTransformCom->Set_State(STATE::RIGHT, m_pTransformCom->Get_State(STATE::RIGHT));
+			m_pTargetTransformCom->Set_State(STATE::UP, m_pTransformCom->Get_State(STATE::UP));
 			m_pTargetTransformCom->Set_State(STATE::LOOK, m_pTransformCom->Get_State(STATE::LOOK));
 		}
 	}
