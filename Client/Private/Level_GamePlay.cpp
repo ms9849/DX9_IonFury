@@ -1,6 +1,5 @@
 #include "Level_GamePlay.h"
 #include "GameInstance.h"
-#include "Camera.h"
 #include "Monster.h"
 #include "UIObject.h"
 
@@ -348,7 +347,4 @@ CLevel_GamePlay* CLevel_GamePlay::Create(LPDIRECT3DDEVICE9 pGraphic_Device, LEVE
 void CLevel_GamePlay::Free()
 {
 	__super::Free();
-
-	Safe_Release(m_pCamera);
-	Safe_Release(m_pPlayer);
 }
