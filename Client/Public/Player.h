@@ -58,7 +58,7 @@ private:
 	CPlayer_Hand*	m_pLeftHand{ nullptr };
 	_wstring		m_strWeapon{TEXT("Pistol")};
 	_wstring		m_strAction{TEXT("Idle")};
-	//_bool			m_bWalk{ false };
+	_bool			m_bWalk{ false };
 
 public:
 	virtual void OnCollision(CGameObject* pDst, COLLISION eColType) override;

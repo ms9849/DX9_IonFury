@@ -197,19 +197,18 @@ HRESULT CPlayer_Hand::Ready_Animations()
 	//Pistol_Walk
 	CAnimation::FRAME_DESC PistolWalkDesc{};
 	iter = m_pTextureComs.find(TEXT("Pistol_Walk"));
-	PistolWalkDesc.iEnd = 10;
+	PistolWalkDesc.iEnd = 9;
 	PistolWalkDesc.Poses.reserve(PistolWalkDesc.iEnd);
 
-	PistolWalkDesc.Poses.push_back(_float3{ -0.1f, 0.05f, 0.f });
-	PistolWalkDesc.Poses.push_back(_float3{ -0.2f, 0.1f, 0.f });
-	PistolWalkDesc.Poses.push_back(_float3{ -0.3f, 0.15f, 0.f });
-	PistolWalkDesc.Poses.push_back(_float3{ -0.4f, 0.1f, 0.f });
-	PistolWalkDesc.Poses.push_back(_float3{ -0.5f, 0.05f, 0.f });
-	PistolWalkDesc.Poses.push_back(_float3{ 0.1f, 0.05f, 0.f });
-	PistolWalkDesc.Poses.push_back(_float3{ 0.2f, 0.1f, 0.f });
-	PistolWalkDesc.Poses.push_back(_float3{ 0.3f, 0.15f, 0.f });
-	PistolWalkDesc.Poses.push_back(_float3{ 0.4f, 0.1f, 0.f });
-	PistolWalkDesc.Poses.push_back(_float3{ 0.5f, 0.05f, 0.f });
+	PistolWalkDesc.Poses.push_back(_float3{ -0.05f, 0.05f, 0.f });
+	PistolWalkDesc.Poses.push_back(_float3{ -0.1f, 0.075f, 0.f });
+	PistolWalkDesc.Poses.push_back(_float3{ -0.15f, 0.1f, 0.f });
+	PistolWalkDesc.Poses.push_back(_float3{ -0.2f, 0.075f, 0.f });
+	PistolWalkDesc.Poses.push_back(_float3{ -0.25f, 0.05f, 0.f });
+	PistolWalkDesc.Poses.push_back(_float3{ -0.2f, 0.075f, 0.f });
+	PistolWalkDesc.Poses.push_back(_float3{ -0.15f, 0.1f, 0.f });
+	PistolWalkDesc.Poses.push_back(_float3{ -0.1f, 0.075f, 0.f });
+	PistolWalkDesc.Poses.push_back(_float3{ -0.05f, 0.05f, 0.f });
 
 	m_Frames.emplace(TEXT("Pistol_Walk"), PistolWalkDesc);
 
