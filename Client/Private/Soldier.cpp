@@ -1,8 +1,7 @@
+#include "Soldier.h"
 #include "GameInstance.h"
 #include "Bullet.h"
 #include "BehaviorNode.h"
-#include "Soldier.h"
-#include "Monster.h"
 
 CSoldier::CSoldier(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CMonster{ pGraphic_Device }
@@ -373,6 +372,10 @@ void CSoldier::Attack()
 
 	m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Bullet"),
 		ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Bullet"), &Desc);
+}
+
+void CSoldier::Move()
+{
 }
 
 CSoldier* CSoldier::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
