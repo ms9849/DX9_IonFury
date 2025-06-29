@@ -56,6 +56,8 @@ HRESULT CUIArmor::Initialize(void* pArg)
 	m_pText = dynamic_cast<CUIText*>(m_pGameInstance->Find_GameObject_ToLayer(Desc.iLayerLevelIndex, Desc.strLayerTag));
 	m_pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player")));
 
+	Safe_AddRef(m_pPlayer);
+
 	return S_OK;
 }
 
@@ -159,4 +161,5 @@ void CUIArmor::Free()
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pTextureCom);
+	Safe_Release(m_pPlayer);
 }
