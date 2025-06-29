@@ -48,7 +48,7 @@ private:
 	int						m_iNum = 0;
 	_float m_fCoolTime = 3.f;
 	_float m_fAccumulation = 0.f;
-	BehaviorNode* m_pRoot = { nullptr };
+	CBehaviorNode* m_pRoot = { nullptr };
 
 private:
 	HRESULT Ready_Components();

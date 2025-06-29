@@ -48,25 +48,25 @@ HRESULT CMonster::Initialize(void* pArg)
 	//m_pTransformCom->Rotation({0.f, 1.f, 0.f}, m_pGameInstance->Random(0.f, 180.f));
 	//m_pTransformCom->LookAt(m_pPlayerTransform->Get_State(STATE::POSITION));
 
-	SelectorNode* root = new SelectorNode();
+	CSelectorNode* root = new CSelectorNode();
 
 	//SequenceNode* SightSequence = new SequenceNode();
-	SequenceNode* AttackSequence = new SequenceNode();
-	AttackSequence->AddChild(new ConditionNode([this](float fTimeDelta) {
+	CSequenceNode* CAttackSequence = new CSequenceNode();
+	CAttackSequence->AddChild(new CConditionNode([this](float fTimeDelta) {
 		return this->m_pSightCom->Check_Sight(fTimeDelta);
 		}));
 
-	AttackSequence->AddChild(new ConditionNode([this](float fTimeDelta) {
+	CAttackSequence->AddChild(new CConditionNode([this](float fTimeDelta) {
 		m_fAccumulation += fTimeDelta;
 		return m_fAccumulation >= m_fCoolTime;
 		}));
 
-	AttackSequence->AddChild(new ActionNode([this]() {
+	CAttackSequence->AddChild(new CActionNode([this]() {
 		this->Attack();
 		m_fAccumulation = 0.f;
 		}));
 
-	root->AddChild(AttackSequence);
+	root->AddChild(CAttackSequence);
 	m_pRoot = root;
 
 	return S_OK;
