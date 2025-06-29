@@ -25,6 +25,8 @@ private:
 	typedef struct tagPlayerInfo
 	{
 		_uint iHp{}, iBullets{}, iArmor{};
+		_wstring strWeapon{ TEXT("Pistol") };
+		_wstring strAction{ TEXT("Idle") };
 	}PLAYER_INFO;
 
 public:
@@ -56,8 +58,6 @@ private:
 	PLAYER_INFO		m_tInfo{};
 	CPlayer_Hand*	m_pRightHand{ nullptr };
 	CPlayer_Hand*	m_pLeftHand{ nullptr };
-	_wstring		m_strWeapon{TEXT("Pistol")};
-	_wstring		m_strAction{TEXT("Idle")};
 	_bool			m_bWalk{ false };
 
 public:
