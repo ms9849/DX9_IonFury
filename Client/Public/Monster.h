@@ -48,7 +48,7 @@ private:
 	int						m_iNum = 0;
 	_float m_fCoolTime = 3.f;
 	_float m_fAccumulation = 0.f;
-	BehaviorNode* m_pRoot = { nullptr };
+	CBehaviorNode* m_pRoot = { nullptr };
 
 private:
 	HRESULT Ready_Components();
@@ -62,8 +62,12 @@ private:
 	_wstring m_strFrameKey{TEXT("Soldier_Front")};
 	map<const _wstring, CAnimation::FRAME_DESC> m_Frames;
 
-	const _wstring m_strFrameKeys[3] = {
-		TEXT("Soldier_Back"), TEXT("Soldier_Front"), TEXT("Soldier_Rotate")
+	const _wstring m_strFrameKeys[14] = {
+		TEXT("Soldier_Attack_Front"), TEXT("Soldier_Attack_SE"), TEXT("Soldier_Attack_SW"),
+		TEXT("Soldier_Die_Default"), TEXT("Soldier_Die_Explosion"), TEXT("Soldier_Die_HeadShot"),
+		TEXT("Soldier_Direction_NE"), TEXT("Soldier_Direction_NW"), TEXT("Soldier_Direction_SE"),
+		TEXT("Soldier_Direction_SW"), TEXT("Soldier_Front"), TEXT("Soldier_Back"),
+		TEXT("Soldier_Left"), TEXT("Soldier_Right")
 	};
 
 public:

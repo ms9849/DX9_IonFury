@@ -48,25 +48,25 @@ HRESULT CMonster::Initialize(void* pArg)
 	//m_pTransformCom->Rotation({0.f, 1.f, 0.f}, m_pGameInstance->Random(0.f, 180.f));
 	//m_pTransformCom->LookAt(m_pPlayerTransform->Get_State(STATE::POSITION));
 
-	SelectorNode* root = new SelectorNode();
+	CSelectorNode* root = new CSelectorNode();
 
 	//SequenceNode* SightSequence = new SequenceNode();
-	SequenceNode* AttackSequence = new SequenceNode();
-	AttackSequence->AddChild(new ConditionNode([this](float fTimeDelta) {
+	CSequenceNode* CAttackSequence = new CSequenceNode();
+	CAttackSequence->AddChild(new CConditionNode([this](float fTimeDelta) {
 		return this->m_pSightCom->Check_Sight(fTimeDelta);
 		}));
 
-	AttackSequence->AddChild(new ConditionNode([this](float fTimeDelta) {
+	CAttackSequence->AddChild(new CConditionNode([this](float fTimeDelta) {
 		m_fAccumulation += fTimeDelta;
 		return m_fAccumulation >= m_fCoolTime;
 		}));
 
-	AttackSequence->AddChild(new ActionNode([this]() {
+	CAttackSequence->AddChild(new CActionNode([this]() {
 		this->Attack();
 		m_fAccumulation = 0.f;
 		}));
 
-	root->AddChild(AttackSequence);
+	root->AddChild(CAttackSequence);
 	m_pRoot = root;
 
 	return S_OK;
@@ -116,7 +116,7 @@ void CMonster::Update(_float fTimeDelta)
 		if (dot >= fFov)
 			m_strFrameKey = TEXT("Soldier_Front");
 		else if (dot > 0.f)
-			m_strFrameKey = TEXT("Soldier_Rotate");
+			m_strFrameKey = TEXT("Soldier_Attack_Front");
 		else
 			m_strFrameKey = TEXT("Soldier_Back");
 	}
@@ -126,7 +126,7 @@ void CMonster::Update(_float fTimeDelta)
 		if (dot >= fFov)
 			m_strFrameKey = TEXT("Soldier_Front");
 		else if (dot > 0.f)
-			m_strFrameKey = TEXT("Soldier_Rotate");
+			m_strFrameKey = TEXT("Soldier_Attack_Front");
 		else
 			m_strFrameKey = TEXT("Soldier_Back");
 	}
@@ -200,21 +200,77 @@ HRESULT CMonster::Render()
 HRESULT CMonster::Ready_Animations()
 {
 	CAnimation::FRAME_DESC Desc{};
-	auto iter = m_pTextureComs.find(TEXT("Soldier_Back"));
 
-	//Soldier_Back
+	//Soldier_Attack_Front
+	auto iter = m_pTextureComs.find(TEXT("Soldier_Attack_Front"));
 	Desc.iEnd = iter->second->Get_Texture_Length();
-	m_Frames.emplace(TEXT("Soldier_Back"), Desc);
+	m_Frames.emplace(TEXT("Soldier_Attack_Front"), Desc);
+
+	//Soldier_Attack_SE
+	iter = m_pTextureComs.find(TEXT("Soldier_Attack_SE"));
+	Desc.iEnd = iter->second->Get_Texture_Length();
+	m_Frames.emplace(TEXT("Soldier_Attack_SE"), Desc);
+
+	//Soldier_Attack_SW
+	iter = m_pTextureComs.find(TEXT("Soldier_Attack_SW"));
+	Desc.iEnd = iter->second->Get_Texture_Length();
+	m_Frames.emplace(TEXT("Soldier_Attack_SW"), Desc);
+
+	//Soldier_Die_Default
+	iter = m_pTextureComs.find(TEXT("Soldier_Die_Default"));
+	Desc.iEnd = iter->second->Get_Texture_Length();
+	m_Frames.emplace(TEXT("Soldier_Die_Default"), Desc);
+
+	//Soldier_Die_Explosion
+	iter = m_pTextureComs.find(TEXT("Soldier_Die_Explosion"));
+	Desc.iEnd = iter->second->Get_Texture_Length();
+	m_Frames.emplace(TEXT("Soldier_Die_Explosion"), Desc);
+
+	//Soldier_Die_HeadShot
+	iter = m_pTextureComs.find(TEXT("Soldier_Die_HeadShot"));
+	Desc.iEnd = iter->second->Get_Texture_Length();
+	m_Frames.emplace(TEXT("Soldier_Die_HeadShot"), Desc);
+
+	//Soldier_Direction_NE
+	iter = m_pTextureComs.find(TEXT("Soldier_Direction_NE"));
+	Desc.iEnd = iter->second->Get_Texture_Length();
+	m_Frames.emplace(TEXT("Soldier_Direction_NE"), Desc);
+
+	//Soldier_Direction_NW
+	iter = m_pTextureComs.find(TEXT("Soldier_Direction_NW"));
+	Desc.iEnd = iter->second->Get_Texture_Length();
+	m_Frames.emplace(TEXT("Soldier_Direction_NW"), Desc);
+
+	//Soldier_Direction_SE
+	iter = m_pTextureComs.find(TEXT("Soldier_Direction_SE"));
+	Desc.iEnd = iter->second->Get_Texture_Length();
+	m_Frames.emplace(TEXT("Soldier_Direction_SE"), Desc);
+
+	//Soldier_Direction_SW
+	iter = m_pTextureComs.find(TEXT("Soldier_Direction_SW"));
+	Desc.iEnd = iter->second->Get_Texture_Length();
+	m_Frames.emplace(TEXT("Soldier_Direction_SW"), Desc);
 
 	//Soldier_Front
 	iter = m_pTextureComs.find(TEXT("Soldier_Front"));
 	Desc.iEnd = iter->second->Get_Texture_Length();
 	m_Frames.emplace(TEXT("Soldier_Front"), Desc);
 
-	//Soldier_Rotate
-	iter = m_pTextureComs.find(TEXT("Soldier_Rotate"));
+	//Soldier_Back
+	iter = m_pTextureComs.find(TEXT("Soldier_Back"));
 	Desc.iEnd = iter->second->Get_Texture_Length();
-	m_Frames.emplace(TEXT("Soldier_Rotate"), Desc);
+	m_Frames.emplace(TEXT("Soldier_Back"), Desc);
+
+	//Soldier_Left
+	iter = m_pTextureComs.find(TEXT("Soldier_Left"));
+	Desc.iEnd = iter->second->Get_Texture_Length();
+	m_Frames.emplace(TEXT("Soldier_Left"), Desc);
+
+	//Soldier_Right
+	iter = m_pTextureComs.find(TEXT("Soldier_Right"));
+	Desc.iEnd = iter->second->Get_Texture_Length();
+	m_Frames.emplace(TEXT("Soldier_Right"), Desc);
+
 
 	return S_OK;
 }
