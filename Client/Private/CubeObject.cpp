@@ -78,6 +78,20 @@ HRESULT CCubeObject::Render()
 	return S_OK;
 }
 
+void CCubeObject::OnCollision(CGameObject* pDst, COLLISION eColType)
+{
+}
+
+const COLLISION_DESC& CCubeObject::Get_CollisionDesc(COLLISION eColType)
+{
+	COLLISION_DESC Desc;
+	Desc.pTransform = m_pTransformCom;
+	Desc.pCollider = m_BoxColliderCom;
+	// TODO: 여기에 return 문을 삽입합니다.
+
+	return Desc;
+}
+
 HRESULT CCubeObject::Ready_Components()
 {
 	/* Com_Transform */
@@ -88,7 +102,7 @@ HRESULT CCubeObject::Ready_Components()
 
 	/* Com_Collider */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_BoxCollider"),
-		TEXT("Com_BoxCollider"), reinterpret_cast<CComponent**>(&m_pColliderCom), nullptr)))
+		TEXT("Com_BoxCollider"), reinterpret_cast<CComponent**>(&m_BoxColliderCom), nullptr)))
 		return E_FAIL;
 
 	/* Com_Texture */
@@ -145,4 +159,5 @@ void CCubeObject::Free()
 	Safe_Release(m_pTextureCom);
 	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pTransformCom);
+	Safe_Release(m_BoxColliderCom);
 }

@@ -17,7 +17,8 @@ public:
 		_float			fRotation;
 		class CTransform* pPlayerTransform;
 		class CTransform* pMonsterTransform;
-	}SIGHT_DESC;
+	} SIGHT_DESC;
+
 private:
 	CSight(LPDIRECT3DDEVICE9 pGraphic_Device);
 	CSight(const CSight& Prototype);

@@ -90,3 +90,23 @@ HRESULT CItem::Ready_Collider()
 
 	return S_OK;
 }
+
+const COLLISION_DESC& CItem::Get_CollisionDesc(COLLISION eColType)
+{
+	COLLISION_DESC Desc;
+	Desc.pCollider = m_pSphereColliderCom;
+	Desc.pTransform = m_pTransformCom;
+
+	return Desc;
+	// TODO: 여기에 return 문을 삽입합니다.
+}
+
+void CItem::Free()
+{
+	__super::Free();
+
+	Safe_Release(m_pTextureCom);
+	Safe_Release(m_pTransformCom);
+	Safe_Release(m_pVIBufferCom);
+	Safe_Release(m_pSphereColliderCom);
+}

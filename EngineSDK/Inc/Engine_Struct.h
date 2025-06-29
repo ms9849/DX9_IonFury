@@ -9,8 +9,16 @@ namespace Engine
 		unsigned int		iNumLevels;
 		unsigned int		iWinSizeX, iWinSizeY;
 		WINMODE				eWindowMode;
+
 	}ENGINE_DESC;
 
+	typedef struct tagCollisionDesc
+	{
+		class CTransform* pTransform;
+		class CComponent* pCollider;
+
+	}COLLISION_DESC;
+	
 	/*D3DDECLUSAGE*/
 	typedef struct tagVertexPositionTexcoord
 	{

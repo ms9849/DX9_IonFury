@@ -125,9 +125,12 @@ HRESULT CLevel_GamePlay::Ready_Lights()
 }
 HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const _wstring& strLayerTag)
 {
-	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Terrain"),
-		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag)))
-		return E_FAIL;
+	for (int i = 0; i < 2; ++i)
+	{
+		if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Terrain"),
+			ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag)))
+			return E_FAIL;
+	}
 
 	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Sky"),
 		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag)))
@@ -152,7 +155,6 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _wstring& strLayerTag)
 		return E_FAIL;
 
 	CCamera* pCamera = dynamic_cast<CCamera*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Camera")));
-	Safe_AddRef(pCamera);
 
 	//pCamera->Camera_Configure_Clear(m_CameraSettings);
 	m_CameraSettings.pTarget = dynamic_cast<CPlayer*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player")));
@@ -164,7 +166,6 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _wstring& strLayerTag)
 	SetCursorPos(g_iWinSizeX * 0.5f, g_iWinSizeY * 0.5f);
 
 	pCamera->Camera_Configure(m_CameraSettings);
-	Safe_Release(pCamera);
 
 	return S_OK;
 }
@@ -347,4 +348,10 @@ CLevel_GamePlay* CLevel_GamePlay::Create(LPDIRECT3DDEVICE9 pGraphic_Device, LEVE
 void CLevel_GamePlay::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pUIHp);
+	Safe_Release(m_pUIArmor);
+	Safe_Release(m_pUIBullets);
+	Safe_Release(m_pUIInteraction);
+	Safe_Release(m_pUIAim);
 }

@@ -41,7 +41,6 @@ HRESULT CFonts::Initialize(void* pArg)
 
 HRESULT CFonts::Set_Font(_uint iKey)
 {
-	int a = 10;
 	auto	iter = m_Fonts.find(iKey);
 	if (iter == m_Fonts.end())
 		return E_FAIL;

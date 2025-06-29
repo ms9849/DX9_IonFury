@@ -113,8 +113,6 @@ HRESULT CUIFont::Ready_Components()
 			strComponentTag, reinterpret_cast<CComponent**>(&pFontsCom))))
 			return E_FAIL;
 
-		Safe_AddRef(pFontsCom);
-
 		m_pFontsComs.emplace(m_strFontKeys[i], pFontsCom);
 	}
 

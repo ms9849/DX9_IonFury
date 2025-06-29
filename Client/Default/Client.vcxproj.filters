@@ -4,9 +4,6 @@
     <Filter Include="99.Defines">
       <UniqueIdentifier>{aa35ed2f-2d92-4aa2-87dc-f26fb070a89a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="98.Default">
-      <UniqueIdentifier>{f37c9b44-d000-4dd3-a7dc-d0a7064abf65}</UniqueIdentifier>
-    </Filter>
     <Filter Include="00.MainApp">
       <UniqueIdentifier>{4c70cc7f-a980-4772-85f7-9cb10ddb9bbf}</UniqueIdentifier>
     </Filter>
@@ -94,6 +91,9 @@
     <Filter Include="02.GameObjects\Monster\BehaviorTree">
       <UniqueIdentifier>{31f75f59-c90a-49cb-bc56-c1160a97b071}</UniqueIdentifier>
     </Filter>
+    <Filter Include="98.Default">
+      <UniqueIdentifier>{f37c9b44-d000-4dd3-a7dc-d0a7064abf65}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -168,9 +168,6 @@
     <ClInclude Include="..\Public\CubeObject.h">
       <Filter>02.GameObjects\CubeObject</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\UIAim.h">
-      <Filter>02.GameObjects\UI\UIAim</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Bullet.h">
       <Filter>02.GameObjects\Bullet</Filter>
     </ClInclude>
@@ -191,6 +188,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\Soldier.h">
       <Filter>02.GameObjects\Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\UIAim.h">
+      <Filter>02.GameObjects\UI\UIAim</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

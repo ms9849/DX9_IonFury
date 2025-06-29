@@ -26,6 +26,15 @@ void CGameObject::OnCollision(CGameObject* pDst, COLLISION eColType)
 	int a = 10;
 }
 
+const COLLISION_DESC& CGameObject::Get_CollisionDesc(COLLISION eColType)
+{
+	// 이 주석을 보고 있다면
+	// 하위 클래스에서 Get_CollisionDesc 구현 안한거니까
+	// 다들 조심
+	COLLISION_DESC desc;
+	return desc;
+}
+
 HRESULT CGameObject::Initialize_Prototype()
 {
 	return S_OK;
