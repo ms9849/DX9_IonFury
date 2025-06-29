@@ -53,6 +53,12 @@ _bool CAnimation::Check_Animation_Finish()
 	return m_bFinished;
 }
 
+void CAnimation::Clear_Animation()
+{
+	m_tFrame->fTime = 0.f;
+	m_bFinished = true;
+}
+
 CAnimation* CAnimation::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 {
 	CAnimation* pInstance = new CAnimation(pGraphic_Device);
