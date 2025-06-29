@@ -24,7 +24,7 @@ private:
 private:
 	typedef struct tagPlayerInfo
 	{
-		_uint iHp{}, iBullets{}, iArmor{};
+		_uint iHp{}, iBullets{}, iShootBullets{}, iArmor{};
 		_wstring strWeapon{ TEXT("Pistol") };
 		_wstring strAction{ TEXT("Idle") };
 	}PLAYER_INFO;

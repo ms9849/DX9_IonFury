@@ -44,7 +44,8 @@ HRESULT CPlayer::Initialize(void* pArg)
 	
 	auto iter = m_Weapons.find(m_tInfo.strWeapon);
 
-	m_tInfo.iBullets = iter->second.iCurrentBullets;;
+	m_tInfo.iBullets = iter->second.iCurrentBullets;
+	m_tInfo.iShootBullets = iter->second.iShootBullets;
 
 	m_pTransformCom->Set_State(STATE::POSITION, _float3(0.f, 0.f, 0.f));
 
@@ -73,12 +74,16 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 		m_tInfo.strWeapon = TEXT("Pistol");
 		iter = m_Weapons.find(m_tInfo.strWeapon);
 		m_tInfo.iBullets = iter->second.iCurrentBullets;
+		iter->second.iShootBullets = iter->second.iShootBullets;
+		m_tInfo.iShootBullets = iter->second.iShootBullets;
 	}
 	if (m_pGameInstance->Key_Down('2'))
 	{
 		m_tInfo.strWeapon = TEXT("ShootGun");
 		iter = m_Weapons.find(m_tInfo.strWeapon);
 		m_tInfo.iBullets = iter->second.iCurrentBullets;
+		iter->second.iShootBullets = iter->second.iShootBullets;
+		m_tInfo.iShootBullets = iter->second.iShootBullets;
 	}
 
 	// 애니메이션 종료 처리 해야됨
@@ -115,19 +120,21 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 		if (m_pGameInstance->Key_Down('R'))
 		{
 			m_tInfo.strAction = TEXT("Reload");
-			iter->second.iShootBullets = 0;
+			iter->second.iShootBullets = iter->second.iCanShootBullets;
+			m_tInfo.iShootBullets = iter->second.iShootBullets;
 		}
 
 		if (m_tInfo.strAction.compare(TEXT("Reload")) != 0)
 		{
 			if (m_pGameInstance->Key_Down(VK_LBUTTON)
-				&& iter->second.iShootBullets < iter->second.iCanShootBullets
+				&& iter->second.iShootBullets > 0
 				&& iter->second.iCurrentBullets > 0)
 			{
 				m_pRightHandAnimationCom->Clear_Animation();
 				iter->second.iCurrentBullets -= 1;
 				m_tInfo.iBullets = iter->second.iCurrentBullets;
-				iter->second.iShootBullets += 1;
+				iter->second.iShootBullets -= 1;
+				m_tInfo.iShootBullets = iter->second.iShootBullets;
 				m_tInfo.strAction = TEXT("Shoot");
 
 				_float3 vOffset = _float3{ 0.f, 0.f, 0.f };
@@ -208,6 +215,7 @@ HRESULT CPlayer::Ready_Weapons()
 	PistolDesc.iBulletsMax = 250;
 	PistolDesc.iCurrentBullets = 230;
 	PistolDesc.iCanShootBullets = 7;
+	PistolDesc.iShootBullets = PistolDesc.iCanShootBullets;
 
 	m_Weapons.emplace(TEXT("Pistol"), PistolDesc);
 
@@ -216,6 +224,7 @@ HRESULT CPlayer::Ready_Weapons()
 	ShootGunDesc.iBulletsMax = 150;
 	ShootGunDesc.iCurrentBullets = 130;
 	ShootGunDesc.iCanShootBullets = 2;
+	ShootGunDesc.iShootBullets = ShootGunDesc.iCanShootBullets;
 
 	m_Weapons.emplace(TEXT("ShootGun"), ShootGunDesc);
 
