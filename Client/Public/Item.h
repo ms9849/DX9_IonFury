@@ -45,11 +45,12 @@ protected:
 
 protected:
     virtual HRESULT Ready_Collider();
+    virtual const COLLISION_DESC& Get_CollisionDesc(COLLISION eColType);
 
 protected:
     //static CItem* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
     virtual CGameObject* Clone(void* pArg) = 0;
-    virtual void Free() {};
+    virtual void Free();
 };
 
 NS_END

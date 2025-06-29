@@ -33,7 +33,6 @@ private:
 
 	_float					m_fFrame = { };
 
-	
 private:
 	HRESULT Ready_Components();
 	HRESULT Begin_RenderState();

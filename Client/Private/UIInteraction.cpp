@@ -52,6 +52,7 @@ HRESULT CUIInteraction::Initialize(void* pArg)
 		return E_FAIL;
 
 	m_pText = dynamic_cast<CUIText*>(m_pGameInstance->Find_GameObject_ToLayer(Desc.iLayerLevelIndex, Desc.strLayerTag));
+	Safe_AddRef(m_pText);
 
 	return S_OK;
 }
@@ -131,4 +132,5 @@ void CUIInteraction::Free()
 
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pVIBufferCom);
+	Safe_Release(m_pText);
 }

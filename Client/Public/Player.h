@@ -42,9 +42,9 @@ private:
 	//CTexture*				m_pTextureCom = { nullptr };
 	CAnimation*				m_pRightHandAnimationCom = { nullptr };
 	CTransform*				m_pTransformCom = { nullptr };	
+	CBoxCollider* m_pBoxColliderCom = { nullptr };
+	CSphereCollider* m_pSphereColliderCom = { nullptr };
 	CVIBuffer_Rect*			m_pVIBufferCom = { nullptr };
-	CBoxCollider*			m_pBoxColliderCom = { nullptr };
-	CSphereCollider*		m_pSphereColliderCom = { nullptr };
 
 private:
 	HRESULT Ready_Components();
@@ -62,7 +62,8 @@ private:
 
 public:
 	virtual void OnCollision(CGameObject* pDst, COLLISION eColType) override;
-	
+	virtual const COLLISION_DESC& Get_CollisionDesc(COLLISION eColType);
+
 public:
 	static CPlayer* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
 	virtual CGameObject* Clone(void* pArg) override;

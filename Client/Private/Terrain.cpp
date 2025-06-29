@@ -34,17 +34,11 @@ void CTerrain::Priority_Update(_float fTimeDelta)
 
 void CTerrain::Update(_float fTimeDelta)
 {
-	if (GetKeyState(VK_LBUTTON) & 0x8000)
-	{
-		_float3		vPickPos{};
-	}
-	
 }
 
 
 void CTerrain::Late_Update(_float fTimeDelta)
 {
-
 	m_pGameInstance->Add_RenderGroup(RENDER::NONBLEND, this);
 }
 

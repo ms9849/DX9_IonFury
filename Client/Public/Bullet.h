@@ -39,6 +39,7 @@ public:
 public:
 	virtual void OnCollision(CGameObject* pDst, COLLISION eColType) override;
 
+
 private:
 	CTexture* m_pTextureCom = { nullptr };
 	CTransform* m_pTransformCom = { nullptr };

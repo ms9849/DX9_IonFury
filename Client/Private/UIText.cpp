@@ -68,7 +68,6 @@ HRESULT CUIText::Initialize(void* pArg)
 
 void CUIText::Priority_Update(_float fTimeDelta)
 {
-	int a = 10;
 }
 
 void CUIText::Update(_float fTimeDelta)
@@ -160,4 +159,9 @@ void CUIText::Free()
 
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pVIBufferCom);
+
+	for (auto& iter : m_vecFont)
+	{
+		Safe_Release(iter);
+	}
 }

@@ -16,6 +16,11 @@ HRESULT CCollision_Manager::Initialize()
 	return S_OK;
 }
 
+HRESULT CCollision_Manager::Add_Layer_ToCollisionMgr(const _wstring& strLayerTag, CGameObject* pGameObject)
+{
+    return S_OK;
+}
+
 void CCollision_Manager::Check_OBBCollision(const _wstring& strLayerTagSrc, const _wstring& strLayerTagDst, _uint iLayerLevel)
 {
 	CLayer* pSrcLayer = m_pGameInstance->Find_Layer(iLayerLevel, strLayerTagSrc);
@@ -98,11 +103,14 @@ void CCollision_Manager::Check_LookCollision(_float3 vPos, _float3 vLook, const 
 
 _bool CCollision_Manager::Sphere_Collision(CGameObject* pSrc, CGameObject* pDst)
 {
-    CTransform* pTransformSrc = static_cast<CTransform*>(pSrc->Find_Component(TEXT("Com_Transform")));
-    CTransform* pTransformDst = static_cast<CTransform*>(pDst->Find_Component(TEXT("Com_Transform")));
+    COLLISION_DESC DescSrc = pSrc->Get_CollisionDesc(COLLISION::SPHERE);
+    COLLISION_DESC DescDst = pDst->Get_CollisionDesc(COLLISION::SPHERE);
 
-    CSphereCollider* pColliderSrc = static_cast<CSphereCollider*>(pSrc->Find_Component(TEXT("Com_SphereCollider")));
-    CSphereCollider* pColliderDst = static_cast<CSphereCollider*>(pDst->Find_Component(TEXT("Com_SphereCollider")));
+    CTransform* pTransformSrc = DescSrc.pTransform;
+    CSphereCollider* pColliderSrc = static_cast<CSphereCollider*>(DescSrc.pCollider);
+
+    CTransform* pTransformDst = DescDst.pTransform;
+    CSphereCollider* pColliderDst = static_cast<CSphereCollider*>(DescDst.pCollider);
 
     _float4x4 matWorldSrc = *pTransformSrc->Get_WorldMatrixPtr();
     _float4x4 matWorldDst = *pTransformDst->Get_WorldMatrixPtr();
@@ -126,11 +134,14 @@ _bool CCollision_Manager::OBB_Collision(CGameObject* pSrc, CGameObject* pDst, _f
     2. 연산량이 엄청남..
        축을 줄이던가 미리 가지고 있을 순 없나?
     */
-    CTransform* pTransformSrc = static_cast<CTransform*>(pSrc->Find_Component(TEXT("Com_Transform")));
-    CTransform* pTransformDst = static_cast<CTransform*>(pDst->Find_Component(TEXT("Com_Transform")));
+    COLLISION_DESC DescSrc = pSrc->Get_CollisionDesc(COLLISION::OBB);
+    COLLISION_DESC DescDst = pDst->Get_CollisionDesc(COLLISION::OBB);
 
-    CBoxCollider* pColliderSrc = static_cast<CBoxCollider*>(pSrc->Find_Component(TEXT("Com_BoxCollider")));
-    CBoxCollider* pColliderDst = static_cast<CBoxCollider*>(pDst->Find_Component(TEXT("Com_BoxCollider")));
+    CTransform* pTransformSrc = DescSrc.pTransform;
+    CBoxCollider* pColliderSrc = static_cast<CBoxCollider*>(DescSrc.pCollider);
+
+    CTransform* pTransformDst = DescDst.pTransform;
+    CBoxCollider* pColliderDst = static_cast<CBoxCollider*>(DescDst.pCollider);
 
     _float4x4 matWorldSrc = *pTransformSrc->Get_WorldMatrixPtr();
     _float4x4 matWorldDst = *pTransformDst->Get_WorldMatrixPtr();

@@ -265,6 +265,19 @@ void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType)
 		int a = 10;
 }
 
+const COLLISION_DESC& CPlayer::Get_CollisionDesc(COLLISION eColType)
+{
+	COLLISION_DESC Desc;
+	Desc.pTransform = m_pTransformCom;
+
+	if (eColType == COLLISION::SPHERE)
+		Desc.pCollider = m_pSphereColliderCom;
+	else if (eColType == COLLISION::OBB)
+		Desc.pCollider = m_pBoxColliderCom;
+	
+	return Desc;
+}
+
 CPlayer* CPlayer::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 {
 	CPlayer* pInstance = new CPlayer(pGraphic_Device);
