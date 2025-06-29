@@ -38,8 +38,7 @@ public:
 	virtual void Move() override;
 
 private:
-	_float m_fMoveCoolTime = 0.05f;
-	_float m_fSumCoolTime = {};
+	_bool m_bAnimationLock = false;
 
 public:
 	static CSoldier* Create(LPDIRECT3DDEVICE9 pGraphic_Device);

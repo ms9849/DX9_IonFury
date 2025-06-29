@@ -38,8 +38,13 @@ protected:
 	CSight* m_pSightCom = { nullptr };
 	CTransform* m_pPlayerTransform = { nullptr };
 	
-	_float m_fCoolTime = 3.f;
-	_float m_fAccumulation = 3.f;
+	_float m_AttackfCoolTime = 3.f;
+	_float m_fSumAttackCoolTime = 3.f;
+	_float m_fMoveCoolTime = 0.05f;
+	_float m_fSumMoveCoolTime = {};
+	_float m_fMaxRange = 8.f;
+	_float m_fHp = 100.f;
+	_bool m_bDying = false;
 	class CBehaviorNode* m_pRoot = { nullptr };
 
 	_wstring m_strFrameKey;

@@ -50,6 +50,7 @@ void CAnimation::Play_Animation(_float fTimeDelta)
 
 _bool CAnimation::Check_Animation_Finish()
 {
+	//return Get_Frame_Index() >= m_tFrame->iEnd;
 	return m_bFinished;
 }
 
