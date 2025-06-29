@@ -118,7 +118,6 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 					ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Bullet"), &Desc);
 			}
 		}
-
 	}
 
 	_tchar strCurrentAnimation[256];
