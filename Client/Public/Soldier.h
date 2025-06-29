@@ -29,14 +29,18 @@ public:
 	virtual HRESULT Render() override;
 	virtual HRESULT Ready_Animations() override;
 
-	HRESULT Ready_Components();
+	HRESULT Ready_Components() override;
+	HRESULT Begin_RenderState() override;
+	HRESULT End_RenderState() override;
 
-	HRESULT Begin_RenderState();
+	virtual void Attack() override;
+	void Move(_float fTimeDelta);
+	virtual void Move() override;
 
-	HRESULT End_RenderState();
+private:
+	_float m_fMoveCoolTime = 0.05f;
+	_float m_fSumCoolTime = {};
 
-	void Attack();
-	void Move();
 public:
 	static CSoldier* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
 	virtual CGameObject* Clone(void* pArg) override;
