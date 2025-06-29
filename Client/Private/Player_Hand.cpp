@@ -29,7 +29,6 @@ HRESULT CPlayer_Hand::Initialize(void* pArg)
 	if (FAILED(Ready_Animations()))
 		return E_FAIL;
 
-
 	return S_OK;
 }
 
@@ -88,7 +87,18 @@ void CPlayer_Hand::Late_Update(_float fTimeDelta)
 
 	//handMatrix = *m_pTransformCom->Get_WorldMatrixPtr();
 
-	vHandPos = { 0.75f, -0.5f, 1.5f };
+	_wstring strWeapon = dynamic_cast<CPlayer*>(m_pGameInstance->Find_GameObject_ToLayer(
+		ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player")))->Get_Player_Info().strWeapon;
+
+	if (strWeapon.compare(TEXT("Pistol")) == 0)
+	{
+		vHandPos = { 0.75f, -0.5f, 1.5f };
+	}
+	else if (strWeapon.compare(TEXT("ShootGun")) == 0)
+	{
+		vHandPos = { 0.5f, -0.6f, 1.5f };
+	}
+
 	if (m_pAnimationCom->Get_Animation()->Poses.size() > 1)
 	{
 		vHandPos += m_pAnimationCom->Get_Animation()->Poses[m_pAnimationCom->Get_Frame_Index()];
@@ -104,6 +114,16 @@ void CPlayer_Hand::Late_Update(_float fTimeDelta)
 	m_pTransformCom->Set_State(STATE::LOOK, *(_float3 *)&CameraMatrix.m[2][0]);
 	m_pTransformCom->Set_State(STATE::POSITION, vHandPos);
 
+	if (strWeapon.compare(TEXT("Pistol")) == 0)
+	{
+		m_pTransformCom->Set_Scale(_float3{ 1.f, 1.f, 1.f });
+	}
+	else if (strWeapon.compare(TEXT("ShootGun")) == 0)
+	{
+		m_pTransformCom->Set_Scale(_float3{ 1.5f, 1.f, 1.f });
+	}
+
+
 	// 애니메이션 프레임 증가
 	m_pAnimationCom->Play_Animation(fTimeDelta);
 
@@ -112,7 +132,7 @@ void CPlayer_Hand::Late_Update(_float fTimeDelta)
 
 HRESULT CPlayer_Hand::Render()
 {
-	m_pTransformCom->Set_Transform();
+ 	m_pTransformCom->Set_Transform();
 
 	// 텍스쳐 컴포넌트로 텍스쳐 렌더링
 	// 텍스쳐는 MainApp에서 STATIC으로 세팅
@@ -186,6 +206,7 @@ HRESULT CPlayer_Hand::Ready_Animations()
 {
 	// 여기서 벡터로 <구조체> 들고 있고 한 애니메이션 마다 미리 싹 세팅
 	auto iter = m_pTextureComs.find(TEXT("Pistol_Idle"));
+#pragma region 권총
 
 	//Pistol_Idle
 	CAnimation::FRAME_DESC PistolIdleDesc{};
@@ -246,6 +267,49 @@ HRESULT CPlayer_Hand::Ready_Animations()
 	PistolShootDesc.iEnd = iter->second->Get_Texture_Length();
 	PistolShootDesc.iFrameSpeed = 4;
 	m_Frames.emplace(TEXT("Pistol_Shoot"), PistolShootDesc);
+#pragma endregion
+
+#pragma region 샷건
+	//ShootGun_Idle
+	iter = m_pTextureComs.find(TEXT("ShootGun_Idle"));
+	CAnimation::FRAME_DESC ShootGunIdleDesc{};
+	ShootGunIdleDesc.iEnd = 0;
+	m_Frames.emplace(TEXT("ShootGun_Idle"), ShootGunIdleDesc);
+
+	//ShootGun_Walk
+	CAnimation::FRAME_DESC ShootGunWalkDesc{};
+	iter = m_pTextureComs.find(TEXT("ShootGun_Walk"));
+	ShootGunWalkDesc.iEnd = 9;
+	ShootGunWalkDesc.Poses.reserve(ShootGunWalkDesc.iEnd);
+
+	ShootGunWalkDesc.Poses.push_back(_float3{ -0.05f, 0.05f, 0.f });
+	ShootGunWalkDesc.Poses.push_back(_float3{ -0.1f, 0.075f, 0.f });
+	ShootGunWalkDesc.Poses.push_back(_float3{ -0.15f, 0.1f, 0.f });
+	ShootGunWalkDesc.Poses.push_back(_float3{ -0.2f, 0.075f, 0.f });
+	ShootGunWalkDesc.Poses.push_back(_float3{ -0.25f, 0.05f, 0.f });
+	ShootGunWalkDesc.Poses.push_back(_float3{ -0.2f, 0.075f, 0.f });
+	ShootGunWalkDesc.Poses.push_back(_float3{ -0.15f, 0.1f, 0.f });
+	ShootGunWalkDesc.Poses.push_back(_float3{ -0.1f, 0.075f, 0.f });
+	ShootGunWalkDesc.Poses.push_back(_float3{ -0.05f, 0.05f, 0.f });
+
+	m_Frames.emplace(TEXT("ShootGun_Walk"), ShootGunWalkDesc);
+
+	// ShootGun_Reload
+	CAnimation::FRAME_DESC ShootGunReloadDesc{};
+	iter = m_pTextureComs.find(TEXT("ShootGun_Reload"));
+	ShootGunReloadDesc.iEnd = iter->second->Get_Texture_Length();
+	ShootGunReloadDesc.iFrameSpeed = 4;
+
+	m_Frames.emplace(TEXT("ShootGun_Reload"), ShootGunReloadDesc);
+
+	// ShootGun_Shoot
+	CAnimation::FRAME_DESC ShootGunShootDesc{};
+	iter = m_pTextureComs.find(TEXT("ShootGun_Shoot"));
+	ShootGunShootDesc.iEnd = iter->second->Get_Texture_Length();
+	//PistolShootDesc.iFrameSpeed = 4;
+	m_Frames.emplace(TEXT("ShootGun_Shoot"), ShootGunShootDesc);
+#pragma endregion
+
 
 	return S_OK;
 }

@@ -44,8 +44,9 @@ private:
     _wstring m_strFrameKey{ TEXT("Pistol_Idle") };
     map<const _wstring, CAnimation::FRAME_DESC> m_Frames;
 
-    const _wstring m_strFrameKeys[4] = {
-        TEXT("Pistol_Idle"), TEXT("Pistol_Walk"), TEXT("Pistol_Reload"), TEXT("Pistol_Shoot")
+    const _wstring m_strFrameKeys[8] = {
+        TEXT("Pistol_Idle"), TEXT("Pistol_Walk"), TEXT("Pistol_Reload"), TEXT("Pistol_Shoot"),
+        TEXT("ShootGun_Idle"), TEXT("ShootGun_Walk"), TEXT("ShootGun_Reload"), TEXT("ShootGun_Shoot")
     };
 
 private:  

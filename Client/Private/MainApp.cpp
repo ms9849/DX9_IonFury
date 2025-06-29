@@ -134,24 +134,46 @@ HRESULT CMainApp::Ready_Prototypes()
 
 #pragma region 플레이어 애니메이션 텍스처
 	// 권총
-	/* For.Prototype_Component_Player_Pistol_Idle */
+	/* For.Prototype_Component_Texture_Player_Pistol_Idle */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Player_Pistol_Idle"),
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Player/Pistol/Idle_%d.png"), 1))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_Player_Pistol_Idle */
+	/* For.Prototype_Component_Texture_Player_Pistol_Idle */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Player_Pistol_Walk"),
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Player/Pistol/Idle_%d.png"), 1))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_Player_Pistol_Reload */
+	/* For.Prototype_Component_Texture_Player_Pistol_Reload */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Player_Pistol_Reload"),
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Player/Pistol/Reload_%d.png"), 19))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_Player_Pistol_Shoot */
+	/* For.Prototype_Component_Texture_Player_Pistol_Shoot */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Player_Pistol_Shoot"),
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Player/Pistol/Shoot_%d.png"), 5))))
+		return E_FAIL;
+
+	// 샷건
+	/* For.Prototype_Component_Texture_Player_ShootGun_Idle */
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Player_ShootGun_Idle"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Player/ShootGun/Idle_%d.png"), 1))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Player_ShootGun_Idle */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Player_ShootGun_Walk"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Player/ShootGun/Idle_%d.png"), 1))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Player_ShootGun_Reload */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Player_ShootGun_Reload"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Player/ShootGun/Reload_%d.png"), 29))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Player_ShootGun_Shoot */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Player_ShootGun_Shoot"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Player/ShootGun/Shoot_%d.png"), 11))))
 		return E_FAIL;
 #pragma endregion
 

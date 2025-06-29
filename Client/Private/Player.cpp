@@ -58,51 +58,55 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 {
 	if (m_pGameInstance->Key_Down('1'))
 	{
-		m_strWeapon = TEXT("Pistol");
+		m_tInfo.strWeapon = TEXT("Pistol");
+	}
+	if (m_pGameInstance->Key_Down('2'))
+	{
+		m_tInfo.strWeapon = TEXT("ShootGun");
 	}
 
 	// 애니메이션 종료 처리 해야됨
 	if (m_pRightHandAnimationCom->Check_Animation_Finish())
 	{
-		m_strAction = TEXT("Idle");
+		m_tInfo.strAction = TEXT("Idle");
 	}
 	else
 	{
 		if (m_pGameInstance->Key_Pressing('W'))
 		{
 			m_pTransformCom->Go_Straight(fTimeDelta);
-			if(m_strAction.compare(TEXT("Idle")) == 0)
-				m_strAction = TEXT("Walk");
+			if (m_tInfo.strAction.compare(TEXT("Idle")) == 0)
+				m_tInfo.strAction = TEXT("Walk");
 		}
 		if (m_pGameInstance->Key_Pressing('S'))
 		{
 			m_pTransformCom->Go_Backward(fTimeDelta);
-			if (m_strAction.compare(TEXT("Idle")) == 0)
-				m_strAction = TEXT("Walk");
+			if (m_tInfo.strAction.compare(TEXT("Idle")) == 0)
+				m_tInfo.strAction = TEXT("Walk");
 		}
 		if (m_pGameInstance->Key_Pressing('A'))
 		{
 			m_pTransformCom->Go_Left(fTimeDelta);
-			if (m_strAction.compare(TEXT("Idle")) == 0)
-				m_strAction = TEXT("Walk");
+			if (m_tInfo.strAction.compare(TEXT("Idle")) == 0)
+				m_tInfo.strAction = TEXT("Walk");
 		}
 		if (m_pGameInstance->Key_Pressing('D'))
 		{
 			m_pTransformCom->Go_Right(fTimeDelta);
-			if (m_strAction.compare(TEXT("Idle")) == 0)
-				m_strAction = TEXT("Walk");
+			if (m_tInfo.strAction.compare(TEXT("Idle")) == 0)
+				m_tInfo.strAction = TEXT("Walk");
 		}
 		if (m_pGameInstance->Key_Down('R'))
 		{
-			m_strAction = TEXT("Reload");
+			m_tInfo.strAction = TEXT("Reload");
 		}
 
-		if (m_strAction.compare(TEXT("Reload")) != 0)
+		if (m_tInfo.strAction.compare(TEXT("Reload")) != 0)
 		{
 			if (m_pGameInstance->Key_Down(VK_LBUTTON))
 			{
 				m_tInfo.iBullets -= 1;
-				m_strAction = TEXT("Shoot");
+				m_tInfo.strAction = TEXT("Shoot");
 
 				_float3 vOffset = _float3{ 0.f, 0.f, 0.f };
 				_float3 vDir = Calc_BulletDir(&vOffset);
@@ -122,7 +126,7 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 
 	_tchar strCurrentAnimation[256];
 
-	wsprintf(strCurrentAnimation, TEXT("%s_%s"), m_strWeapon.c_str(), m_strAction.c_str());
+	wsprintf(strCurrentAnimation, TEXT("%s_%s"), m_tInfo.strWeapon.c_str(), m_tInfo.strAction.c_str());
 
 	m_pRightHand->Set_Current_Animation(strCurrentAnimation);
 }

@@ -46,6 +46,7 @@ protected:
 protected:
     virtual HRESULT Ready_Collider();
     virtual const COLLISION_DESC& Get_CollisionDesc(COLLISION eColType);
+    
 
 protected:
     //static CItem* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
