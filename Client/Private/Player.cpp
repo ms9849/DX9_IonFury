@@ -69,22 +69,26 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 {
 	auto iter = m_Weapons.find(m_tInfo.strWeapon);
 
-	if (m_pGameInstance->Key_Down('1'))
+	if (m_tInfo.strAction.compare(TEXT("Reload")) != 0)
 	{
-		m_tInfo.strWeapon = TEXT("Pistol");
-		iter = m_Weapons.find(m_tInfo.strWeapon);
-		m_tInfo.iBullets = iter->second.iCurrentBullets;
-		iter->second.iShootBullets = iter->second.iShootBullets;
-		m_tInfo.iShootBullets = iter->second.iShootBullets;
+		if (m_pGameInstance->Key_Down('1'))
+		{
+			m_tInfo.strWeapon = TEXT("Pistol");
+			iter = m_Weapons.find(m_tInfo.strWeapon);
+			m_tInfo.iBullets = iter->second.iCurrentBullets;
+			iter->second.iShootBullets = iter->second.iShootBullets;
+			m_tInfo.iShootBullets = iter->second.iShootBullets;
+		}
+		if (m_pGameInstance->Key_Down('2'))
+		{
+			m_tInfo.strWeapon = TEXT("ShootGun");
+			iter = m_Weapons.find(m_tInfo.strWeapon);
+			m_tInfo.iBullets = iter->second.iCurrentBullets;
+			iter->second.iShootBullets = iter->second.iShootBullets;
+			m_tInfo.iShootBullets = iter->second.iShootBullets;
+		}
 	}
-	if (m_pGameInstance->Key_Down('2'))
-	{
-		m_tInfo.strWeapon = TEXT("ShootGun");
-		iter = m_Weapons.find(m_tInfo.strWeapon);
-		m_tInfo.iBullets = iter->second.iCurrentBullets;
-		iter->second.iShootBullets = iter->second.iShootBullets;
-		m_tInfo.iShootBullets = iter->second.iShootBullets;
-	}
+	
 
 	// 애니메이션 종료 처리 해야됨
 	if (m_pRightHandAnimationCom->Check_Animation_Finish())
