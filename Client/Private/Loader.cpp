@@ -5,7 +5,6 @@
 #include "Terrain.h"
 #include "Player.h"
 #include "Player_Hand.h"
-#include "Monster.h"
 #include "Sky.h"
 #include "Bullet.h"
 #include "UIHp.h"
@@ -17,6 +16,7 @@
 #include "UIArmor.h"
 #include "ItemArmor.h"
 #include "ItemHealpack.h"
+#include "Soldier.h"
 
 #include "GameInstance.h"
 
@@ -209,7 +209,7 @@ HRESULT CLoader::Loading_For_GamePlay()
 
 	/* For.Prototype_GameObject_Monster */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Monster"),
-		CMonster::Create(m_pGraphic_Device))))
+		CSoldier::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_Sky */

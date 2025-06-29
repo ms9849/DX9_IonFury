@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Client_Defines.h"
 #include "Base.h"
 
 NS_BEGIN(Client)
@@ -19,7 +20,7 @@ class CConditionNode : public CBehaviorNode
 public:
     CConditionNode(function<bool()> condition);
     CConditionNode(function<bool(_float)> condition);
-    _bool Run(float) override;
+    _bool Run(_float) override;
 
 private:
     function<bool(_float)> m_bCondition;
