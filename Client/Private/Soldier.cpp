@@ -49,20 +49,35 @@ HRESULT CSoldier::Initialize(void* pArg)
 
 	CSelectorNode* root = new CSelectorNode();
 
+	CSequenceNode* CCheckHpSequence = new CSequenceNode();
+	CCheckHpSequence->AddChild(new CConditionNode([this]() {
+		if (m_fHp >= 0)
+			m_fHp -= 0.1f;
+
+		return this->m_fHp <= 0;
+		}));
+
+	CCheckHpSequence->AddChild(new CActionNode([this]() {
+		m_strFrameKey = TEXT("Soldier_Die_Explosion");
+		m_bAnimationLock = true;
+		m_bDying = true;
+		}));
+
 	CSequenceNode* CAttackSequence = new CSequenceNode();
 	CAttackSequence->AddChild(new CConditionNode([this](_float fTimeDelta) {
 		return this->m_pSightCom->Check_Sight(fTimeDelta);
 		}));
 
 	CAttackSequence->AddChild(new CConditionNode([this](_float fTimeDelta) {
-		m_fAccumulation += fTimeDelta;
-		return m_fAccumulation >= m_fCoolTime;
+		m_fSumAttackCoolTime += fTimeDelta;
+		return m_fSumAttackCoolTime >= m_AttackfCoolTime;
 		}));
 
 	CAttackSequence->AddChild(new CActionNode([this]() {
 		m_strFrameKey = TEXT("Soldier_Attack_Front");
+		m_bAnimationLock = true;
 		this->Attack();
-		m_fAccumulation = 0.f;
+		m_fSumAttackCoolTime = 0.f;
 		}));
 
 	CSequenceNode* CMoveSequence = new CSequenceNode();
@@ -70,16 +85,22 @@ HRESULT CSoldier::Initialize(void* pArg)
 		return !this->m_pSightCom->Check_Sight(fTimeDelta);
 		}));
 
+	CMoveSequence->AddChild(new CConditionNode([this]() {
+		_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
+		return this->m_fMaxRange >= D3DXVec3Length(&vDiff);
+		}));
+
 	CMoveSequence->AddChild(new CConditionNode([this](_float fTimeDelta) {
-		m_fSumCoolTime += fTimeDelta;
-		return m_fSumCoolTime >= m_fMoveCoolTime;
+		m_fSumMoveCoolTime += fTimeDelta;
+		return m_fSumMoveCoolTime >= m_fMoveCoolTime;
 		}));
 
 	CMoveSequence->AddChild(new CActionNode([this](_float fTimeDelta) {
 		this->Move(fTimeDelta);
-		m_fSumCoolTime = 0.f;
+		m_fSumMoveCoolTime = 0.f;
 		}));
 
+	root->AddChild(CCheckHpSequence);
 	root->AddChild(CAttackSequence);
 	root->AddChild(CMoveSequence);
 
@@ -95,18 +116,6 @@ void CSoldier::Priority_Update(_float fTimeDelta)
 
 void CSoldier::Update(_float fTimeDelta)
 {
-	m_pRoot->Run(fTimeDelta);
-
-	/*if (m_fAccumulation > m_fCoolTime)
-	{
-		Attack();
-		m_fAccumulation = 0.f;
-	}
-	else
-	{
-		m_fAccumulation += fTimeDelta;
-	}
-	m_pSightCom->Check_Sight(fTimeDelta);*/
 	_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
 	vDiff.y = 0.f;
 	D3DXVec3Normalize(&vDiff, &vDiff);
@@ -121,53 +130,50 @@ void CSoldier::Update(_float fTimeDelta)
 	_float3 vCross;
 	D3DXVec3Cross(&vCross, &vMonsterLook, &vDiff);
 
-	// 시야각 90도 (45도 양방향)
 	_float fFov = cosf(D3DXToRadian(45.f));
 
-	//if (dot >= fFov)
-	//{
-	//	// 정면
-	//	if (vCross.y > 0)
-	//		m_strFrameKey = TEXT("Soldier_Direction_SE");
-	//	else if (vCross.y < 0)
-	//		m_strFrameKey = TEXT("Soldier_Direction_SW");
-	//	else
-	//		m_strFrameKey = TEXT("Soldier_Front");
-	//}
-	//else
-	//{
-	//	// 후면
-	//	if (vCross.y > 0)
-	//		m_strFrameKey = TEXT("Soldier_Direction_NE");
-	//	else if (vCross.y < 0)
-	//		m_strFrameKey = TEXT("Soldier_Direction_NW");
-	//	else
-	//		m_strFrameKey = TEXT("Soldier_Back");
-	//}
+	if (!m_bAnimationLock)
+	{
+		_float angle30 = cosf(D3DXToRadian(30.f));
+		_float angle60 = cosf(D3DXToRadian(60.f));
 
-	if (vCross.y > 0)
-	{
-		// 오른쪽
 		if (dot >= fFov)
+		{
 			m_strFrameKey = TEXT("Soldier_Front");
-		else if (dot > 0.f)
-			m_strFrameKey = TEXT("Soldier_Attack_Front");
-		else
+		}
+		else if (dot <= -fFov)
+		{
 			m_strFrameKey = TEXT("Soldier_Back");
-	}
-	else
-	{
-		// 왼쪽
-		if (dot >= fFov)
-			m_strFrameKey = TEXT("Soldier_Front");
-		else if (dot > 0.f)
-			m_strFrameKey = TEXT("Soldier_Attack_Front");
+		}
 		else
-			m_strFrameKey = TEXT("Soldier_Back");
+		{
+			if (vCross.y > 0)
+			{
+				if (dot > 0)
+					m_strFrameKey = TEXT("Soldier_Direction_SW");
+				else
+					m_strFrameKey = TEXT("Soldier_Direction_NW");
+			}
+			else
+			{
+				if (dot > 0)
+					m_strFrameKey = TEXT("Soldier_Direction_SE");
+				else
+					m_strFrameKey = TEXT("Soldier_Direction_NE");
+			}
+		}
 	}
+
+	m_pRoot->Run(fTimeDelta);
 
 	auto iter = m_Frames.find(m_strFrameKey);
 	m_pAnimationCom->Set_Animation(&iter->second);
+
+	/*if (m_bAnimationLock)
+	{
+		if (m_pAnimationCom->Check_Animation_Finish())
+			m_bAnimationLock = false;
+	}*/
 
 	/*szBuffer[128];
 	swprintf_s(szBuffer, L"몬스터 방향 벡터 x : %.1f, y : %.1f, z : %.1f\n", m_pTransformCom->Get_State(STATE::LOOK).x, m_pTransformCom->Get_State(STATE::LOOK).y, m_pTransformCom->Get_State(STATE::LOOK).z);
@@ -178,6 +184,12 @@ void CSoldier::Update(_float fTimeDelta)
 
 void CSoldier::Late_Update(_float fTimeDelta)
 {
+	if (m_bAnimationLock && m_pAnimationCom->Check_Animation_Finish())
+	{
+		if (m_bDying)
+			m_isDead = true;
+		m_bAnimationLock = false;
+	}
 	m_pAnimationCom->Play_Animation(fTimeDelta);
 	m_pGameInstance->Add_RenderGroup(RENDER::NONBLEND, this);
 }
@@ -234,77 +246,103 @@ HRESULT CSoldier::Render()
 
 HRESULT CSoldier::Ready_Animations()
 {
-	CAnimation::FRAME_DESC Desc{};
+	CAnimation::FRAME_DESC Desc_0{};
+	CAnimation::FRAME_DESC Desc_1{};
+	CAnimation::FRAME_DESC Desc_2{};
+	CAnimation::FRAME_DESC Desc_3{};
+	CAnimation::FRAME_DESC Desc_4{};
+	CAnimation::FRAME_DESC Desc_5{};
+	CAnimation::FRAME_DESC Desc_6{};
+	CAnimation::FRAME_DESC Desc_7{};
+	CAnimation::FRAME_DESC Desc_8{};
+	CAnimation::FRAME_DESC Desc_9{};
+	CAnimation::FRAME_DESC Desc_10{};
+	CAnimation::FRAME_DESC Desc_11{};
+	CAnimation::FRAME_DESC Desc_12{};
+	CAnimation::FRAME_DESC Desc_13{};
 
-	//Soldier_Attack_Front
 	auto iter = m_pTextureComs.find(TEXT("Soldier_Attack_Front"));
-	Desc.iEnd = iter->second->Get_Texture_Length();
-	m_Frames.emplace(TEXT("Soldier_Attack_Front"), Desc);
+	Desc_0.iFrameSpeed = 15;
+	Desc_0.iEnd = iter->second->Get_Texture_Length();
+	m_Frames.emplace(TEXT("Soldier_Attack_Front"), Desc_0);
 
 	//Soldier_Attack_SE
 	iter = m_pTextureComs.find(TEXT("Soldier_Attack_SE"));
-	Desc.iEnd = iter->second->Get_Texture_Length();
-	m_Frames.emplace(TEXT("Soldier_Attack_SE"), Desc);
+	Desc_1.iFrameSpeed = 15;
+	Desc_1.iEnd = iter->second->Get_Texture_Length();
+	m_Frames.emplace(TEXT("Soldier_Attack_SE"), Desc_1);
 
 	//Soldier_Attack_SW
 	iter = m_pTextureComs.find(TEXT("Soldier_Attack_SW"));
-	Desc.iEnd = iter->second->Get_Texture_Length();
-	m_Frames.emplace(TEXT("Soldier_Attack_SW"), Desc);
+	Desc_2.iFrameSpeed = 15;
+	Desc_2.iEnd = iter->second->Get_Texture_Length();
+	m_Frames.emplace(TEXT("Soldier_Attack_SW"), Desc_2);
 
 	//Soldier_Die_Default
 	iter = m_pTextureComs.find(TEXT("Soldier_Die_Default"));
-	Desc.iEnd = iter->second->Get_Texture_Length();
-	m_Frames.emplace(TEXT("Soldier_Die_Default"), Desc);
+	Desc_3.iFrameSpeed = 12;
+	Desc_3.iEnd = iter->second->Get_Texture_Length();
+	m_Frames.emplace(TEXT("Soldier_Die_Default"), Desc_3);
 
 	//Soldier_Die_Explosion
 	iter = m_pTextureComs.find(TEXT("Soldier_Die_Explosion"));
-	Desc.iEnd = iter->second->Get_Texture_Length();
-	m_Frames.emplace(TEXT("Soldier_Die_Explosion"), Desc);
+	Desc_4.iFrameSpeed = 12;
+	Desc_4.iEnd = iter->second->Get_Texture_Length();
+	m_Frames.emplace(TEXT("Soldier_Die_Explosion"), Desc_4);
 
 	//Soldier_Die_HeadShot
 	iter = m_pTextureComs.find(TEXT("Soldier_Die_HeadShot"));
-	Desc.iEnd = iter->second->Get_Texture_Length();
-	m_Frames.emplace(TEXT("Soldier_Die_HeadShot"), Desc);
+	Desc_5.iFrameSpeed = 12;
+	Desc_5.iEnd = iter->second->Get_Texture_Length();
+	m_Frames.emplace(TEXT("Soldier_Die_HeadShot"), Desc_5);
 
 	//Soldier_Direction_NE
 	iter = m_pTextureComs.find(TEXT("Soldier_Direction_NE"));
-	Desc.iEnd = iter->second->Get_Texture_Length();
-	m_Frames.emplace(TEXT("Soldier_Direction_NE"), Desc);
+	Desc_6.iFrameSpeed = 12;
+	Desc_6.iEnd = iter->second->Get_Texture_Length();
+	m_Frames.emplace(TEXT("Soldier_Direction_NE"), Desc_6);
 
 	//Soldier_Direction_NW
 	iter = m_pTextureComs.find(TEXT("Soldier_Direction_NW"));
-	Desc.iEnd = iter->second->Get_Texture_Length();
-	m_Frames.emplace(TEXT("Soldier_Direction_NW"), Desc);
+	Desc_7.iFrameSpeed = 12;
+	Desc_7.iEnd = iter->second->Get_Texture_Length();
+	m_Frames.emplace(TEXT("Soldier_Direction_NW"), Desc_7);
 
 	//Soldier_Direction_SE
 	iter = m_pTextureComs.find(TEXT("Soldier_Direction_SE"));
-	Desc.iEnd = iter->second->Get_Texture_Length();
-	m_Frames.emplace(TEXT("Soldier_Direction_SE"), Desc);
+	Desc_8.iFrameSpeed = 12;
+	Desc_8.iEnd = iter->second->Get_Texture_Length();
+	m_Frames.emplace(TEXT("Soldier_Direction_SE"), Desc_8);
 
 	//Soldier_Direction_SW
 	iter = m_pTextureComs.find(TEXT("Soldier_Direction_SW"));
-	Desc.iEnd = iter->second->Get_Texture_Length();
-	m_Frames.emplace(TEXT("Soldier_Direction_SW"), Desc);
+	Desc_9.iFrameSpeed = 12;
+	Desc_9.iEnd = iter->second->Get_Texture_Length();
+	m_Frames.emplace(TEXT("Soldier_Direction_SW"), Desc_9);
 
 	//Soldier_Front
 	iter = m_pTextureComs.find(TEXT("Soldier_Front"));
-	Desc.iEnd = iter->second->Get_Texture_Length();
-	m_Frames.emplace(TEXT("Soldier_Front"), Desc);
+	Desc_10.iFrameSpeed = 10;
+	Desc_10.iEnd = iter->second->Get_Texture_Length();
+	m_Frames.emplace(TEXT("Soldier_Front"), Desc_10);
 
 	//Soldier_Back
 	iter = m_pTextureComs.find(TEXT("Soldier_Back"));
-	Desc.iEnd = iter->second->Get_Texture_Length();
-	m_Frames.emplace(TEXT("Soldier_Back"), Desc);
+	Desc_11.iFrameSpeed = 12;
+	Desc_11.iEnd = iter->second->Get_Texture_Length();
+	m_Frames.emplace(TEXT("Soldier_Back"), Desc_11);
 
 	//Soldier_Left
 	iter = m_pTextureComs.find(TEXT("Soldier_Left"));
-	Desc.iEnd = iter->second->Get_Texture_Length();
-	m_Frames.emplace(TEXT("Soldier_Left"), Desc);
+	Desc_12.iFrameSpeed = 12;
+	Desc_12.iEnd = iter->second->Get_Texture_Length();
+	m_Frames.emplace(TEXT("Soldier_Left"), Desc_12);
 
 	//Soldier_Right
 	iter = m_pTextureComs.find(TEXT("Soldier_Right"));
-	Desc.iEnd = iter->second->Get_Texture_Length();
-	m_Frames.emplace(TEXT("Soldier_Right"), Desc);
+	Desc_13.iFrameSpeed = 12;
+	Desc_13.iEnd = iter->second->Get_Texture_Length();
+	m_Frames.emplace(TEXT("Soldier_Right"), Desc_13);
 
 
 	return S_OK;
