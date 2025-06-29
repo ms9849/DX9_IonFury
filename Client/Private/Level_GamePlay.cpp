@@ -43,7 +43,6 @@ HRESULT CLevel_GamePlay::Initialize()
 
 void CLevel_GamePlay::Update(_float fTimeDelta)
 {
-	/* 전환 하고나서 look벡터가 이상함 */
 	//if (GetKeyState('1') & 0x8000)
 	//{
 	//	m_pCamera->Camera_Configure_Clear(m_CameraSettings);
@@ -70,6 +69,7 @@ void CLevel_GamePlay::Update(_float fTimeDelta)
 	m_pUIArmor->Set_Armor();
 	m_pUIBullets->Set_Bullets();
 	m_pUIInteraction->Set_Interaction(TEXT("Press [E] Key"));
+	m_pUIItemStack->Set_ItemStack(TEXT("Get Healpack HP+10"));
 #pragma endregion
 
 	m_pGameInstance->Check_OBBCollision(TEXT("Layer_Cube"), TEXT("Layer_Player"), ENUM_CLASS(LEVEL::GAMEPLAY));
@@ -181,14 +181,14 @@ HRESULT CLevel_GamePlay::Ready_Layer_Player(const _wstring& strLayerTag)
 
 HRESULT CLevel_GamePlay::Ready_Layer_Monster(const _wstring& strLayerTag)
 {
-	/*
+	
 	for (size_t i = 0; i < 2; i++)
 	{
 		if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Monster"),
 			ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag)))
 			return E_FAIL;
 	}
-	*/
+	
 	
 	/*if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Monster"),
 		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag)))
@@ -208,7 +208,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_UI(const _wstring& strLayerTag)
 	ws = to_wstring(pPlayer->Get_Player_Info().iHp);
 
 	// UI전체 크기 및 위치
-	Desc_Hp.iTextLength = wcslen(ws.c_str());
+	Desc_Hp.iTextLength = 3;
 	Desc_Hp.fSizeX = 50.f + (50.f * Desc_Hp.iTextLength);
 	Desc_Hp.fSizeY = 50.f;
 	Desc_Hp.fX = 0.f;
@@ -223,13 +223,13 @@ HRESULT CLevel_GamePlay::Ready_Layer_UI(const _wstring& strLayerTag)
 
 	m_pUIHp = dynamic_cast<CUIHp*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag));
 
-	/* 체력 */
+	/* 방어력 */
 	CUIObject::UIOBJECT_DESC Desc_Armor{};
 
 	ws = to_wstring(pPlayer->Get_Player_Info().iArmor);
 
 	// UI전체 크기 및 위치
-	Desc_Armor.iTextLength = wcslen(ws.c_str());
+	Desc_Armor.iTextLength = 3;
 	Desc_Armor.fSizeX = 50.f + (50.f * Desc_Hp.iTextLength);
 	Desc_Armor.fSizeY = 50.f;
 	Desc_Armor.fX = 250.f;
@@ -249,7 +249,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_UI(const _wstring& strLayerTag)
 
 	ws = to_wstring(pPlayer->Get_Player_Info().iBullets);
 
-	Desc_Bullets.iTextLength = wcslen(ws.c_str());
+	Desc_Bullets.iTextLength = 6;
 	Desc_Bullets.fSizeX = 50.f + (50.f * Desc_Bullets.iTextLength);
 	Desc_Bullets.fSizeY = 50.f;
 	Desc_Bullets.fX = g_iWinSizeX;
@@ -282,7 +282,25 @@ HRESULT CLevel_GamePlay::Ready_Layer_UI(const _wstring& strLayerTag)
 
 	m_pUIInteraction = dynamic_cast<CUIInteraction*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag));
 
-	/* 상호작용 키 */
+	/* 아이템 스택 */
+	CUIObject::UIOBJECT_DESC Desc_ItemStack{};
+
+	Desc_ItemStack.iTextLength = wcslen(TEXT("Get Healpack HP+10"));
+	Desc_ItemStack.fSizeX = 20.f * Desc_ItemStack.iTextLength;
+	Desc_ItemStack.fSizeY = 20.f;
+	Desc_ItemStack.fX = 0;
+	Desc_ItemStack.fY = 0 + (Desc_ItemStack.fSizeY * 0.5f);
+	Desc_ItemStack.iLayerLevelIndex = ENUM_CLASS(LEVEL::GAMEPLAY);
+	Desc_ItemStack.strLayerTag = strLayerTag;
+	Desc_ItemStack.strFontType = TEXT("Primary");
+
+	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_UIItemStack"),
+		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag, &Desc_ItemStack)))
+		return E_FAIL;
+
+	m_pUIItemStack = dynamic_cast<CUIItemStack*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag));
+
+	/* 조준선 */
 	CUIObject::UIOBJECT_DESC Desc_Aim{};
 
 	Desc_Aim.fSizeX = 30.f;
@@ -327,6 +345,14 @@ HRESULT CLevel_GamePlay::Ready_Layer_Items(const _wstring& strLayerTag)
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Item_Healpack"),
+		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag)))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Item_Pistol_Bullet"),
+		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag)))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Item_ShootGun_Bullet"),
 		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag)))
 		return E_FAIL;
 

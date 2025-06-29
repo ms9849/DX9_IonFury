@@ -23,9 +23,16 @@ CActionNode::CActionNode(function<void()> act)
     : action(act) {
 }
 
+CActionNode::CActionNode(function<void(_float)> fAction)
+    : actionFloat(fAction) {
+}
+
 _bool CActionNode::Run(_float fTimeDelta)
 {
-    action();
+    if (action)
+        action();
+    else if (actionFloat)
+        actionFloat(fTimeDelta);
     return true;
 }
 

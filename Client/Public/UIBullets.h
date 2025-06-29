@@ -38,7 +38,7 @@ private:
 private:
 	CPlayer* m_pPlayer{ nullptr };
 	CUIText* m_pText{ nullptr };
-	_uint m_iBullets{};
+	_uint m_iBullets{}, m_iShootBullets{};
 	UIOBJECT_DESC	m_tagDesc{};
 
 private:
