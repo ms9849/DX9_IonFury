@@ -2,6 +2,10 @@
 
 #include "GameInstance.h"
 #include "Bullet.h"
+#include "ItemArmor.h"
+#include "ItemHealpack.h"
+#include "ItemPistolBullet.h"
+#include "ItemShootGunBullet.h"
 
 CPlayer::CPlayer(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CLandObject{ pGraphic_Device }
@@ -35,8 +39,8 @@ HRESULT CPlayer::Initialize(void* pArg)
 	if (FAILED(Ready_Weapons()))
 		return E_FAIL;
 
-	m_tInfo.iHp = 100;
-	m_tInfo.iArmor = 100;
+	m_tInfo.iHp = 70;
+	m_tInfo.iArmor = 70;
 	
 	auto iter = m_Weapons.find(m_tInfo.strWeapon);
 
@@ -202,7 +206,7 @@ HRESULT CPlayer::Ready_Weapons()
 	WEAPON_INFO PistolDesc{};
 
 	PistolDesc.iBulletsMax = 250;
-	PistolDesc.iCurrentBullets = PistolDesc.iBulletsMax;
+	PistolDesc.iCurrentBullets = 230;
 	PistolDesc.iCanShootBullets = 7;
 
 	m_Weapons.emplace(TEXT("Pistol"), PistolDesc);
@@ -210,7 +214,7 @@ HRESULT CPlayer::Ready_Weapons()
 	WEAPON_INFO ShootGunDesc{};
 
 	ShootGunDesc.iBulletsMax = 150;
-	ShootGunDesc.iCurrentBullets = ShootGunDesc.iBulletsMax;
+	ShootGunDesc.iCurrentBullets = 130;
 	ShootGunDesc.iCanShootBullets = 2;
 
 	m_Weapons.emplace(TEXT("ShootGun"), ShootGunDesc);
@@ -271,8 +275,40 @@ _float3 CPlayer::Calc_BulletDir(_float3* vOffset)
 
 void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType)
 {
-	if(eColType == COLLISION::SPHERE)
-		int a = 10;
+	if (eColType == COLLISION::SPHERE)
+	{
+		if (dynamic_cast<CItemArmor*>(pDst))
+		{
+			m_tInfo.iArmor += 10;
+		}
+		if (dynamic_cast<CItemHealpack*>(pDst))
+		{
+			m_tInfo.iHp += 10;
+		}
+		if (dynamic_cast<CItemPistolBullet*>(pDst))
+		{
+			auto iter = m_Weapons.find(TEXT("Pistol"));
+			iter->second.iCurrentBullets += 10;
+
+			if (iter->second.iCurrentBullets >= iter->second.iBulletsMax)
+				iter->second.iCurrentBullets = iter->second.iBulletsMax;
+
+			if(m_tInfo.strWeapon.compare(TEXT("Pistol")) == 0)
+				m_tInfo.iBullets = iter->second.iCurrentBullets;
+		}
+		if (dynamic_cast<CItemShootGunBullet*>(pDst))
+		{
+			auto iter = m_Weapons.find(TEXT("ShootGun"));
+
+			iter->second.iCurrentBullets += 10;
+
+			if (iter->second.iCurrentBullets >= iter->second.iBulletsMax)
+				iter->second.iCurrentBullets = iter->second.iBulletsMax;
+
+			if (m_tInfo.strWeapon.compare(TEXT("ShootGun")) == 0)
+				m_tInfo.iBullets = iter->second.iCurrentBullets;
+		}
+	}
 }
 
 const COLLISION_DESC& CPlayer::Get_CollisionDesc(COLLISION eColType)

@@ -11,12 +11,12 @@ NS_END
 
 NS_BEGIN(Client)
 
-class CUIInteraction final : public CUIObject
+class CUIItemStack final : public CUIObject
 {
 private:
-	CUIInteraction(LPDIRECT3DDEVICE9 pGraphic_Device);
-	CUIInteraction(const CUIInteraction& Prototype);
-	virtual ~CUIInteraction() = default;
+	CUIItemStack(LPDIRECT3DDEVICE9 pGraphic_Device);
+	CUIItemStack(const CUIItemStack& Prototype);
+	virtual ~CUIItemStack() = default;
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -27,7 +27,7 @@ public:
 	virtual HRESULT Render() override;
 
 public:
-	void Set_Interaction(const _tchar* strText);
+	void Set_ItemStack(const _tchar* strText);
 
 private:
 	CTransform* m_pTransformCom = { nullptr };
@@ -41,7 +41,7 @@ private:
 	HRESULT Ready_Components();
 
 public:
-	static CUIInteraction* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
+	static CUIItemStack* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
 };
