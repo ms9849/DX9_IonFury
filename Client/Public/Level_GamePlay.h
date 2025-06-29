@@ -2,6 +2,7 @@
 
 #include "Client_Defines.h"
 #include "Level.h"
+#include "Camera.h"
 #include "UIHp.h"
 #include "UIBullets.h"
 #include "UIInteraction.h"
