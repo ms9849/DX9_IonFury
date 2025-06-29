@@ -1,6 +1,7 @@
 #pragma once  
 
-#include "Client_Defines.h"  
+#include "Client_Defines.h"
+#include "Player.h"
 #include "LandObject.h"
 
 NS_BEGIN(Engine)
@@ -14,6 +15,9 @@ NS_BEGIN(Client)
 
 class CItem abstract : public CLandObject
 {
+protected:
+    enum class BULLET {PISTOL, SHOOTGUN};
+
 protected:
     CItem(LPDIRECT3DDEVICE9 pGraphic_Device);
     CItem(const CItem& Prototype);
@@ -36,6 +40,7 @@ protected:
 
     bool    _isGoUp{ false };
     _float  m_fItemOriginPosY{};
+    CPlayer* m_pPlayer{ nullptr };
 
 protected:
     virtual HRESULT Ready_Components();
