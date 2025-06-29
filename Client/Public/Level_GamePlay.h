@@ -2,8 +2,6 @@
 
 #include "Client_Defines.h"
 #include "Level.h"
-#include "Camera.h"
-#include "Player.h"
 #include "UIHp.h"
 #include "UIBullets.h"
 #include "UIInteraction.h"
@@ -35,8 +33,6 @@ private:
 	HRESULT Ready_Layer_Items(const _wstring& strLayerTag);
 
 private:
-	CCamera* m_pCamera{ nullptr };
-	CPlayer* m_pPlayer{ nullptr };
 	CUIHp* m_pUIHp{ nullptr };
 	CUIArmor* m_pUIArmor{ nullptr };
 	CUIBullets* m_pUIBullets{ nullptr };

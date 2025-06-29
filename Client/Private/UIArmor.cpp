@@ -54,6 +54,7 @@ HRESULT CUIArmor::Initialize(void* pArg)
 		return E_FAIL;
 
 	m_pText = dynamic_cast<CUIText*>(m_pGameInstance->Find_GameObject_ToLayer(Desc.iLayerLevelIndex, Desc.strLayerTag));
+	m_pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player")));
 
 	return S_OK;
 }
@@ -95,9 +96,9 @@ HRESULT CUIArmor::Render()
 	return S_OK;
 }
 
-void CUIArmor::Set_Armor(_uint iNumber)
+void CUIArmor::Set_Armor()
 {
-	m_iArmor = iNumber;
+	m_iArmor = m_pPlayer->Get_Player_Info().iArmor;
 
 	_tchar ws[10];
 	swprintf(ws, 10, L"%03d", m_iArmor);

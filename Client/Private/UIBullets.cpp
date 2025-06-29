@@ -52,6 +52,7 @@ HRESULT CUIBullets::Initialize(void* pArg)
 		return E_FAIL;
 
 	m_pText = dynamic_cast<CUIText*>(m_pGameInstance->Find_GameObject_ToLayer(Desc.iLayerLevelIndex, Desc.strLayerTag));
+	m_pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player")));
 
 	return S_OK;
 }
@@ -93,9 +94,9 @@ HRESULT CUIBullets::Render()
 	return S_OK;
 }
 
-void CUIBullets::Set_Bullets(_uint iNumber)
+void CUIBullets::Set_Bullets()
 {
-	m_iBullets = iNumber;
+	m_iBullets = m_pPlayer->Get_Player_Info().iBullets;
 
 	_tchar ws[10];
 	swprintf(ws, 10, L"%03d", m_iBullets);

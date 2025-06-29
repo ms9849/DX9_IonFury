@@ -54,7 +54,8 @@ HRESULT CUIHp::Initialize(void* pArg)
 		return E_FAIL;
 
 	m_pText = dynamic_cast<CUIText*>(m_pGameInstance->Find_GameObject_ToLayer(Desc.iLayerLevelIndex, Desc.strLayerTag));
-
+	m_pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player")));
+	
 	return S_OK;
 }
 
@@ -95,9 +96,9 @@ HRESULT CUIHp::Render()
 	return S_OK;
 }
 
-void CUIHp::Set_Hp(_uint iNumber)
+void CUIHp::Set_Hp()
 {
-	m_iHp = iNumber;
+	m_iHp = m_pPlayer->Get_Player_Info().iHp;
 	_tchar ws[10];
 	swprintf(ws, 10, L"%03d", m_iHp);
 
