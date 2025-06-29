@@ -2,7 +2,7 @@
 
 #include "Client_Defines.h"  
 #include "GameObject.h"
-#include "Animation.h"
+#include "GameInstance.h"
 
 NS_BEGIN(Engine)  
 class CTexture;  

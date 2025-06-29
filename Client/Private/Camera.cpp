@@ -1,6 +1,5 @@
 #include "Camera.h"
 
-#include "GameInstance.h"
 #include "Player.h"
 
 CCamera::CCamera(LPDIRECT3DDEVICE9 pGraphic_Device)

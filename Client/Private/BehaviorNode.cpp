@@ -1,7 +1,5 @@
 #include "BehaviorNode.h"
 
-using namespace Client;
-
 CBehaviorNode::CBehaviorNode() 
 {
 }
