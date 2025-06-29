@@ -48,6 +48,7 @@ protected:
 
 protected:
 	virtual HRESULT Ready_Animations() = 0;
+	virtual HRESULT Ready_Components() = 0;
 	virtual HRESULT Begin_RenderState();
 	virtual HRESULT End_RenderState();
 	virtual void Attack() = 0;

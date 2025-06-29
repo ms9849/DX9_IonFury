@@ -49,23 +49,40 @@ HRESULT CSoldier::Initialize(void* pArg)
 
 	CSelectorNode* root = new CSelectorNode();
 
-	//SequenceNode* SightSequence = new SequenceNode();
 	CSequenceNode* CAttackSequence = new CSequenceNode();
-	CAttackSequence->AddChild(new CConditionNode([this](float fTimeDelta) {
+	CAttackSequence->AddChild(new CConditionNode([this](_float fTimeDelta) {
 		return this->m_pSightCom->Check_Sight(fTimeDelta);
 		}));
 
-	CAttackSequence->AddChild(new CConditionNode([this](float fTimeDelta) {
+	CAttackSequence->AddChild(new CConditionNode([this](_float fTimeDelta) {
 		m_fAccumulation += fTimeDelta;
 		return m_fAccumulation >= m_fCoolTime;
 		}));
 
 	CAttackSequence->AddChild(new CActionNode([this]() {
+		m_strFrameKey = TEXT("Soldier_Attack_Front");
 		this->Attack();
 		m_fAccumulation = 0.f;
 		}));
 
+	CSequenceNode* CMoveSequence = new CSequenceNode();
+	CMoveSequence->AddChild(new CConditionNode([this](_float fTimeDelta) {
+		return !this->m_pSightCom->Check_Sight(fTimeDelta);
+		}));
+
+	CMoveSequence->AddChild(new CConditionNode([this](_float fTimeDelta) {
+		m_fSumCoolTime += fTimeDelta;
+		return m_fSumCoolTime >= m_fMoveCoolTime;
+		}));
+
+	CMoveSequence->AddChild(new CActionNode([this](_float fTimeDelta) {
+		this->Move(fTimeDelta);
+		m_fSumCoolTime = 0.f;
+		}));
+
 	root->AddChild(CAttackSequence);
+	root->AddChild(CMoveSequence);
+
 	m_pRoot = root;
 
 	return S_OK;
@@ -92,22 +109,41 @@ void CSoldier::Update(_float fTimeDelta)
 	m_pSightCom->Check_Sight(fTimeDelta);*/
 	_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
 	vDiff.y = 0.f;
-	D3DXVec3Normalize(&vDiff, &vDiff); // 정규화 필수
+	D3DXVec3Normalize(&vDiff, &vDiff);
 
 	_float3 vMonsterLook = m_pTransformCom->Get_State(STATE::LOOK);
 	vMonsterLook.y = 0.f;
 	D3DXVec3Normalize(&vMonsterLook, &vMonsterLook);
 
-	// 내적: 각도용
 	_float dot = D3DXVec3Dot(&vMonsterLook, &vDiff);
-	dot = max(-1.f, min(1.f, dot)); // 안전 보정
+	dot = max(-1.f, min(1.f, dot));
 
-	// 외적: 왼쪽/오른쪽 판별
 	_float3 vCross;
 	D3DXVec3Cross(&vCross, &vMonsterLook, &vDiff);
 
 	// 시야각 90도 (45도 양방향)
 	_float fFov = cosf(D3DXToRadian(45.f));
+
+	//if (dot >= fFov)
+	//{
+	//	// 정면
+	//	if (vCross.y > 0)
+	//		m_strFrameKey = TEXT("Soldier_Direction_SE");
+	//	else if (vCross.y < 0)
+	//		m_strFrameKey = TEXT("Soldier_Direction_SW");
+	//	else
+	//		m_strFrameKey = TEXT("Soldier_Front");
+	//}
+	//else
+	//{
+	//	// 후면
+	//	if (vCross.y > 0)
+	//		m_strFrameKey = TEXT("Soldier_Direction_NE");
+	//	else if (vCross.y < 0)
+	//		m_strFrameKey = TEXT("Soldier_Direction_NW");
+	//	else
+	//		m_strFrameKey = TEXT("Soldier_Back");
+	//}
 
 	if (vCross.y > 0)
 	{
@@ -374,8 +410,27 @@ void CSoldier::Attack()
 		ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Bullet"), &Desc);
 }
 
+void CSoldier::Move(_float fTimeDelta)
+{
+	_float3 fPlayerLook = m_pPlayerTransform->Get_State(STATE::LOOK);
+	_float3 fMonsterLook = m_pTransformCom->Get_State(STATE::LOOK);
+	D3DXVec3Normalize(&fPlayerLook, &fPlayerLook);
+	D3DXVec3Normalize(&fMonsterLook, &fMonsterLook);
+
+	_float dot = D3DXVec3Dot(&fPlayerLook, &fMonsterLook);
+	float fRadian = acosf(dot);
+	m_pTransformCom->Rotation({0.f, 1.f, 0.f}, fRadian);
+	m_pTransformCom->Chase(m_pPlayerTransform->Get_State(STATE::POSITION), fTimeDelta);
+	m_pTransformCom->LookAt(m_pPlayerTransform->Get_State(STATE::POSITION));
+
+	//m_pTransformCom->Chase(m_pPlayerTransform->Get_State(STATE::POSITION), fMoveTime);
+	//m_pTransformCom->Go_Straight(fTimeDelta);
+}
+
 void CSoldier::Move()
 {
+	//m_pTransformCom->R
+	m_pTransformCom->Get_State(STATE::POSITION);
 }
 
 CSoldier* CSoldier::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
@@ -407,13 +462,4 @@ CGameObject* CSoldier::Clone(void* pArg)
 void CSoldier::Free()
 {
 	__super::Free();
-
-	//Safe_Release(m_pTextureCom);
-	Safe_Release(m_pAnimationCom);
-	Safe_Release(m_pTransformCom);
-	Safe_Release(m_pVIBufferCom);
-	for (auto& iter : m_pTextureComs)
-	{
-		Safe_Release(iter.second);
-	}
 }
