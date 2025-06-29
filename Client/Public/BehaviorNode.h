@@ -1,55 +1,59 @@
 #pragma once
 
-#include <functional>
-#include <vector>
+#include "Client_Defines.h"
+#include "Base.h"
 
-class BehaviorNode
+NS_BEGIN(Client)
+
+class CBehaviorNode abstract : public CBase
 {
 public:
-    BehaviorNode();
-    virtual ~BehaviorNode();
+    CBehaviorNode();
+    virtual ~CBehaviorNode() = default;
 
 public:
-    virtual bool Run(float) = 0;
+    virtual _bool Run(_float) = 0;
 };
 
-class ConditionNode : public BehaviorNode
+class CConditionNode : public CBehaviorNode
 {
 public:
-    ConditionNode(std::function<bool()> condition);
-    ConditionNode(std::function<bool(float)> condition);
-    bool Run(float) override;
+    CConditionNode(function<bool()> condition);
+    CConditionNode(function<bool(_float)> condition);
+    _bool Run(_float) override;
 
 private:
-    std::function<bool(float)> condition;
+    function<bool(_float)> m_bCondition;
 };
 
-class ActionNode : public BehaviorNode
+class CActionNode : public CBehaviorNode
 {
 public:
-    ActionNode(std::function<void()> action);
-    bool Run(float) override;
+    CActionNode(function<void()> action);
+    _bool Run(_float) override;
 
 private:
-    std::function<void()> action;
+    function<void()> action;
 };
 
-class SequenceNode : public BehaviorNode
+class CSequenceNode : public CBehaviorNode
 {
 public:
-    void AddChild(BehaviorNode* child);
-    bool Run(float) override;
+    void AddChild(CBehaviorNode* child);
+    _bool Run(_float) override;
 
 private:
-    std::vector<BehaviorNode*> children;
+    vector<CBehaviorNode*> m_pChildrens;
 };
 
-class SelectorNode : public BehaviorNode
+class CSelectorNode : public CBehaviorNode
 {
 public:
-    void AddChild(BehaviorNode* child);
-    bool Run(float) override;
+    void AddChild(CBehaviorNode* child);
+    _bool Run(_float) override;
 
 private:
-    std::vector<BehaviorNode*> children;
+    vector<CBehaviorNode*> m_pChildrens;
 };
+
+NS_END

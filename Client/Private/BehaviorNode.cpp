@@ -1,45 +1,42 @@
 #include "BehaviorNode.h"
-#include <functional>
-#include <vector>
 
-using std::function;
-using std::vector;
-
-BehaviorNode::BehaviorNode() {}
-BehaviorNode::~BehaviorNode() {}
-
-ConditionNode::ConditionNode(std::function<bool()> condition) 
+CBehaviorNode::CBehaviorNode() 
 {
-    this->condition = [condition](float) { return condition(); };
 }
 
-ConditionNode::ConditionNode(std::function<bool(float)> condition)
-    : condition(condition) {
-}
-
-bool ConditionNode::Run(float fTimeDelta)
+CConditionNode::CConditionNode(function<bool()> condition) 
 {
-    return condition(fTimeDelta);
+    this->m_bCondition = [condition](_float) { return condition(); };
 }
 
-ActionNode::ActionNode(std::function<void()> act)
+CConditionNode::CConditionNode(function<bool(_float)> condition)
+    : m_bCondition(condition) {
+}
+
+
+_bool CConditionNode::Run(_float fTimeDelta)
+{
+    return m_bCondition(fTimeDelta);
+}
+
+CActionNode::CActionNode(function<void()> act)
     : action(act) {
 }
 
-bool ActionNode::Run(float fTimeDelta)
+_bool CActionNode::Run(_float fTimeDelta)
 {
     action();
     return true;
 }
 
-void SequenceNode::AddChild(BehaviorNode* child)
+void CSequenceNode::AddChild(CBehaviorNode* child)
 {
-    children.push_back(child);
+    m_pChildrens.push_back(child);
 }
 
-bool SequenceNode::Run(float fTimeDelta)
+_bool CSequenceNode::Run(_float fTimeDelta)
 {
-    for (auto* child : children)
+    for (auto* child : m_pChildrens)
     {
         if (!child->Run(fTimeDelta))
             return false;
@@ -47,14 +44,14 @@ bool SequenceNode::Run(float fTimeDelta)
     return true;
 }
 
-void SelectorNode::AddChild(BehaviorNode* child)
+void CSelectorNode::AddChild(CBehaviorNode* child)
 {
-    children.push_back(child);
+    m_pChildrens.push_back(child);
 }
 
-bool SelectorNode::Run(float fTimeDelta)
+_bool CSelectorNode::Run(_float fTimeDelta)
 {
-    for (auto* child : children)
+    for (auto* child : m_pChildrens)
     {
         if (child->Run(fTimeDelta))
             return true;

@@ -91,7 +91,7 @@
     <Filter Include="02.GameObjects\Item\ItemHealpack">
       <UniqueIdentifier>{50880e45-07e6-4c6a-8b6d-d54276bffa13}</UniqueIdentifier>
     </Filter>
-    <Filter Include="97.BehaviorTree">
+    <Filter Include="02.GameObjects\Monster\BehaviorTree">
       <UniqueIdentifier>{31f75f59-c90a-49cb-bc56-c1160a97b071}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -187,7 +187,10 @@
       <Filter>02.GameObjects\Item\ItemHealpack</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\BehaviorNode.h">
-      <Filter>97.BehaviorTree</Filter>
+      <Filter>02.GameObjects\Monster\BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Soldier.h">
+      <Filter>02.GameObjects\Monster</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -283,7 +286,10 @@
       <Filter>02.GameObjects\Item\ItemHealpack</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\BehaviorNode.cpp">
-      <Filter>97.BehaviorTree</Filter>
+      <Filter>02.GameObjects\Monster\BehaviorTree</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Soldier.cpp">
+      <Filter>02.GameObjects\Monster</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

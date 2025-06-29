@@ -152,6 +152,7 @@
     <ClInclude Include="..\public\Item.h" />
     <ClInclude Include="..\public\ItemArmor.h" />
     <ClInclude Include="..\public\ItemHealpack.h" />
+    <ClInclude Include="..\Public\Soldier.h" />
     <ClInclude Include="..\public\UIAim.h" />
     <ClInclude Include="..\Public\Effect.h" />
     <ClInclude Include="..\Public\Level_GamePlay.h" />
@@ -184,6 +185,7 @@
     <ClCompile Include="..\Private\CubeObject.cpp" />
     <ClCompile Include="..\private\Item.cpp" />
     <ClCompile Include="..\private\ItemHealpack.cpp" />
+    <ClCompile Include="..\Private\Soldier.cpp" />
     <ClCompile Include="..\private\UIAim.cpp" />
     <ClCompile Include="..\Private\Effect.cpp" />
     <ClCompile Include="..\Private\Level_GamePlay.cpp" />

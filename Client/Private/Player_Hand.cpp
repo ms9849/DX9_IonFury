@@ -1,6 +1,4 @@
 #include "Player_Hand.h"
-
-#include "GameInstance.h"
 #include "Player.h"
 
 CPlayer_Hand::CPlayer_Hand(LPDIRECT3DDEVICE9 pGraphic_Device)
@@ -90,8 +88,11 @@ void CPlayer_Hand::Late_Update(_float fTimeDelta)
 
 	//handMatrix = *m_pTransformCom->Get_WorldMatrixPtr();
 
-	vHandPos = m_pAnimationCom->Get_Animation()->Poses[m_pAnimationCom->Get_Frame_Index()];
-	vHandPos += { 0.75f, -0.6f, 1.5f };
+	vHandPos = { 0.75f, -0.5f, 1.5f };
+	if (m_pAnimationCom->Get_Animation()->Poses.size() > 1)
+	{
+		vHandPos += m_pAnimationCom->Get_Animation()->Poses[m_pAnimationCom->Get_Frame_Index()];
+	}
 
 	m_pGraphic_Device->GetTransform(D3DTS_VIEW, &CameraMatrix);
 	D3DXMatrixInverse(&CameraMatrix, nullptr, &CameraMatrix);
@@ -104,7 +105,6 @@ void CPlayer_Hand::Late_Update(_float fTimeDelta)
 	m_pTransformCom->Set_State(STATE::POSITION, vHandPos);
 
 	// 애니메이션 프레임 증가
-	// 프레임 전체 런타임 -> 상수로 제어해서 처리하기
 	m_pAnimationCom->Play_Animation(fTimeDelta);
 
 	m_pGameInstance->Add_RenderGroup(RENDER::BLEND, this);
@@ -117,7 +117,10 @@ HRESULT CPlayer_Hand::Render()
 	// 텍스쳐 컴포넌트로 텍스쳐 렌더링
 	// 텍스쳐는 MainApp에서 STATIC으로 세팅
 	auto iter = m_pTextureComs.find(m_strFrameKey);
-	iter->second->Set_Texture(m_pAnimationCom->Get_Frame_Index());
+	if(iter->second->Get_Texture_Length() == 1)
+		iter->second->Set_Texture(0);
+	else
+		iter->second->Set_Texture(m_pAnimationCom->Get_Frame_Index());
 
 	if (FAILED(Begin_RenderState()))
 		return E_FAIL;
@@ -184,47 +187,67 @@ HRESULT CPlayer_Hand::Ready_Components()
 HRESULT CPlayer_Hand::Ready_Animations()
 {
 	// 여기서 벡터로 <구조체> 들고 있고 한 애니메이션 마다 미리 싹 세팅
-	CAnimation::FRAME_DESC Desc{};
 	auto iter = m_pTextureComs.find(TEXT("Pistol_Idle"));
 
 	//Pistol_Idle
-	Desc.iEnd = 0;
-	m_Frames.emplace(TEXT("Pistol_Idle"), Desc);
+	CAnimation::FRAME_DESC PistolIdleDesc{};
+	PistolIdleDesc.iEnd = 0;
+	m_Frames.emplace(TEXT("Pistol_Idle"), PistolIdleDesc);
 	
-	iter = m_pTextureComs.find(TEXT("Pistol_Reload"));
+	//Pistol_Walk
+	CAnimation::FRAME_DESC PistolWalkDesc{};
+	iter = m_pTextureComs.find(TEXT("Pistol_Walk"));
+	PistolWalkDesc.iEnd = 9;
+	PistolWalkDesc.Poses.reserve(PistolWalkDesc.iEnd);
+
+	PistolWalkDesc.Poses.push_back(_float3{ -0.05f, 0.05f, 0.f });
+	PistolWalkDesc.Poses.push_back(_float3{ -0.1f, 0.075f, 0.f });
+	PistolWalkDesc.Poses.push_back(_float3{ -0.15f, 0.1f, 0.f });
+	PistolWalkDesc.Poses.push_back(_float3{ -0.2f, 0.075f, 0.f });
+	PistolWalkDesc.Poses.push_back(_float3{ -0.25f, 0.05f, 0.f });
+	PistolWalkDesc.Poses.push_back(_float3{ -0.2f, 0.075f, 0.f });
+	PistolWalkDesc.Poses.push_back(_float3{ -0.15f, 0.1f, 0.f });
+	PistolWalkDesc.Poses.push_back(_float3{ -0.1f, 0.075f, 0.f });
+	PistolWalkDesc.Poses.push_back(_float3{ -0.05f, 0.05f, 0.f });
+
+	m_Frames.emplace(TEXT("Pistol_Walk"), PistolWalkDesc);
+
 	// Pistol_Reload
-	Desc.iEnd = iter->second->Get_Texture_Length();
-	Desc.Poses.reserve(Desc.iEnd);
+	CAnimation::FRAME_DESC PistolReloadDesc{};
+	iter = m_pTextureComs.find(TEXT("Pistol_Reload"));
+	PistolReloadDesc.iEnd = iter->second->Get_Texture_Length();
+	PistolReloadDesc.Poses.reserve(PistolReloadDesc.iEnd);
 	
-	Desc.Poses.push_back(_float3{0.f, 0.f, 0.f});
-	Desc.Poses.push_back(_float3{0.f, 0.f, 0.f});
-	Desc.Poses.push_back(_float3{0.f, 0.f, 0.f});
-	Desc.Poses.push_back(_float3{0.f, 0.f, 0.f});
-	Desc.Poses.push_back(_float3{0.f, 0.f, 0.f});
-	Desc.Poses.push_back(_float3{0.f, 0.f, 0.f});
-	Desc.Poses.push_back(_float3{0.f, -0.3f, 0.f});
-	Desc.Poses.push_back(_float3{0.f, -0.6f, 0.f});
-	Desc.Poses.push_back(_float3{0.f, -0.9f, 0.f});
+	PistolReloadDesc.Poses.push_back(_float3{0.f, 0.f, 0.f});
+	PistolReloadDesc.Poses.push_back(_float3{0.f, 0.f, 0.f});
+	PistolReloadDesc.Poses.push_back(_float3{0.f, 0.f, 0.f});
+	PistolReloadDesc.Poses.push_back(_float3{0.f, 0.f, 0.f});
+	PistolReloadDesc.Poses.push_back(_float3{0.f, 0.f, 0.f});
+	PistolReloadDesc.Poses.push_back(_float3{0.f, 0.f, 0.f});
+	PistolReloadDesc.Poses.push_back(_float3{0.f, -0.3f, 0.f});
+	PistolReloadDesc.Poses.push_back(_float3{0.f, -0.6f, 0.f});
+	PistolReloadDesc.Poses.push_back(_float3{0.f, -0.9f, 0.f});
 
-	Desc.Poses.push_back(_float3{0.f, -1.f, 0.f});
-	Desc.Poses.push_back(_float3{0.f, -1.f, 0.f});
-	Desc.Poses.push_back(_float3{0.f, -1.f, 0.f});
+	PistolReloadDesc.Poses.push_back(_float3{0.f, -1.f, 0.f});
+	PistolReloadDesc.Poses.push_back(_float3{0.f, -1.f, 0.f});
+	PistolReloadDesc.Poses.push_back(_float3{0.f, -1.f, 0.f});
 
-	Desc.Poses.push_back(_float3{ 0.f, -0.9f, 0.f });
-	Desc.Poses.push_back(_float3{ 0.f, -0.6f, 0.f });
-	Desc.Poses.push_back(_float3{ 0.f, -0.3f, 0.f });
-	Desc.Poses.push_back(_float3{0.f, -0.0f, 0.f});
-	Desc.Poses.push_back(_float3{0.f, -0.0f, 0.f});
-	Desc.Poses.push_back(_float3{0.f, -0.0f, 0.f});
-	Desc.Poses.push_back(_float3{0.f, -0.0f, 0.f});
+	PistolReloadDesc.Poses.push_back(_float3{ 0.f, -0.9f, 0.f });
+	PistolReloadDesc.Poses.push_back(_float3{ 0.f, -0.6f, 0.f });
+	PistolReloadDesc.Poses.push_back(_float3{ 0.f, -0.3f, 0.f });
+	PistolReloadDesc.Poses.push_back(_float3{0.f, -0.0f, 0.f});
+	PistolReloadDesc.Poses.push_back(_float3{0.f, -0.0f, 0.f});
+	PistolReloadDesc.Poses.push_back(_float3{0.f, -0.0f, 0.f});
+	PistolReloadDesc.Poses.push_back(_float3{0.f, -0.0f, 0.f});
 
-	m_Frames.emplace(TEXT("Pistol_Reload"), Desc);
+	m_Frames.emplace(TEXT("Pistol_Reload"), PistolReloadDesc);
 
 	// Pistol_Shoot
+	CAnimation::FRAME_DESC PistolShootDesc{};
 	iter = m_pTextureComs.find(TEXT("Pistol_Shoot"));
-	Desc.iEnd = iter->second->Get_Texture_Length();
-	Desc.iFrameSpeed = 4;
-	m_Frames.emplace(TEXT("Pistol_Shoot"), Desc);
+	PistolShootDesc.iEnd = iter->second->Get_Texture_Length();
+	PistolShootDesc.iFrameSpeed = 4;
+	m_Frames.emplace(TEXT("Pistol_Shoot"), PistolShootDesc);
 
 	return S_OK;
 }

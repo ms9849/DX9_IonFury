@@ -4,13 +4,12 @@
 #include "Fonts.h"
 #include "Transform.h"
 #include "VIBuffer_Cube.h"
-#include "Animation.h"
 #include "VIBuffer_Rect.h"
 #include "VIBuffer_Terrain.h"
 #include "Sight.h"
 #include "BoxCollider.h"
 #include "SphereCollider.h"
-
+#include "Animation.h"
 /* 1. 객체들의 원형을 레벨별로 보관한다. */
 /* 1. 컴포넌트들의 원형을 레벨별로 보관한다. */
 
