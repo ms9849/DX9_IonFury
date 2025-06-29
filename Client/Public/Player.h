@@ -40,6 +40,7 @@ public:
 
 private:
 	//CTexture*				m_pTextureCom = { nullptr };
+	CAnimation*				m_pRightHandAnimationCom = { nullptr };
 	CTransform*				m_pTransformCom = { nullptr };	
 	CVIBuffer_Rect*			m_pVIBufferCom = { nullptr };
 	CBoxCollider*			m_pBoxColliderCom = { nullptr };
@@ -55,7 +56,9 @@ private:
 	PLAYER_INFO		m_tInfo{};
 	CPlayer_Hand*	m_pRightHand{ nullptr };
 	CPlayer_Hand*	m_pLeftHand{ nullptr };
-	_uint			m_iCurrentAnimation{};
+	_wstring		m_strWeapon{TEXT("Pistol")};
+	_wstring		m_strAction{TEXT("Idle")};
+	//_bool			m_bWalk{ false };
 
 public:
 	virtual void OnCollision(CGameObject* pDst, COLLISION eColType) override;

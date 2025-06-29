@@ -34,9 +34,11 @@ public:
 	FRAME_DESC* Get_Animation();
 	_uint Get_Frame_Index();
 	void Play_Animation(_float fTimeDelta);
+	_bool Check_Animation_Finish();
 
 private:
-	FRAME_DESC*						m_tFrame{};
+	FRAME_DESC*		m_tFrame{};
+	_bool			m_bFinished{ false };
 
 public:
 	static CAnimation* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
@@ -46,43 +48,3 @@ public:
 };
 
 NS_END
-
-/*
-tag로 애니메이션 구별해서 불러오기
-구조체 리스트 반환
-
-구조체 tagFrame
-{
-	_uint index
-	_float3 pos
-	_float speed
-}, Frame
-
-Ready_Actions 에서 애니메이션 싹 세팅 해주고
-세팅 - _int index, _float3 pos, _float speed
-
-업데이트에서 위치, 속도 바꿔주고
-
-렌더에서 Set_Frame(key, index)로 텍스쳐 바꿔주기
-
-
-
-
-
-
-
-
-
-
-<tag, vector<구조체>>
-
-1.	Player에서 구조체 리스트 꺼내다가 반복문 돌려서 사용?
-2.	Player에서 구조체 세팅해서 Frame에 저장하고 Animation불러다가 타이밍에 맞춰 애니메이션 실행?
-
-텍스처는 어디서 준비?
-loader에서 모든 애니메이션 텍스처 로드
-Player/Pistol/Idle, Player/ShootGun/Shoot <- %c - tag
-0~... %d - index
-/Texture/%c_%d.png
-
-*/

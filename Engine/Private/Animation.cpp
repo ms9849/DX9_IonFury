@@ -39,11 +39,18 @@ _uint CAnimation::Get_Frame_Index()
 void CAnimation::Play_Animation(_float fTimeDelta)
 {
 	m_tFrame->fTime += m_tFrame->iEnd * (fTimeDelta / (((1 / 60.f) * m_tFrame->iFrameSpeed) * m_tFrame->iEnd));
+	m_bFinished = false;
 
 	if (m_tFrame->fTime >= m_tFrame->iEnd)
 	{
 		m_tFrame->fTime = 0.f;
+		m_bFinished = true;
 	}
+}
+
+_bool CAnimation::Check_Animation_Finish()
+{
+	return m_bFinished;
 }
 
 CAnimation* CAnimation::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
