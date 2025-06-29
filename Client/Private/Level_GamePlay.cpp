@@ -43,7 +43,6 @@ HRESULT CLevel_GamePlay::Initialize()
 
 void CLevel_GamePlay::Update(_float fTimeDelta)
 {
-	/* 전환 하고나서 look벡터가 이상함 */
 	//if (GetKeyState('1') & 0x8000)
 	//{
 	//	m_pCamera->Camera_Configure_Clear(m_CameraSettings);
@@ -250,7 +249,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_UI(const _wstring& strLayerTag)
 
 	ws = to_wstring(pPlayer->Get_Player_Info().iBullets);
 
-	Desc_Bullets.iTextLength = 3;
+	Desc_Bullets.iTextLength = 6;
 	Desc_Bullets.fSizeX = 50.f + (50.f * Desc_Bullets.iTextLength);
 	Desc_Bullets.fSizeY = 50.f;
 	Desc_Bullets.fX = g_iWinSizeX;

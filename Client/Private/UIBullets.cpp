@@ -103,9 +103,10 @@ HRESULT CUIBullets::Render()
 void CUIBullets::Set_Bullets()
 {
 	m_iBullets = m_pPlayer->Get_Player_Info().iBullets;
+	m_iShootBullets = m_pPlayer->Get_Player_Info().iShootBullets;
 
 	_tchar ws[10];
-	swprintf(ws, 10, L"%03d", m_iBullets);
+	swprintf(ws, 10, L"%02d/%03d", m_iShootBullets,m_iBullets);
 
 	m_pText->Set_Text(ws);
 }

@@ -265,7 +265,15 @@ HRESULT CPlayer_Hand::Ready_Animations()
 	CAnimation::FRAME_DESC PistolShootDesc{};
 	iter = m_pTextureComs.find(TEXT("Pistol_Shoot"));
 	PistolShootDesc.iEnd = iter->second->Get_Texture_Length();
-	PistolShootDesc.iFrameSpeed = 4;
+	PistolShootDesc.iFrameSpeed = 2;
+	PistolShootDesc.Poses.reserve(PistolShootDesc.iEnd);
+
+	PistolShootDesc.Poses.push_back(_float3{ 0.f, 0.f, 0.f });
+	PistolShootDesc.Poses.push_back(_float3{ 0.f, 0.05f, -0.35f });
+	PistolShootDesc.Poses.push_back(_float3{ 0.f, 0.1f, -0.7f });
+	PistolShootDesc.Poses.push_back(_float3{ 0.f, 0.05f, -0.35f });
+	PistolShootDesc.Poses.push_back(_float3{ 0.f, 0.f, 0.f });
+
 	m_Frames.emplace(TEXT("Pistol_Shoot"), PistolShootDesc);
 #pragma endregion
 
@@ -306,7 +314,22 @@ HRESULT CPlayer_Hand::Ready_Animations()
 	CAnimation::FRAME_DESC ShootGunShootDesc{};
 	iter = m_pTextureComs.find(TEXT("ShootGun_Shoot"));
 	ShootGunShootDesc.iEnd = iter->second->Get_Texture_Length();
-	//PistolShootDesc.iFrameSpeed = 4;
+	ShootGunShootDesc.iFrameSpeed = 2;
+
+	ShootGunShootDesc.Poses.reserve(PistolShootDesc.iEnd);
+
+	ShootGunShootDesc.Poses.push_back(_float3{ 0.f, 0.f, 0.f });
+	ShootGunShootDesc.Poses.push_back(_float3{ 0.f, 0.01f, -0.15f });
+	ShootGunShootDesc.Poses.push_back(_float3{ 0.f, 0.02f, -0.3f });
+	ShootGunShootDesc.Poses.push_back(_float3{ 0.f, 0.03f, -0.45f });
+	ShootGunShootDesc.Poses.push_back(_float3{ 0.f, 0.04f, -0.6f });
+	ShootGunShootDesc.Poses.push_back(_float3{ 0.f, 0.05f, -0.7f });
+	ShootGunShootDesc.Poses.push_back(_float3{ 0.f, 0.04f, -0.6f });
+	ShootGunShootDesc.Poses.push_back(_float3{ 0.f, 0.03f, -0.45f });
+	ShootGunShootDesc.Poses.push_back(_float3{ 0.f, 0.02f, -0.3f });
+	ShootGunShootDesc.Poses.push_back(_float3{ 0.f, 0.01f, -0.15f });
+	ShootGunShootDesc.Poses.push_back(_float3{ 0.f, 0.f, 0.f });
+
 	m_Frames.emplace(TEXT("ShootGun_Shoot"), ShootGunShootDesc);
 #pragma endregion
 
@@ -317,18 +340,6 @@ HRESULT CPlayer_Hand::Ready_Animations()
 HRESULT CPlayer_Hand::Begin_RenderState()
 {
 	/* 렌더링할 때 알파값을 기준으로 섞어준다.*/
-
-	/*
-	float4		vSourColor, vDestColor;
-	vSourColor.rgb * vSourColor.a + vDestColor.rgb * (1.f - vSourColor.a);
-	*/
-
-	//
-	//m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-	//m_pGraphic_Device->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
-	//m_pGraphic_Device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-	//m_pGraphic_Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-	//
 
 	/* 알파 테스트 : 픽셀의 알파를 비교해서 그린다 안그린다를 설정. */
 	m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);

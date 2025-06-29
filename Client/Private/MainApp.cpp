@@ -156,7 +156,6 @@ HRESULT CMainApp::Ready_Prototypes()
 
 	// ¼¦°Ç
 	/* For.Prototype_Component_Texture_Player_ShootGun_Idle */
-
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Player_ShootGun_Idle"),
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Player/ShootGun/Idle_%d.png"), 1))))
 		return E_FAIL;
