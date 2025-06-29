@@ -78,7 +78,11 @@ HRESULT CUIBullets::Render()
 {
 	m_pTransformCom->Set_Transform();
 
-	m_pTextureCom->Set_Texture(0);
+	_wstring strWeapon = m_pPlayer->Get_Player_Info().strWeapon;
+	if(strWeapon.compare(TEXT("Pistol")) == 0)
+		m_pTextureCom->Set_Texture(0);
+	else if (strWeapon.compare(TEXT("ShootGun")) == 0)
+		m_pTextureCom->Set_Texture(1);
 
 	m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
 	m_pGraphic_Device->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
