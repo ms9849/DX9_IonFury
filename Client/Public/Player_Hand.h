@@ -2,7 +2,7 @@
 
 #include "Client_Defines.h"  
 #include "GameObject.h"
-#include "Animation.h"
+#include "GameInstance.h"
 
 NS_BEGIN(Engine)  
 class CTexture;  
@@ -44,8 +44,8 @@ private:
     _wstring m_strFrameKey{ TEXT("Pistol_Idle") };
     map<const _wstring, CAnimation::FRAME_DESC> m_Frames;
 
-    const _wstring m_strFrameKeys[3] = {
-        TEXT("Pistol_Idle"), TEXT("Pistol_Reload"), TEXT("Pistol_Shoot")
+    const _wstring m_strFrameKeys[4] = {
+        TEXT("Pistol_Idle"), TEXT("Pistol_Walk"), TEXT("Pistol_Reload"), TEXT("Pistol_Shoot")
     };
 
 private:  

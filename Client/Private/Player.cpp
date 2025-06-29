@@ -43,7 +43,8 @@ HRESULT CPlayer::Initialize(void* pArg)
 		return E_FAIL;
 
 	m_pRightHand = dynamic_cast<CPlayer_Hand*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player_Right_Hand")));
-	
+	m_pRightHandAnimationCom = dynamic_cast<CAnimation*>(m_pRightHand->Find_Component(TEXT("Com_Animation")));
+
 	/*if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Player_Hand"),
 		ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player_Left_Hand"))))
 		return E_FAIL;
@@ -55,50 +56,76 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 void CPlayer::Priority_Update(_float fTimeDelta)
 {
-
-	if (m_pGameInstance->Key_Pressing('W'))
+	if (m_pGameInstance->Key_Down('1'))
 	{
-		m_pTransformCom->Go_Straight(fTimeDelta);
-		m_pRightHand->Set_Current_Animation(TEXT("Pistol_Idle"));
-	}
-	if (m_pGameInstance->Key_Pressing('S'))
-	{
-		m_pTransformCom->Go_Backward(fTimeDelta);
-		m_pRightHand->Set_Current_Animation(TEXT("Pistol_Idle"));
-	}
-	if (m_pGameInstance->Key_Pressing('A'))
-	{
-		m_pTransformCom->Go_Left(fTimeDelta);
-		m_pRightHand->Set_Current_Animation(TEXT("Pistol_Idle"));
-	}
-	if (m_pGameInstance->Key_Pressing('D'))
-	{
-		m_pTransformCom->Go_Right(fTimeDelta);
-		m_pRightHand->Set_Current_Animation(TEXT("Pistol_Idle"));
-	}
-	if (m_pGameInstance->Key_Down('R'))
-	{
-		m_pRightHand->Set_Current_Animation(TEXT("Pistol_Reload"));
+		m_strWeapon = TEXT("Pistol");
 	}
 
-	if (m_pGameInstance->Key_Down(VK_LBUTTON))
+	// 애니메이션 종료 처리 해야됨
+	if (m_pRightHandAnimationCom->Check_Animation_Finish())
 	{
-		m_tInfo.iBullets -= 1;
-		m_pRightHand->Set_Current_Animation(TEXT("Pistol_Shoot"));
-
-		_float3 vOffset = _float3{ 0.f, 0.f, 0.f };
-		_float3 vDir = Calc_BulletDir(&vOffset);
-		_float3 vPos = m_pTransformCom->Get_State(STATE::POSITION);
-
-		D3DXVec3Normalize(&vDir, &vDir);
-
-		CBullet::BULLET_DESC Desc;
-		Desc.vDir = vDir;
-		Desc.vPos = vPos + vOffset;
-
-		m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Bullet"),
-			ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Bullet"), &Desc);
+		m_strAction = TEXT("Idle");
 	}
+	else
+	{
+		if (m_pGameInstance->Key_Pressing('W'))
+		{
+			m_pTransformCom->Go_Straight(fTimeDelta);
+			if(m_strAction.compare(TEXT("Idle")) == 0)
+				m_strAction = TEXT("Walk");
+		}
+		if (m_pGameInstance->Key_Pressing('S'))
+		{
+			m_pTransformCom->Go_Backward(fTimeDelta);
+			if (m_strAction.compare(TEXT("Idle")) == 0)
+				m_strAction = TEXT("Walk");
+		}
+		if (m_pGameInstance->Key_Pressing('A'))
+		{
+			m_pTransformCom->Go_Left(fTimeDelta);
+			if (m_strAction.compare(TEXT("Idle")) == 0)
+				m_strAction = TEXT("Walk");
+		}
+		if (m_pGameInstance->Key_Pressing('D'))
+		{
+			m_pTransformCom->Go_Right(fTimeDelta);
+			if (m_strAction.compare(TEXT("Idle")) == 0)
+				m_strAction = TEXT("Walk");
+		}
+		if (m_pGameInstance->Key_Down('R'))
+		{
+			m_strAction = TEXT("Reload");
+		}
+
+		if (m_strAction.compare(TEXT("Reload")) != 0)
+		{
+			if (m_pGameInstance->Key_Down(VK_LBUTTON))
+			{
+				m_tInfo.iBullets -= 1;
+				m_strAction = TEXT("Shoot");
+
+				_float3 vOffset = _float3{ 0.f, 0.f, 0.f };
+				_float3 vDir = Calc_BulletDir(&vOffset);
+				_float3 vPos = m_pTransformCom->Get_State(STATE::POSITION);
+
+				D3DXVec3Normalize(&vDir, &vDir);
+
+				CBullet::BULLET_DESC Desc;
+				Desc.vDir = vDir;
+				Desc.vPos = vPos + vOffset;
+
+				m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Bullet"),
+					ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Bullet"), &Desc);
+			}
+		}
+
+	}
+
+	_tchar strCurrentAnimation[256];
+
+	wsprintf(strCurrentAnimation, TEXT("%s_%s"), m_strWeapon.c_str(), m_strAction.c_str());
+
+	m_pRightHand->Set_Current_Animation(strCurrentAnimation);
 }
 
 void CPlayer::Update(_float fTimeDelta)
