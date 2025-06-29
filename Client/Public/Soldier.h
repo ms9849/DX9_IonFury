@@ -36,7 +36,7 @@ public:
 	HRESULT End_RenderState();
 
 	void Attack();
-
+	void Move();
 public:
 	static CSoldier* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
 	virtual CGameObject* Clone(void* pArg) override;

@@ -165,9 +165,7 @@ HRESULT CPlayer_Hand::Ready_Components()
 		if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), strPrototypeTag,
 			strComponentTag, reinterpret_cast<CComponent**>(&pTextureCom))))
 			return E_FAIL;
-		
-		Safe_AddRef(pTextureCom);
-
+	
 		m_pTextureComs.emplace(m_strFrameKeys[i], pTextureCom);
 	}
 

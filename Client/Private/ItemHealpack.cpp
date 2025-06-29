@@ -154,8 +154,4 @@ CGameObject* CItemHealpack::Clone(void* pArg)
 void CItemHealpack::Free()
 {
 	__super::Free();
-
-	Safe_Release(m_pTextureCom);
-	Safe_Release(m_pTransformCom);
-	Safe_Release(m_pVIBufferCom);
 }
