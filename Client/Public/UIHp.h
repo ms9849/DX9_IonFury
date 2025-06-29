@@ -2,6 +2,7 @@
 #include "UIObject.h"
 #include "UIFont.h"
 #include "UIText.h"
+#include "Player.h"
 
 
 NS_BEGIN(Engine)
@@ -28,7 +29,7 @@ public:
 	virtual HRESULT Render() override;
 
 public:
-	void Set_Hp(_uint iNumber);
+	void Set_Hp();
 
 private:
 	CTexture* m_pTextureCom = { nullptr };
@@ -36,6 +37,7 @@ private:
 	CVIBuffer_Rect* m_pVIBufferCom = { nullptr };
 
 private:
+	CPlayer* m_pPlayer{ nullptr };
 	CUIText* m_pText{ nullptr };
 	_uint m_iHp{};
 	UIOBJECT_DESC	m_tagDesc{};

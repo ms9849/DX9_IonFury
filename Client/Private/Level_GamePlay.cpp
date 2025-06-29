@@ -1,5 +1,6 @@
 #include "Level_GamePlay.h"
 #include "GameInstance.h"
+#include "Camera.h"
 #include "Monster.h"
 #include "UIObject.h"
 
@@ -66,9 +67,9 @@ void CLevel_GamePlay::Update(_float fTimeDelta)
 	//}
 	// UI에 값 업데이트 해줘야함
 #pragma region UI
-	m_pUIHp->Set_Hp(m_pPlayer->Get_Player_Info().iHp);
-	m_pUIArmor->Set_Armor(m_pPlayer->Get_Player_Info().iArmor);
-	m_pUIBullets->Set_Bullets(m_pPlayer->Get_Player_Info().iBullets);
+	m_pUIHp->Set_Hp();
+	m_pUIArmor->Set_Armor();
+	m_pUIBullets->Set_Bullets();
 	m_pUIInteraction->Set_Interaction(TEXT("Press [E] Key"));
 #pragma endregion
 
@@ -142,8 +143,8 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _wstring& strLayerTag)
 	CameraDesc.fFov = D3DXToRadian(60.0f);
 	CameraDesc.fNear = 0.1f;
 	CameraDesc.fFar = 300.f;
-	CameraDesc.vEye = dynamic_cast<CTransform*>(m_pPlayer->Find_Component(TEXT("Com_Transform")))->Get_State(STATE::POSITION);
-	CameraDesc.vAt = dynamic_cast<CTransform*>(m_pPlayer->Find_Component(TEXT("Com_Transform")))->Get_State(STATE::LOOK);
+	CameraDesc.vEye = dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player"), TEXT("Com_Transform")))->Get_State(STATE::POSITION);
+	CameraDesc.vAt = dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player"), TEXT("Com_Transform")))->Get_State(STATE::LOOK);
 	CameraDesc.fSpeedPerSec = 5.f;
 	CameraDesc.fRotationPerSec = D3DXToRadian(90.0f);
 
@@ -151,11 +152,11 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _wstring& strLayerTag)
 		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag, &CameraDesc)))
 		return E_FAIL;
 
-	m_pCamera = dynamic_cast<CCamera*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Camera")));
-	Safe_AddRef(m_pCamera);
+	CCamera* pCamera = dynamic_cast<CCamera*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Camera")));
+	Safe_AddRef(pCamera);
 
-	m_pCamera->Camera_Configure_Clear(m_CameraSettings);
-	m_CameraSettings.pTarget = m_pPlayer;
+	//pCamera->Camera_Configure_Clear(m_CameraSettings);
+	m_CameraSettings.pTarget = dynamic_cast<CPlayer*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player")));
 	m_CameraSettings.isChaseTarget = true;
 	m_CameraSettings.isSyncLook = true;
 	m_CameraSettings.isMouseFixCenter = true;
@@ -163,7 +164,8 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _wstring& strLayerTag)
 	//m_CameraSettings.vLimitDistance = _float3{ 0.f, 0.f, -1.f };
 	SetCursorPos(g_iWinSizeX * 0.5f, g_iWinSizeY * 0.5f);
 
-	m_pCamera->Camera_Configure(m_CameraSettings);
+	pCamera->Camera_Configure(m_CameraSettings);
+	Safe_Release(pCamera);
 
 	return S_OK;
 }
@@ -173,9 +175,6 @@ HRESULT CLevel_GamePlay::Ready_Layer_Player(const _wstring& strLayerTag)
 	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Player"),
 		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag)))
 		return E_FAIL;
-	
-	m_pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player")));
-	Safe_AddRef(m_pPlayer);
 
 	return S_OK;
 }
@@ -203,8 +202,9 @@ HRESULT CLevel_GamePlay::Ready_Layer_UI(const _wstring& strLayerTag)
 
 	/* 체력 */
 	CUIObject::UIOBJECT_DESC Desc_Hp{};
+	CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player")));
 
-	ws = to_wstring(m_pPlayer->Get_Player_Info().iHp);
+	ws = to_wstring(pPlayer->Get_Player_Info().iHp);
 
 	// UI전체 크기 및 위치
 	Desc_Hp.iTextLength = wcslen(ws.c_str());
@@ -225,7 +225,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_UI(const _wstring& strLayerTag)
 	/* 체력 */
 	CUIObject::UIOBJECT_DESC Desc_Armor{};
 
-	ws = to_wstring(m_pPlayer->Get_Player_Info().iArmor);
+	ws = to_wstring(pPlayer->Get_Player_Info().iArmor);
 
 	// UI전체 크기 및 위치
 	Desc_Armor.iTextLength = wcslen(ws.c_str());
@@ -246,7 +246,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_UI(const _wstring& strLayerTag)
 	/* 총알 */
 	CUIObject::UIOBJECT_DESC Desc_Bullets{};
 
-	ws = to_wstring(m_pPlayer->Get_Player_Info().iBullets);
+	ws = to_wstring(pPlayer->Get_Player_Info().iBullets);
 
 	Desc_Bullets.iTextLength = wcslen(ws.c_str());
 	Desc_Bullets.fSizeX = 50.f + (50.f * Desc_Bullets.iTextLength);
