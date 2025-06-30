@@ -155,7 +155,7 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 				Desc.vPos = vPos + vOffset;
 
 				m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Bullet"),
-					ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Bullet"), &Desc);
+					ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_PlayerBullet"), &Desc);
 			}
 		}
 	}
@@ -164,12 +164,30 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 
 	wsprintf(strCurrentAnimation, TEXT("%s_%s"), m_tInfo.strWeapon.c_str(), m_tInfo.strAction.c_str());
 
+	/* 점프 로직*/
+	if (!m_bJump && m_pGameInstance->Key_Down(VK_SPACE))
+	{
+		m_bJump = true;
+		m_fTime = 0.f;
+	}
+
 	m_pRightHand->Set_Current_Animation(strCurrentAnimation);
 }
 
 void CPlayer::Update(_float fTimeDelta)
 {
-	SetUp_OnTerrain(m_pTransformCom, 0.5f);
+	if (m_bJump)
+	{
+		m_fTime += 0.5f * fTimeDelta;
+		_float3 vPosition = m_pTransformCom->Get_State(STATE::POSITION);
+		vPosition.y = vPosition.y + (m_fJumpSpeed * m_fTime - 4.9f * m_fTime * m_fTime);
+		m_pTransformCom->Set_State(STATE::POSITION, vPosition);
+	}
+	else
+	{
+		SetUp_OnTerrain(m_pTransformCom, 0.5f, &m_bJump);
+	}
+
 	m_pRightHand->Set_Player_Transform(m_pTransformCom);
 }
 
@@ -356,7 +374,7 @@ const COLLISION_DESC& CPlayer::Get_CollisionDesc(COLLISION eColType)
 		Desc.pCollider = m_pSphereColliderCom;
 	else if (eColType == COLLISION::OBB)
 		Desc.pCollider = m_pBoxColliderCom;
-	
+
 	return Desc;
 }
 

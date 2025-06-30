@@ -442,6 +442,8 @@ void CSoldier::Attack()
 	CBullet::BULLET_DESC Desc;
 	Desc.vDir = vDir;
 	Desc.vPos = vPos;
+
+	m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Bullet"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Bullet"), &Desc);
 }
 
 void CSoldier::Move(_float fTimeDelta)
