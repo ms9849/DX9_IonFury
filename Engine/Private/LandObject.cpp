@@ -54,7 +54,7 @@ void CLandObject::Change_Land(LANDOBJECT_DESC* pLandDesc)
 {
 }
 
-void CLandObject::SetUp_OnTerrain(CTransform* pTransform, _float fOffset)
+void CLandObject::SetUp_OnTerrain(CTransform* pTransform, _float fOffset, _bool* bJump)
 {
 /*
 	_float3		vWorldPos = pTransform->Get_State(STATE::POSITION);
@@ -71,7 +71,6 @@ void CLandObject::SetUp_OnTerrain(CTransform* pTransform, _float fOffset)
 
 	pTransform->Set_State(STATE::POSITION, vWorldPos);
 */
-
 	_float3 vWorldPos = pTransform->Get_State(STATE::POSITION);  // 현재 월드 위치
 
 	_float3 vLocalPos = {};
@@ -79,16 +78,28 @@ void CLandObject::SetUp_OnTerrain(CTransform* pTransform, _float fOffset)
 
 	// 로컬 좌표계에서 높이 계산
 	vLocalPos.y = m_pLandVIBuffer->Compute_Height(vLocalPos);
-	
+
 	// 다시 로컬 → 월드로 Y만 변환
 	_float3 vWorldHeightPos = {};
 	D3DXVec3TransformCoord(&vWorldHeightPos, &vLocalPos, m_pLandTransform->Get_WorldMatrixPtr());
 
-	// 기존 X/Z 유지하고 Y만 갱신
-	vWorldPos.y = vWorldHeightPos.y + fOffset;
+	if (bJump == nullptr || *bJump == false)
+	{
+		// 기존 X/Z 유지하고 Y만 갱신
+		vWorldPos.y = vWorldHeightPos.y + fOffset;
 
-	// 최종 위치 설정
-	pTransform->Set_State(STATE::POSITION, vWorldPos);
+		// 최종 위치 설정
+		pTransform->Set_State(STATE::POSITION, vWorldPos);
+	}
+	else if (*bJump == true)
+	{
+		if (vWorldPos.y < vWorldHeightPos.y)
+		{
+			vWorldPos.y = vWorldHeightPos.y;
+			*bJump = false;
+			pTransform->Set_State(STATE::POSITION, vWorldPos);
+		}
+	}
 }
 
 void CLandObject::Free()

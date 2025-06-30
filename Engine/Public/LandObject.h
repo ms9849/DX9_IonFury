@@ -32,7 +32,7 @@ protected:
 	class CVIBuffer*		m_pLandVIBuffer = { nullptr };
 
 protected:
-	void SetUp_OnTerrain(class CTransform* pTransform, _float fOffset = 0.f);
+	void SetUp_OnTerrain(class CTransform* pTransform, _float fOffset = 0.f, _bool* bJump = nullptr);
 	
 public:
 	virtual CGameObject* Clone(void* pArg) = 0;
