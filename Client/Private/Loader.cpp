@@ -14,8 +14,11 @@
 #include "UIInteraction.h"
 #include "UIAim.h"
 #include "UIArmor.h"
+#include "UIItemStack.h"
 #include "ItemArmor.h"
 #include "ItemHealpack.h"
+#include "ItemPistolBullet.h"
+#include "ItemShootGunBullet.h"
 #include "Soldier.h"
 
 #include "GameInstance.h"
@@ -116,11 +119,6 @@ HRESULT CLoader::Loading_For_GamePlay()
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Terrain/Tile0.jpg"), 1))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_Texture_Player */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Player"),
-		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Player/Player0.png"), 1))))
-		return E_FAIL;
-
 	/* For.Prototype_Component_Texture_Monster */
 	/*if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Monster"),
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Monster/Ma.jpg"), 1))))
@@ -141,11 +139,6 @@ HRESULT CLoader::Loading_For_GamePlay()
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Explosion/Explosion%d.png"), 90))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_Texture_Bullets */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Bullets"),
-		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/UI/Bullets/Bullets_%d.png"), 1))))
-		return E_FAIL;
-
 	/* For.Prototype_Component_Texture_Aim */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Aim"),
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/UI/Aim/Aim_0.png"), 1))))
@@ -159,6 +152,11 @@ HRESULT CLoader::Loading_For_GamePlay()
 	/* For.Prototype_Component_Texture_Item_Healpack_0 */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Item_Healpack_0"),
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Item/Item_Healpack_0.png"), 1))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Item_Bullets */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Item_Bullets"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Item/Item_Bullet_%d.png"), 2))))
 		return E_FAIL;
 
 	m_strMessage = TEXT("모델를(을) 로딩 중 입니다.");
@@ -252,6 +250,11 @@ HRESULT CLoader::Loading_For_GamePlay()
 		CUIInteraction::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
+	/* For.Prototype_GameObject_UIItemStack */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_UIItemStack"),
+		CUIItemStack::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
 	/* For.Prototype_GameObject_UIAim */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_UIAim"),
 		CUIAim::Create(m_pGraphic_Device))))
@@ -265,6 +268,16 @@ HRESULT CLoader::Loading_For_GamePlay()
 	/* For.Prototype_GameObject_Item_Healpack */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Item_Healpack"),
 		CItemHealpack::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Item_Pistol_Bullet */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Item_Pistol_Bullet"),
+		CItemPistolBullet::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Item_ShootGun_Bullet */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Item_ShootGun_Bullet"),
+		CItemShootGunBullet::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
 	m_strMessage = TEXT("로딩이 완료되었습니다..");

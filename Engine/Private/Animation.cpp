@@ -50,7 +50,14 @@ void CAnimation::Play_Animation(_float fTimeDelta)
 
 _bool CAnimation::Check_Animation_Finish()
 {
+	//return Get_Frame_Index() >= m_tFrame->iEnd;
 	return m_bFinished;
+}
+
+void CAnimation::Clear_Animation()
+{
+	m_tFrame->fTime = 0.f;
+	m_bFinished = true;
 }
 
 CAnimation* CAnimation::Create(LPDIRECT3DDEVICE9 pGraphic_Device)

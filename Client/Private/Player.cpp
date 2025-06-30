@@ -2,6 +2,10 @@
 
 #include "GameInstance.h"
 #include "Bullet.h"
+#include "ItemArmor.h"
+#include "ItemHealpack.h"
+#include "ItemPistolBullet.h"
+#include "ItemShootGunBullet.h"
 
 CPlayer::CPlayer(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CLandObject{ pGraphic_Device }
@@ -26,15 +30,22 @@ HRESULT CPlayer::Initialize(void* pArg)
 	Desc.pLandTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_BackGround"), TEXT("Com_Transform")));
 	Desc.pLandVIBuffer = static_cast<CVIBuffer*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_BackGround"), TEXT("Com_VIBuffer")));
 
-	m_tInfo.iHp = 100;
-	m_tInfo.iArmor = 100;
-	m_tInfo.iBullets = 100;
-
 	if (FAILED(__super::Initialize(&Desc)))
 		return E_FAIL;
 
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
+
+	if (FAILED(Ready_Weapons()))
+		return E_FAIL;
+
+	m_tInfo.iHp = 70;
+	m_tInfo.iArmor = 70;
+	
+	auto iter = m_Weapons.find(m_tInfo.strWeapon);
+
+	m_tInfo.iBullets = iter->second.iCurrentBullets;
+	m_tInfo.iShootBullets = iter->second.iShootBullets;
 
 	m_pTransformCom->Set_State(STATE::POSITION, _float3(0.f, 0.f, 0.f));
 
@@ -56,53 +67,79 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 void CPlayer::Priority_Update(_float fTimeDelta)
 {
-	if (m_pGameInstance->Key_Down('1'))
+	auto iter = m_Weapons.find(m_tInfo.strWeapon);
+
+	if (m_tInfo.strAction.compare(TEXT("Reload")) != 0)
 	{
-		m_strWeapon = TEXT("Pistol");
+		if (m_pGameInstance->Key_Down('1'))
+		{
+			m_tInfo.strWeapon = TEXT("Pistol");
+			iter = m_Weapons.find(m_tInfo.strWeapon);
+			m_tInfo.iBullets = iter->second.iCurrentBullets;
+			iter->second.iShootBullets = iter->second.iShootBullets;
+			m_tInfo.iShootBullets = iter->second.iShootBullets;
+		}
+		if (m_pGameInstance->Key_Down('2'))
+		{
+			m_tInfo.strWeapon = TEXT("ShootGun");
+			iter = m_Weapons.find(m_tInfo.strWeapon);
+			m_tInfo.iBullets = iter->second.iCurrentBullets;
+			iter->second.iShootBullets = iter->second.iShootBullets;
+			m_tInfo.iShootBullets = iter->second.iShootBullets;
+		}
 	}
+	
 
 	// 애니메이션 종료 처리 해야됨
 	if (m_pRightHandAnimationCom->Check_Animation_Finish())
 	{
-		m_strAction = TEXT("Idle");
+		m_tInfo.strAction = TEXT("Idle");
 	}
 	else
 	{
 		if (m_pGameInstance->Key_Pressing('W'))
 		{
 			m_pTransformCom->Go_Straight(fTimeDelta);
-			if(m_strAction.compare(TEXT("Idle")) == 0)
-				m_strAction = TEXT("Walk");
+			if (m_tInfo.strAction.compare(TEXT("Idle")) == 0)
+				m_tInfo.strAction = TEXT("Walk");
 		}
 		if (m_pGameInstance->Key_Pressing('S'))
 		{
 			m_pTransformCom->Go_Backward(fTimeDelta);
-			if (m_strAction.compare(TEXT("Idle")) == 0)
-				m_strAction = TEXT("Walk");
+			if (m_tInfo.strAction.compare(TEXT("Idle")) == 0)
+				m_tInfo.strAction = TEXT("Walk");
 		}
 		if (m_pGameInstance->Key_Pressing('A'))
 		{
 			m_pTransformCom->Go_Left(fTimeDelta);
-			if (m_strAction.compare(TEXT("Idle")) == 0)
-				m_strAction = TEXT("Walk");
+			if (m_tInfo.strAction.compare(TEXT("Idle")) == 0)
+				m_tInfo.strAction = TEXT("Walk");
 		}
 		if (m_pGameInstance->Key_Pressing('D'))
 		{
 			m_pTransformCom->Go_Right(fTimeDelta);
-			if (m_strAction.compare(TEXT("Idle")) == 0)
-				m_strAction = TEXT("Walk");
+			if (m_tInfo.strAction.compare(TEXT("Idle")) == 0)
+				m_tInfo.strAction = TEXT("Walk");
 		}
 		if (m_pGameInstance->Key_Down('R'))
 		{
-			m_strAction = TEXT("Reload");
+			m_tInfo.strAction = TEXT("Reload");
+			iter->second.iShootBullets = iter->second.iCanShootBullets;
+			m_tInfo.iShootBullets = iter->second.iShootBullets;
 		}
 
-		if (m_strAction.compare(TEXT("Reload")) != 0)
+		if (m_tInfo.strAction.compare(TEXT("Reload")) != 0)
 		{
-			if (m_pGameInstance->Key_Down(VK_LBUTTON))
+			if (m_pGameInstance->Key_Down(VK_LBUTTON)
+				&& iter->second.iShootBullets > 0
+				&& iter->second.iCurrentBullets > 0)
 			{
-				m_tInfo.iBullets -= 1;
-				m_strAction = TEXT("Shoot");
+				m_pRightHandAnimationCom->Clear_Animation();
+				iter->second.iCurrentBullets -= 1;
+				m_tInfo.iBullets = iter->second.iCurrentBullets;
+				iter->second.iShootBullets -= 1;
+				m_tInfo.iShootBullets = iter->second.iShootBullets;
+				m_tInfo.strAction = TEXT("Shoot");
 
 				_float3 vOffset = _float3{ 0.f, 0.f, 0.f };
 				_float3 vDir = Calc_BulletDir(&vOffset);
@@ -122,7 +159,7 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 
 	_tchar strCurrentAnimation[256];
 
-	wsprintf(strCurrentAnimation, TEXT("%s_%s"), m_strWeapon.c_str(), m_strAction.c_str());
+	wsprintf(strCurrentAnimation, TEXT("%s_%s"), m_tInfo.strWeapon.c_str(), m_tInfo.strAction.c_str());
 
 	m_pRightHand->Set_Current_Animation(strCurrentAnimation);
 }
@@ -135,22 +172,11 @@ void CPlayer::Update(_float fTimeDelta)
 
 void CPlayer::Late_Update(_float fTimeDelta)
 {
-	//m_pGameInstance->Add_RenderGroup(RENDER::BLEND, this);
 }
 
 HRESULT CPlayer::Render()
 {
 	m_pTransformCom->Set_Transform();
-
-	//m_pTextureCom->Set_Texture(0);
-
-	/*if (FAILED(Begin_RenderState()))
-		return E_FAIL;
-
-	m_pVIBufferCom->Render();
-
-	if (FAILED(End_RenderState()))
-		return E_FAIL;*/
 
 	return S_OK;
 }
@@ -167,11 +193,6 @@ HRESULT CPlayer::Ready_Components()
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Transform"),
 		TEXT("Com_Transform"), reinterpret_cast<CComponent**>(&m_pTransformCom), &TransformDesc)))
 		return E_FAIL;
-
-	///* Com_Texture */
-	//if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Player"),
-	//	TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
-	//	return E_FAIL;
 
 	/* Com_VIBuffer */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_Rect"),
@@ -191,35 +212,41 @@ HRESULT CPlayer::Ready_Components()
 	return S_OK;
 }
 
+HRESULT CPlayer::Ready_Weapons()
+{
+	WEAPON_INFO PistolDesc{};
+
+	PistolDesc.iBulletsMax = 250;
+	PistolDesc.iCurrentBullets = 230;
+	PistolDesc.iCanShootBullets = 7;
+	PistolDesc.iShootBullets = PistolDesc.iCanShootBullets;
+
+	m_Weapons.emplace(TEXT("Pistol"), PistolDesc);
+
+	WEAPON_INFO ShootGunDesc{};
+
+	ShootGunDesc.iBulletsMax = 150;
+	ShootGunDesc.iCurrentBullets = 130;
+	ShootGunDesc.iCanShootBullets = 2;
+	ShootGunDesc.iShootBullets = ShootGunDesc.iCanShootBullets;
+
+	m_Weapons.emplace(TEXT("ShootGun"), ShootGunDesc);
+
+	return S_OK;
+}
+
 HRESULT CPlayer::Begin_RenderState()
 {
-	/* 렌더링할 때 알파값을 기준으로 섞어준다.*/
-
-	/*
-	float4		vSourColor, vDestColor;
-	vSourColor.rgb * vSourColor.a + vDestColor.rgb * (1.f - vSourColor.a);
-	*/
-
-	//
-	//m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-	//m_pGraphic_Device->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
-	//m_pGraphic_Device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-	//m_pGraphic_Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-	//
-
 	/* 알파 테스트 : 픽셀의 알파를 비교해서 그린다 안그린다를 설정. */
 	m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
 	m_pGraphic_Device->SetRenderState(D3DRS_ALPHAREF, 200);
 	m_pGraphic_Device->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
-
-
 
 	return S_OK;
 }
 
 HRESULT CPlayer::End_RenderState()
 {
-	// m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
 	m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
 
 	return S_OK;
@@ -261,8 +288,40 @@ _float3 CPlayer::Calc_BulletDir(_float3* vOffset)
 
 void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType)
 {
-	if(eColType == COLLISION::SPHERE)
-		int a = 10;
+	if (eColType == COLLISION::SPHERE)
+	{
+		if (dynamic_cast<CItemArmor*>(pDst))
+		{
+			m_tInfo.iArmor += 10;
+		}
+		if (dynamic_cast<CItemHealpack*>(pDst))
+		{
+			m_tInfo.iHp += 10;
+		}
+		if (dynamic_cast<CItemPistolBullet*>(pDst))
+		{
+			auto iter = m_Weapons.find(TEXT("Pistol"));
+			iter->second.iCurrentBullets += 10;
+
+			if (iter->second.iCurrentBullets >= iter->second.iBulletsMax)
+				iter->second.iCurrentBullets = iter->second.iBulletsMax;
+
+			if(m_tInfo.strWeapon.compare(TEXT("Pistol")) == 0)
+				m_tInfo.iBullets = iter->second.iCurrentBullets;
+		}
+		if (dynamic_cast<CItemShootGunBullet*>(pDst))
+		{
+			auto iter = m_Weapons.find(TEXT("ShootGun"));
+
+			iter->second.iCurrentBullets += 10;
+
+			if (iter->second.iCurrentBullets >= iter->second.iBulletsMax)
+				iter->second.iCurrentBullets = iter->second.iBulletsMax;
+
+			if (m_tInfo.strWeapon.compare(TEXT("ShootGun")) == 0)
+				m_tInfo.iBullets = iter->second.iCurrentBullets;
+		}
+	}
 }
 
 const COLLISION_DESC& CPlayer::Get_CollisionDesc(COLLISION eColType)
@@ -308,7 +367,6 @@ void CPlayer::Free()
 {
 	__super::Free();
 
-	//Safe_Release(m_pTextureCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pBoxColliderCom);

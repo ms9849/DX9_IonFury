@@ -24,8 +24,15 @@ private:
 private:
 	typedef struct tagPlayerInfo
 	{
-		_uint iHp{}, iBullets{}, iArmor{};
+		_uint iHp{}, iBullets{}, iShootBullets{}, iArmor{};
+		_wstring strWeapon{ TEXT("Pistol") };
+		_wstring strAction{ TEXT("Idle") };
 	}PLAYER_INFO;
+
+	typedef struct tagWeapon
+	{
+		_uint iBulletsMax{}, iCanShootBullets{}, iCurrentBullets{}, iShootBullets{};
+	}WEAPON_INFO;
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -48,6 +55,7 @@ private:
 
 private:
 	HRESULT Ready_Components();
+	HRESULT Ready_Weapons();
 	HRESULT Begin_RenderState();
 	HRESULT End_RenderState();
 	_float3 Calc_BulletDir(_float3* vOffset);
@@ -56,9 +64,8 @@ private:
 	PLAYER_INFO		m_tInfo{};
 	CPlayer_Hand*	m_pRightHand{ nullptr };
 	CPlayer_Hand*	m_pLeftHand{ nullptr };
-	_wstring		m_strWeapon{TEXT("Pistol")};
-	_wstring		m_strAction{TEXT("Idle")};
 	_bool			m_bWalk{ false };
+	map<const _wstring, WEAPON_INFO> m_Weapons{};
 
 public:
 	virtual void OnCollision(CGameObject* pDst, COLLISION eColType) override;

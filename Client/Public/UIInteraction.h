@@ -35,7 +35,6 @@ private:
 
 private:
 	CUIText* m_pText{ nullptr };
-	_uint m_iHp{};
 	UIOBJECT_DESC	m_tagDesc{};
 
 private:

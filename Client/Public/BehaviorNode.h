@@ -30,10 +30,12 @@ class CActionNode : public CBehaviorNode
 {
 public:
     CActionNode(function<void()> action);
+    CActionNode(function<void(_float)> action);
     _bool Run(_float) override;
 
 private:
     function<void()> action;
+    function<void(_float)> actionFloat;
 };
 
 class CSequenceNode : public CBehaviorNode

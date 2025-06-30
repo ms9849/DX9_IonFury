@@ -8,6 +8,7 @@
 #include "UIInteraction.h"
 #include "UIAim.h"
 #include "UIArmor.h"
+#include "UIItemStack.h"
 
 NS_BEGIN(Client)
 
@@ -39,6 +40,7 @@ private:
 	CUIBullets* m_pUIBullets{ nullptr };
 	CUIInteraction* m_pUIInteraction{ nullptr };
 	CUIAim* m_pUIAim{ nullptr };
+	CUIItemStack* m_pUIItemStack{ nullptr };
 	CCamera::CAMERA_CONFIG m_CameraSettings;
 
 public:
