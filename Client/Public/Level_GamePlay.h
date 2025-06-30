@@ -3,11 +3,6 @@
 #include "Client_Defines.h"
 #include "Level.h"
 #include "Camera.h"
-#include "UIHp.h"
-#include "UIBullets.h"
-#include "UIInteraction.h"
-#include "UIAim.h"
-#include "UIArmor.h"
 
 NS_BEGIN(Client)
 
@@ -34,11 +29,11 @@ private:
 	HRESULT Ready_Layer_Items(const _wstring& strLayerTag);
 
 private:
-	CUIHp* m_pUIHp{ nullptr };
-	CUIArmor* m_pUIArmor{ nullptr };
-	CUIBullets* m_pUIBullets{ nullptr };
-	CUIInteraction* m_pUIInteraction{ nullptr };
-	CUIAim* m_pUIAim{ nullptr };
+	class CUIHp* m_pUIHp { nullptr };
+	class CUIArmor* m_pUIArmor { nullptr };
+	class CUIBullets* m_pUIBullets { nullptr };
+	class CUIInteraction* m_pUIInteraction { nullptr };
+	class CUIAim* m_pUIAim { nullptr };
 	CCamera::CAMERA_CONFIG m_CameraSettings;
 
 public:

@@ -30,6 +30,7 @@ void CRenderer::Render()
 {
 	Render_Priority();
 	Render_NonBlend();
+	Render_Blend_Priority();
 	Render_Blend();
 	Render_UI();
 }
@@ -58,6 +59,19 @@ void CRenderer::Render_NonBlend()
 	}
 
 	m_RenderObjects[ENUM_CLASS(RENDER::NONBLEND)].clear();
+}
+
+void CRenderer::Render_Blend_Priority()
+{
+	for (auto& pRenderObject : m_RenderObjects[ENUM_CLASS(RENDER::BLEND_PRIORITY)])
+	{
+		if (nullptr != pRenderObject)
+			pRenderObject->Render();
+
+		Safe_Release(pRenderObject);
+	}
+
+	m_RenderObjects[ENUM_CLASS(RENDER::BLEND_PRIORITY)].clear();
 }
 
 _bool Compare(CGameObject* pSour, CGameObject* pDest)

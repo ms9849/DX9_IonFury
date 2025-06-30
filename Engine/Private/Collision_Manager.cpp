@@ -21,7 +21,7 @@ HRESULT CCollision_Manager::Add_Layer_ToCollisionMgr(const _wstring& strLayerTag
     return S_OK;
 }
 
-void CCollision_Manager::Check_OBBCollision(const _wstring& strLayerTagSrc, const _wstring& strLayerTagDst, _uint iLayerLevel)
+void CCollision_Manager::Check_OBBCollision(const _wstring& strLayerTagSrc, const _wstring& strLayerTagDst, _uint iLayerLevel, _float fTimeDelta)
 {
 	CLayer* pSrcLayer = m_pGameInstance->Find_Layer(iLayerLevel, strLayerTagSrc);
 	CLayer* pDstLayer = m_pGameInstance->Find_Layer(iLayerLevel, strLayerTagDst);
@@ -45,14 +45,14 @@ void CCollision_Manager::Check_OBBCollision(const _wstring& strLayerTagSrc, cons
  				CTransform* pTransformDst = static_cast<CTransform*>(pDst->Find_Component(TEXT("Com_Transform")));
 				pTransformDst->Add_Pos(vMTV);
 
-                pSrc->OnCollision(pDst, COLLISION::OBB);
-                pDst->OnCollision(pSrc, COLLISION::OBB);
+                pSrc->OnCollision(pDst, COLLISION::OBB, fTimeDelta);
+                pDst->OnCollision(pSrc, COLLISION::OBB, fTimeDelta);
 			}
 		}
 	}
 }
 
-void CCollision_Manager::Check_SphereCollision(const _wstring& strLayerTagSrc, const _wstring& strLayerTagDst, _uint iLayerLevel)
+void CCollision_Manager::Check_SphereCollision(const _wstring& strLayerTagSrc, const _wstring& strLayerTagDst, _uint iLayerLevel, _float fTimeDelta)
 {
     CLayer* pSrcLayer = m_pGameInstance->Find_Layer(iLayerLevel, strLayerTagSrc);
     CLayer* pDstLayer = m_pGameInstance->Find_Layer(iLayerLevel, strLayerTagDst);
@@ -72,8 +72,8 @@ void CCollision_Manager::Check_SphereCollision(const _wstring& strLayerTagSrc, c
         {
             if (Sphere_Collision(pSrc, pDst))
             {
-                pSrc->OnCollision(pDst, COLLISION::SPHERE);
-                pDst->OnCollision(pSrc, COLLISION::SPHERE);
+                pSrc->OnCollision(pDst, COLLISION::SPHERE, fTimeDelta);
+                pDst->OnCollision(pSrc, COLLISION::SPHERE, fTimeDelta);
             }
         }
     }

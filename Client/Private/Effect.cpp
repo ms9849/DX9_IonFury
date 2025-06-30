@@ -120,10 +120,10 @@ HRESULT CEffect::Begin_RenderState()
 
 HRESULT CEffect::End_RenderState()
 {
-	m_pGraphic_Device->SetRenderState(D3DRS_LIGHTING, TRUE);
+	//m_pGraphic_Device->SetRenderState(D3DRS_LIGHTING, TRUE);
 
-	m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-	m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+	//m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+	//m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
 
 	return S_OK;
 }

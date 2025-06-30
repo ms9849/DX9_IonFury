@@ -61,7 +61,7 @@ private:
 	_bool			m_bWalk{ false };
 
 public:
-	virtual void OnCollision(CGameObject* pDst, COLLISION eColType) override;
+	virtual void OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta) override;
 	virtual const COLLISION_DESC& Get_CollisionDesc(COLLISION eColType);
 
 public:

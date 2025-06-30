@@ -212,8 +212,6 @@ HRESULT CPlayer::Begin_RenderState()
 	m_pGraphic_Device->SetRenderState(D3DRS_ALPHAREF, 200);
 	m_pGraphic_Device->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
 
-
-
 	return S_OK;
 }
 
@@ -259,7 +257,7 @@ _float3 CPlayer::Calc_BulletDir(_float3* vOffset)
 	}
 }
 
-void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType)
+void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta)
 {
 	if(eColType == COLLISION::SPHERE)
 		int a = 10;
@@ -284,7 +282,7 @@ CPlayer* CPlayer::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed to Created : pGraphic_Device");
+		MSG_BOX("Failed to Created : player");
 		Safe_Release(pInstance);
 	}
 

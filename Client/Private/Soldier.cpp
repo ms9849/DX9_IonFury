@@ -352,7 +352,7 @@ HRESULT CSoldier::Begin_RenderState()
 HRESULT CSoldier::End_RenderState()
 {
 	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
-	m_pGraphic_Device->SetRenderState(D3DRS_LIGHTING, TRUE);
+	//m_pGraphic_Device->SetRenderState(D3DRS_LIGHTING, TRUE);
 
 	// m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
 	m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);

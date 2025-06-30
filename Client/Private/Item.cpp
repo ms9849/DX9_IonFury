@@ -98,7 +98,6 @@ const COLLISION_DESC& CItem::Get_CollisionDesc(COLLISION eColType)
 	Desc.pTransform = m_pTransformCom;
 
 	return Desc;
-	// TODO: 여기에 return 문을 삽입합니다.
 }
 
 void CItem::Free()

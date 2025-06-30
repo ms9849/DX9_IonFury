@@ -119,7 +119,7 @@ HRESULT CItemHealpack::End_RenderState()
 	return S_OK;
 }
 
-void CItemHealpack::OnCollision(CGameObject* pDst, COLLISION eColType)
+void CItemHealpack::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta)
 {
 	if (eColType == COLLISION::SPHERE)
 		int a = 10;
