@@ -11,12 +11,14 @@ NS_END
 
 NS_BEGIN(Client)
 
-class CUIItemStack final : public CUIObject
+class CPlayer;
+
+class CUIItemQueue final : public CUIObject
 {
 private:
-	CUIItemStack(LPDIRECT3DDEVICE9 pGraphic_Device);
-	CUIItemStack(const CUIItemStack& Prototype);
-	virtual ~CUIItemStack() = default;
+	CUIItemQueue(LPDIRECT3DDEVICE9 pGraphic_Device);
+	CUIItemQueue(const CUIItemQueue& Prototype);
+	virtual ~CUIItemQueue() = default;
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -27,7 +29,7 @@ public:
 	virtual HRESULT Render() override;
 
 public:
-	void Set_ItemStack(const _tchar* strText);
+	void Set_ItemQueue(const _wstring strText);
 
 private:
 	CTransform* m_pTransformCom = { nullptr };
@@ -41,7 +43,7 @@ private:
 	HRESULT Ready_Components();
 
 public:
-	static CUIItemStack* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
+	static CUIItemQueue* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
 };

@@ -27,7 +27,7 @@ public:
 	virtual HRESULT Render() override;
 
 public:
-	void Set_Interaction(const _tchar* strText);
+	void Set_Interaction();
 
 private:
 	CTransform* m_pTransformCom = { nullptr };

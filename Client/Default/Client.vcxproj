@@ -149,7 +149,7 @@
     <ClInclude Include="..\public\Camera.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
     <ClInclude Include="..\Public\CubeObject.h" />
-    <ClInclude Include="..\public\UIItemStack.h" />
+    <ClInclude Include="..\public\UIItemQueue.h" />
     <ClInclude Include="..\public\Item.h" />
     <ClInclude Include="..\public\ItemArmor.h" />
     <ClInclude Include="..\public\ItemHealpack.h" />
@@ -210,7 +210,7 @@
     <ClCompile Include="..\Private\UIFont.cpp" />
     <ClCompile Include="..\Private\UIHp.cpp" />
     <ClCompile Include="..\Private\UIInteraction.cpp" />
-    <ClCompile Include="..\private\UIItemStack.cpp" />
+    <ClCompile Include="..\private\UIItemQueue.cpp" />
     <ClCompile Include="..\Private\UIText.cpp" />
     <ClCompile Include="Client.cpp" />
   </ItemGroup>

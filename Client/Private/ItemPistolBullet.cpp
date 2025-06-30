@@ -119,7 +119,7 @@ HRESULT CItemPistolBullet::End_RenderState()
 	return S_OK;
 }
 
-void CItemPistolBullet::OnCollision(CGameObject* pDst, COLLISION eColType)
+void CItemPistolBullet::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta)
 {
 	if (eColType == COLLISION::SPHERE)
 		m_isDead = true;

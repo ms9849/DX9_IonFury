@@ -94,7 +94,7 @@
     <Filter Include="02.GameObjects\Item\ItemShootGunBullet">
       <UniqueIdentifier>{9009bf44-38d5-46c3-a834-86f17649999f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\UI\UIItemStack">
+    <Filter Include="02.GameObjects\UI\UIItemQueue">
       <UniqueIdentifier>{53d287c7-1ef6-4fe5-b461-8b2067fbf25f}</UniqueIdentifier>
     </Filter>
     <Filter Include="01.Levels\Loading">
@@ -210,8 +210,8 @@
     <ClInclude Include="..\public\ItemShootGunBullet.h">
       <Filter>02.GameObjects\Item\ItemShootGunBullet</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\UIItemStack.h">
-      <Filter>02.GameObjects\UI\UIItemStack</Filter>
+    <ClInclude Include="..\public\UIItemQueue.h">
+      <Filter>02.GameObjects\UI\UIItemQueue</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Terrain_Manager.h">
       <Filter>02.GameObjects\Terrain\Mananger</Filter>
@@ -324,8 +324,8 @@
     <ClCompile Include="..\private\ItemShootGunBullet.cpp">
       <Filter>02.GameObjects\Item\ItemShootGunBullet</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\UIItemStack.cpp">
-      <Filter>02.GameObjects\UI\UIItemStack</Filter>
+    <ClCompile Include="..\private\UIItemQueue.cpp">
+      <Filter>02.GameObjects\UI\UIItemQueue</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Terrain_Manager.cpp">
       <Filter>02.GameObjects\Terrain\Mananger</Filter>

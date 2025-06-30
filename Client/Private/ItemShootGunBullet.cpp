@@ -119,7 +119,7 @@ HRESULT CItemShootGunBullet::End_RenderState()
 	return S_OK;
 }
 
-void CItemShootGunBullet::OnCollision(CGameObject* pDst, COLLISION eColType)
+void CItemShootGunBullet::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta)
 {
 	if (eColType == COLLISION::SPHERE)
 		m_isDead = true;

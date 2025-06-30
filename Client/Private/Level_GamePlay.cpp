@@ -1,11 +1,11 @@
 #include "Level_GamePlay.h"
 #include "GameInstance.h"
-#include "UIObject.h"
 #include "UIHp.h"
 #include "UIBullets.h"
 #include "UIInteraction.h"
 #include "UIAim.h"
 #include "UIArmor.h"
+#include "UIItemQueue.h"
 #include "Terrain.h"
 
 CLevel_GamePlay::CLevel_GamePlay(LPDIRECT3DDEVICE9 pGraphic_Device, LEVEL eLevelID)
@@ -72,8 +72,24 @@ void CLevel_GamePlay::Update(_float fTimeDelta)
 	m_pUIHp->Set_Hp();
 	m_pUIArmor->Set_Armor();
 	m_pUIBullets->Set_Bullets();
-	m_pUIInteraction->Set_Interaction(TEXT("Press [E] Key"));
-	m_pUIItemStack->Set_ItemStack(TEXT("Get Healpack HP+10"));
+	m_pUIInteraction->Set_Interaction();
+
+	/*size_t iItemQueueLength = dynamic_cast<CPlayer*>(
+		m_pGameInstance->Find_GameObject_ToLayer(
+			ENUM_CLASS(LEVEL::GAMEPLAY),
+			TEXT("Layer_Player")
+		))->Get_ItemQueue_Length();
+
+	for (size_t i = 0; i < iItemQueueLength; ++i)
+	{
+		_wstring strText = dynamic_cast<CPlayer*>(
+			m_pGameInstance->Find_GameObject_ToLayer(
+				ENUM_CLASS(LEVEL::GAMEPLAY),
+				TEXT("Layer_Player")
+			))->Get_ItemText(i);
+
+		m_pUIItemQueues[i]->Set_ItemQueue(strText);
+	}*/
 #pragma endregion
 
 	//m_pGameInstance->Check_OBBCollision(TEXT("Layer_Cube"), TEXT("Layer_Player"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta);
@@ -221,17 +237,17 @@ HRESULT CLevel_GamePlay::Ready_Layer_UI(const _wstring& strLayerTag)
 	Desc_Hp.iTextLength = 3;
 	Desc_Hp.fSizeX = 50.f + (50.f * Desc_Hp.iTextLength);
 	Desc_Hp.fSizeY = 50.f;
-	Desc_Hp.fX = 0.f;
-	Desc_Hp.fY = g_iWinSizeY - (Desc_Hp.fSizeY * 0.5f);
+	Desc_Hp.fX = 10.f;
+	Desc_Hp.fY = g_iWinSizeY - (Desc_Hp.fSizeY * 0.5f) - 10.f;
 	Desc_Hp.iLayerLevelIndex = ENUM_CLASS(LEVEL::GAMEPLAY);
 	Desc_Hp.strLayerTag = strLayerTag;
 	Desc_Hp.strFontType = TEXT("Default");
 
 	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_UIHp"),
-		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag, &Desc_Hp)))
+		ENUM_CLASS(LEVEL::GAMEPLAY), Desc_Hp.strLayerTag, &Desc_Hp)))
 		return E_FAIL;
 
-	m_pUIHp = dynamic_cast<CUIHp*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag));
+	m_pUIHp = dynamic_cast<CUIHp*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), Desc_Hp.strLayerTag));
 
 	/* 방어력 */
 	CUIObject::UIOBJECT_DESC Desc_Armor{};
@@ -242,17 +258,17 @@ HRESULT CLevel_GamePlay::Ready_Layer_UI(const _wstring& strLayerTag)
 	Desc_Armor.iTextLength = 3;
 	Desc_Armor.fSizeX = 50.f + (50.f * Desc_Hp.iTextLength);
 	Desc_Armor.fSizeY = 50.f;
-	Desc_Armor.fX = 250.f;
-	Desc_Armor.fY = g_iWinSizeY - (Desc_Hp.fSizeY * 0.5f);
+	Desc_Armor.fX = Desc_Hp.fX + Desc_Hp.fSizeX + 50.f;
+	Desc_Armor.fY = g_iWinSizeY - (Desc_Hp.fSizeY * 0.5f) - 10.f;
 	Desc_Armor.iLayerLevelIndex = ENUM_CLASS(LEVEL::GAMEPLAY);
 	Desc_Armor.strLayerTag = strLayerTag;
 	Desc_Armor.strFontType = TEXT("Default");
 
 	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_UIArmor"),
-		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag, &Desc_Armor)))
+		ENUM_CLASS(LEVEL::GAMEPLAY), Desc_Armor.strLayerTag, &Desc_Armor)))
 		return E_FAIL;
 
-	m_pUIArmor = dynamic_cast<CUIArmor*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag));
+	m_pUIArmor = dynamic_cast<CUIArmor*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), Desc_Armor.strLayerTag));
 
 	/* 총알 */
 	CUIObject::UIOBJECT_DESC Desc_Bullets{};
@@ -262,14 +278,14 @@ HRESULT CLevel_GamePlay::Ready_Layer_UI(const _wstring& strLayerTag)
 	Desc_Bullets.iTextLength = 6;
 	Desc_Bullets.fSizeX = 50.f + (50.f * Desc_Bullets.iTextLength);
 	Desc_Bullets.fSizeY = 50.f;
-	Desc_Bullets.fX = g_iWinSizeX;
-	Desc_Bullets.fY = g_iWinSizeY - (Desc_Bullets.fSizeY * 0.5f);
+	Desc_Bullets.fX = g_iWinSizeX - 10.f;
+	Desc_Bullets.fY = g_iWinSizeY - (Desc_Bullets.fSizeY * 0.5f) - 10.f;
 	Desc_Bullets.iLayerLevelIndex = ENUM_CLASS(LEVEL::GAMEPLAY);
 	Desc_Bullets.strLayerTag = strLayerTag;
 	Desc_Bullets.strFontType = TEXT("Default");
 
 	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_UIBullets"),
-		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag, &Desc_Bullets)))
+		ENUM_CLASS(LEVEL::GAMEPLAY), Desc_Bullets.strLayerTag, &Desc_Bullets)))
 		return E_FAIL;
 
 	m_pUIBullets = dynamic_cast<CUIBullets*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag));
@@ -287,28 +303,34 @@ HRESULT CLevel_GamePlay::Ready_Layer_UI(const _wstring& strLayerTag)
 	Desc_Interaction.strFontType = TEXT("Primary");
 
 	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_UIInteraction"),
-		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag, &Desc_Interaction)))
+		ENUM_CLASS(LEVEL::GAMEPLAY), Desc_Interaction.strLayerTag, &Desc_Interaction)))
 		return E_FAIL;
 
 	m_pUIInteraction = dynamic_cast<CUIInteraction*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag));
 
 	/* 아이템 스택 */
-	CUIObject::UIOBJECT_DESC Desc_ItemStack{};
+	/*for (size_t i = 0; i < 20; ++i)
+	{
+		CUIObject::UIOBJECT_DESC Desc_ItemStack{};
 
-	Desc_ItemStack.iTextLength = wcslen(TEXT("Get Healpack HP+10"));
-	Desc_ItemStack.fSizeX = 20.f * Desc_ItemStack.iTextLength;
-	Desc_ItemStack.fSizeY = 20.f;
-	Desc_ItemStack.fX = 0;
-	Desc_ItemStack.fY = 0 + (Desc_ItemStack.fSizeY * 0.5f);
-	Desc_ItemStack.iLayerLevelIndex = ENUM_CLASS(LEVEL::GAMEPLAY);
-	Desc_ItemStack.strLayerTag = strLayerTag;
-	Desc_ItemStack.strFontType = TEXT("Primary");
+		Desc_ItemStack.iTextLength = 50;
+		Desc_ItemStack.fSizeX = 16.f * Desc_ItemStack.iTextLength;
+		Desc_ItemStack.fSizeY = 16.f;
+		Desc_ItemStack.fX = 10.f;
+		Desc_ItemStack.fY = 10.f + (Desc_ItemStack.fSizeY * 0.5f) + (i * 20);
+		Desc_ItemStack.iLayerLevelIndex = ENUM_CLASS(LEVEL::GAMEPLAY);
+		Desc_ItemStack.strLayerTag = strLayerTag;
+		Desc_ItemStack.strFontType = TEXT("Primary");
 
-	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_UIItemStack"),
-		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag, &Desc_ItemStack)))
-		return E_FAIL;
+		if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_UIItemQueue"),
+			ENUM_CLASS(LEVEL::GAMEPLAY), Desc_ItemStack.strLayerTag, &Desc_ItemStack)))
+			return E_FAIL;
 
-	m_pUIItemStack = dynamic_cast<CUIItemStack*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag));
+		CUIItemQueue* pUIItemQueue = dynamic_cast<CUIItemQueue*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), Desc_ItemStack.strLayerTag));
+		Safe_AddRef(pUIItemQueue);
+
+		m_pUIItemQueues.push_back(pUIItemQueue);
+	}*/
 
 	/* 조준선 */
 	CUIObject::UIOBJECT_DESC Desc_Aim{};
@@ -391,4 +413,8 @@ void CLevel_GamePlay::Free()
 	Safe_Release(m_pUIBullets);
 	Safe_Release(m_pUIInteraction);
 	Safe_Release(m_pUIAim);
+	for (auto& iter : m_pUIItemQueues)
+	{
+		Safe_Release(iter);
+	}
 }

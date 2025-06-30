@@ -172,6 +172,7 @@ void CPlayer::Update(_float fTimeDelta)
 
 void CPlayer::Late_Update(_float fTimeDelta)
 {
+	m_fTimeDelta = fTimeDelta;
 }
 
 HRESULT CPlayer::Render()
@@ -286,6 +287,19 @@ _float3 CPlayer::Calc_BulletDir(_float3* vOffset)
 	}
 }
 
+void CPlayer::Insert_ItemDesc(_float fCreateTime, const _wstring strItemText)
+{
+	if (m_ItemQueues.size() > 2)
+	{
+		m_ItemQueues.pop_front();
+	}
+
+	ITEM_DESC Desc{};
+	Desc.fCreateTime = fCreateTime;
+	Desc.strItemText = strItemText;
+	m_ItemQueues.push_front(Desc);
+}
+
 void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta)
 {
 	if (eColType == COLLISION::SPHERE)
@@ -293,10 +307,12 @@ void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 		if (dynamic_cast<CItemArmor*>(pDst))
 		{
 			m_tInfo.iArmor += 10;
+			Insert_ItemDesc(fTimeDelta, TEXT("Get Armor [Armor+10]"));
 		}
 		if (dynamic_cast<CItemHealpack*>(pDst))
 		{
 			m_tInfo.iHp += 10;
+			Insert_ItemDesc(fTimeDelta, TEXT("Get Healpack [HP+10]"));
 		}
 		if (dynamic_cast<CItemPistolBullet*>(pDst))
 		{
@@ -308,6 +324,8 @@ void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 
 			if(m_tInfo.strWeapon.compare(TEXT("Pistol")) == 0)
 				m_tInfo.iBullets = iter->second.iCurrentBullets;
+
+			Insert_ItemDesc(fTimeDelta, TEXT("Get Pistol Bullets [Bullet+10]"));
 		}
 		if (dynamic_cast<CItemShootGunBullet*>(pDst))
 		{
@@ -320,6 +338,8 @@ void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 
 			if (m_tInfo.strWeapon.compare(TEXT("ShootGun")) == 0)
 				m_tInfo.iBullets = iter->second.iCurrentBullets;
+
+			Insert_ItemDesc(fTimeDelta, TEXT("Get ShootGun Bullets [Bullet+10]"));
 		}
 	}
 }
@@ -337,17 +357,17 @@ const COLLISION_DESC& CPlayer::Get_CollisionDesc(COLLISION eColType)
 	return Desc;
 }
 
-const COLLISION_DESC& CPlayer::Get_CollisionDesc(COLLISION eColType)
+_wstring CPlayer::Get_ItemText(size_t iIndex)
 {
-	COLLISION_DESC Desc;
-	Desc.pTransform = m_pTransformCom;
+	return m_ItemQueues[iIndex].strItemText;
+}
 
-	if (eColType == COLLISION::SPHERE)
-		Desc.pCollider = m_pSphereColliderCom;
-	else if (eColType == COLLISION::OBB)
-		Desc.pCollider = m_pBoxColliderCom;
-	
-	return Desc;
+size_t CPlayer::Get_ItemQueue_Length()
+{
+	if (m_ItemQueues.empty())
+		return 0;
+
+	return m_ItemQueues.size();
 }
 
 CPlayer* CPlayer::Create(LPDIRECT3DDEVICE9 pGraphic_Device)

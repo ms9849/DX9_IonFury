@@ -1,23 +1,23 @@
-#include "UIItemStack.h"
+#include "UIItemQueue.h"
 
 #include "GameInstance.h"
 
-CUIItemStack::CUIItemStack(LPDIRECT3DDEVICE9 pGraphic_Device)
+CUIItemQueue::CUIItemQueue(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CUIObject{ pGraphic_Device }
 {
 }
 
-CUIItemStack::CUIItemStack(const CUIItemStack& Prototype)
+CUIItemQueue::CUIItemQueue(const CUIItemQueue& Prototype)
 	: CUIObject{ Prototype }
 {
 }
 
-HRESULT CUIItemStack::Initialize_Prototype()
+HRESULT CUIItemQueue::Initialize_Prototype()
 {
 	return S_OK;
 }
 
-HRESULT CUIItemStack::Initialize(void* pArg)
+HRESULT CUIItemQueue::Initialize(void* pArg)
 {
 	UIOBJECT_DESC* pTemp = static_cast<UIOBJECT_DESC*>(pArg);
 
@@ -57,34 +57,34 @@ HRESULT CUIItemStack::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CUIItemStack::Priority_Update(_float fTimeDelta)
+void CUIItemQueue::Priority_Update(_float fTimeDelta)
 {
 	int a = 10;
 }
 
-void CUIItemStack::Update(_float fTimeDelta)
+void CUIItemQueue::Update(_float fTimeDelta)
 {
 	__super::Update_Transform(m_pTransformCom);
 }
 
-void CUIItemStack::Late_Update(_float fTimeDelta)
+void CUIItemQueue::Late_Update(_float fTimeDelta)
 {
 	m_pGameInstance->Add_RenderGroup(RENDER::UI, this);
 }
 
-HRESULT CUIItemStack::Render()
+HRESULT CUIItemQueue::Render()
 {
 	m_pTransformCom->Set_Transform();
 
 	return S_OK;
 }
 
-void CUIItemStack::Set_ItemStack(const _tchar* strText)
+void CUIItemQueue::Set_ItemQueue(const _wstring strText)
 {
-	m_pText->Set_Text(strText);
+	m_pText->Set_Text(strText.c_str());
 }
 
-HRESULT CUIItemStack::Ready_Components()
+HRESULT CUIItemQueue::Ready_Components()
 {
 	/* Com_Transform */
 	CTransform::TRANSFORM_DESC		TransformDesc{ 5.f, D3DXToRadian(90.0f) };
@@ -100,9 +100,9 @@ HRESULT CUIItemStack::Ready_Components()
 	return S_OK;
 }
 
-CUIItemStack* CUIItemStack::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
+CUIItemQueue* CUIItemQueue::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 {
-	CUIItemStack* pInstance = new CUIItemStack(pGraphic_Device);
+	CUIItemQueue* pInstance = new CUIItemQueue(pGraphic_Device);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
@@ -113,20 +113,20 @@ CUIItemStack* CUIItemStack::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 	return pInstance;
 }
 
-CGameObject* CUIItemStack::Clone(void* pArg)
+CGameObject* CUIItemQueue::Clone(void* pArg)
 {
-	CUIItemStack* pInstance = new CUIItemStack(*this);
+	CUIItemQueue* pInstance = new CUIItemQueue(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Cloned : CUIItemStack");
+		MSG_BOX("Failed to Cloned : CUIItemQueue");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CUIItemStack::Free()
+void CUIItemQueue::Free()
 {
 	__super::Free();
 
