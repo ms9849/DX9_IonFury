@@ -167,12 +167,14 @@ void CSoldier::Update(_float fTimeDelta)
 	m_pRoot->Run(fTimeDelta);
 
 	auto iter = m_Frames.find(m_strFrameKey);
+
 	m_pAnimationCom->Set_Animation(&iter->second);
 
-	/*if (m_bAnimationLock)
+	/*if (m_bAnimationLock && m_pAnimationCom->Check_Animation_Finish())
 	{
-		if (m_pAnimationCom->Check_Animation_Finish())
-			m_bAnimationLock = false;
+		if (m_bDying)
+			m_isDead = true;
+		m_bAnimationLock = false;
 	}*/
 
 	/*szBuffer[128];
@@ -190,6 +192,7 @@ void CSoldier::Late_Update(_float fTimeDelta)
 			m_isDead = true;
 		m_bAnimationLock = false;
 	}
+
 	m_pAnimationCom->Play_Animation(fTimeDelta);
 	m_pGameInstance->Add_RenderGroup(RENDER::NONBLEND, this);
 }
@@ -286,7 +289,7 @@ HRESULT CSoldier::Ready_Animations()
 
 	//Soldier_Die_Explosion
 	iter = m_pTextureComs.find(TEXT("Soldier_Die_Explosion"));
-	Desc_4.iFrameSpeed = 12;
+	Desc_4.iFrameSpeed = 10;
 	Desc_4.iEnd = iter->second->Get_Texture_Length();
 	m_Frames.emplace(TEXT("Soldier_Die_Explosion"), Desc_4);
 
@@ -438,19 +441,19 @@ HRESULT CSoldier::Begin_RenderState()
 	*/
 
 	
-	m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+	/*m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
 	m_pGraphic_Device->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
 	m_pGraphic_Device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-	m_pGraphic_Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+	m_pGraphic_Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);*/
 	
 	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 
-	m_pGraphic_Device->SetRenderState(D3DRS_LIGHTING, FALSE);
+	//m_pGraphic_Device->SetRenderState(D3DRS_LIGHTING, FALSE);
 
 	/* 알파 테스트 : 픽셀의 알파를 비교해서 그린다 안그린다를 설정. */
-	/*m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+	m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
 	m_pGraphic_Device->SetRenderState(D3DRS_ALPHAREF, 0);
-	m_pGraphic_Device->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);*/
+	m_pGraphic_Device->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
 
 
 
@@ -462,8 +465,8 @@ HRESULT CSoldier::End_RenderState()
 	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 	//m_pGraphic_Device->SetRenderState(D3DRS_LIGHTING, TRUE);
 
-	m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-	//m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+	//m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+	m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
 
 	return S_OK;
 }

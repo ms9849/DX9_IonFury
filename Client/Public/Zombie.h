@@ -1,0 +1,50 @@
+#pragma once
+
+#include "Client_Defines.h"
+#include "Monster.h"
+
+NS_BEGIN(Client)
+
+class CZombie final : public CMonster
+{
+private:
+	CZombie(LPDIRECT3DDEVICE9 pGraphic_Device);
+	CZombie(const CZombie& Prototype);
+	virtual ~CZombie() = default;
+
+	const _wstring m_strFrameKeys[11] = {
+		TEXT("Zombie_Attack"), TEXT("Zombie_Die_Default"), TEXT("Zombie_Direction_NE"), 
+		TEXT("Zombie_Direction_NW"), TEXT("Zombie_Direction_SE"), TEXT("Zombie_Direction_SW"),
+		TEXT("Zombie_Front"), TEXT("Zombie_Back"), TEXT("Zombie_Left"),
+		TEXT("Zombie_Right"), TEXT("Zombie_Die_Explosion")
+	};
+
+public:
+	virtual HRESULT Initialize_Prototype() override;
+	virtual HRESULT Initialize(void* pArg) override;
+	virtual void Priority_Update(_float fTimeDelta) override;
+	virtual void Update(_float fTimeDelta) override;
+	virtual void Late_Update(_float fTimeDelta) override;
+	virtual HRESULT Render() override;
+	virtual HRESULT Ready_Animations() override;
+	virtual void OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta) override;
+	virtual const COLLISION_DESC& Get_CollisionDesc(COLLISION eColType);
+
+	HRESULT Ready_Components() override;
+	HRESULT Begin_RenderState() override;
+	HRESULT End_RenderState() override;
+
+	virtual void Attack() override;
+	void Move(_float fTimeDelta);
+	virtual void Move() override;
+
+private:
+	_bool m_bAnimationLock = false;
+
+public:
+	static CZombie* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
+	virtual CGameObject* Clone(void* pArg) override;
+	virtual void Free() override;
+};
+
+NS_END
