@@ -127,7 +127,7 @@ void CPlayer_Hand::Late_Update(_float fTimeDelta)
 	// 애니메이션 프레임 증가
 	m_pAnimationCom->Play_Animation(fTimeDelta);
 
-	m_pGameInstance->Add_RenderGroup(RENDER::BLEND, this);
+	m_pGameInstance->Add_RenderGroup(RENDER::BLEND_PRIORITY, this);
 }
 
 HRESULT CPlayer_Hand::Render()
@@ -345,6 +345,7 @@ HRESULT CPlayer_Hand::Begin_RenderState()
 	m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
 	m_pGraphic_Device->SetRenderState(D3DRS_ALPHAREF, 200);
 	m_pGraphic_Device->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
+
 
 	return S_OK;
 }

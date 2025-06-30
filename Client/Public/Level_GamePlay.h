@@ -35,12 +35,12 @@ private:
 	HRESULT Ready_Layer_Items(const _wstring& strLayerTag);
 
 private:
-	CUIHp* m_pUIHp{ nullptr };
-	CUIArmor* m_pUIArmor{ nullptr };
-	CUIBullets* m_pUIBullets{ nullptr };
-	CUIInteraction* m_pUIInteraction{ nullptr };
-	CUIAim* m_pUIAim{ nullptr };
-	CUIItemStack* m_pUIItemStack{ nullptr };
+	class CUIHp* m_pUIHp { nullptr };
+	class CUIArmor* m_pUIArmor { nullptr };
+	class CUIBullets* m_pUIBullets { nullptr };
+	class CUIInteraction* m_pUIInteraction { nullptr };
+	class CUIAim* m_pUIAim { nullptr };
+	class CUIItemStack* m_pUIItemStack{ nullptr };
 	CCamera::CAMERA_CONFIG m_CameraSettings;
 
 public:

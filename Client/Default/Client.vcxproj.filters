@@ -16,12 +16,6 @@
     <Filter Include="01.Levels\Gameplay">
       <UniqueIdentifier>{a57e0311-1b60-4cd5-a948-b1205a53a2b0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Levels\Loading">
-      <UniqueIdentifier>{0b1f8540-2f12-48a9-b0af-f0c951fc6e52}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Levels\Loading\Loader">
-      <UniqueIdentifier>{e059409c-2c15-4cce-9e90-c868051debd5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects">
       <UniqueIdentifier>{50430c44-e69b-4594-a751-cb27d3834ea4}</UniqueIdentifier>
     </Filter>
@@ -102,6 +96,15 @@
     </Filter>
     <Filter Include="02.GameObjects\UI\UIItemStack">
       <UniqueIdentifier>{53d287c7-1ef6-4fe5-b461-8b2067fbf25f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\Loading">
+      <UniqueIdentifier>{0b1f8540-2f12-48a9-b0af-f0c951fc6e52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\Loading\Loader">
+      <UniqueIdentifier>{e059409c-2c15-4cce-9e90-c868051debd5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Terrain\Mananger">
+      <UniqueIdentifier>{0e535393-0b40-49a9-84aa-e7035e924402}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -210,6 +213,12 @@
     <ClInclude Include="..\public\UIItemStack.h">
       <Filter>02.GameObjects\UI\UIItemStack</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Terrain_Manager.h">
+      <Filter>02.GameObjects\Terrain\Mananger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\UIAim.h">
+      <Filter>02.GameObjects\UI\UIAim</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -317,6 +326,9 @@
     </ClCompile>
     <ClCompile Include="..\private\UIItemStack.cpp">
       <Filter>02.GameObjects\UI\UIItemStack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Terrain_Manager.cpp">
+      <Filter>02.GameObjects\Terrain\Mananger</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

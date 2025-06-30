@@ -15,7 +15,7 @@ public:
 	/*
 	충돌한 상대 객체와, 충돌 타입을 리턴
 	*/
-	virtual void OnCollision(CGameObject* pDst, COLLISION eColType);
+	virtual void OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta);
 	virtual const COLLISION_DESC& Get_CollisionDesc(COLLISION eColType);
 
 public:

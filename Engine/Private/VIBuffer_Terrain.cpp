@@ -311,3 +311,37 @@ _bool CVIBuffer_Terrain::Picking(CTransform* pTransform, _float3* pOut, _float3 
 
 	return false;
 }
+
+_float CVIBuffer_Terrain::Compute_Height(const _float3& vLocalPos)
+{
+	/* */
+	_uint			iIndex = static_cast<_uint>(vLocalPos.z) * m_iNumVerticesX + static_cast<_uint>(vLocalPos.x);
+
+	_uint			iIndices[] = {
+		iIndex + m_iNumVerticesX,
+		iIndex + m_iNumVerticesX + 1,
+		iIndex + 1,
+		iIndex
+	};
+
+	_float			fWidth = vLocalPos.x - m_pVertexPositions[iIndices[0]].x;
+	_float			fDepth = m_pVertexPositions[iIndices[0]].z - vLocalPos.z;
+
+	D3DXPLANE		Plane = {};
+
+	if (fWidth > fDepth) /* ¿À¸¥ÂÉ¤Á¤¡ À§ »ï°¢Çü¿¡ ÀÖ´Ù. */
+	{
+		D3DXPlaneFromPoints(&Plane, &m_pVertexPositions[iIndices[0]], &m_pVertexPositions[iIndices[1]], &m_pVertexPositions[iIndices[2]]);
+	}
+	else
+	{
+		D3DXPlaneFromPoints(&Plane, &m_pVertexPositions[iIndices[0]], &m_pVertexPositions[iIndices[2]], &m_pVertexPositions[iIndices[3]]);
+	}
+
+	/*
+	ax + by + cz + d = 0
+	y = (-ax - cz - d) / b;
+	*/
+
+	return (-Plane.a * vLocalPos.x - Plane.c * vLocalPos.z - Plane.d) / Plane.b;
+}

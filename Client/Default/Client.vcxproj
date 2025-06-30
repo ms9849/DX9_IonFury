@@ -156,6 +156,7 @@
     <ClInclude Include="..\public\ItemPistolBullet.h" />
     <ClInclude Include="..\public\ItemShootGunBullet.h" />
     <ClInclude Include="..\Public\Soldier.h" />
+    <ClInclude Include="..\Public\Terrain_Manager.h" />
     <ClInclude Include="..\public\UIAim.h" />
     <ClInclude Include="..\Public\Effect.h" />
     <ClInclude Include="..\Public\Level_GamePlay.h" />
@@ -191,6 +192,7 @@
     <ClCompile Include="..\private\ItemPistolBullet.cpp" />
     <ClCompile Include="..\private\ItemShootGunBullet.cpp" />
     <ClCompile Include="..\Private\Soldier.cpp" />
+    <ClCompile Include="..\Private\Terrain_Manager.cpp" />
     <ClCompile Include="..\private\UIAim.cpp" />
     <ClCompile Include="..\Private\Effect.cpp" />
     <ClCompile Include="..\Private\Level_GamePlay.cpp" />

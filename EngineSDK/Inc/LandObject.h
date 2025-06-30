@@ -25,6 +25,8 @@ public:
 	virtual void Late_Update(_float fTimeDelta);
 	virtual HRESULT Render();
 
+	virtual void Change_Land(LANDOBJECT_DESC* pLandDesc);
+
 protected:
 	class CTransform*		m_pLandTransform = { nullptr };
 	class CVIBuffer*		m_pLandVIBuffer = { nullptr };
