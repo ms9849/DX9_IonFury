@@ -59,7 +59,7 @@ HRESULT CBullet::Render()
 	return S_OK;
 }
 
-void CBullet::OnCollision(CGameObject* pDst, COLLISION eColType)
+void CBullet::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta)
 {
 }
 

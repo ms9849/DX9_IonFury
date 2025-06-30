@@ -21,7 +21,7 @@ private:
 	virtual ~CTransform() = default;
 
 public:
-	_float3 Get_State(STATE eState) {
+ 	_float3 Get_State(STATE eState) {
 		return *reinterpret_cast<_float3*>(&m_WorldMatrix.m[ENUM_CLASS(eState)][0]);
 	}
 

@@ -119,7 +119,7 @@ HRESULT CItemArmor::End_RenderState()
 	return S_OK;
 }
 
-void CItemArmor::OnCollision(CGameObject* pDst, COLLISION eColType)
+void CItemArmor::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta)
 {
 	if (eColType == COLLISION::SPHERE)
 		m_isDead = true;

@@ -286,7 +286,7 @@ _float3 CPlayer::Calc_BulletDir(_float3* vOffset)
 	}
 }
 
-void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType)
+void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta)
 {
 	if (eColType == COLLISION::SPHERE)
 	{
@@ -337,13 +337,26 @@ const COLLISION_DESC& CPlayer::Get_CollisionDesc(COLLISION eColType)
 	return Desc;
 }
 
+const COLLISION_DESC& CPlayer::Get_CollisionDesc(COLLISION eColType)
+{
+	COLLISION_DESC Desc;
+	Desc.pTransform = m_pTransformCom;
+
+	if (eColType == COLLISION::SPHERE)
+		Desc.pCollider = m_pSphereColliderCom;
+	else if (eColType == COLLISION::OBB)
+		Desc.pCollider = m_pBoxColliderCom;
+	
+	return Desc;
+}
+
 CPlayer* CPlayer::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 {
 	CPlayer* pInstance = new CPlayer(pGraphic_Device);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed to Created : pGraphic_Device");
+		MSG_BOX("Failed to Created : player");
 		Safe_Release(pInstance);
 	}
 

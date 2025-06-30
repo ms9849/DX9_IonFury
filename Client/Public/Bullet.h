@@ -37,7 +37,8 @@ public:
 	virtual HRESULT Render() override;
 
 public:
-	virtual void OnCollision(CGameObject* pDst, COLLISION eColType) override;
+	virtual void OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta) override;
+
 
 
 private:

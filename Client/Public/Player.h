@@ -68,7 +68,7 @@ private:
 	map<const _wstring, WEAPON_INFO> m_Weapons{};
 
 public:
-	virtual void OnCollision(CGameObject* pDst, COLLISION eColType) override;
+	virtual void OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta) override;
 	virtual const COLLISION_DESC& Get_CollisionDesc(COLLISION eColType);
 
 public:

@@ -18,7 +18,7 @@ CGameObject::CGameObject(const CGameObject& Prototype)
 	Safe_AddRef(m_pGraphic_Device);
 }
 
-void CGameObject::OnCollision(CGameObject* pDst, COLLISION eColType)
+void CGameObject::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta)
 {
 	// 이 주석을 보고 있다면
 	// 하위 클래스에서 OnCollision 구현 안한거니까
