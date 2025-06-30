@@ -78,7 +78,11 @@ HRESULT CUIBullets::Render()
 {
 	m_pTransformCom->Set_Transform();
 
-	m_pTextureCom->Set_Texture(0);
+	_wstring strWeapon = m_pPlayer->Get_Player_Info().strWeapon;
+	if(strWeapon.compare(TEXT("Pistol")) == 0)
+		m_pTextureCom->Set_Texture(0);
+	else if (strWeapon.compare(TEXT("ShootGun")) == 0)
+		m_pTextureCom->Set_Texture(1);
 
 	m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
 	m_pGraphic_Device->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
@@ -99,9 +103,10 @@ HRESULT CUIBullets::Render()
 void CUIBullets::Set_Bullets()
 {
 	m_iBullets = m_pPlayer->Get_Player_Info().iBullets;
+	m_iShootBullets = m_pPlayer->Get_Player_Info().iShootBullets;
 
 	_tchar ws[10];
-	swprintf(ws, 10, L"%03d", m_iBullets);
+	swprintf(ws, 10, L"%02d/%03d", m_iShootBullets,m_iBullets);
 
 	m_pText->Set_Text(ws);
 }
@@ -119,7 +124,7 @@ HRESULT CUIBullets::Ready_Components()
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
 		return E_FAIL;
 	/* Com_Texture */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Bullets"),
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Item_Bullets"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 

@@ -35,6 +35,7 @@ public:
 	_uint Get_Frame_Index();
 	void Play_Animation(_float fTimeDelta);
 	_bool Check_Animation_Finish();
+	void Clear_Animation();
 
 private:
 	FRAME_DESC*		m_tFrame{};

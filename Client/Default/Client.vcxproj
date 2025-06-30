@@ -149,9 +149,12 @@
     <ClInclude Include="..\public\Camera.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
     <ClInclude Include="..\Public\CubeObject.h" />
+    <ClInclude Include="..\public\UIItemStack.h" />
     <ClInclude Include="..\public\Item.h" />
     <ClInclude Include="..\public\ItemArmor.h" />
     <ClInclude Include="..\public\ItemHealpack.h" />
+    <ClInclude Include="..\public\ItemPistolBullet.h" />
+    <ClInclude Include="..\public\ItemShootGunBullet.h" />
     <ClInclude Include="..\Public\Soldier.h" />
     <ClInclude Include="..\Public\Terrain_Manager.h" />
     <ClInclude Include="..\public\UIAim.h" />
@@ -186,6 +189,8 @@
     <ClCompile Include="..\Private\CubeObject.cpp" />
     <ClCompile Include="..\private\Item.cpp" />
     <ClCompile Include="..\private\ItemHealpack.cpp" />
+    <ClCompile Include="..\private\ItemPistolBullet.cpp" />
+    <ClCompile Include="..\private\ItemShootGunBullet.cpp" />
     <ClCompile Include="..\Private\Soldier.cpp" />
     <ClCompile Include="..\Private\Terrain_Manager.cpp" />
     <ClCompile Include="..\private\UIAim.cpp" />
@@ -205,6 +210,7 @@
     <ClCompile Include="..\Private\UIFont.cpp" />
     <ClCompile Include="..\Private\UIHp.cpp" />
     <ClCompile Include="..\Private\UIInteraction.cpp" />
+    <ClCompile Include="..\private\UIItemStack.cpp" />
     <ClCompile Include="..\Private\UIText.cpp" />
     <ClCompile Include="Client.cpp" />
   </ItemGroup>

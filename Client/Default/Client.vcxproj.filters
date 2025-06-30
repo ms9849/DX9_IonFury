@@ -88,6 +88,15 @@
     <Filter Include="98.Default">
       <UniqueIdentifier>{f37c9b44-d000-4dd3-a7dc-d0a7064abf65}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\Item\ItemPistolBullet">
+      <UniqueIdentifier>{341d6a9c-e778-479a-9e57-7cdef3c38e3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Item\ItemShootGunBullet">
+      <UniqueIdentifier>{9009bf44-38d5-46c3-a834-86f17649999f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\UI\UIItemStack">
+      <UniqueIdentifier>{53d287c7-1ef6-4fe5-b461-8b2067fbf25f}</UniqueIdentifier>
+    </Filter>
     <Filter Include="01.Levels\Loading">
       <UniqueIdentifier>{0b1f8540-2f12-48a9-b0af-f0c951fc6e52}</UniqueIdentifier>
     </Filter>
@@ -195,8 +204,20 @@
     <ClInclude Include="..\public\UIAim.h">
       <Filter>02.GameObjects\UI\UIAim</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\ItemPistolBullet.h">
+      <Filter>02.GameObjects\Item\ItemPistolBullet</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ItemShootGunBullet.h">
+      <Filter>02.GameObjects\Item\ItemShootGunBullet</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\UIItemStack.h">
+      <Filter>02.GameObjects\UI\UIItemStack</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\Terrain_Manager.h">
       <Filter>02.GameObjects\Terrain\Mananger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\UIAim.h">
+      <Filter>02.GameObjects\UI\UIAim</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -296,6 +317,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\Soldier.cpp">
       <Filter>02.GameObjects\Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ItemPistolBullet.cpp">
+      <Filter>02.GameObjects\Item\ItemPistolBullet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ItemShootGunBullet.cpp">
+      <Filter>02.GameObjects\Item\ItemShootGunBullet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\UIItemStack.cpp">
+      <Filter>02.GameObjects\UI\UIItemStack</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Terrain_Manager.cpp">
       <Filter>02.GameObjects\Terrain\Mananger</Filter>

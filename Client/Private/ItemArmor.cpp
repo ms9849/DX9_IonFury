@@ -122,7 +122,7 @@ HRESULT CItemArmor::End_RenderState()
 void CItemArmor::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta)
 {
 	if (eColType == COLLISION::SPHERE)
-		int a = 10;
+		m_isDead = true;
 }
 
 CItemArmor* CItemArmor::Create(LPDIRECT3DDEVICE9 pGraphic_Device)

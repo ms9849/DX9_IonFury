@@ -73,51 +73,50 @@ HRESULT CMonster::Ready_Animations()
 	return S_OK;
 }
 
-//HRESULT CMonster::Ready_Components()
-//{
-	///* Com_Transform */
-	//CTransform::TRANSFORM_DESC		TransformDesc{ 5.f, D3DXToRadian(90.0f) };
-	//if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Transform"),
-	//	TEXT("Com_Transform"), reinterpret_cast<CComponent**>(&m_pTransformCom), &TransformDesc)))
-	//	return E_FAIL;
+HRESULT CMonster::Ready_Components()
+{
+	/* Com_Transform */
+	CTransform::TRANSFORM_DESC		TransformDesc{ 5.f, D3DXToRadian(90.0f) };
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Transform"),
+		TEXT("Com_Transform"), reinterpret_cast<CComponent**>(&m_pTransformCom), &TransformDesc)))
+		return E_FAIL;
 
-	///* Com_Texture */
-	//for (size_t i = 0; i < (sizeof(m_strFrameKeys) / sizeof(m_strFrameKeys[0])); ++i)
-	//{
-	//	_tchar strPrototypeTag[256];
-	//	_tchar strComponentTag[256];
+	/* Com_Texture */
+	for (size_t i = 0; i < (sizeof(m_strFrameKeys) / sizeof(m_strFrameKeys[0])); ++i)
+	{
+		_tchar strPrototypeTag[256];
+		_tchar strComponentTag[256];
 
-	//	CTexture* pTextureCom{ nullptr };
+		CTexture* pTextureCom{ nullptr };
 
-	//	wsprintf(strPrototypeTag, TEXT("Prototype_Component_Texture_Monster_%s"), m_strFrameKeys[i].c_str());
-	//	wsprintf(strComponentTag, TEXT("Com_%s_Texture"), m_strFrameKeys[i].c_str());
+		wsprintf(strPrototypeTag, TEXT("Prototype_Component_Texture_Monster_%s"), m_strFrameKeys[i].c_str());
+		wsprintf(strComponentTag, TEXT("Com_%s_Texture"), m_strFrameKeys[i].c_str());
 
-	//	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), strPrototypeTag,
-	//		strComponentTag, reinterpret_cast<CComponent**>(&pTextureCom))))
-	//		return E_FAIL;
-	//	Safe_AddRef(pTextureCom);
+		if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), strPrototypeTag,
+			strComponentTag, reinterpret_cast<CComponent**>(&pTextureCom))))
+			return E_FAIL;
 
-	//	m_pTextureComs.emplace(m_strFrameKeys[i], pTextureCom);
-	//}
+		m_pTextureComs.emplace(m_strFrameKeys[i], pTextureCom);
+	}
 
-	///* Com_Animation */
-	//if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Animation"),
-	//	TEXT("Com_Animation"), reinterpret_cast<CComponent**>(&m_pAnimationCom))))
-	//	return E_FAIL;
+	/* Com_Animation */
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Animation"),
+		TEXT("Com_Animation"), reinterpret_cast<CComponent**>(&m_pAnimationCom))))
+		return E_FAIL;
 
-	///* Com_VIBuffer */
-	//if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_Rect"),
-	//	TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
-	//	return E_FAIL;	
+	/* Com_VIBuffer */
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_Rect"),
+		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
+		return E_FAIL;	
 
-	///* Com_Sight */
-	//CSight::SIGHT_DESC		SightDesc{ 5.f, D3DXToRadian(90.0f), m_pPlayerTransform, m_pTransformCom };
-	//if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Sight"),
-	//	TEXT("Com_Sight"), reinterpret_cast<CComponent**>(&m_pSightCom), &SightDesc)))
-	//	return E_FAIL;
+	/* Com_Sight */
+	CSight::SIGHT_DESC		SightDesc{ 5.f, D3DXToRadian(90.0f), m_pPlayerTransform, m_pTransformCom };
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Sight"),
+		TEXT("Com_Sight"), reinterpret_cast<CComponent**>(&m_pSightCom), &SightDesc)))
+		return E_FAIL;
 
-	//return S_OK;
-//}
+	return S_OK;
+}
 
 HRESULT CMonster::Begin_RenderState()
 {
@@ -142,12 +141,14 @@ void CMonster::Free()
 {
 	__super::Free();
 
-	//Safe_Release(m_pTextureCom);
 	Safe_Release(m_pAnimationCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pVIBufferCom);
+	Safe_Release(m_pSightCom);
+
 	for (auto& iter : m_pTextureComs)
 	{
 		Safe_Release(iter.second);
 	}
+
 }
