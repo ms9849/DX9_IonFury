@@ -28,9 +28,6 @@
     <Filter Include="02.GameObjects\Terrain">
       <UniqueIdentifier>{54b7a8ab-69a7-4ce7-9671-37f6680f90c5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\Player">
-      <UniqueIdentifier>{704f75c8-f626-4c7b-aff3-fbd9102c05f9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\Monster">
       <UniqueIdentifier>{9ecd6a7a-b57c-4bf7-8ec0-6475d3c58ddb}</UniqueIdentifier>
     </Filter>
@@ -39,9 +36,6 @@
     </Filter>
     <Filter Include="02.GameObjects\Effect">
       <UniqueIdentifier>{af38a2a6-7b75-4f3f-9696-df037f43253b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\Player\Player_Hand">
-      <UniqueIdentifier>{6b2efc96-1da8-47e3-a7fa-8fdb2ab53f72}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\UI">
       <UniqueIdentifier>{ba81d2a5-c33a-4436-ae51-1f76e6d7bedb}</UniqueIdentifier>
@@ -105,6 +99,12 @@
     </Filter>
     <Filter Include="02.GameObjects\Terrain\Mananger">
       <UniqueIdentifier>{0e535393-0b40-49a9-84aa-e7035e924402}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Player">
+      <UniqueIdentifier>{704f75c8-f626-4c7b-aff3-fbd9102c05f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Player\Player_Hand">
+      <UniqueIdentifier>{6b2efc96-1da8-47e3-a7fa-8fdb2ab53f72}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

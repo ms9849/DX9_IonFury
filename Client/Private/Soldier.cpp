@@ -370,7 +370,6 @@ HRESULT CSoldier::Ready_Components()
 		if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), strPrototypeTag,
 			strComponentTag, reinterpret_cast<CComponent**>(&pTextureCom))))
 			return E_FAIL;
-		Safe_AddRef(pTextureCom);
 
 		m_pTextureComs.emplace(m_strFrameKeys[i], pTextureCom);
 	}
@@ -426,7 +425,7 @@ HRESULT CSoldier::Begin_RenderState()
 HRESULT CSoldier::End_RenderState()
 {
 	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
-	m_pGraphic_Device->SetRenderState(D3DRS_LIGHTING, TRUE);
+	//m_pGraphic_Device->SetRenderState(D3DRS_LIGHTING, TRUE);
 
 	// m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
 	m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
@@ -443,9 +442,6 @@ void CSoldier::Attack()
 	CBullet::BULLET_DESC Desc;
 	Desc.vDir = vDir;
 	Desc.vPos = vPos;
-
-	m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Bullet"),
-		ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Bullet"), &Desc);
 }
 
 void CSoldier::Move(_float fTimeDelta)
@@ -499,5 +495,6 @@ CGameObject* CSoldier::Clone(void* pArg)
 
 void CSoldier::Free()
 {
+	//m_pRoot->ReleaseSubtree();
 	__super::Free();
 }

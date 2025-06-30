@@ -110,5 +110,9 @@ void CMonster::Free()
 	{
 		Safe_Release(iter.second);
 	}
+	m_pTextureComs.clear();
 
+	if (m_pRoot != nullptr)
+		m_pRoot->Release_Subtree();
+	Safe_Release(m_pRoot);
 }
