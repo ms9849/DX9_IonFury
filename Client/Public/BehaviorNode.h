@@ -13,6 +13,19 @@ public:
 
 public:
     virtual _bool Run(_float) = 0;
+    virtual void Release_Subtree()
+    {
+        for (CBehaviorNode* child : m_pChildrens)
+        {
+            if (child)
+                child->Release_Subtree();
+            Safe_Release(child);
+        }
+    }
+
+protected:
+    vector<CBehaviorNode*> m_pChildrens;
+
 };
 
 class CConditionNode : public CBehaviorNode
@@ -45,7 +58,7 @@ public:
     _bool Run(_float) override;
 
 private:
-    vector<CBehaviorNode*> m_pChildrens;
+    //vector<CBehaviorNode*> m_pChildrens;
 };
 
 class CSelectorNode : public CBehaviorNode
@@ -55,7 +68,7 @@ public:
     _bool Run(_float) override;
 
 private:
-    vector<CBehaviorNode*> m_pChildrens;
+    //vector<CBehaviorNode*> m_pChildrens;
 };
 
 NS_END
