@@ -357,19 +357,6 @@ const COLLISION_DESC& CPlayer::Get_CollisionDesc(COLLISION eColType)
 	return Desc;
 }
 
-_wstring CPlayer::Get_ItemText(size_t iIndex)
-{
-	return m_ItemQueues[iIndex].strItemText;
-}
-
-size_t CPlayer::Get_ItemQueue_Length()
-{
-	if (m_ItemQueues.empty())
-		return 0;
-
-	return m_ItemQueues.size();
-}
-
 CPlayer* CPlayer::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 {
 	CPlayer* pInstance = new CPlayer(pGraphic_Device);

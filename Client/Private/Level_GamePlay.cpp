@@ -3,6 +3,7 @@
 #include "UIHp.h"
 #include "UIBullets.h"
 #include "UIInteraction.h"
+#include "UIItemStack.h"
 #include "UIAim.h"
 #include "UIArmor.h"
 #include "UIItemQueue.h"

@@ -1,4 +1,6 @@
 #include "Animation.h"
+#include "Texture.h"
+#include "Transform.h"
 
 CAnimation::CAnimation(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CComponent{ pGraphic_Device }
