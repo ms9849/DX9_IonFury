@@ -10,6 +10,8 @@ class CAnimation;
 class CTransform;
 class CVIBuffer_Rect;
 class CSight;
+class CBoxCollider;
+class CSphereCollider;
 NS_END
 
 NS_BEGIN(Client)
@@ -36,6 +38,8 @@ protected:
 	CVIBuffer_Rect* m_pVIBufferCom = { nullptr };
 	CSight* m_pSightCom = { nullptr };
 	CTransform* m_pPlayerTransform = { nullptr };
+	CBoxCollider* m_pBoxColliderCom = { nullptr };
+	CSphereCollider* m_pSphereColliderCom = { nullptr };
 
 	_float m_AttackfCoolTime = 3.f;
 	_float m_fSumAttackCoolTime = 3.f;

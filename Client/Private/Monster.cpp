@@ -68,6 +68,7 @@ HRESULT CMonster::Render()
 	return S_OK;
 }
 
+
 HRESULT CMonster::Ready_Animations()
 {
 	return S_OK;
@@ -105,6 +106,8 @@ void CMonster::Free()
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pSightCom);
+	Safe_Release(m_pBoxColliderCom);
+	Safe_Release(m_pSphereColliderCom);
 
 	for (auto& iter : m_pTextureComs)
 	{

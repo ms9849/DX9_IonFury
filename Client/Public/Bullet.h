@@ -10,6 +10,7 @@ NS_BEGIN(Engine)
 class CTexture;
 class CTransform;
 class CVIBuffer_Cube;
+class CSphereCollider;
 NS_END
 
 NS_BEGIN(Client)
@@ -44,6 +45,7 @@ public:
 
 public:
 	virtual void OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta) override;
+	virtual const COLLISION_DESC& Get_CollisionDesc(COLLISION eColType);
 
 
 
@@ -52,6 +54,7 @@ private:
 	CTexture* m_pTextureCom = { nullptr };
 	CTransform* m_pTransformCom = { nullptr };
 	CVIBuffer_Cube* m_pVIBufferCom = { nullptr };
+	CSphereCollider* m_pSphereColliderCom = { nullptr };
 	_float3 m_vDir = {};
 
 private:
