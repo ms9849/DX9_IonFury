@@ -28,6 +28,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 {
 #ifdef _DEBUG
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+    //_CrtSetBreakAlloc(1512528);  // 몇 번 블럭 할당에서 브레이크 걸기
 #endif
 
     UNREFERENCED_PARAMETER(hPrevInstance);

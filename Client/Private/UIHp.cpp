@@ -57,7 +57,6 @@ HRESULT CUIHp::Initialize(void* pArg)
 	Safe_AddRef(m_pText);
 
 	m_pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player")));
-	
 	Safe_AddRef(m_pPlayer);
 
 	return S_OK;

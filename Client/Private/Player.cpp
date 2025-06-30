@@ -54,7 +54,10 @@ HRESULT CPlayer::Initialize(void* pArg)
 		return E_FAIL;
 
 	m_pRightHand = dynamic_cast<CPlayer_Hand*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player_Right_Hand")));
+	Safe_AddRef(m_pRightHand);
+
 	m_pRightHandAnimationCom = dynamic_cast<CAnimation*>(m_pRightHand->Find_Component(TEXT("Com_Animation")));
+	Safe_AddRef(m_pRightHandAnimationCom);
 
 	/*if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Player_Hand"),
 		ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player_Left_Hand"))))
@@ -357,6 +360,16 @@ const COLLISION_DESC& CPlayer::Get_CollisionDesc(COLLISION eColType)
 	return Desc;
 }
 
+_wstring CPlayer::Get_ItemText(size_t iIndex)
+{
+	return m_ItemQueues[iIndex].strItemText;
+}
+
+size_t CPlayer::Get_ItemQueue_Length()
+{
+	return m_ItemQueues.size();
+}
+
 CPlayer* CPlayer::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 {
 	CPlayer* pInstance = new CPlayer(pGraphic_Device);
@@ -390,5 +403,7 @@ void CPlayer::Free()
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pBoxColliderCom);
+	Safe_Release(m_pRightHand);
+	Safe_Release(m_pRightHandAnimationCom);
 	Safe_Release(m_pSphereColliderCom);
 }

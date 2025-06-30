@@ -59,6 +59,7 @@ HRESULT CUIText::Initialize(void* pArg)
 			return E_FAIL;
 
 		CUIFont* pUIFont = dynamic_cast<CUIFont*>(m_pGameInstance->Find_GameObject_ToLayer(Desc.iLayerLevelIndex, Desc.strLayerTag));
+		Safe_AddRef(pUIFont);
 
 		m_vecFont.push_back(pUIFont);
 	}

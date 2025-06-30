@@ -8,12 +8,11 @@ NS_BEGIN(Engine)
 class CSphereCollider;
 class CBoxCollider;
 class CTransform;
+class CAnimation;
 class CVIBuffer_Rect;
 NS_END
 
 NS_BEGIN(Client)
-
-class CUIItemQueue;
 
 class CPlayer final : public CLandObject
 {
@@ -69,8 +68,8 @@ private:
 
 private:
 	PLAYER_INFO		m_tInfo{};
-	CPlayer_Hand*	m_pRightHand{ nullptr };
-	CPlayer_Hand*	m_pLeftHand{ nullptr };
+	class CPlayer_Hand*	m_pRightHand{ nullptr };
+	class CPlayer_Hand*	m_pLeftHand{ nullptr };
 	_bool			m_bWalk{ false };
 	_float			m_fTimeDelta{};
 	map<const _wstring, WEAPON_INFO> m_Weapons{};
