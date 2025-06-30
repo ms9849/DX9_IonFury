@@ -36,6 +36,7 @@ HRESULT CItemPistolBullet::Initialize(void* pArg)
 
 	m_pPlayerTransformCom = dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(
 		ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player"), TEXT("Com_Transform")));
+	Safe_AddRef(m_pPlayerTransformCom);
 
 	return S_OK;
 }
