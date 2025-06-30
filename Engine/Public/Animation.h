@@ -1,8 +1,6 @@
 #pragma once
 
 #include "Component.h"
-#include "Texture.h"
-#include "Transform.h"
 
 NS_BEGIN(Engine)
 

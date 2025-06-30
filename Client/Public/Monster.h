@@ -31,13 +31,13 @@ public:
 	virtual HRESULT Render() override;
 
 protected:
-	CTexture*				m_pTextureCom = { nullptr };
+	CTexture* m_pTextureCom = { nullptr };
 	CAnimation* m_pAnimationCom = { nullptr };
-	CTransform*				m_pTransformCom = { nullptr };	
-	CVIBuffer_Rect*			m_pVIBufferCom = { nullptr };
+	CTransform* m_pTransformCom = { nullptr };
+	CVIBuffer_Rect* m_pVIBufferCom = { nullptr };
 	CSight* m_pSightCom = { nullptr };
 	CTransform* m_pPlayerTransform = { nullptr };
-	
+
 	_float m_AttackfCoolTime = 3.f;
 	_float m_fSumAttackCoolTime = 3.f;
 	_float m_fMoveCoolTime = 0.05f;

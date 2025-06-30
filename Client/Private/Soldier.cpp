@@ -426,7 +426,7 @@ HRESULT CSoldier::Begin_RenderState()
 HRESULT CSoldier::End_RenderState()
 {
 	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
-	//m_pGraphic_Device->SetRenderState(D3DRS_LIGHTING, TRUE);
+	m_pGraphic_Device->SetRenderState(D3DRS_LIGHTING, TRUE);
 
 	// m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
 	m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
@@ -457,7 +457,7 @@ void CSoldier::Move(_float fTimeDelta)
 
 	_float dot = D3DXVec3Dot(&fPlayerLook, &fMonsterLook);
 	float fRadian = acosf(dot);
-	m_pTransformCom->Rotation({0.f, 1.f, 0.f}, fRadian);
+	m_pTransformCom->Rotation({ 0.f, 1.f, 0.f }, fRadian);
 	m_pTransformCom->Chase(m_pPlayerTransform->Get_State(STATE::POSITION), fTimeDelta);
 	m_pTransformCom->LookAt(m_pPlayerTransform->Get_State(STATE::POSITION));
 
