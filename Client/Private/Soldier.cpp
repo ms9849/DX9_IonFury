@@ -51,8 +51,8 @@ HRESULT CSoldier::Initialize(void* pArg)
 
 	CSequenceNode* CCheckHpSequence = new CSequenceNode();
 	CCheckHpSequence->AddChild(new CConditionNode([this]() {
-		if (m_fHp >= 0)
-			m_fHp -= 0.1f;
+		/*if (m_fHp >= 0)
+			m_fHp -= 0.1f;*/
 
 		return this->m_fHp <= 0;
 		}));
@@ -348,6 +348,31 @@ HRESULT CSoldier::Ready_Animations()
 	return S_OK;
 }
 
+void CSoldier::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta)
+{
+	if (eColType == COLLISION::SPHERE)
+	{
+		CBullet* pBullet = dynamic_cast<CBullet*>(pDst);
+		if (pBullet != nullptr)
+			m_fHp -= pBullet->Get_Damage();
+	}
+
+	return;
+}
+
+const COLLISION_DESC& CSoldier::Get_CollisionDesc(COLLISION eColType)
+{
+	COLLISION_DESC Desc;
+	Desc.pTransform = m_pTransformCom;
+
+	if (eColType == COLLISION::SPHERE)
+		Desc.pCollider = m_pSphereColliderCom;
+	else if (eColType == COLLISION::OBB)
+		Desc.pCollider = m_pBoxColliderCom;
+
+	return Desc;
+}
+
 HRESULT CSoldier::Ready_Components()
 {
 	/* Com_Transform */
@@ -388,6 +413,16 @@ HRESULT CSoldier::Ready_Components()
 	CSight::SIGHT_DESC		SightDesc{ 5.f, D3DXToRadian(90.0f), m_pPlayerTransform, m_pTransformCom };
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Sight"),
 		TEXT("Com_Sight"), reinterpret_cast<CComponent**>(&m_pSightCom), &SightDesc)))
+		return E_FAIL;
+
+	/* Com_BoxCollider */
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_BoxCollider"),
+		TEXT("Com_BoxCollider"), reinterpret_cast<CComponent**>(&m_pBoxColliderCom))))
+		return E_FAIL;
+
+	/* Com_SphereCollider */
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_SphereCollider"),
+		TEXT("Com_SphereCollider"), reinterpret_cast<CComponent**>(&m_pSphereColliderCom))))
 		return E_FAIL;
 
 	return S_OK;
@@ -443,7 +478,7 @@ void CSoldier::Attack()
 	Desc.vDir = vDir;
 	Desc.vPos = vPos;
 
-	m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Bullet"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Bullet"), &Desc);
+	m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Bullet"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Soldier_Bullet"), &Desc);
 }
 
 void CSoldier::Move(_float fTimeDelta)

@@ -61,6 +61,16 @@ HRESULT CBullet::Render()
 
 void CBullet::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta)
 {
+	m_isDead = true;
+}
+
+const COLLISION_DESC& CBullet::Get_CollisionDesc(COLLISION eColType)
+{
+	COLLISION_DESC Desc;
+	Desc.pTransform = m_pTransformCom;
+	Desc.pCollider = m_pSphereColliderCom;
+
+	return Desc;
 }
 
 HRESULT CBullet::Ready_Components()
@@ -79,6 +89,11 @@ HRESULT CBullet::Ready_Components()
 	/* Com_VIBuffer */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_VIBuffer_Cube"),
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
+		return E_FAIL;
+
+	/* Com_SphereCollider */
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_SphereCollider"),
+		TEXT("Com_SphereCollider"), reinterpret_cast<CComponent**>(&m_pSphereColliderCom))))
 		return E_FAIL;
 
 	return S_OK;
@@ -117,4 +132,5 @@ void CBullet::Free()
 	Safe_Release(m_pTextureCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pVIBufferCom);
+	Safe_Release(m_pSphereColliderCom);
 }
