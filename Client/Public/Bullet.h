@@ -29,6 +29,12 @@ private:
 	virtual ~CBullet() = default;
 
 public:
+	_float Get_Damage()
+	{
+		return m_fDamage;
+	}
+
+public:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
 	virtual void Priority_Update(_float fTimeDelta) override;
@@ -42,6 +48,7 @@ public:
 
 
 private:
+	_float m_fDamage = { 10.f };
 	CTexture* m_pTextureCom = { nullptr };
 	CTransform* m_pTransformCom = { nullptr };
 	CVIBuffer_Cube* m_pVIBufferCom = { nullptr };
