@@ -14,7 +14,7 @@
 #include "UIInteraction.h"
 #include "UIAim.h"
 #include "UIArmor.h"
-#include "UIItemStack.h"
+#include "UIItemQueue.h"
 #include "ItemArmor.h"
 #include "ItemHealpack.h"
 #include "ItemPistolBullet.h"
@@ -250,9 +250,9 @@ HRESULT CLoader::Loading_For_GamePlay()
 		CUIInteraction::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
-	/* For.Prototype_GameObject_UIItemStack */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_UIItemStack"),
-		CUIItemStack::Create(m_pGraphic_Device))))
+	/* For.Prototype_GameObject_UIItemQueue */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_UIItemQueue"),
+		CUIItemQueue::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_UIAim */

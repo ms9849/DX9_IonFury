@@ -3,12 +3,6 @@
 #include "Client_Defines.h"
 #include "Level.h"
 #include "Camera.h"
-#include "UIHp.h"
-#include "UIBullets.h"
-#include "UIInteraction.h"
-#include "UIAim.h"
-#include "UIArmor.h"
-#include "UIItemStack.h"
 
 NS_BEGIN(Client)
 
@@ -40,7 +34,7 @@ private:
 	class CUIBullets* m_pUIBullets { nullptr };
 	class CUIInteraction* m_pUIInteraction { nullptr };
 	class CUIAim* m_pUIAim { nullptr };
-	class CUIItemStack* m_pUIItemStack{ nullptr };
+	vector<class CUIItemQueue*> m_pUIItemQueues{};
 	CCamera::CAMERA_CONFIG m_CameraSettings;
 
 public:

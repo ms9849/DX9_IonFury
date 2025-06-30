@@ -27,7 +27,7 @@ protected:
     virtual HRESULT End_RenderState() override;
 
 public:
-    virtual void OnCollision(CGameObject* pDst, COLLISION eColType) override;
+    virtual void OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta) override;
 
 public:
     static CItemShootGunBullet* Create(LPDIRECT3DDEVICE9 pGraphic_Device);

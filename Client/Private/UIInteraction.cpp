@@ -79,9 +79,9 @@ HRESULT CUIInteraction::Render()
 	return S_OK;
 }
 
-void CUIInteraction::Set_Interaction(const _tchar* strText)
+void CUIInteraction::Set_Interaction()
 {
-	m_pText->Set_Text(strText);
+	m_pText->Set_Text(TEXT("Press [E] Key"));
 }
 
 HRESULT CUIInteraction::Ready_Components()
