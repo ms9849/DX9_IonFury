@@ -64,7 +64,8 @@ private:
 	HRESULT Begin_RenderState();
 	HRESULT End_RenderState();
 	_float3 Calc_BulletDir(_float3* vOffset);
-	void Insert_ItemDesc(_float fCreateTime, const _wstring strItemText);
+	void Insert_ItemDesc(const _wstring strItemText);
+	void Pop_ItemDesc(_float fTimeDelta);
 
 private:
 	/* 점프, 점프 시간 */
@@ -76,9 +77,9 @@ private:
 	class CPlayer_Hand*	m_pRightHand{ nullptr };
 	class CPlayer_Hand*	m_pLeftHand{ nullptr };
 	_bool			m_bWalk{ false };
-	_float			m_fTimeDelta{};
 	map<const _wstring, WEAPON_INFO> m_Weapons{};
-	deque<ITEM_DESC> m_ItemQueues{};
+	deque<_wstring> m_ItemQueues{};
+	_float			m_fTimeStack{0.f};
 
 public:
 	virtual void OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta) override;

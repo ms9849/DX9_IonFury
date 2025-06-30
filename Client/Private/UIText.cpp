@@ -36,7 +36,6 @@ HRESULT CUIText::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-
 	UIOBJECT_DESC Desc{};
 
 	// 각 텍스트 크기 및 위치
@@ -96,16 +95,20 @@ HRESULT CUIText::Render()
 
 void CUIText::Set_Text(const _tchar* strText)
 {
-	for (int i = 0; i < m_tagDesc.iTextLength; ++i)
+	for (size_t i = 0; i < wcslen(strText); ++i)
 	{
 		_tchar ch = strText[i];
 		m_vecFont[i]->Set_Font_Type(ch);
+	}
+	for (size_t i = wcslen(strText); i < m_tagDesc.iTextLength; ++i)
+	{
+		m_vecFont[i]->Set_Font_Type(' ');
 	}
 }
 
 void CUIText::Set_Text(_uint iNumber)
 {
-	for (int i = 0; i < m_tagDesc.iTextLength; ++i)
+	for (size_t i = 0; i < m_tagDesc.iTextLength; ++i)
 	{
 		_tchar ch = to_string(iNumber)[i];
 		m_vecFont[i]->Set_Font_Type(ch);

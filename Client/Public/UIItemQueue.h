@@ -10,7 +10,6 @@ class CVIBuffer_Rect;
 NS_END
 
 NS_BEGIN(Client)
-
 class CPlayer;
 
 class CUIItemQueue final : public CUIObject

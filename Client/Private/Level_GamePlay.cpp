@@ -74,11 +74,16 @@ void CLevel_GamePlay::Update(_float fTimeDelta)
 	m_pUIBullets->Set_Bullets();
 	m_pUIInteraction->Set_Interaction();
 
-	/*size_t iItemQueueLength = dynamic_cast<CPlayer*>(
+	size_t iItemQueueLength = dynamic_cast<CPlayer*>(
 		m_pGameInstance->Find_GameObject_ToLayer(
 			ENUM_CLASS(LEVEL::GAMEPLAY),
 			TEXT("Layer_Player")
 		))->Get_ItemQueue_Length();
+
+	for (size_t i = 0; i < 20; ++i)
+	{
+		m_pUIItemQueues[i]->Set_ItemQueue(TEXT(" "));
+	}
 
 	for (size_t i = 0; i < iItemQueueLength; ++i)
 	{
@@ -89,7 +94,8 @@ void CLevel_GamePlay::Update(_float fTimeDelta)
 			))->Get_ItemText(i);
 
 		m_pUIItemQueues[i]->Set_ItemQueue(strText);
-	}*/
+	}
+	
 #pragma endregion
 
 	//m_pGameInstance->Check_OBBCollision(TEXT("Layer_Cube"), TEXT("Layer_Player"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta);
@@ -307,7 +313,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_UI(const _wstring& strLayerTag)
 	m_pUIInteraction = dynamic_cast<CUIInteraction*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag));
 
 	/* 아이템 스택 */
-	/*for (size_t i = 0; i < 20; ++i)
+	for (size_t i = 0; i < 20; ++i)
 	{
 		CUIObject::UIOBJECT_DESC Desc_ItemQueue{};
 
@@ -327,8 +333,10 @@ HRESULT CLevel_GamePlay::Ready_Layer_UI(const _wstring& strLayerTag)
 		CUIItemQueue* pUIItemQueue = dynamic_cast<CUIItemQueue*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), Desc_ItemQueue.strLayerTag));
 		Safe_AddRef(pUIItemQueue);
 
+		pUIItemQueue->Set_ItemQueue(TEXT(" "));
+
 		m_pUIItemQueues.push_back(pUIItemQueue);
-	}*/	
+	}
 
 	/* 조준선 */
 	CUIObject::UIOBJECT_DESC Desc_Aim{};
@@ -411,8 +419,8 @@ void CLevel_GamePlay::Free()
 	Safe_Release(m_pUIBullets);
 	Safe_Release(m_pUIInteraction);
 	Safe_Release(m_pUIAim);
-	/*for (auto& iter : m_pUIItemQueues)
+	for (auto& iter : m_pUIItemQueues)
 	{
 		Safe_Release(iter);
-	}*/
+	}
 }

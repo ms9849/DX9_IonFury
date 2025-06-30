@@ -189,11 +189,13 @@ void CPlayer::Update(_float fTimeDelta)
 	}
 
 	m_pRightHand->Set_Player_Transform(m_pTransformCom);
+	
+	if(!m_ItemQueues.empty())
+		Pop_ItemDesc(fTimeDelta);
 }
 
 void CPlayer::Late_Update(_float fTimeDelta)
 {
-	m_fTimeDelta = fTimeDelta;
 }
 
 HRESULT CPlayer::Render()
@@ -299,7 +301,6 @@ _float3 CPlayer::Calc_BulletDir(_float3* vOffset)
 
 	if (vCollisionPos == _float3{ 0.f, 0.f, 0.f })
 		return m_pTransformCom->Get_State(STATE::LOOK);
-
 	else
 	{
 		_float3 vDir = vCollisionPos - (vCamPos + *vOffset);
@@ -308,17 +309,28 @@ _float3 CPlayer::Calc_BulletDir(_float3* vOffset)
 	}
 }
 
-void CPlayer::Insert_ItemDesc(_float fCreateTime, const _wstring strItemText)
+void CPlayer::Insert_ItemDesc(const _wstring strItemText)
 {
 	if (m_ItemQueues.size() > 2)
 	{
-		m_ItemQueues.pop_front();
+		m_ItemQueues.pop_back();
 	}
 
-	ITEM_DESC Desc{};
-	Desc.fCreateTime = fCreateTime;
-	Desc.strItemText = strItemText;
-	m_ItemQueues.push_front(Desc);
+	m_ItemQueues.push_front(strItemText);
+}
+
+void CPlayer::Pop_ItemDesc(_float fTimeDelta)
+{
+	m_fTimeStack += fTimeDelta;
+
+	for (size_t i = 0; i < m_ItemQueues.size(); ++i)
+	{
+		if (m_fTimeStack > 2.f)
+		{
+			m_fTimeStack = 0.f;
+			m_ItemQueues.pop_back();
+		}
+	}
 }
 
 void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta)
@@ -328,12 +340,12 @@ void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 		if (dynamic_cast<CItemArmor*>(pDst))
 		{
 			m_tInfo.iArmor += 10;
-			Insert_ItemDesc(fTimeDelta, TEXT("Get Armor [Armor+10]"));
+			Insert_ItemDesc(TEXT("Get Armor [Armor+10]"));
 		}
 		if (dynamic_cast<CItemHealpack*>(pDst))
 		{
 			m_tInfo.iHp += 10;
-			Insert_ItemDesc(fTimeDelta, TEXT("Get Healpack [HP+10]"));
+			Insert_ItemDesc(TEXT("Get Healpack [HP+10]"));
 		}
 		if (dynamic_cast<CItemPistolBullet*>(pDst))
 		{
@@ -346,7 +358,7 @@ void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 			if(m_tInfo.strWeapon.compare(TEXT("Pistol")) == 0)
 				m_tInfo.iBullets = iter->second.iCurrentBullets;
 
-			Insert_ItemDesc(fTimeDelta, TEXT("Get Pistol Bullets [Bullet+10]"));
+			Insert_ItemDesc(TEXT("Get Pistol Bullets [Bullet+10]"));
 		}
 		if (dynamic_cast<CItemShootGunBullet*>(pDst))
 		{
@@ -360,7 +372,7 @@ void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 			if (m_tInfo.strWeapon.compare(TEXT("ShootGun")) == 0)
 				m_tInfo.iBullets = iter->second.iCurrentBullets;
 
-			Insert_ItemDesc(fTimeDelta, TEXT("Get ShootGun Bullets [Bullet+10]"));
+			Insert_ItemDesc(TEXT("Get ShootGun Bullets [Bullet+10]"));
 		}
 	}
 }
@@ -380,7 +392,7 @@ const COLLISION_DESC& CPlayer::Get_CollisionDesc(COLLISION eColType)
 
 _wstring CPlayer::Get_ItemText(size_t iIndex)
 {
-	return m_ItemQueues[iIndex].strItemText;
+	return m_ItemQueues[iIndex];
 }
 
 size_t CPlayer::Get_ItemQueue_Length()
