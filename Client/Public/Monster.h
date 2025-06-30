@@ -31,7 +31,6 @@ public:
 	virtual HRESULT Render() override;
 
 protected:
-	CTexture* m_pTextureCom = { nullptr };
 	CAnimation* m_pAnimationCom = { nullptr };
 	CTransform* m_pTransformCom = { nullptr };
 	CVIBuffer_Rect* m_pVIBufferCom = { nullptr };
