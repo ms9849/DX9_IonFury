@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -175,6 +175,7 @@
     <ClInclude Include="..\Public\UIHp.h" />
     <ClInclude Include="..\Public\UIInteraction.h" />
     <ClInclude Include="..\Public\UIText.h" />
+    <ClInclude Include="..\public\Zombie.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Resource.h" />
@@ -212,6 +213,7 @@
     <ClCompile Include="..\Private\UIInteraction.cpp" />
     <ClCompile Include="..\private\UIItemQueue.cpp" />
     <ClCompile Include="..\Private\UIText.cpp" />
+    <ClCompile Include="..\private\Zombie.cpp" />
     <ClCompile Include="Client.cpp" />
   </ItemGroup>
   <ItemGroup>

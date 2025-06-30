@@ -106,6 +106,12 @@
     <Filter Include="02.GameObjects\Player\Player_Hand">
       <UniqueIdentifier>{6b2efc96-1da8-47e3-a7fa-8fdb2ab53f72}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\Monster\Melee">
+      <UniqueIdentifier>{69794553-4677-457c-b4d3-6c02b68febe8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Monster\Range">
+      <UniqueIdentifier>{7101d18f-77b1-4167-84f4-cca17bf2a3ee}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -198,9 +204,6 @@
     <ClInclude Include="..\Public\BehaviorNode.h">
       <Filter>02.GameObjects\Monster\BehaviorTree</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Soldier.h">
-      <Filter>02.GameObjects\Monster</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\UIAim.h">
       <Filter>02.GameObjects\UI\UIAim</Filter>
     </ClInclude>
@@ -218,6 +221,12 @@
     </ClInclude>
     <ClInclude Include="..\public\UIAim.h">
       <Filter>02.GameObjects\UI\UIAim</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Soldier.h">
+      <Filter>02.GameObjects\Monster\Range</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Zombie.h">
+      <Filter>02.GameObjects\Monster\Melee</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -315,9 +324,6 @@
     <ClCompile Include="..\Private\BehaviorNode.cpp">
       <Filter>02.GameObjects\Monster\BehaviorTree</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Soldier.cpp">
-      <Filter>02.GameObjects\Monster</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\ItemPistolBullet.cpp">
       <Filter>02.GameObjects\Item\ItemPistolBullet</Filter>
     </ClCompile>
@@ -329,6 +335,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Terrain_Manager.cpp">
       <Filter>02.GameObjects\Terrain\Mananger</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Soldier.cpp">
+      <Filter>02.GameObjects\Monster\Range</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Zombie.cpp">
+      <Filter>02.GameObjects\Monster\Melee</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

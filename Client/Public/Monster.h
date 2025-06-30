@@ -48,6 +48,7 @@ protected:
 	_float m_fMaxRange = 8.f;
 	_float m_fHp = 100.f;
 	_bool m_bDying = false;
+
 	class CBehaviorNode* m_pRoot = { nullptr };
 
 	_wstring m_strFrameKey;
