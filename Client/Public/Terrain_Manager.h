@@ -3,36 +3,39 @@
 #include "Client_Defines.h"
 #include "Base.h"
 
+NS_BEGIN(Engine)
+class CLayer;
+class CGameInstance;
+class CLandObject;
+NS_END
+
 NS_BEGIN(Client)
 
-/*
-SetUp_OnTerrain 함수를 이용해서 지형에 태움..
-
-터레인의 Transform와 VIBuffer를 받아올 때
-
-Change_Terrain을 이용하여 타야할 버퍼와 트랜스폼을 가져오게끔 한다?
-
--> 큐브들은 어떻게 처리하지?
-
--> 
-
-*/
-
-class CLand_Manager final: public CBase
+class CTerrain_Manager final : public CBase
 {
 private:
-	CLand_Manager();
-	virtual ~CLand_Manager() = default;
+	CTerrain_Manager();
+	virtual ~CTerrain_Manager() = default;
 
 public:
+	void Add_LandObject(LEVEL eLevelID, const _wstring& strLayerTag);
+	void Add_Terrian(LEVEL eLevelID);
+
+public:
+	HRESULT Initialize();
 	void Check_Landing();
 
 private:
+	class CGameInstance* m_pGameInstance = {};
 
+	list<class CTerrain*> m_Terrains = {};
+	list<class CLandObject*> m_LandObjects = {};
 
 public:
-	static CLand_Manager* Create();
-	virtual void Free();
+	//디바이스 장치 필요 없지.
+	static CTerrain_Manager* Create();
+	virtual void Free() override;
 };
 
 NS_END
+

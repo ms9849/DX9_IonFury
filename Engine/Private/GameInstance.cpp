@@ -262,9 +262,9 @@ void CGameInstance::Check_OBBCollision(const _wstring& strLayerTagSrc, const _ws
 	m_pCollision_Manager->Check_OBBCollision(strLayerTagSrc, strLayerTagDst, iLayerLevel, fTimeDelta);
 }
 
-void CGameInstance::Check_LookCollision(_float3 vPos, _float3 vLook, const _wstring& strLayerTagDst, _uint iLayerLevel, _float3* vColisionPos)
+void CGameInstance::Check_RayCollision(_float3 vPos, _float3 vLook, const _wstring& strLayerTagDst, _uint iLayerLevel, _float3* vColisionPos)
 {
-	m_pCollision_Manager->Check_LookCollision(vPos, vLook, strLayerTagDst, iLayerLevel, vColisionPos);
+	m_pCollision_Manager->Check_RayCollision(vPos, vLook, strLayerTagDst, iLayerLevel, vColisionPos);
 }
 void CGameInstance::Check_SphereCollision(const _wstring& strLayerTagSrc, const _wstring& strLayerTagDst, _uint iLayerLevel, _float fTimeDelta)
 {
