@@ -16,15 +16,13 @@ CVIBuffer::CVIBuffer(const CVIBuffer& Prototype)
 	, m_iFVF { Prototype.m_iFVF }
 	, m_ePrimitiveType { Prototype.m_ePrimitiveType }
 	, m_iNumPrimitive { Prototype.m_iNumPrimitive }
-
 	, m_iIndexStride { Prototype.m_iIndexStride }
 	, m_iNumIndices { Prototype.m_iNumIndices }
 	, m_eIndexFormat { Prototype.m_eIndexFormat }
-	, m_iNumVerticesX{ Prototype.m_iNumVerticesX }
-	, m_iNumVerticesZ{ Prototype.m_iNumVerticesZ }
+	, m_iNumVerticesX { Prototype.m_iNumVerticesX }
+	, m_iNumVerticesZ { Prototype.m_iNumVerticesZ }
   	, m_pVertexPositions {Prototype.m_pVertexPositions }
 {
-
 	Safe_AddRef(m_pVB);
 	Safe_AddRef(m_pIB);
 }

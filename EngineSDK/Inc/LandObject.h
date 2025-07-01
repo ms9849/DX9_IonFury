@@ -11,7 +11,7 @@ public:
 	{
 		class CVIBuffer* pLandVIBuffer = { nullptr };
 		class CTransform* pLandTransform = { nullptr };
-	}LANDOBJECT_DESC;
+	} LANDOBJECT_DESC;
 protected:
 	CLandObject(LPDIRECT3DDEVICE9 pGraphic_Device);
 	CLandObject(const CLandObject& Prototype);
@@ -27,9 +27,20 @@ public:
 
 	virtual void Change_Land(LANDOBJECT_DESC* pLandDesc);
 
+	_bool Get_Jump() { return m_bJump; }
+	void Set_Jump(_bool bJump) { m_bJump = bJump; }
+	void Set_Time(_float fTime) { m_fTime = fTime; }
+
 protected:
+	/* 점프, 점프 시간 */
+	_bool			m_bJump = { false };
+	_float			m_fTime = 0.f;
+	_float			m_fFallSpeed = 0.f;
+
 	class CTransform*		m_pLandTransform = { nullptr };
 	class CVIBuffer*		m_pLandVIBuffer = { nullptr };
+	class CTransform*		m_pTransformLast = { nullptr };
+	class CVIBuffer*		m_pBufferLast = { nullptr };
 
 protected:
 	void SetUp_OnTerrain(class CTransform* pTransform, _float fOffset = 0.f, _bool* bJump = nullptr);

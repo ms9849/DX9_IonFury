@@ -225,7 +225,8 @@ void CSoldier::Late_Update(_float fTimeDelta)
 	}
 
 	m_pAnimationCom->Play_Animation(fTimeDelta);
-	m_pGameInstance->Add_RenderGroup(RENDER::NONBLEND, this);
+
+	m_pGameInstance->Add_RenderGroup(RENDER::BLEND, this);
 }
 
 HRESULT CSoldier::Render()

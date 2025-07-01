@@ -29,6 +29,7 @@ private:
 	HRESULT Ready_Layer_Items(const _wstring& strLayerTag);
 
 private:
+	class CTerrain_Manager* m_pTerrain_Manager = {};
 	class CUIHp* m_pUIHp { nullptr };
 	class CUIArmor* m_pUIArmor { nullptr };
 	class CUIBullets* m_pUIBullets { nullptr };

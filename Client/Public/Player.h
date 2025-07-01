@@ -68,11 +68,6 @@ private:
 	void Pop_ItemDesc(_float fTimeDelta);
 
 private:
-	/* 점프, 점프 시간 */
-	_bool			m_bJump = { false };
-	_float			m_fTime = 0.f;
-	_float			m_fJumpSpeed = 4.f;
-
 	PLAYER_INFO		m_tInfo{};
 	class CPlayer_Hand*	m_pRightHand{ nullptr };
 	class CPlayer_Hand*	m_pLeftHand{ nullptr };
