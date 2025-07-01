@@ -1,6 +1,7 @@
 #include "Zombie.h"
 #include "GameInstance.h"
 #include "Bullet.h"
+#include "MeleeAttack.h"
 #include "BehaviorNode.h"
 
 CZombie::CZombie(LPDIRECT3DDEVICE9 pGraphic_Device)
@@ -44,6 +45,9 @@ HRESULT CZombie::Initialize(void* pArg)
 		0.f,
 		m_pGameInstance->Random(0.f, 20.f)));
 
+	m_fDamage = 30.f;
+	m_fAttackRange = 2.f;
+
 	//m_pTransformCom->Rotation({0.f, 1.f, 0.f}, m_pGameInstance->Random(0.f, 180.f));
 	//m_pTransformCom->LookAt(m_pPlayerTransform->Get_State(STATE::POSITION));
 
@@ -70,36 +74,66 @@ HRESULT CZombie::Initialize(void* pArg)
 		return m_fSumAttackCoolTime >= m_AttackfCoolTime;
 		}));
 
+	CAttackSequence->AddChild(new CConditionNode([this]() {
+		_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
+
+		return D3DXVec3Length(&vDiff) <= m_fAttackRange;
+		}));
+
 	CAttackSequence->AddChild(new CActionNode([this]() {
 		m_strFrameKey = TEXT("Zombie_Attack");
 		m_bAnimationLock = true;
 		this->Attack();
 		m_fSumAttackCoolTime = 0.f;
 		}));
-
-	CSequenceNode* CMoveSequence = new CSequenceNode();
-	CMoveSequence->AddChild(new CConditionNode([this](_float fTimeDelta) {
+	
+	CSelectorNode* CMoveCheckSequence = new CSelectorNode();
+	CSequenceNode* CSightSucessSequence = new CSequenceNode();
+	CSequenceNode* CSightFailSequence = new CSequenceNode();
+	CSightFailSequence->AddChild(new CConditionNode([this](_float fTimeDelta) {
 		return !this->m_pSightCom->Check_Sight(fTimeDelta);
 		}));
 
-	CMoveSequence->AddChild(new CConditionNode([this]() {
+	CSightFailSequence->AddChild(new CConditionNode([this]() {
 		_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
-		return this->m_fMaxRange >= D3DXVec3Length(&vDiff);
+		return this->m_fChaseRange >= D3DXVec3Length(&vDiff);
 		}));
 
-	CMoveSequence->AddChild(new CConditionNode([this](_float fTimeDelta) {
+	CSightFailSequence->AddChild(new CConditionNode([this](_float fTimeDelta) {
 		m_fSumMoveCoolTime += fTimeDelta;
 		return m_fSumMoveCoolTime >= m_fMoveCoolTime;
 		}));
 
-	CMoveSequence->AddChild(new CActionNode([this](_float fTimeDelta) {
+	CSightFailSequence->AddChild(new CActionNode([this](_float fTimeDelta) {
 		this->Move(fTimeDelta);
 		m_fSumMoveCoolTime = 0.f;
 		}));
 
+	CSightSucessSequence->AddChild(new CConditionNode([this](_float fTimeDelta) {
+		return this->m_pSightCom->Check_Sight(fTimeDelta);
+		}));
+
+	CSightSucessSequence->AddChild(new CConditionNode([this]() {
+		_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
+		return this->m_fChaseRange >= D3DXVec3Length(&vDiff) && m_fAttackRange <= D3DXVec3Length(&vDiff);
+		}));
+
+	CSightSucessSequence->AddChild(new CConditionNode([this](_float fTimeDelta) {
+		m_fSumMoveCoolTime += fTimeDelta;
+		return m_fSumMoveCoolTime >= m_fMoveCoolTime;
+		}));
+
+	CSightSucessSequence->AddChild(new CActionNode([this](_float fTimeDelta) {
+		this->Move(fTimeDelta);
+		m_fSumMoveCoolTime = 0.f;
+		}));
+
+	CMoveCheckSequence->AddChild(CSightSucessSequence);
+	CMoveCheckSequence->AddChild(CSightFailSequence);
+
 	root->AddChild(CCheckHpSequence);
 	root->AddChild(CAttackSequence);
-	root->AddChild(CMoveSequence);
+	root->AddChild(CMoveCheckSequence);
 
 	m_pRoot = root;
 
@@ -439,14 +473,22 @@ HRESULT CZombie::End_RenderState()
 void CZombie::Attack()
 {
 	_float3 vDir = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
-	_float3 vPos = m_pTransformCom->Get_State(STATE::POSITION);
+	//_float3 vPos = m_pTransformCom->Get_State(STATE::POSITION);
+	_float3 vPos = m_pPlayerTransform->Get_State(STATE::POSITION);
 	D3DXVec3Normalize(&vDir, &vDir);
 
-	CBullet::BULLET_DESC Desc;
+	/*CBullet::BULLET_DESC Desc;
+	Desc.vDir = vDir;
+	Desc.vPos = vPos;*/
+
+	CMeleeAttack::MELEEATTACK_DESC Desc;
 	Desc.vDir = vDir;
 	Desc.vPos = vPos;
+	Desc.fDamage = m_fDamage;
+	Desc.fDurationTime = 10.f;
 
-	m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Bullet"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Zombie_Bullet"), &Desc);
+	m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Melee_Attack"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Melee_Attack"), &Desc);
+	//m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Bullet"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Zombie_Bullet"), &Desc);
 }
 
 void CZombie::Move(_float fTimeDelta)

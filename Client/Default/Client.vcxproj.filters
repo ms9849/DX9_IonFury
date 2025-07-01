@@ -112,6 +112,9 @@
     <Filter Include="02.GameObjects\Monster\Range">
       <UniqueIdentifier>{7101d18f-77b1-4167-84f4-cca17bf2a3ee}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\Monster\Melee\Attack">
+      <UniqueIdentifier>{73ce83fd-65ee-47b9-9a1b-16e041f00828}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -228,6 +231,9 @@
     <ClInclude Include="..\public\Zombie.h">
       <Filter>02.GameObjects\Monster\Melee</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\MeleeAttack.h">
+      <Filter>02.GameObjects\Monster\Melee\Attack</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -341,6 +347,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Zombie.cpp">
       <Filter>02.GameObjects\Monster\Melee</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Melee_Attack.cpp">
+      <Filter>02.GameObjects\Monster\Melee\Attack</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
