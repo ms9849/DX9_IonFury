@@ -4,9 +4,11 @@
 #include "Level_Loading.h"
 #include "Camera.h"
 #include "CubeObject.h"
-/*
+
+/*****************************
 대재훈의 은총 이 얼마나 관대한가
-*/
+******************************/
+
 Client::CMainApp::CMainApp()
 	: m_pGameInstance { CGameInstance::GetInstance() }
 {
