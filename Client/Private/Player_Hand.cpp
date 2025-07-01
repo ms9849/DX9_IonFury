@@ -42,12 +42,8 @@ void CPlayer_Hand::Priority_Update(_float fTimeDelta)
 	_float3 vHandPos = {};
 	_float4x4 PlayerMatrix{};
 
-	//handMatrix = *m_pTransformCom->Get_WorldMatrixPtr();
-
 	_wstring strWeapon = dynamic_cast<CPlayer*>(m_pGameInstance->Find_GameObject_ToLayer(
 		ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player")))->Get_Player_Info().strWeapon;
-
-
 
 	if (strWeapon.compare(TEXT("Pistol")) == 0)
 	{
@@ -63,8 +59,6 @@ void CPlayer_Hand::Priority_Update(_float fTimeDelta)
 		vHandPos += m_pAnimationCom->Get_Animation()->Poses[m_pAnimationCom->Get_Frame_Index()];
 	}
 
-	//m_pGraphic_Device->GetTransform(D3DTS_VIEW, &PlayerMatrix);
-	//D3DXMatrixInverse(&PlayerMatrix, nullptr, &PlayerMatrix);
 	PlayerMatrix = *dynamic_cast<CTransform*>(
 		m_pGameInstance->Get_Component(
 			ENUM_CLASS(LEVEL::GAMEPLAY),
@@ -96,8 +90,6 @@ void CPlayer_Hand::Update(_float fTimeDelta)
 
 void CPlayer_Hand::Late_Update(_float fTimeDelta)
 {
-
-
 	m_pGameInstance->Add_RenderGroup(RENDER::BLEND_LATE, this);
 }
 
