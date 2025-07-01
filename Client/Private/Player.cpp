@@ -70,11 +70,6 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 void CPlayer::Priority_Update(_float fTimeDelta)
 {
-
-}
-
-void CPlayer::Update(_float fTimeDelta)
-{
 	/* 점프 로직*/
 	if (!m_bJump && m_pGameInstance->Key_Down(VK_SPACE))
 	{
@@ -118,7 +113,6 @@ void CPlayer::Update(_float fTimeDelta)
 			m_tInfo.iShootBullets = iter->second.iShootBullets;
 		}
 	}
-
 
 	// 애니메이션 종료 처리 해야됨
 	if (m_pRightHandAnimationCom->Check_Animation_Finish())
@@ -202,7 +196,10 @@ void CPlayer::Update(_float fTimeDelta)
 	SetUp_OnTerrain(m_pTransformCom, 0.5f, &m_bJump);
 
 	m_pRightHand->Set_Player_Transform(m_pTransformCom);
-	
+}
+
+void CPlayer::Update(_float fTimeDelta)
+{	
 	if(!m_ItemQueues.empty())
 		Pop_ItemDesc(fTimeDelta);
 }

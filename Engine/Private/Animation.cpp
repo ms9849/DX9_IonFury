@@ -43,17 +43,22 @@ void CAnimation::Play_Animation(_float fTimeDelta)
 	m_tFrame->fTime += fTimeDelta;
 	m_bFinished = false;
 
-	if (m_tFrame->fTime >= (fTimeDelta * m_tFrame->iFrameSpeed))
+	if (m_tFrame->iEnd != 0)
 	{
-		m_tFrame->fTime = 0.f;
-		m_tFrame->iCurrentFrame++;
-
-		if (m_tFrame->iCurrentFrame >= m_tFrame->iEnd)
+		if (m_tFrame->fTime >= (fTimeDelta * m_tFrame->iFrameSpeed))
 		{
-			m_tFrame->iCurrentFrame = 0;
-			m_bFinished = true;
+			m_tFrame->fTime = 0.f;
+			m_tFrame->iCurrentFrame++;
+
+			if (m_tFrame->iCurrentFrame >= m_tFrame->iEnd)
+			{
+				m_tFrame->iCurrentFrame = 0;
+				m_bFinished = true;
+			}
 		}
 	}
+	else
+		m_tFrame->fTime = 0.f;
 }
 
 _bool CAnimation::Check_Animation_Finish()
