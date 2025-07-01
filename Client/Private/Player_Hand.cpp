@@ -34,53 +34,10 @@ HRESULT CPlayer_Hand::Initialize(void* pArg)
 
 void CPlayer_Hand::Priority_Update(_float fTimeDelta)
 {
-}
-
-void CPlayer_Hand::Update(_float fTimeDelta)
-{
 	// 여기서 플레이어한테서 받아온 애니메이션 타입에 맞춰 애니메이션 세팅
 	// Set_Animation
 	auto iter = m_Frames.find(m_strFrameKey);
 	m_pAnimationCom->Set_Animation(&iter->second);
-}
-
-void CPlayer_Hand::Late_Update(_float fTimeDelta)
-{
-
-	/*
-		// 공부 해야함
-	// 크자이공부 중 이공부 만 한거
-	_float4x4 handMatrix{}, CameraMatrix{};
-	D3DXMatrixIdentity(&handMatrix);
-
-	//handMatrix = *m_pTransformCom->Get_WorldMatrixPtr();
-
-	_float3 vHandMotionPos = m_pAnimationCom->Get_Animation()->Poses[m_pAnimationCom->Get_Frame_Index()];
-
-	handMatrix.m[3][0] = 0.75f + vHandMotionPos.x;
-	handMatrix.m[3][1] = -0.6f + vHandMotionPos.y;
-	handMatrix.m[3][2] = 1.5f + vHandMotionPos.z;
-
-	//CameraMatrix = *m_pPlayerTransformCom->Get_WorldMatrixPtr();
-	m_pGraphic_Device->GetTransform(D3DTS_VIEW, &CameraMatrix);
-	D3DXMatrixInverse(&CameraMatrix, nullptr, &CameraMatrix);
-	_float3 vCameraPos = m_pPlayerTransformCom->Get_State(STATE::POSITION);
-	CameraMatrix.m[3][0] = 0.f;
-	CameraMatrix.m[3][1] = 0.f;
-	CameraMatrix.m[3][2] = 0.f;
-
-	D3DXMatrixMultiply(&handMatrix, &handMatrix, &CameraMatrix);
-
-	_float3 vHandPos = *(_float3*)(&handMatrix.m[3][0]);
-	vHandPos.x += vCameraPos.x;
-	vHandPos.y += vCameraPos.y;
-	vHandPos.z += vCameraPos.z;                               
-
-	m_pTransformCom->Set_State(STATE::RIGHT, (_float3)&handMatrix.m[0][0]);
-	m_pTransformCom->Set_State(STATE::UP, (_float3)&handMatrix.m[1][0]);
-	m_pTransformCom->Set_State(STATE::LOOK, (_float3)&handMatrix.m[2][0]);
-	m_pTransformCom->Set_State(STATE::POSITION, vHandPos);
-	*/
 
 	_float3 vHandPos = {};
 	_float4x4 PlayerMatrix{};
@@ -112,13 +69,13 @@ void CPlayer_Hand::Late_Update(_float fTimeDelta)
 		m_pGameInstance->Get_Component(
 			ENUM_CLASS(LEVEL::GAMEPLAY),
 			TEXT("Layer_Player"),
-		 TEXT("Com_Transform")))->Get_WorldMatrixPtr();
-	
+			TEXT("Com_Transform")))->Get_WorldMatrixPtr();
+
 	D3DXVec3TransformCoord(&vHandPos, &vHandPos, &PlayerMatrix);
 
-	m_pTransformCom->Set_State(STATE::RIGHT, *(_float3 *)&PlayerMatrix.m[0][0]);
-	m_pTransformCom->Set_State(STATE::UP, *(_float3 *)&PlayerMatrix.m[1][0]);
-	m_pTransformCom->Set_State(STATE::LOOK, *(_float3 *)&PlayerMatrix.m[2][0]);
+	m_pTransformCom->Set_State(STATE::RIGHT, *(_float3*)&PlayerMatrix.m[0][0]);
+	m_pTransformCom->Set_State(STATE::UP, *(_float3*)&PlayerMatrix.m[1][0]);
+	m_pTransformCom->Set_State(STATE::LOOK, *(_float3*)&PlayerMatrix.m[2][0]);
 	m_pTransformCom->Set_State(STATE::POSITION, vHandPos);
 
 	if (strWeapon.compare(TEXT("Pistol")) == 0)
@@ -129,10 +86,17 @@ void CPlayer_Hand::Late_Update(_float fTimeDelta)
 	{
 		m_pTransformCom->Set_Scale(_float3{ 1.5f, 1.f, 1.f });
 	}
+}
 
-
+void CPlayer_Hand::Update(_float fTimeDelta)
+{
 	// 애니메이션 프레임 증가
 	m_pAnimationCom->Play_Animation(fTimeDelta);
+}
+
+void CPlayer_Hand::Late_Update(_float fTimeDelta)
+{
+
 
 	m_pGameInstance->Add_RenderGroup(RENDER::BLEND_LATE, this);
 }
