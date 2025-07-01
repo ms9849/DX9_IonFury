@@ -149,6 +149,7 @@
     <ClInclude Include="..\public\Camera.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
     <ClInclude Include="..\Public\CubeObject.h" />
+    <ClInclude Include="..\Public\MeleeAttack.h" />
     <ClInclude Include="..\public\UIItemQueue.h" />
     <ClInclude Include="..\public\Item.h" />
     <ClInclude Include="..\public\ItemArmor.h" />
@@ -192,6 +193,7 @@
     <ClCompile Include="..\private\ItemHealpack.cpp" />
     <ClCompile Include="..\private\ItemPistolBullet.cpp" />
     <ClCompile Include="..\private\ItemShootGunBullet.cpp" />
+    <ClCompile Include="..\Private\Melee_Attack.cpp" />
     <ClCompile Include="..\Private\Soldier.cpp" />
     <ClCompile Include="..\Private\Terrain_Manager.cpp" />
     <ClCompile Include="..\private\UIAim.cpp" />

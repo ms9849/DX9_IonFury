@@ -21,6 +21,7 @@
 #include "ItemShootGunBullet.h"
 #include "Soldier.h"
 #include "Zombie.h"
+#include "MeleeAttack.h"
 
 #include "GameInstance.h"
 
@@ -181,6 +182,11 @@ HRESULT CLoader::Loading_For_GamePlay()
 	/* For.Prototype_GameObject_Soldier_Bullet */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Soldier_Bullet"),
 		CBullet::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Melee_Attack */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Melee_Attack"),
+		CMeleeAttack::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_VIBuffer_Cube */

@@ -45,8 +45,11 @@ protected:
 	_float m_fSumAttackCoolTime = 3.f;
 	_float m_fMoveCoolTime = 0.05f;
 	_float m_fSumMoveCoolTime = {};
-	_float m_fMaxRange = 8.f;
+	_float m_fChaseRange = 8.f;
+	_float m_fMaxRange = 10.f;
+	_float m_fAttackRange = {};
 	_float m_fHp = 100.f;
+	_float m_fDamage = {};
 	_bool m_bDying = false;
 
 	class CBehaviorNode* m_pRoot = { nullptr };
