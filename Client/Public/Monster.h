@@ -41,7 +41,7 @@ protected:
 	CBoxCollider* m_pBoxColliderCom = { nullptr };
 	CSphereCollider* m_pSphereColliderCom = { nullptr };
 
-	_float m_AttackfCoolTime = 3.f;
+	_float m_fAttackfCoolTime = 3.f;
 	_float m_fSumAttackCoolTime = 3.f;
 	_float m_fMoveCoolTime = 0.05f;
 	_float m_fSumMoveCoolTime = {};
