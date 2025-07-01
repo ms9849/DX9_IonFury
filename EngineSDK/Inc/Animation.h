@@ -12,6 +12,7 @@ public:
 		//_uint		iStart{};		// 몇 번 인덱스부터 출력
 		vector<_float3>	Poses{ _float3{0.f, 0.f, 0.f} };
 		_uint		iEnd{0};		// 몇 번 인덱스까지 출력
+		_uint		iCurrentFrame{0};
 		//_uint		iMotion{};	// 몇 번 모션을 출력
 		_uint		iFrameSpeed{3}; // 애니메이션 속도 (3프레임 당 1장 재생)
 		_float		fTime{};		// 애니메이션 구동 시간

@@ -236,7 +236,7 @@ HRESULT CPlayer_Hand::Ready_Animations()
 	CAnimation::FRAME_DESC PistolShootDesc{};
 	iter = m_pTextureComs.find(TEXT("Pistol_Shoot"));
 	PistolShootDesc.iEnd = iter->second->Get_Texture_Length();
-	PistolShootDesc.iFrameSpeed = 2;
+	PistolShootDesc.iFrameSpeed = 4;
 	PistolShootDesc.Poses.reserve(PistolShootDesc.iEnd);
 
 	PistolShootDesc.Poses.push_back(_float3{ 0.f, 0.f, 0.f });

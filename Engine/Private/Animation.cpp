@@ -35,30 +35,36 @@ CAnimation::FRAME_DESC* CAnimation::Get_Animation()
 
 _uint CAnimation::Get_Frame_Index()
 {
-	return static_cast<_uint>(m_tFrame->fTime);
+	return m_tFrame->iCurrentFrame;
 }
 
 void CAnimation::Play_Animation(_float fTimeDelta)
 {
-	m_tFrame->fTime += m_tFrame->iEnd * (fTimeDelta / (((1 / 60.f) * m_tFrame->iFrameSpeed) * m_tFrame->iEnd));
+	m_tFrame->fTime += fTimeDelta;
 	m_bFinished = false;
 
-	if (m_tFrame->fTime >= m_tFrame->iEnd)
+	if (m_tFrame->fTime >= (fTimeDelta * m_tFrame->iFrameSpeed))
 	{
 		m_tFrame->fTime = 0.f;
-		m_bFinished = true;
+		m_tFrame->iCurrentFrame++;
+
+		if (m_tFrame->iCurrentFrame >= m_tFrame->iEnd)
+		{
+			m_tFrame->iCurrentFrame = 0;
+			m_bFinished = true;
+		}
 	}
 }
 
 _bool CAnimation::Check_Animation_Finish()
 {
-	//return Get_Frame_Index() >= m_tFrame->iEnd;
 	return m_bFinished;
 }
 
 void CAnimation::Clear_Animation()
 {
 	m_tFrame->fTime = 0.f;
+	m_tFrame->iCurrentFrame = 0;
 	m_bFinished = true;
 }
 
