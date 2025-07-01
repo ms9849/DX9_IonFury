@@ -40,6 +40,7 @@ public:
 
 private:
 	_bool m_bAnimationLock = false;
+	_bool m_bFrameBlock = false;
 
 public:
 	static CZombie* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
