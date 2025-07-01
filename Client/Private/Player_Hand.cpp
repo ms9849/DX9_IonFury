@@ -83,12 +83,14 @@ void CPlayer_Hand::Late_Update(_float fTimeDelta)
 	*/
 
 	_float3 vHandPos = {};
-	_float4x4 CameraMatrix{};
+	_float4x4 PlayerMatrix{};
 
 	//handMatrix = *m_pTransformCom->Get_WorldMatrixPtr();
 
 	_wstring strWeapon = dynamic_cast<CPlayer*>(m_pGameInstance->Find_GameObject_ToLayer(
 		ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player")))->Get_Player_Info().strWeapon;
+
+
 
 	if (strWeapon.compare(TEXT("Pistol")) == 0)
 	{
@@ -104,14 +106,19 @@ void CPlayer_Hand::Late_Update(_float fTimeDelta)
 		vHandPos += m_pAnimationCom->Get_Animation()->Poses[m_pAnimationCom->Get_Frame_Index()];
 	}
 
-	m_pGraphic_Device->GetTransform(D3DTS_VIEW, &CameraMatrix);
-	D3DXMatrixInverse(&CameraMatrix, nullptr, &CameraMatrix);
+	//m_pGraphic_Device->GetTransform(D3DTS_VIEW, &PlayerMatrix);
+	//D3DXMatrixInverse(&PlayerMatrix, nullptr, &PlayerMatrix);
+	PlayerMatrix = *dynamic_cast<CTransform*>(
+		m_pGameInstance->Get_Component(
+			ENUM_CLASS(LEVEL::GAMEPLAY),
+			TEXT("Layer_Player"),
+		 TEXT("Com_Transform")))->Get_WorldMatrixPtr();
 	
-	D3DXVec3TransformCoord(&vHandPos, &vHandPos, &CameraMatrix);
+	D3DXVec3TransformCoord(&vHandPos, &vHandPos, &PlayerMatrix);
 
-	m_pTransformCom->Set_State(STATE::RIGHT, *(_float3 *)&CameraMatrix.m[0][0]);
-	m_pTransformCom->Set_State(STATE::UP, *(_float3 *)&CameraMatrix.m[1][0]);
-	m_pTransformCom->Set_State(STATE::LOOK, *(_float3 *)&CameraMatrix.m[2][0]);
+	m_pTransformCom->Set_State(STATE::RIGHT, *(_float3 *)&PlayerMatrix.m[0][0]);
+	m_pTransformCom->Set_State(STATE::UP, *(_float3 *)&PlayerMatrix.m[1][0]);
+	m_pTransformCom->Set_State(STATE::LOOK, *(_float3 *)&PlayerMatrix.m[2][0]);
 	m_pTransformCom->Set_State(STATE::POSITION, vHandPos);
 
 	if (strWeapon.compare(TEXT("Pistol")) == 0)
