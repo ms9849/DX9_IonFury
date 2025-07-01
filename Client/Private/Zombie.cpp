@@ -23,9 +23,9 @@ HRESULT CZombie::Initialize_Prototype()
 
 HRESULT CZombie::Initialize(void* pArg)
 {
-	//CLandObject::LANDOBJECT_DESC			Desc{};
-	//Desc.pLandTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_BackGround"), TEXT("Com_Transform")));
-	//Desc.pLandVIBuffer = static_cast<CVIBuffer*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_BackGround"), TEXT("Com_VIBuffer")));
+	CLandObject::LANDOBJECT_DESC			Desc{};
+	Desc.pLandTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_BackGround"), TEXT("Com_Transform")));
+	Desc.pLandVIBuffer = static_cast<CVIBuffer*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_BackGround"), TEXT("Com_VIBuffer")));
 	m_pPlayerTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player"), TEXT("Com_Transform")));
 
 	if (m_pPlayerTransform == nullptr)
@@ -59,7 +59,7 @@ HRESULT CZombie::Initialize(void* pArg)
 		}));
 
 	CCheckHpSequence->AddChild(new CActionNode([this]() {
-		m_strFrameKey = TEXT("Zombie_Die_Explosion");
+		m_strFrameKey = TEXT("Zombie_Die_Default");
 		m_bAnimationLock = true;
 		m_bDying = true;
 		}));
@@ -300,49 +300,49 @@ HRESULT CZombie::Ready_Animations()
 
 	//Zombie_Direction_NE
 	iter = m_pTextureComs.find(TEXT("Zombie_Direction_NE"));
-	Desc_2.iFrameSpeed = 12;
+	Desc_2.iFrameSpeed = 7;
 	Desc_2.iEnd = iter->second->Get_Texture_Length();
 	m_Frames.emplace(TEXT("Zombie_Direction_NE"), Desc_2);
 
 	//Zombie_Direction_NW
 	iter = m_pTextureComs.find(TEXT("Zombie_Direction_NW"));
-	Desc_3.iFrameSpeed = 12;
+	Desc_3.iFrameSpeed = 7;
 	Desc_3.iEnd = iter->second->Get_Texture_Length();
 	m_Frames.emplace(TEXT("Zombie_Direction_NW"), Desc_3);
 
 	//Zombie_Direction_SE
 	iter = m_pTextureComs.find(TEXT("Zombie_Direction_SE"));
-	Desc_4.iFrameSpeed = 12;
+	Desc_4.iFrameSpeed = 7;
 	Desc_4.iEnd = iter->second->Get_Texture_Length();
 	m_Frames.emplace(TEXT("Zombie_Direction_SE"), Desc_4);
 
 	//Zombie_Direction_SW
 	iter = m_pTextureComs.find(TEXT("Zombie_Direction_SW"));
-	Desc_5.iFrameSpeed = 12;
+	Desc_5.iFrameSpeed = 7;
 	Desc_5.iEnd = iter->second->Get_Texture_Length();
 	m_Frames.emplace(TEXT("Zombie_Direction_SW"), Desc_5);
 
 	//Zombie_Front
 	iter = m_pTextureComs.find(TEXT("Zombie_Front"));
-	Desc_6.iFrameSpeed = 10;
+	Desc_6.iFrameSpeed = 7;
 	Desc_6.iEnd = iter->second->Get_Texture_Length();
 	m_Frames.emplace(TEXT("Zombie_Front"), Desc_6);
 
 	//Zombie_Back
 	iter = m_pTextureComs.find(TEXT("Zombie_Back"));
-	Desc_7.iFrameSpeed = 12;
+	Desc_7.iFrameSpeed = 7;
 	Desc_7.iEnd = iter->second->Get_Texture_Length();
 	m_Frames.emplace(TEXT("Zombie_Back"), Desc_7);
 
 	//Zombie_Left
 	iter = m_pTextureComs.find(TEXT("Zombie_Left"));
-	Desc_8.iFrameSpeed = 12;
+	Desc_8.iFrameSpeed = 7;
 	Desc_8.iEnd = iter->second->Get_Texture_Length();
 	m_Frames.emplace(TEXT("Zombie_Left"), Desc_8);
 
 	//Zombie_Right
 	iter = m_pTextureComs.find(TEXT("Zombie_Right"));
-	Desc_9.iFrameSpeed = 12;
+	Desc_9.iFrameSpeed = 7;
 	Desc_9.iEnd = iter->second->Get_Texture_Length();
 	m_Frames.emplace(TEXT("Zombie_Right"), Desc_9);
 
