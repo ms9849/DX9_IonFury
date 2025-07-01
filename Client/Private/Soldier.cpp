@@ -22,9 +22,9 @@ HRESULT CSoldier::Initialize_Prototype()
 
 HRESULT CSoldier::Initialize(void* pArg)
 {
-	//CLandObject::LANDOBJECT_DESC			Desc{};
-	//Desc.pLandTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_BackGround"), TEXT("Com_Transform")));
-	//Desc.pLandVIBuffer = static_cast<CVIBuffer*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_BackGround"), TEXT("Com_VIBuffer")));
+	CLandObject::LANDOBJECT_DESC			Desc{};
+	Desc.pLandTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_BackGround"), TEXT("Com_Transform")));
+	Desc.pLandVIBuffer = static_cast<CVIBuffer*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_BackGround"), TEXT("Com_VIBuffer")));
 	m_pPlayerTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player"), TEXT("Com_Transform")));
 
 	if (m_pPlayerTransform == nullptr)
@@ -225,7 +225,8 @@ void CSoldier::Late_Update(_float fTimeDelta)
 	}
 
 	m_pAnimationCom->Play_Animation(fTimeDelta);
-	m_pGameInstance->Add_RenderGroup(RENDER::NONBLEND, this);
+
+	m_pGameInstance->Add_RenderGroup(RENDER::BLEND, this);
 }
 
 HRESULT CSoldier::Render()
@@ -332,49 +333,49 @@ HRESULT CSoldier::Ready_Animations()
 
 	//Soldier_Direction_NE
 	iter = m_pTextureComs.find(TEXT("Soldier_Direction_NE"));
-	Desc_6.iFrameSpeed = 12;
+	Desc_6.iFrameSpeed = 7;
 	Desc_6.iEnd = iter->second->Get_Texture_Length();
 	m_Frames.emplace(TEXT("Soldier_Direction_NE"), Desc_6);
 
 	//Soldier_Direction_NW
 	iter = m_pTextureComs.find(TEXT("Soldier_Direction_NW"));
-	Desc_7.iFrameSpeed = 12;
+	Desc_7.iFrameSpeed = 7;
 	Desc_7.iEnd = iter->second->Get_Texture_Length();
 	m_Frames.emplace(TEXT("Soldier_Direction_NW"), Desc_7);
 
 	//Soldier_Direction_SE
 	iter = m_pTextureComs.find(TEXT("Soldier_Direction_SE"));
-	Desc_8.iFrameSpeed = 12;
+	Desc_8.iFrameSpeed = 7;
 	Desc_8.iEnd = iter->second->Get_Texture_Length();
 	m_Frames.emplace(TEXT("Soldier_Direction_SE"), Desc_8);
 
 	//Soldier_Direction_SW
 	iter = m_pTextureComs.find(TEXT("Soldier_Direction_SW"));
-	Desc_9.iFrameSpeed = 12;
+	Desc_9.iFrameSpeed = 7;
 	Desc_9.iEnd = iter->second->Get_Texture_Length();
 	m_Frames.emplace(TEXT("Soldier_Direction_SW"), Desc_9);
 
 	//Soldier_Front
 	iter = m_pTextureComs.find(TEXT("Soldier_Front"));
-	Desc_10.iFrameSpeed = 10;
+	Desc_10.iFrameSpeed = 7;
 	Desc_10.iEnd = iter->second->Get_Texture_Length();
 	m_Frames.emplace(TEXT("Soldier_Front"), Desc_10);
 
 	//Soldier_Back
 	iter = m_pTextureComs.find(TEXT("Soldier_Back"));
-	Desc_11.iFrameSpeed = 12;
+	Desc_11.iFrameSpeed = 7;
 	Desc_11.iEnd = iter->second->Get_Texture_Length();
 	m_Frames.emplace(TEXT("Soldier_Back"), Desc_11);
 
 	//Soldier_Left
 	iter = m_pTextureComs.find(TEXT("Soldier_Left"));
-	Desc_12.iFrameSpeed = 12;
+	Desc_12.iFrameSpeed = 7;
 	Desc_12.iEnd = iter->second->Get_Texture_Length();
 	m_Frames.emplace(TEXT("Soldier_Left"), Desc_12);
 
 	//Soldier_Right
 	iter = m_pTextureComs.find(TEXT("Soldier_Right"));
-	Desc_13.iFrameSpeed = 12;
+	Desc_13.iFrameSpeed = 7;
 	Desc_13.iEnd = iter->second->Get_Texture_Length();
 	m_Frames.emplace(TEXT("Soldier_Right"), Desc_13);
 

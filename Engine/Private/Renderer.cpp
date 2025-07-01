@@ -30,8 +30,8 @@ void CRenderer::Render()
 {
 	Render_Priority();
 	Render_NonBlend();
-	Render_Blend_Priority();
 	Render_Blend();
+	Render_Blend_Last();
 	Render_UI();
 }
 
@@ -61,19 +61,6 @@ void CRenderer::Render_NonBlend()
 	m_RenderObjects[ENUM_CLASS(RENDER::NONBLEND)].clear();
 }
 
-void CRenderer::Render_Blend_Priority()
-{
-	for (auto& pRenderObject : m_RenderObjects[ENUM_CLASS(RENDER::BLEND_PRIORITY)])
-	{
-		if (nullptr != pRenderObject)
-			pRenderObject->Render();
-
-		Safe_Release(pRenderObject);
-	}
-
-	m_RenderObjects[ENUM_CLASS(RENDER::BLEND_PRIORITY)].clear();
-}
-
 _bool Compare(CGameObject* pSour, CGameObject* pDest)
 {
 	return static_cast<CAlphaObject*>(pSour)->Get_CamDistance() > static_cast<CAlphaObject*>(pDest)->Get_CamDistance();
@@ -99,6 +86,25 @@ void CRenderer::Render_Blend()
 	}
 
 	m_RenderObjects[ENUM_CLASS(RENDER::BLEND)].clear();
+}
+
+void CRenderer::Render_Blend_Last()
+{
+	m_RenderObjects[ENUM_CLASS(RENDER::BLEND_LATE)].sort([](CGameObject* pSour, CGameObject* pDest)->_bool
+		{
+			return static_cast<CAlphaObject*>(pSour)->Get_CamDistance() > static_cast<CAlphaObject*>(pDest)->Get_CamDistance();
+		});
+
+
+	for (auto& pRenderObject : m_RenderObjects[ENUM_CLASS(RENDER::BLEND_LATE)])
+	{
+		if (nullptr != pRenderObject)
+			pRenderObject->Render();
+
+		Safe_Release(pRenderObject);
+	}
+
+	m_RenderObjects[ENUM_CLASS(RENDER::BLEND_LATE)].clear();
 }
 
 void CRenderer::Render_UI()

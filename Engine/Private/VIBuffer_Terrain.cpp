@@ -271,8 +271,6 @@ CComponent* CVIBuffer_Terrain::Clone(void* pArg)
 void CVIBuffer_Terrain::Free()
 {
 	__super::Free();
-
-
 }
 
 _bool CVIBuffer_Terrain::Picking(CTransform* pTransform, _float3* pOut, _float3 vPos, _float3 vLook)
@@ -298,12 +296,14 @@ _bool CVIBuffer_Terrain::Picking(CTransform* pTransform, _float3* pOut, _float3 
 			if (true == m_pGameInstance->Picking_InLocalSpace(pTransform->Get_WorldMatrixInvPtr(), vPos, vLook, m_pVertexPositions[iIndices[0]], m_pVertexPositions[iIndices[1]], m_pVertexPositions[iIndices[2]], pOut))
 			{
 				D3DXVec3TransformCoord(pOut, pOut, pTransform->Get_WorldMatrixPtr());
+
 				return true;
 			}
 
 			if (true == m_pGameInstance->Picking_InLocalSpace(pTransform->Get_WorldMatrixInvPtr(), vPos, vLook, m_pVertexPositions[iIndices[0]], m_pVertexPositions[iIndices[2]], m_pVertexPositions[iIndices[3]], pOut))
 			{
 				D3DXVec3TransformCoord(pOut, pOut, pTransform->Get_WorldMatrixPtr());
+
 				return true;
 			}
 		}
@@ -314,8 +314,12 @@ _bool CVIBuffer_Terrain::Picking(CTransform* pTransform, _float3* pOut, _float3 
 
 _float CVIBuffer_Terrain::Compute_Height(const _float3& vLocalPos)
 {
-	/* */
 	_uint			iIndex = static_cast<_uint>(vLocalPos.z) * m_iNumVerticesX + static_cast<_uint>(vLocalPos.x);
+
+	if (vLocalPos.x < 0 || vLocalPos.z < 0 ||
+		vLocalPos.x >= m_iNumVerticesX - 1 ||
+		vLocalPos.z >= m_iNumVerticesZ - 1)
+		return FLT_MIN;
 
 	_uint			iIndices[] = {
 		iIndex + m_iNumVerticesX,
@@ -329,7 +333,7 @@ _float CVIBuffer_Terrain::Compute_Height(const _float3& vLocalPos)
 
 	D3DXPLANE		Plane = {};
 
-	if (fWidth > fDepth) /* ¿À¸¥ÂÉ¤Á¤¡ À§ »ï°¢Çü¿¡ ÀÖ´Ù. */
+	if (fWidth >= fDepth) /* ¿À¸¥ÂÉ¤Á¤¡ À§ »ï°¢Çü¿¡ ÀÖ´Ù. */
 	{
 		D3DXPlaneFromPoints(&Plane, &m_pVertexPositions[iIndices[0]], &m_pVertexPositions[iIndices[1]], &m_pVertexPositions[iIndices[2]]);
 	}

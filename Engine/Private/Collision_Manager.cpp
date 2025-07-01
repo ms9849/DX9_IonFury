@@ -16,11 +16,6 @@ HRESULT CCollision_Manager::Initialize()
 	return S_OK;
 }
 
-HRESULT CCollision_Manager::Add_Layer_ToCollisionMgr(const _wstring& strLayerTag, CGameObject* pGameObject)
-{
-    return S_OK;
-}
-
 void CCollision_Manager::Check_OBBCollision(const _wstring& strLayerTagSrc, const _wstring& strLayerTagDst, _uint iLayerLevel, _float fTimeDelta)
 {
 	CLayer* pSrcLayer = m_pGameInstance->Find_Layer(iLayerLevel, strLayerTagSrc);
@@ -79,7 +74,7 @@ void CCollision_Manager::Check_SphereCollision(const _wstring& strLayerTagSrc, c
     }
 }
 
-void CCollision_Manager::Check_LookCollision(_float3 vPos, _float3 vLook, const _wstring& strLayerTagDst, _uint iLayerLevel, _float3* vColisionPos)
+void CCollision_Manager::Check_RayCollision(const _float3& vPos, const _float3& vLook, const _wstring& strLayerTagDst, _uint iLayerLevel, _float3* vColisionPos)
 {
     CLayer* pDstLayer = m_pGameInstance->Find_Layer(iLayerLevel, strLayerTagDst);
 
@@ -100,7 +95,6 @@ void CCollision_Manager::Check_LookCollision(_float3 vPos, _float3 vLook, const 
             int a = 10;
     }
 }
-
 _bool CCollision_Manager::Sphere_Collision(CGameObject* pSrc, CGameObject* pDst)
 {
     COLLISION_DESC DescSrc = pSrc->Get_CollisionDesc(COLLISION::SPHERE);

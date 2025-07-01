@@ -12,12 +12,11 @@ private:
 
 public:
 	HRESULT Initialize();
-	HRESULT Add_Layer_ToCollisionMgr(const _wstring& strLayerTag, class CGameObject* pGameObject);
 
 	//GameInstance 통해서 접근 가능하게 해야 한다.
 	void	Check_OBBCollision(const _wstring& strLayerTagSrc, const _wstring& strLayerTagDst, _uint iLayerLevel, _float fTimeDelta);
 	void	Check_SphereCollision(const _wstring& strLayerTagSrc, const _wstring& strLayerTagDst, _uint iLayerLevel, _float fTimeDelta);
-	void	Check_LookCollision(_float3 vPos, _float3 vLook, const _wstring& strLayerTagDst, _uint iLayerLevel, _float3* vColisionPos);
+	void	Check_RayCollision(const _float3& vPos, const _float3& vLook, const _wstring& strLayerTagDst, _uint iLayerLevel, _float3* vColisionPos);
 
 private:
 	class CGameInstance* m_pGameInstance = { nullptr };

@@ -28,8 +28,8 @@ private:
 private:
 	void Render_Priority();
 	void Render_NonBlend();
-	void Render_Blend_Priority();
 	void Render_Blend();
+	void Render_Blend_Last();
 	void Render_UI();
 
 public:

@@ -1,4 +1,4 @@
-#include "Player.h"
+	#include "Player.h"
 
 #include "GameInstance.h"
 #include "Bullet.h"
@@ -70,6 +70,33 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 void CPlayer::Priority_Update(_float fTimeDelta)
 {
+
+}
+
+void CPlayer::Update(_float fTimeDelta)
+{
+	/* 점프 로직*/
+	if (!m_bJump && m_pGameInstance->Key_Down(VK_SPACE))
+	{
+		m_bJump = true;
+		m_fTime = 0.f;
+	}
+
+	if (m_bJump)
+	{
+		//4.f는 점프 스피드
+		m_fFallSpeed = (4.f * m_fTime - 30.f * m_fTime * m_fTime);
+
+		if (m_fFallSpeed <= -0.2f)
+			m_fFallSpeed = -0.2f;
+
+		m_fTime += 0.3f * fTimeDelta;
+		_float3 vPosition = m_pTransformCom->Get_State(STATE::POSITION);
+		vPosition.y = vPosition.y + m_fFallSpeed;
+		m_pTransformCom->Set_State(STATE::POSITION, vPosition);
+	}
+
+	/* 애니메이션 제어 */
 	auto iter = m_Weapons.find(m_tInfo.strWeapon);
 
 	if (m_tInfo.strAction.compare(TEXT("Reload")) != 0)
@@ -91,7 +118,7 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 			m_tInfo.iShootBullets = iter->second.iShootBullets;
 		}
 	}
-	
+
 
 	// 애니메이션 종료 처리 해야됨
 	if (m_pRightHandAnimationCom->Check_Animation_Finish())
@@ -100,27 +127,33 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 	}
 	else
 	{
+		_float3 vLook = m_pTransformCom->Get_State(STATE::LOOK);
+		vLook.y = 0.f;
+
+		_float3 vRight = m_pTransformCom->Get_State(STATE::RIGHT);
+		vRight.y = 0.f;
+
 		if (m_pGameInstance->Key_Pressing('W'))
 		{
-			m_pTransformCom->Go_Straight(fTimeDelta);
+			m_pTransformCom->Go_Direction(vLook, fTimeDelta);
 			if (m_tInfo.strAction.compare(TEXT("Idle")) == 0)
 				m_tInfo.strAction = TEXT("Walk");
 		}
 		if (m_pGameInstance->Key_Pressing('S'))
 		{
-			m_pTransformCom->Go_Backward(fTimeDelta);
+			m_pTransformCom->Go_Direction(-1.f * vLook, fTimeDelta);
 			if (m_tInfo.strAction.compare(TEXT("Idle")) == 0)
 				m_tInfo.strAction = TEXT("Walk");
 		}
 		if (m_pGameInstance->Key_Pressing('A'))
 		{
-			m_pTransformCom->Go_Left(fTimeDelta);
+			m_pTransformCom->Go_Direction(-1.f * vRight, fTimeDelta);
 			if (m_tInfo.strAction.compare(TEXT("Idle")) == 0)
 				m_tInfo.strAction = TEXT("Walk");
 		}
 		if (m_pGameInstance->Key_Pressing('D'))
 		{
-			m_pTransformCom->Go_Right(fTimeDelta);
+			m_pTransformCom->Go_Direction(vRight, fTimeDelta);
 			if (m_tInfo.strAction.compare(TEXT("Idle")) == 0)
 				m_tInfo.strAction = TEXT("Walk");
 		}
@@ -164,29 +197,9 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 
 	wsprintf(strCurrentAnimation, TEXT("%s_%s"), m_tInfo.strWeapon.c_str(), m_tInfo.strAction.c_str());
 
-	/* 점프 로직*/
-	if (!m_bJump && m_pGameInstance->Key_Down(VK_SPACE))
-	{
-		m_bJump = true;
-		m_fTime = 0.f;
-	}
-
 	m_pRightHand->Set_Current_Animation(strCurrentAnimation);
-}
 
-void CPlayer::Update(_float fTimeDelta)
-{
-	if (m_bJump)
-	{
-		m_fTime += 0.5f * fTimeDelta;
-		_float3 vPosition = m_pTransformCom->Get_State(STATE::POSITION);
-		vPosition.y = vPosition.y + (m_fJumpSpeed * m_fTime - 4.9f * m_fTime * m_fTime);
-		m_pTransformCom->Set_State(STATE::POSITION, vPosition);
-	}
-	else
-	{
-		SetUp_OnTerrain(m_pTransformCom, 0.5f, &m_bJump);
-	}
+	SetUp_OnTerrain(m_pTransformCom, 0.5f, &m_bJump);
 
 	m_pRightHand->Set_Player_Transform(m_pTransformCom);
 	
@@ -213,7 +226,7 @@ CPlayer::PLAYER_INFO CPlayer::Get_Player_Info()
 HRESULT CPlayer::Ready_Components()
 {
 	/* Com_Transform */
-	CTransform::TRANSFORM_DESC		TransformDesc{ 5.f, D3DXToRadian(90.0f) };
+	CTransform::TRANSFORM_DESC		TransformDesc{ 4.f, D3DXToRadian(90.0f) };
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Transform"),
 		TEXT("Com_Transform"), reinterpret_cast<CComponent**>(&m_pTransformCom), &TransformDesc)))
 		return E_FAIL;
@@ -295,7 +308,7 @@ _float3 CPlayer::Calc_BulletDir(_float3* vOffset)
 
 
 	D3DXVec3Normalize(&vCamLook, &vCamLook);
-	m_pGameInstance->Check_LookCollision(vCamPos, vCamLook, TEXT("Layer_Cube"), ENUM_CLASS(LEVEL::GAMEPLAY), &vCollisionPos);
+	m_pGameInstance->Check_RayCollision(vCamPos, vCamLook, TEXT("Layer_Cube"), ENUM_CLASS(LEVEL::GAMEPLAY), &vCollisionPos);
 
 	*vOffset = (*D3DXVec3Normalize(&vCamLook, &vCamLook) / 10.f + (*D3DXVec3Normalize(&vCamRight, &vCamRight) / 10.f));
 

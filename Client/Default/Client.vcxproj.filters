@@ -219,6 +219,9 @@
     <ClInclude Include="..\public\UIItemQueue.h">
       <Filter>02.GameObjects\UI\UIItemQueue</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\UIAim.h">
+      <Filter>02.GameObjects\UI\UIAim</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\Terrain_Manager.h">
       <Filter>02.GameObjects\Terrain\Mananger</Filter>
     </ClInclude>
