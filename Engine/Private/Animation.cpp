@@ -1,6 +1,4 @@
 #include "Animation.h"
-#include "Texture.h"
-#include "Transform.h"
 
 CAnimation::CAnimation(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CComponent{ pGraphic_Device }
@@ -8,8 +6,7 @@ CAnimation::CAnimation(LPDIRECT3DDEVICE9 pGraphic_Device)
 }
 
 CAnimation::CAnimation(const CAnimation& Prototype)
-	: CComponent{ Prototype }
-	//, m_tFrame{ Prototype.m_tFrame }
+	: CComponent(Prototype)
 {
 }
 
@@ -23,54 +20,89 @@ HRESULT CAnimation::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CAnimation::Set_Animation(FRAME_DESC* pFrameDesc)
+void CAnimation::Set_Animation(const _wstring strFrameKey, FRAME_DESC FrameDesc)
 {
-	m_tFrame = pFrameDesc;
+	m_tFrames.emplace(strFrameKey, FrameDesc);
 }
 
-CAnimation::FRAME_DESC* CAnimation::Get_Animation()
+CAnimation::FRAME_DESC* CAnimation::Get_Frame_Desc(const _wstring strFrameKey)
 {
-	return m_tFrame;
+	auto iter = m_tFrames.find(strFrameKey);
+	return &iter->second;
 }
 
-_uint CAnimation::Get_Frame_Index()
+_uint CAnimation::Get_Frame_Current_Index(const _wstring strFrameKey)
 {
-	return m_tFrame->iCurrentFrame;
+	auto iter = m_tFrames.find(strFrameKey);
+	return iter->second.iCurrentFrame;
 }
 
-void CAnimation::Play_Animation(_float fTimeDelta)
+void CAnimation::Play_Animation(const _wstring strFrameKey, _float fTimeDelta)
 {
-	m_tFrame->fTime += fTimeDelta;
-	m_bFinished = false;
+	auto iter = m_tFrames.find(strFrameKey);
 
-	if (m_tFrame->iEnd != 0)
+	iter->second.fTime += fTimeDelta;
+	iter->second.bFinish = false;
+
+	if (iter->second.iEnd != 0)
 	{
-		if (m_tFrame->fTime >= (fTimeDelta * m_tFrame->iFrameSpeed))
+		if (iter->second.fTime >= (fTimeDelta * iter->second.iFrameSpeed))
 		{
-			m_tFrame->fTime = 0.f;
-			m_tFrame->iCurrentFrame++;
+			iter->second.fTime = 0.f;
+			iter->second.iCurrentFrame++;
 
-			if (m_tFrame->iCurrentFrame >= m_tFrame->iEnd)
+			if (iter->second.iCurrentFrame >= iter->second.iEnd)
 			{
-				m_tFrame->iCurrentFrame = 0;
-				m_bFinished = true;
+				iter->second.iCurrentFrame = 0;
+				iter->second.bFinish = true;
 			}
 		}
 	}
 	else
-		m_tFrame->fTime = 0.f;
+	{
+		iter->second.fTime = 0.f;
+		iter->second.iCurrentFrame = 0;
+		iter->second.bFinish = false;
+	}
 }
 
 _bool CAnimation::Check_Animation_Finish()
 {
-	return m_bFinished;
+	for (auto &iter : m_tFrames)
+	{
+		if (iter.second.bFinish == true)
+		{
+			iter.second.fTime = 0.f;
+			iter.second.iCurrentFrame = 0;
+			iter.second.bFinish = false;
+			return true;
+		}
+	}
+	return false;
+}
+
+_bool CAnimation::Check_Animation_Finish(const _wstring strFrameKey)
+{
+	auto iter = m_tFrames.find(strFrameKey);
+	return iter->second.bFinish;
 }
 
 void CAnimation::Clear_Animation()
 {
-	m_tFrame->fTime = 0.f;
-	m_tFrame->iCurrentFrame = 0;
-	m_bFinished = true;
+	for (auto &iter : m_tFrames)
+	{
+		iter.second.fTime = 0.f;
+		iter.second.iCurrentFrame = 0;
+		//iter.second.bFinish = true;
+	}
+}
+
+void CAnimation::Clear_Animation(const _wstring strFrameKey)
+{
+	auto iter = m_tFrames.find(strFrameKey);
+	iter->second.fTime = 0.f;
+	iter->second.iCurrentFrame = 0;
+	iter->second.bFinish = true;
 }
 
 CAnimation* CAnimation::Create(LPDIRECT3DDEVICE9 pGraphic_Device)

@@ -151,6 +151,7 @@
     <ClInclude Include="..\Public\CubeObject.h" />
     <ClInclude Include="..\Public\Terrain_Manager.h" />
     <ClInclude Include="..\Public\MeleeAttack.h" />
+    <ClInclude Include="..\public\Player_LeftHand.h" />
     <ClInclude Include="..\public\UIItemQueue.h" />
     <ClInclude Include="..\public\Item.h" />
     <ClInclude Include="..\public\ItemArmor.h" />
@@ -167,7 +168,7 @@
     <ClInclude Include="..\public\MainApp.h" />
     <ClInclude Include="..\Public\Monster.h" />
     <ClInclude Include="..\Public\Player.h" />
-    <ClInclude Include="..\Public\Player_Hand.h" />
+    <ClInclude Include="..\Public\Player_RightHand.h" />
     <ClInclude Include="..\Public\Sky.h" />
     <ClInclude Include="..\public\Terrain.h" />
     <ClInclude Include="..\public\UIArmor.h" />
@@ -194,6 +195,7 @@
     <ClCompile Include="..\private\ItemPistolBullet.cpp" />
     <ClCompile Include="..\private\ItemShootGunBullet.cpp" />
     <ClCompile Include="..\Private\Melee_Attack.cpp" />
+    <ClCompile Include="..\private\Player_LeftHand.cpp" />
     <ClCompile Include="..\Private\Soldier.cpp" />
     <ClCompile Include="..\Private\Terrain_Manager.cpp" />
     <ClCompile Include="..\private\UIAim.cpp" />
@@ -205,7 +207,7 @@
     <ClCompile Include="..\private\MainApp.cpp" />
     <ClCompile Include="..\Private\Monster.cpp" />
     <ClCompile Include="..\Private\Player.cpp" />
-    <ClCompile Include="..\Private\Player_Hand.cpp" />
+    <ClCompile Include="..\Private\Player_RightHand.cpp" />
     <ClCompile Include="..\Private\Sky.cpp" />
     <ClCompile Include="..\private\Terrain.cpp" />
     <ClCompile Include="..\private\UIArmor.cpp" />

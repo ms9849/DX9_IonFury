@@ -140,8 +140,18 @@ HRESULT CMainApp::Ready_Prototypes()
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Player/Pistol/Idle_%d.png"), 1))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_Texture_Player_Pistol_Idle */
+	/* For.Prototype_Component_Texture_Player_Pistol_Walk */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Player_Pistol_Walk"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Player/Pistol/Idle_%d.png"), 1))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Player_Pistol_Down */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Player_Pistol_Down"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Player/Pistol/Idle_%d.png"), 1))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Player_Pistol_Up */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Player_Pistol_Up"),
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Player/Pistol/Idle_%d.png"), 1))))
 		return E_FAIL;
 
@@ -161,8 +171,18 @@ HRESULT CMainApp::Ready_Prototypes()
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Player/ShootGun/Idle_%d.png"), 1))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_Texture_Player_ShootGun_Idle */
+	/* For.Prototype_Component_Texture_Player_ShootGun_Walk */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Player_ShootGun_Walk"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Player/ShootGun/Idle_%d.png"), 1))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Player_ShootGun_Down */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Player_ShootGun_Down"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Player/ShootGun/Idle_%d.png"), 1))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Player_ShootGun_Up */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Player_ShootGun_Up"),
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Player/ShootGun/Idle_%d.png"), 1))))
 		return E_FAIL;
 
@@ -174,6 +194,23 @@ HRESULT CMainApp::Ready_Prototypes()
 	/* For.Prototype_Component_Texture_Player_ShootGun_Shoot */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Player_ShootGun_Shoot"),
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Player/ShootGun/Shoot_%d.png"), 11))))
+		return E_FAIL;
+#pragma endregion
+
+#pragma region 플레이어 아이템 사용 텍스처
+	/* For.Prototype_Component_Texture_Player_LeftHand_CardKey_Idle */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Player_LeftHand_CardKey_Idle"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Player/CardKey/Idle_0.png"), 1))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Player_LeftHand_CardKey_Idle */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Player_LeftHand_CardKey_Up"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Player/CardKey/Idle_0.png"), 1))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Player_LeftHand_CardKey_Idle */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Player_LeftHand_CardKey_Down"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Player/CardKey/Idle_0.png"), 1))))
 		return E_FAIL;
 #pragma endregion
 
