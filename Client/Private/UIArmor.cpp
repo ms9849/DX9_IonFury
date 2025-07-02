@@ -1,6 +1,9 @@
 #include "UIArmor.h"
 
 #include "GameInstance.h"
+#include "UIFont.h"
+#include "UIText.h"
+#include "Player.h"
 
 CUIArmor::CUIArmor(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CUIObject{ pGraphic_Device }
@@ -8,7 +11,7 @@ CUIArmor::CUIArmor(LPDIRECT3DDEVICE9 pGraphic_Device)
 }
 
 CUIArmor::CUIArmor(const CUIArmor& Prototype)
-	: CUIObject{ Prototype }
+	: CUIObject(Prototype)
 {
 }
 

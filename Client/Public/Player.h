@@ -51,6 +51,7 @@ public:
 
 public:
 	PLAYER_INFO Get_Player_Info();
+	_bool Get_CanUse_CardKey();
 
 private:
 	CAnimation*				m_pRightHandAnimationCom = { nullptr };
@@ -81,6 +82,8 @@ private:
 	deque<_wstring> m_ItemQueues{};
 	_float			m_fTimeStack{0.f};
 	_wstring		m_strNextWeapon{};
+
+	_bool			m_bCanUseCardKey{ false };
 
 public:
 	virtual void OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta) override;

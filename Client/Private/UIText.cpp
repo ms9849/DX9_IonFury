@@ -1,6 +1,7 @@
 #include "UIText.h"
 
 #include "GameInstance.h"
+#include "UIFont.h"
 
 CUIText::CUIText(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CUIObject{pGraphic_Device}
@@ -8,7 +9,7 @@ CUIText::CUIText(LPDIRECT3DDEVICE9 pGraphic_Device)
 }
 
 CUIText::CUIText(const CUIText& Prototype)
-	: CUIObject{ Prototype }
+	: CUIObject(Prototype)
 {
 }
 

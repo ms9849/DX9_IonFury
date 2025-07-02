@@ -1,6 +1,8 @@
 #include "UIItemQueue.h"
 
 #include "GameInstance.h"
+#include "UIFont.h"
+#include "UIText.h"
 
 CUIItemQueue::CUIItemQueue(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CUIObject{ pGraphic_Device }
@@ -8,7 +10,7 @@ CUIItemQueue::CUIItemQueue(LPDIRECT3DDEVICE9 pGraphic_Device)
 }
 
 CUIItemQueue::CUIItemQueue(const CUIItemQueue& Prototype)
-	: CUIObject{ Prototype }
+	: CUIObject(Prototype)
 {
 }
 

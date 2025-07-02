@@ -149,9 +149,11 @@
     <ClInclude Include="..\public\Camera.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
     <ClInclude Include="..\Public\CubeObject.h" />
+    <ClInclude Include="..\public\ItemCardKey.h" />
     <ClInclude Include="..\Public\Terrain_Manager.h" />
     <ClInclude Include="..\Public\MeleeAttack.h" />
     <ClInclude Include="..\public\Player_LeftHand.h" />
+    <ClInclude Include="..\public\UICardKey.h" />
     <ClInclude Include="..\public\UIItemQueue.h" />
     <ClInclude Include="..\public\Item.h" />
     <ClInclude Include="..\public\ItemArmor.h" />
@@ -188,9 +190,11 @@
     <ClCompile Include="..\Private\BehaviorNode.cpp" />
     <ClCompile Include="..\Private\Bullet.cpp" />
     <ClCompile Include="..\private\Camera.cpp" />
+    <ClCompile Include="..\private\UICardKey.cpp" />
     <ClCompile Include="..\private\ItemArmor.cpp" />
     <ClCompile Include="..\Private\CubeObject.cpp" />
     <ClCompile Include="..\private\Item.cpp" />
+    <ClCompile Include="..\private\ItemCardKey.cpp" />
     <ClCompile Include="..\private\ItemHealpack.cpp" />
     <ClCompile Include="..\private\ItemPistolBullet.cpp" />
     <ClCompile Include="..\private\ItemShootGunBullet.cpp" />
