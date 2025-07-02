@@ -1,4 +1,4 @@
-	#include "Player.h"
+#include "Player.h"
 
 #include "GameInstance.h"
 #include "Bullet.h"
@@ -6,6 +6,8 @@
 #include "ItemHealpack.h"
 #include "ItemPistolBullet.h"
 #include "ItemShootGunBullet.h"
+#include "Player_RightHand.h"
+#include "Player_LeftHand.h"
 
 CPlayer::CPlayer(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CLandObject{ pGraphic_Device }
@@ -14,7 +16,7 @@ CPlayer::CPlayer(LPDIRECT3DDEVICE9 pGraphic_Device)
 }
 
 CPlayer::CPlayer(const CPlayer& Prototype)
-	: CLandObject{ Prototype }
+	: CLandObject(Prototype)
 {
 
 }
@@ -49,21 +51,29 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 	m_pTransformCom->Set_State(STATE::POSITION, _float3(0.f, 0.f, 0.f));
 
-	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Player_Hand"),
-		ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player_Right_Hand"))))
+	// 오른손
+	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Player_RightHand"),
+		ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player_RightHand"))))
 		return E_FAIL;
 
-	m_pRightHand = dynamic_cast<CPlayer_Hand*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player_Right_Hand")));
+	m_pRightHand = dynamic_cast<CPlayer_RightHand*>(m_pGameInstance->Find_GameObject_ToLayer(
+		ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player_RightHand")));
 	Safe_AddRef(m_pRightHand);
 
 	m_pRightHandAnimationCom = dynamic_cast<CAnimation*>(m_pRightHand->Find_Component(TEXT("Com_Animation")));
 	Safe_AddRef(m_pRightHandAnimationCom);
 
-	/*if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Player_Hand"),
-		ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player_Left_Hand"))))
+	// 왼손
+	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Player_LeftHand"),
+		ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player_LeftHand"))))
 		return E_FAIL;
 
-	m_pLeftHand = dynamic_cast<CPlayer_Hand*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player_Left_Hand")));*/
+	m_pLeftHand = dynamic_cast<CPlayer_LeftHand*>(m_pGameInstance->Find_GameObject_ToLayer(
+		ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player_LeftHand")));
+	Safe_AddRef(m_pLeftHand);
+
+	m_pLeftHandAnimationCom = dynamic_cast<CAnimation*>(m_pLeftHand->Find_Component(TEXT("Com_Animation")));
+	Safe_AddRef(m_pLeftHandAnimationCom);
 
 	return S_OK;
 }
@@ -98,26 +108,74 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 	{
 		if (m_pGameInstance->Key_Down('1'))
 		{
-			m_tInfo.strWeapon = TEXT("Pistol");
-			iter = m_Weapons.find(m_tInfo.strWeapon);
-			m_tInfo.iBullets = iter->second.iCurrentBullets;
-			iter->second.iShootBullets = iter->second.iShootBullets;
-			m_tInfo.iShootBullets = iter->second.iShootBullets;
+			m_strNextWeapon = TEXT("Pistol");
+			if (m_tInfo.strWeapon != m_strNextWeapon)
+			{
+				m_tInfo.strAction = TEXT("Down");
+				m_bWeaponChange = true;
+			}
 		}
 		if (m_pGameInstance->Key_Down('2'))
 		{
-			m_tInfo.strWeapon = TEXT("ShootGun");
+			m_strNextWeapon = TEXT("ShootGun");
+			if (m_tInfo.strWeapon != m_strNextWeapon)
+			{
+				m_tInfo.strAction = TEXT("Down");
+				m_bWeaponChange = true;
+			}
+		}
+		if (m_pGameInstance->Key_Down('E'))
+		{
+			m_tInfo.strItem = TEXT("CardKey");
+			m_tInfo.strItemAction = TEXT("Up");
+			m_tInfo.strAction = TEXT("Down");
+			m_bUseItem = true;
+		}
+	}
+
+	// 아이템 : 카드키 사용
+	if (m_bUseItem)
+	{
+		if (m_pLeftHandAnimationCom->Check_Animation_Finish(Set_FrameKey(m_tInfo.strItem, TEXT("Up"))))
+		{
+			m_tInfo.strItemAction = TEXT("Down");
+			m_tInfo.strAction = TEXT("Up");
+		}
+		if (m_pLeftHandAnimationCom->Check_Animation_Finish(Set_FrameKey(m_tInfo.strItem, TEXT("Down"))))
+		{
+			m_bUseItem = false;
+		}
+	}
+	if (m_pLeftHandAnimationCom->Check_Animation_Finish())
+	{
+		if(!m_bUseItem)
+			m_tInfo.strItemAction = TEXT("Idle");
+	}
+
+	// 무기 교체
+	if (m_bWeaponChange)
+	{
+		if (m_pRightHandAnimationCom->Check_Animation_Finish(Set_FrameKey(m_tInfo.strWeapon, TEXT("Down"))))
+		{
+			m_tInfo.strWeapon = m_strNextWeapon;
+			m_tInfo.strAction = TEXT("Up");
 			iter = m_Weapons.find(m_tInfo.strWeapon);
 			m_tInfo.iBullets = iter->second.iCurrentBullets;
 			iter->second.iShootBullets = iter->second.iShootBullets;
 			m_tInfo.iShootBullets = iter->second.iShootBullets;
 		}
+
+		if (m_pRightHandAnimationCom->Check_Animation_Finish(Set_FrameKey(m_tInfo.strWeapon, TEXT("Up"))))
+		{
+			m_bWeaponChange = false;
+		}
 	}
 
-	// 애니메이션 종료 처리 해야됨
+	// 오른손 애니메이션 끝나면 idle로
 	if (m_pRightHandAnimationCom->Check_Animation_Finish())
 	{
-		m_tInfo.strAction = TEXT("Idle");
+		if(!m_bWeaponChange && !m_bUseItem)
+			m_tInfo.strAction = TEXT("Idle");
 	}
 	else
 	{
@@ -127,6 +185,7 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 		_float3 vRight = m_pTransformCom->Get_State(STATE::RIGHT);
 		vRight.y = 0.f;
 
+		// 이동
 		if (m_pGameInstance->Key_Pressing('W'))
 		{
 			m_pTransformCom->Go_Direction(vLook, fTimeDelta);
@@ -151,13 +210,14 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 			if (m_tInfo.strAction.compare(TEXT("Idle")) == 0)
 				m_tInfo.strAction = TEXT("Walk");
 		}
+		// 장전
 		if (m_pGameInstance->Key_Down('R'))
 		{
 			m_tInfo.strAction = TEXT("Reload");
 			iter->second.iShootBullets = iter->second.iCanShootBullets;
 			m_tInfo.iShootBullets = iter->second.iShootBullets;
 		}
-
+		// 총알 발사
 		if (m_tInfo.strAction.compare(TEXT("Reload")) != 0)
 		{
 			if (m_pGameInstance->Key_Down(VK_LBUTTON)
@@ -187,15 +247,14 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 		}
 	}
 
-	_tchar strCurrentAnimation[256];
-
-	wsprintf(strCurrentAnimation, TEXT("%s_%s"), m_tInfo.strWeapon.c_str(), m_tInfo.strAction.c_str());
-
-	m_pRightHand->Set_Current_Animation(strCurrentAnimation);
+	m_pRightHand->Set_Current_Animation(Set_FrameKey(m_tInfo.strWeapon, m_tInfo.strAction));
+	m_pLeftHand->Set_Current_Animation(Set_FrameKey(m_tInfo.strItem, m_tInfo.strItemAction));
 
 	SetUp_OnTerrain(m_pTransformCom, 0.5f, &m_bJump);
 
 	m_pRightHand->Set_Player_Transform(m_pTransformCom);
+	m_pLeftHand->Set_Player_Transform(m_pTransformCom);
+	
 }
 
 void CPlayer::Update(_float fTimeDelta)
@@ -343,6 +402,13 @@ void CPlayer::Pop_ItemDesc(_float fTimeDelta)
 	}
 }
 
+_wstring CPlayer::Set_FrameKey(_wstring strDst, _wstring strSrc)
+{
+	_tchar strResult[256];
+	wsprintf(strResult, TEXT("%s_%s"), strDst.c_str(), strSrc.c_str());
+	return strResult;
+}
+
 void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta)
 {
 	if (eColType == COLLISION::SPHERE)
@@ -443,6 +509,8 @@ void CPlayer::Free()
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pBoxColliderCom);
+	Safe_Release(m_pLeftHand);
+	Safe_Release(m_pLeftHandAnimationCom);
 	Safe_Release(m_pRightHand);
 	Safe_Release(m_pRightHandAnimationCom);
 	Safe_Release(m_pSphereColliderCom);

@@ -4,7 +4,8 @@
 #include "Effect.h"
 #include "Terrain.h"
 #include "Player.h"
-#include "Player_Hand.h"
+#include "Player_RightHand.h"
+#include "Player_LeftHand.h"
 #include "Sky.h"
 #include "Bullet.h"
 #include "UIHp.h"
@@ -179,15 +180,15 @@ HRESULT CLoader::Loading_For_GamePlay()
 		CBullet::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
-	/* For.Prototype_GameObject_Soldier_Bullet */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Soldier_Bullet"),
-		CBullet::Create(m_pGraphic_Device))))
-		return E_FAIL;
+	///* For.Prototype_GameObject_Soldier_Bullet */
+	//if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Soldier_Bullet"),
+	//	CBullet::Create(m_pGraphic_Device))))
+	//	return E_FAIL;
 
-	/* For.Prototype_GameObject_Melee_Attack */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Melee_Attack"),
-		CMeleeAttack::Create(m_pGraphic_Device))))
-		return E_FAIL;
+	///* For.Prototype_GameObject_Melee_Attack */
+	//if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Melee_Attack"),
+	//	CMeleeAttack::Create(m_pGraphic_Device))))
+	//	return E_FAIL;
 
 	/* For.Prototype_Component_VIBuffer_Cube */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_VIBuffer_Cube"),
@@ -212,9 +213,14 @@ HRESULT CLoader::Loading_For_GamePlay()
 		CPlayer::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
-	/* For.Prototype_GameObject_Player_Hand */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Player_Hand"),
-		CPlayer_Hand::Create(m_pGraphic_Device))))
+	/* For.Prototype_GameObject_Player_RightHand */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Player_RightHand"),
+		CPlayer_RightHand::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Player_LeftHand */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Player_LeftHand"),
+		CPlayer_LeftHand::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_Monster */

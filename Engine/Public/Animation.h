@@ -15,7 +15,8 @@ public:
 		_uint		iCurrentFrame{0};
 		//_uint		iMotion{};	// 몇 번 모션을 출력
 		_uint		iFrameSpeed{3}; // 애니메이션 속도 (3프레임 당 1장 재생)
-		_float		fTime{};		// 애니메이션 구동 시간
+		_float		fTime{0.f};		// 애니메이션 구동 시간
+		_bool		bFinish{ false };	// 끝났는지 체크
 		//_float		fRunTime{1.f};		// 애니메이션 전체 프레임 시간
 	}FRAME_DESC;
 
@@ -29,16 +30,18 @@ public:
 	virtual HRESULT Initialize(void* pArg);
 
 public:
-	void Set_Animation(FRAME_DESC* pFrameDesc);
-	FRAME_DESC* Get_Animation();
-	_uint Get_Frame_Index();
-	void Play_Animation(_float fTimeDelta);
-	_bool Check_Animation_Finish();
-	void Clear_Animation();
+	void Set_Animation(const _wstring strFrameKey, FRAME_DESC FrameDesc); // 키, 구조체로 애니메이션 초기 세팅 Ready_Animations에서 해야함
+	FRAME_DESC* Get_Frame_Desc(const _wstring strFrameKey); // 키값으로 애니메이션 구조체 정보 가져오기
+	_uint Get_Frame_Current_Index(const _wstring strFrameKey); // 키값으로 현재 애니메이션 인덱스 가져오기
+	void Play_Animation(const _wstring strFrameKey, _float fTimeDelta); // 키값으로 애니메이션 돌리기
+	_bool Check_Animation_Finish(); // 모든 애니메이션 끝났는지 체크
+	_bool Check_Animation_Finish(const _wstring strFrameKey); // 키값으로 특정 애니메이션 끝났는지 체크
+	void Clear_Animation(); // 모든 애니메이션 멈추기
+	void Clear_Animation(const _wstring strFrameKey); // 키값으로 특정 애니메이션 멈추기
 
 private:
-	FRAME_DESC*		m_tFrame{};
-	_bool			m_bFinished{ false };
+	map<const _wstring, FRAME_DESC> m_tFrames{};
+	_float			m_fTimeStack{ 0.f };
 
 public:
 	static CAnimation* Create(LPDIRECT3DDEVICE9 pGraphic_Device);

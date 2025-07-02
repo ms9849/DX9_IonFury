@@ -103,9 +103,6 @@
     <Filter Include="02.GameObjects\Player">
       <UniqueIdentifier>{704f75c8-f626-4c7b-aff3-fbd9102c05f9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\Player\Player_Hand">
-      <UniqueIdentifier>{6b2efc96-1da8-47e3-a7fa-8fdb2ab53f72}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\Monster\Melee">
       <UniqueIdentifier>{69794553-4677-457c-b4d3-6c02b68febe8}</UniqueIdentifier>
     </Filter>
@@ -114,6 +111,12 @@
     </Filter>
     <Filter Include="02.GameObjects\Monster\Melee\Attack">
       <UniqueIdentifier>{73ce83fd-65ee-47b9-9a1b-16e041f00828}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Player\Player_RightHand">
+      <UniqueIdentifier>{6b2efc96-1da8-47e3-a7fa-8fdb2ab53f72}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Player\Player_LeftHand">
+      <UniqueIdentifier>{7cf1f759-1b70-45a3-9c37-83c16fc264b7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -168,8 +171,8 @@
     <ClInclude Include="..\Public\Effect.h">
       <Filter>02.GameObjects\Effect</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Player_Hand.h">
-      <Filter>02.GameObjects\Player\Player_Hand</Filter>
+    <ClInclude Include="..\Public\Player_RightHand.h">
+      <Filter>02.GameObjects\Player\Player_RightHand</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UIInteraction.h">
       <Filter>02.GameObjects\UI\UIInteraction</Filter>
@@ -237,6 +240,9 @@
     <ClInclude Include="..\Public\MeleeAttack.h">
       <Filter>02.GameObjects\Monster\Melee\Attack</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Player_LeftHand.h">
+      <Filter>02.GameObjects\Player\Player_LeftHand</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -291,8 +297,8 @@
     <ClCompile Include="..\Private\Effect.cpp">
       <Filter>02.GameObjects\Effect</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Player_Hand.cpp">
-      <Filter>02.GameObjects\Player\Player_Hand</Filter>
+    <ClCompile Include="..\Private\Player_RightHand.cpp">
+      <Filter>02.GameObjects\Player\Player_RightHand</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UIInteraction.cpp">
       <Filter>02.GameObjects\UI\UIInteraction</Filter>
@@ -353,6 +359,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Melee_Attack.cpp">
       <Filter>02.GameObjects\Monster\Melee\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Player_LeftHand.cpp">
+      <Filter>02.GameObjects\Player\Player_LeftHand</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

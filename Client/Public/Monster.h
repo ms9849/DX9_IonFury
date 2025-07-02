@@ -56,7 +56,6 @@ protected:
 
 	_wstring m_strFrameKey;
 	map<const _wstring, CTexture*> m_pTextureComs;
-	map<const _wstring, CAnimation::FRAME_DESC> m_Frames;
 
 protected:
 	virtual HRESULT Ready_Animations() = 0;
