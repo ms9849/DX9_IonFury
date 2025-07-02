@@ -7,7 +7,7 @@ CItemArmor::CItemArmor(LPDIRECT3DDEVICE9 pGraphic_Device)
 }
 
 CItemArmor::CItemArmor(const CItemArmor& Prototype)
-	: CItem{ Prototype }
+	: CItem(Prototype)
 {
 }
 

@@ -1,6 +1,8 @@
 #include "UIInteraction.h"
 
 #include "GameInstance.h"
+#include "UIFont.h"
+#include "UIText.h"
 
 CUIInteraction::CUIInteraction(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CUIObject{ pGraphic_Device }
@@ -8,7 +10,7 @@ CUIInteraction::CUIInteraction(LPDIRECT3DDEVICE9 pGraphic_Device)
 }
 
 CUIInteraction::CUIInteraction(const CUIInteraction& Prototype)
-	: CUIObject{ Prototype }
+	: CUIObject(Prototype)
 {
 }
 

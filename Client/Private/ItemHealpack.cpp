@@ -7,7 +7,7 @@ CItemHealpack::CItemHealpack(LPDIRECT3DDEVICE9 pGraphic_Device)
 }
 
 CItemHealpack::CItemHealpack(const CItemHealpack& Prototype)
-	: CItem{ Prototype }
+	: CItem(Prototype)
 {
 }
 

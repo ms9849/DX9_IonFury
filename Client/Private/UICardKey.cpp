@@ -1,23 +1,24 @@
-#include "UIAim.h"
+#include "UICardKey.h"
 
 #include "GameInstance.h"
+#include "Player.h"
 
-CUIAim::CUIAim(LPDIRECT3DDEVICE9 pGraphic_Device)
+CUICardKey::CUICardKey(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CUIObject{ pGraphic_Device }
 {
 }
 
-CUIAim::CUIAim(const CUIAim& Prototype)
+CUICardKey::CUICardKey(const CUICardKey& Prototype)
 	: CUIObject(Prototype)
 {
 }
 
-HRESULT CUIAim::Initialize_Prototype()
+HRESULT CUICardKey::Initialize_Prototype()
 {
 	return S_OK;
 }
 
-HRESULT CUIAim::Initialize(void* pArg)
+HRESULT CUICardKey::Initialize(void* pArg)
 {
 	UIOBJECT_DESC* pTemp = static_cast<UIOBJECT_DESC*>(pArg);
 
@@ -26,34 +27,35 @@ HRESULT CUIAim::Initialize(void* pArg)
 	m_tagDesc.fX = pTemp->fX;
 	m_tagDesc.fY = pTemp->fY;
 
-	m_tagDesc.fX += pTemp->fSizeX / 2.f;
-	m_tagDesc.fY += pTemp->fSizeY / 2.f;
-
 	if (FAILED(__super::Initialize(&m_tagDesc)))
 		return E_FAIL;
 
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
+	m_pPlayer = dynamic_cast<CPlayer*>(
+		m_pGameInstance->Find_GameObject_ToLayer(
+			ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player")));
+
 	return S_OK;
 }
 
-void CUIAim::Priority_Update(_float fTimeDelta)
+void CUICardKey::Priority_Update(_float fTimeDelta)
 {
 	int a = 10;
 }
 
-void CUIAim::Update(_float fTimeDelta)
+void CUICardKey::Update(_float fTimeDelta)
 {
 	__super::Update_Transform(m_pTransformCom);
 }
 
-void CUIAim::Late_Update(_float fTimeDelta)
+void CUICardKey::Late_Update(_float fTimeDelta)
 {
 	m_pGameInstance->Add_RenderGroup(RENDER::UI, this);
 }
 
-HRESULT CUIAim::Render()
+HRESULT CUICardKey::Render()
 {
 	m_pTransformCom->Set_Transform();
 
@@ -66,7 +68,8 @@ HRESULT CUIAim::Render()
 
 	__super::Begin();
 
-	m_pVIBufferCom->Render();
+	if (m_bCanUseCardKey)
+		m_pVIBufferCom->Render();
 
 	__super::End();
 
@@ -75,7 +78,12 @@ HRESULT CUIAim::Render()
 	return S_OK;
 }
 
-HRESULT CUIAim::Ready_Components()
+void CUICardKey::Set_CardKey()
+{
+	m_bCanUseCardKey = m_pPlayer->Get_CanUse_CardKey();
+}
+
+HRESULT CUICardKey::Ready_Components()
 {
 	/* Com_Transform */
 	CTransform::TRANSFORM_DESC		TransformDesc{ 5.f, D3DXToRadian(90.0f) };
@@ -88,16 +96,16 @@ HRESULT CUIAim::Ready_Components()
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
 		return E_FAIL;
 	/* Com_Texture */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_UI_Aim"),
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_UI_CardKey"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-CUIAim* CUIAim::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
+CUICardKey* CUICardKey::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 {
-	CUIAim* pInstance = new CUIAim(pGraphic_Device);
+	CUICardKey* pInstance = new CUICardKey(pGraphic_Device);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
@@ -108,20 +116,20 @@ CUIAim* CUIAim::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 	return pInstance;
 }
 
-CGameObject* CUIAim::Clone(void* pArg)
+CGameObject* CUICardKey::Clone(void* pArg)
 {
-	CUIAim* pInstance = new CUIAim(*this);
+	CUICardKey* pInstance = new CUICardKey(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Cloned : CUIAim");
+		MSG_BOX("Failed to Cloned : CUICardKey");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CUIAim::Free()
+void CUICardKey::Free()
 {
 	__super::Free();
 

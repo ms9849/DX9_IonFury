@@ -35,6 +35,7 @@ private:
 	class CUIBullets* m_pUIBullets { nullptr };
 	class CUIInteraction* m_pUIInteraction { nullptr };
 	class CUIAim* m_pUIAim { nullptr };
+	class CUICardKey* m_pUICardKey { nullptr };
 	vector<class CUIItemQueue*> m_pUIItemQueues{};
 	CCamera::CAMERA_CONFIG m_CameraSettings;
 
