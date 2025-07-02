@@ -9,12 +9,12 @@ NS_END
 
 NS_BEGIN(Client)
 
-class CUIHp final : public CUIObject
+class CUICardKey final : public CUIObject
 {
 private:
-	CUIHp(LPDIRECT3DDEVICE9 pGraphic_Device);
-	CUIHp(const CUIHp& Prototype);
-	virtual ~CUIHp() = default;
+	CUICardKey(LPDIRECT3DDEVICE9 pGraphic_Device);
+	CUICardKey(const CUICardKey& Prototype);
+	virtual ~CUICardKey() = default;
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -25,7 +25,7 @@ public:
 	virtual HRESULT Render() override;
 
 public:
-	void Set_Hp();
+	void Set_CardKey();
 
 private:
 	CTexture* m_pTextureCom = { nullptr };
@@ -33,16 +33,15 @@ private:
 	CVIBuffer_Rect* m_pVIBufferCom = { nullptr };
 
 private:
-	class CPlayer* m_pPlayer{ nullptr };
-	class CUIText* m_pText{ nullptr };
-	_uint m_iHp{};
+	class CPlayer*	m_pPlayer{ nullptr };
+	_bool			m_bCanUseCardKey{ false };
 	UIOBJECT_DESC	m_tagDesc{};
 
 private:
 	HRESULT Ready_Components();
 
 public:
-	static CUIHp* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
+	static CUICardKey* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
 };

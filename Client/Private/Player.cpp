@@ -6,6 +6,7 @@
 #include "ItemHealpack.h"
 #include "ItemPistolBullet.h"
 #include "ItemShootGunBullet.h"
+#include "ItemCardKey.h"
 #include "Player_RightHand.h"
 #include "Player_LeftHand.h"
 
@@ -124,12 +125,13 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 				m_bWeaponChange = true;
 			}
 		}
-		if (m_pGameInstance->Key_Down('E'))
+		if (m_bCanUseCardKey && m_pGameInstance->Key_Down('E'))
 		{
 			m_tInfo.strItem = TEXT("CardKey");
 			m_tInfo.strItemAction = TEXT("Up");
 			m_tInfo.strAction = TEXT("Down");
 			m_bUseItem = true;
+			m_bCanUseCardKey = false;
 		}
 	}
 
@@ -277,6 +279,11 @@ HRESULT CPlayer::Render()
 CPlayer::PLAYER_INFO CPlayer::Get_Player_Info()
 {
 	return m_tInfo;
+}
+
+_bool CPlayer::Get_CanUse_CardKey()
+{
+	return m_bCanUseCardKey;
 }
 
 HRESULT CPlayer::Ready_Components()
@@ -449,6 +456,11 @@ void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 				m_tInfo.iBullets = iter->second.iCurrentBullets;
 
 			Insert_ItemDesc(TEXT("Get ShootGun Bullets [Bullet+10]"));
+		}
+		if (dynamic_cast<CItemCardKey*>(pDst))
+		{
+			Insert_ItemDesc(TEXT("Get CardKey"));
+			m_bCanUseCardKey = true;
 		}
 	}
 }
