@@ -115,6 +115,9 @@
     <Filter Include="02.GameObjects\Monster\Melee\Attack">
       <UniqueIdentifier>{73ce83fd-65ee-47b9-9a1b-16e041f00828}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\Monster\Boss">
+      <UniqueIdentifier>{5c706583-e0a5-49b2-9a1a-1fe76cb935af}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -237,6 +240,9 @@
     <ClInclude Include="..\Public\MeleeAttack.h">
       <Filter>02.GameObjects\Monster\Melee\Attack</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Boss.h">
+      <Filter>02.GameObjects\Monster\Boss</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -353,6 +359,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Melee_Attack.cpp">
       <Filter>02.GameObjects\Monster\Melee\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Boss.cpp">
+      <Filter>02.GameObjects\Monster\Boss</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
