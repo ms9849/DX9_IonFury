@@ -144,6 +144,8 @@ void CSoldier::Priority_Update(_float fTimeDelta)
 
 void CSoldier::Update(_float fTimeDelta)
 {
+	__super::Jump(fTimeDelta);
+
 	m_fSumAttackCoolTime += fTimeDelta;
 	m_fSumMoveCoolTime += fTimeDelta;
 
@@ -264,7 +266,7 @@ void CSoldier::Update(_float fTimeDelta)
 	swprintf_s(szBuffer, L"몬스터 방향 벡터 x : %.1f, y : %.1f, z : %.1f\n", m_pTransformCom->Get_State(STATE::LOOK).x, m_pTransformCom->Get_State(STATE::LOOK).y, m_pTransformCom->Get_State(STATE::LOOK).z);
 	OutputDebugString(szBuffer);*/
 
-	SetUp_OnTerrain(m_pTransformCom, 0.5f);
+	SetUp_OnTerrain(m_pTransformCom, 0.5f, &m_bJump);
 }
 
 void CSoldier::Late_Update(_float fTimeDelta)

@@ -54,9 +54,10 @@ void CTerrain_Manager::Add_LandObject(LEVEL eLevelID, const _wstring& strLayerTa
 {
     list<CGameObject*> GameObjects = m_pGameInstance->Get_GameObjects_inLayer(ENUM_CLASS(eLevelID), strLayerTag);
 
+
     for (auto& iter : GameObjects)
     {
-        m_LandObjects.push_back(reinterpret_cast<CLandObject*>(iter));
+        m_LandObjects.push_back(dynamic_cast<CLandObject*>(iter));
     }
 }
 
@@ -89,13 +90,11 @@ HRESULT CTerrain_Manager::Initialize()
 
 void CTerrain_Manager::Check_Landing()
 {
-    _float3 vDist, vRayDir = _float3{ 0.f, -1.f, 0.f };
-    _float fMin = FLT_MAX;
-
-    CGameObject* pNearestLand = {};
-
     for (auto& LandObj : m_LandObjects)
     {
+        _float3 vDist, vRayDir = _float3{ 0.f, -1.f, 0.f };
+        _float fMin = FLT_MAX;
+        CGameObject* pNearestLand = {};
         /*
         LandObject의 Transform 뽑아와서,
         아래 방향으로 레이 쏘게 한다음
@@ -106,19 +105,23 @@ void CTerrain_Manager::Check_Landing()
         CTransform* pTransform = static_cast<CTransform*>(LandObj->Find_Component(TEXT("Com_Transform")));
         _float3 vPos = pTransform->Get_State(STATE::POSITION);
 
-        /*Cube 체크*/
-        for (auto& pCube : m_CubeObjects)
+        /*Cube 체크, Cube Ride가 가능한 녀석들만 큐브에 탄다*/
+        if (LandObj->Get_RideCube())
         {
-            CCubeObject::CUBE_DESC CubeDesc = pCube->Get_CubeDesc();
-
-            if (CubeDesc.pBuffer->Picking(CubeDesc.pTransform, &vDist, vPos, vRayDir))
+            for (auto& pCube : m_CubeObjects)
             {
-                _float3 vDiff = vDist - vPos;
+                CCubeObject::CUBE_DESC CubeDesc = pCube->Get_CubeDesc();
 
-                if (D3DXVec3Length(&vDiff) < fMin)
+                if (CubeDesc.pBuffer->Picking(CubeDesc.pTransform, &vDist, vPos, vRayDir))
                 {
-                    fMin = D3DXVec3Length(&vDiff);
-                    pNearestLand = pCube;
+                    _float3 vDiff = vDist - vPos;
+                    _float fLengthDiff = D3DXVec3Length(&vDiff);
+
+                    if (fLengthDiff < fMin)
+                    {
+                        fMin = fLengthDiff;
+                        pNearestLand = pCube;
+                    }
                 }
             }
         }
@@ -128,13 +131,13 @@ void CTerrain_Manager::Check_Landing()
         {
             CTerrain::TERRAIN_DESC TerrainDesc = pTerrain->Get_TerrainDesc();
 
-            if (TerrainDesc.pBuffer->Picking(TerrainDesc.pTransform, &vDist, vPos, vRayDir))
+            if (TerrainDesc.pBuffer->Picking_Land(TerrainDesc.pTransform, &vDist, vPos, vRayDir))
             {
-                _float3 vDiff = vDist - vPos;
-
-                if (D3DXVec3Length(&vDiff) < fMin)
+                _float3 fDiff = vPos - vDist;
+                _float fLength = D3DXVec3Length(&fDiff);
+                if (fLength < fMin)
                 {
-                    fMin = D3DXVec3Length(&vDiff);
+                    fMin = fLength;
                     pNearestLand = pTerrain;
                 }
             }
@@ -164,20 +167,7 @@ void CTerrain_Manager::Check_Landing()
                     LandObj->Set_Time(0.133334f);
                 }
             }
-            
             LandObj->Change_Land(&Desc);
-
-            /*
-            m_bJump가 false일때, ray의 거리가 멀다면 점프로 바꾸고 시간 세팅해주기
-            예외사항?
-            -> 없는거같은데?
-            -> 게터 세터를 만들어주긴 해야함....
-            */
-            /* 0.133333이 돼야 떨어지기 시작. 0.134로 세팅하면 될듯 ? */
-            /*
-            이슈 ->
-            1. 점프하거나 지형 바뀔때 약간씩 덜컹거리는 문제가 있음
-            */
         }
     }
 }

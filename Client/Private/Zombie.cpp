@@ -144,11 +144,11 @@ HRESULT CZombie::Initialize(void* pArg)
 
 void CZombie::Priority_Update(_float fTimeDelta)
 {
-
 }
 
 void CZombie::Update(_float fTimeDelta)
 {
+	m_bRideCube = true;
 	m_fSumAttackCoolTime += fTimeDelta;
 	m_fSumMoveCoolTime += fTimeDelta;
 
@@ -287,7 +287,9 @@ void CZombie::Update(_float fTimeDelta)
 	}*/
 	//auto iter = m_Frames.find(m_strFrameKey);
 	//m_pAnimationCom->Set_Animation(&iter->second);
-	SetUp_OnTerrain(m_pTransformCom, 0.5f);
+
+	__super::Jump(fTimeDelta);
+	SetUp_OnTerrain(m_pTransformCom, 0.5f, &m_bJump);
 }
 
 void CZombie::Late_Update(_float fTimeDelta)
@@ -599,6 +601,32 @@ void CZombie::Move(_float fTimeDelta)
 {
 	_float3 fPlayerLook = m_pPlayerTransform->Get_State(STATE::LOOK);
 	_float3 fMonsterLook = m_pTransformCom->Get_State(STATE::LOOK);
+	_float3 vDirection = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
+	vDirection.y = 0.f;
+
+	D3DXVec3Normalize(&fPlayerLook, &fPlayerLook);
+	D3DXVec3Normalize(&fMonsterLook, &fMonsterLook);
+	D3DXVec3Normalize(&vDirection, &vDirection);
+
+	_float dot = D3DXVec3Dot(&fPlayerLook, &fMonsterLook);
+	float fRadian = acosf(dot);
+	m_pTransformCom->Rotation({ 0.f, 1.f, 0.f }, fRadian);
+
+	m_pTransformCom->Go_Direction(vDirection, fTimeDelta);
+
+	m_pTransformCom->LookAt(m_pPlayerTransform->Get_State(STATE::POSITION));
+
+	
+
+	//m_pTransformCom->Chase(m_pPlayerTransform->Get_State(STATE::POSITION), fMoveTime);
+	//m_pTransformCom->Go_Straight(fTimeDelta);
+}
+
+/*
+void CZombie::Move(_float fTimeDelta)
+{
+	_float3 fPlayerLook = m_pPlayerTransform->Get_State(STATE::LOOK);
+	_float3 fMonsterLook = m_pTransformCom->Get_State(STATE::LOOK);
 	D3DXVec3Normalize(&fPlayerLook, &fPlayerLook);
 	D3DXVec3Normalize(&fMonsterLook, &fMonsterLook);
 
@@ -611,6 +639,7 @@ void CZombie::Move(_float fTimeDelta)
 	//m_pTransformCom->Chase(m_pPlayerTransform->Get_State(STATE::POSITION), fMoveTime);
 	//m_pTransformCom->Go_Straight(fTimeDelta);
 }
+*/
 
 void CZombie::Move()
 {
