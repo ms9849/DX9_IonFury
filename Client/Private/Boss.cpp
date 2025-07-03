@@ -173,7 +173,13 @@ void CBoss::Priority_Update(_float fTimeDelta)
 
 void CBoss::Update(_float fTimeDelta)
 {
+<<<<<<< Updated upstream
 	//m_fSumAttackCoolTime += fTimeDelta;
+=======
+	__super::Jump(fTimeDelta);
+
+	m_fSumAttackCoolTime += fTimeDelta;
+>>>>>>> Stashed changes
 	m_fSumMoveCoolTime += fTimeDelta;
 
 	if (!m_bAttacking)
@@ -357,7 +363,7 @@ void CBoss::Update(_float fTimeDelta)
 	swprintf_s(szBuffer, L"몬스터 방향 벡터 x : %.1f, y : %.1f, z : %.1f\n", m_pTransformCom->Get_State(STATE::LOOK).x, m_pTransformCom->Get_State(STATE::LOOK).y, m_pTransformCom->Get_State(STATE::LOOK).z);
 	OutputDebugString(szBuffer);*/
 
-	SetUp_OnTerrain(m_pTransformCom, 0.5f);
+	SetUp_OnTerrain(m_pTransformCom, 0.5f, &m_bJump);
 }
 
 void CBoss::Late_Update(_float fTimeDelta)
