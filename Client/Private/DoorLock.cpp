@@ -40,16 +40,16 @@ void CDoorLock::Priority_Update(_float fTimeDelta)
 {
 	if (m_pPlayer->Get_Use_CardKey() && !m_bOpen)
 		m_strFrameKey = TEXT("DoorLock_Unlock");
-}
 
-void CDoorLock::Update(_float fTimeDelta)
-{
 	if (m_pAnimationCom->Check_Animation_Finish(TEXT("DoorLock_Unlock")))
 	{
 		m_bOpen = true;
 		m_strFrameKey = TEXT("DoorLock_Open");
 	}
+}
 
+void CDoorLock::Update(_float fTimeDelta)
+{
 }
 
 void CDoorLock::Late_Update(_float fTimeDelta)
@@ -133,9 +133,11 @@ HRESULT CDoorLock::Ready_Components()
 
 	m_pAnimationCom->Set_Animation(TEXT("DoorLock_Open"), DoorLockOpenDesc);
 
+	auto iter = m_pTextureComs.find(TEXT("DoorLock_Unlock"));
+
 	CAnimation::FRAME_DESC DoorLockUnlockDesc{};
 
-	DoorLockUnlockDesc.iEnd = 7;
+	DoorLockUnlockDesc.iEnd = iter->second->Get_Texture_Length();
 	DoorLockUnlockDesc.iFrameSpeed = 10;
 
 	m_pAnimationCom->Set_Animation(TEXT("DoorLock_Unlock"), DoorLockUnlockDesc);

@@ -259,6 +259,9 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 		}
 	}
 
+	m_pRightHand->Set_Player_TimeDelta(fTimeDelta);
+	m_pLeftHand->Set_Player_TimeDelta(fTimeDelta);
+
 	m_pRightHand->Set_Current_Animation(Set_FrameKey(m_tInfo.strWeapon, m_tInfo.strAction));
 	m_pLeftHand->Set_Current_Animation(Set_FrameKey(m_tInfo.strItem, m_tInfo.strItemAction));
 

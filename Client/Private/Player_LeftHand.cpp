@@ -74,6 +74,8 @@ void CPlayer_LeftHand::Priority_Update(_float fTimeDelta)
 	{
 		m_pTransformCom->Set_Scale(_float3{ 0.5f, 1.f, 1.f });
 	}
+	// 애니메이션 프레임 증가
+	m_pAnimationCom->Play_Animation(m_strFrameKey, m_fPlayerTimeDelta);
 }
 
 void CPlayer_LeftHand::Update(_float fTimeDelta)
@@ -82,9 +84,6 @@ void CPlayer_LeftHand::Update(_float fTimeDelta)
 
 void CPlayer_LeftHand::Late_Update(_float fTimeDelta)
 {
-	// 애니메이션 프레임 증가
-	m_pAnimationCom->Play_Animation(m_strFrameKey, fTimeDelta);
-
 	m_pGameInstance->Add_RenderGroup(RENDER::BLEND_LATE, this);
 }
 
@@ -119,6 +118,11 @@ void CPlayer_LeftHand::Set_Player_Transform(CTransform* pTransform)
 void CPlayer_LeftHand::Set_Current_Animation(const _wstring& strFrameKey)
 {
 	m_strFrameKey = strFrameKey;
+}
+
+void CPlayer_LeftHand::Set_Player_TimeDelta(_float fTimeDelta)
+{
+	m_fPlayerTimeDelta = fTimeDelta;
 }
 
 HRESULT CPlayer_LeftHand::Ready_Components()
