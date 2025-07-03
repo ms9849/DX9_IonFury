@@ -42,9 +42,9 @@ HRESULT CBoss::Initialize(void* pArg)
 	m_pTransformCom->Set_Scale({ 10.f, 10.f, 1.f });
 
 	m_pTransformCom->Set_State(STATE::POSITION, _float3(
-		m_pGameInstance->Random(10.f, 30.f),
+		m_pGameInstance->Random(30.f, 50.f),
 		0.f,
-		m_pGameInstance->Random(10.f, 30.f)));
+		m_pGameInstance->Random(30.f, 50.f)));
 
 	/*m_pTransformCom_Up->Set_State(STATE::POSITION, _float3(
 		vPos.x,
@@ -64,7 +64,12 @@ HRESULT CBoss::Initialize(void* pArg)
 	
 	/*m_pTransformCom->Set_Transform();*/
 
-	m_fAttackRange = 5.f;
+	m_fAttackRange = 15.f;
+	m_fAttackfCoolTime = 10.f;
+	m_fChaseRange = 25.f;
+	//m_fMoveCoolTime = 0.2f;
+	m_strUpFrameKey = TEXT("Boss_Front");
+	m_strDownFrameKey = TEXT("Boss_Front_Leg");
 
 	//m_pTransformCom->Rotation({0.f, 1.f, 0.f}, m_pGameInstance->Random(0.f, 180.f));
 	//m_pTransformCom->LookAt(m_pPlayerTransform->Get_State(STATE::POSITION));
@@ -264,7 +269,7 @@ void CBoss::Update(_float fTimeDelta)
 		else if (m_fSumMoveCoolTime >= m_fMoveCoolTime)
 		{
 			_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
-			if (D3DXVec3Length(&vDiff) <= m_fChaseRange && D3DXVec3Length(&vDiff) >= m_fAttackRange - 1.f)
+			if (D3DXVec3Length(&vDiff) <= m_fChaseRange)
 			{
 				Move(fTimeDelta);
 				m_fSumMoveCoolTime = 0.f;
@@ -361,11 +366,13 @@ HRESULT CBoss::Render()
 	RotateToPlayer(m_pTransformCom_Up);
 	auto iter = m_pTextureComs.find(m_strUpFrameKey);
 	iter->second->Set_Texture(m_pAnimationCom_Up->Get_Frame_Current_Index(m_strUpFrameKey));
+	_uint num = m_pAnimationCom_Up->Get_Frame_Current_Index(m_strUpFrameKey);
 	m_pVIBufferCom_Up->Render();
 
 	RotateToPlayer(m_pTransformCom_Down);
 	iter = m_pTextureComs.find(m_strDownFrameKey);
 	iter->second->Set_Texture(m_pAnimationCom_Down->Get_Frame_Current_Index(m_strDownFrameKey));
+	_uint num_2 = m_pAnimationCom_Down->Get_Frame_Current_Index(m_strDownFrameKey);
 	m_pVIBufferCom_Down->Render();
 
 	if (FAILED(End_RenderState()))
@@ -418,22 +425,21 @@ void CBoss::RotateWithParentTransform()
 {
 	_float3 vRootPos = m_pTransformCom->Get_State(STATE::POSITION);
 
-	_float3 vUpOffset = { 0.f, 3.8f, 0.f }; 
+	_float3 vUpOffset = { 0.f, 4.2f, 0.f };
 	_float3 vDownOffset = { 0.f, 0.f, 0.f };
 
 	D3DXMATRIX matRot;
-	//D3DXMatrixRotationY(&matRot, m_pTransformCom->Get_State(STATE::POSITION).y);
 
 	m_pTransformCom_Up->Set_State(STATE::POSITION, vRootPos + vUpOffset);
 	m_pTransformCom_Down->Set_State(STATE::POSITION, vRootPos + vDownOffset);
 
 	m_pTransformCom_Up->Set_State(STATE::RIGHT, m_pTransformCom->Get_State(STATE::RIGHT));
-	m_pTransformCom_Up->Set_State(STATE::LOOK, m_pTransformCom->Get_State(STATE::LOOK));
 	m_pTransformCom_Up->Set_State(STATE::UP, m_pTransformCom->Get_State(STATE::UP));
+	m_pTransformCom_Up->Set_State(STATE::LOOK, m_pTransformCom->Get_State(STATE::LOOK));
 
 	m_pTransformCom_Down->Set_State(STATE::RIGHT, m_pTransformCom->Get_State(STATE::RIGHT));
-	m_pTransformCom_Down->Set_State(STATE::LOOK, m_pTransformCom->Get_State(STATE::LOOK));
 	m_pTransformCom_Down->Set_State(STATE::UP, m_pTransformCom->Get_State(STATE::UP));
+	m_pTransformCom_Down->Set_State(STATE::LOOK, m_pTransformCom->Get_State(STATE::LOOK));
 }
 
 HRESULT CBoss::Ready_Animations()
@@ -545,38 +551,38 @@ HRESULT CBoss::Ready_Animations()
 
 	//Boss_Direction_SE
 	iter = m_pTextureComs.find(TEXT("Boss_Leg_Direction_SE"));
-	Desc_13.iFrameSpeed = 7;
-	Desc_13.iEnd = iter->second->Get_Texture_Length();
+	Desc_14.iFrameSpeed = 7;
+	Desc_14.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom_Down->Set_Animation(TEXT("Boss_Leg_Direction_SE"), Desc_14);
 
 	//Boss_Direction_SW
 	iter = m_pTextureComs.find(TEXT("Boss_Leg_Direction_SW"));
-	Desc_13.iFrameSpeed = 7;
-	Desc_13.iEnd = iter->second->Get_Texture_Length();
+	Desc_15.iFrameSpeed = 7;
+	Desc_15.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom_Down->Set_Animation(TEXT("Boss_Leg_Direction_SW"), Desc_15);
 
 	//Boss_Leg_Front
 	iter = m_pTextureComs.find(TEXT("Boss_Front_Leg"));
-	Desc_13.iFrameSpeed = 7;
-	Desc_13.iEnd = iter->second->Get_Texture_Length();
+	Desc_16.iFrameSpeed = 7;
+	Desc_16.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom_Down->Set_Animation(TEXT("Boss_Front_Leg"), Desc_16);
 
 	//Boss_Leg_Back
 	iter = m_pTextureComs.find(TEXT("Boss_Back_Leg"));
-	Desc_13.iFrameSpeed = 7;
-	Desc_13.iEnd = iter->second->Get_Texture_Length();
+	Desc_17.iFrameSpeed = 7;
+	Desc_17.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom_Down->Set_Animation(TEXT("Boss_Back_Leg"), Desc_17);
 
 	//Boss_Leg_Left
 	iter = m_pTextureComs.find(TEXT("Boss_Left_Leg"));
-	Desc_13.iFrameSpeed = 7;
-	Desc_13.iEnd = iter->second->Get_Texture_Length();
+	Desc_18.iFrameSpeed = 7;
+	Desc_18.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom_Down->Set_Animation(TEXT("Boss_Left_Leg"), Desc_18);
 
 	//Boss_Leg_Right
 	iter = m_pTextureComs.find(TEXT("Boss_Right_Leg"));
-	Desc_13.iFrameSpeed = 7;
-	Desc_13.iEnd = iter->second->Get_Texture_Length();
+	Desc_19.iFrameSpeed = 7;
+	Desc_19.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom_Down->Set_Animation(TEXT("Boss_Right_Leg"), Desc_19);
 
 	return S_OK;
@@ -610,7 +616,7 @@ const COLLISION_DESC& CBoss::Get_CollisionDesc(COLLISION eColType)
 HRESULT CBoss::Ready_Components()
 {
 	/* Com_Transform */
-	CTransform::TRANSFORM_DESC		TransformDesc{ 5.f, D3DXToRadian(90.0f) };
+	CTransform::TRANSFORM_DESC		TransformDesc{ 10.f, D3DXToRadian(90.0f) };
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Transform"),
 		TEXT("Com_Transform"), reinterpret_cast<CComponent**>(&m_pTransformCom), &TransformDesc)))
 		return E_FAIL;
@@ -665,7 +671,7 @@ HRESULT CBoss::Ready_Components()
 		return E_FAIL;
 
 	/* Com_Sight */
-	CSight::SIGHT_DESC		SightDesc{ 5.f, D3DXToRadian(90.0f), m_pPlayerTransform, m_pTransformCom };
+	CSight::SIGHT_DESC		SightDesc{ 30.f, D3DXToRadian(90.0f), m_pPlayerTransform, m_pTransformCom, true };
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Sight"),
 		TEXT("Com_Sight"), reinterpret_cast<CComponent**>(&m_pSightCom), &SightDesc)))
 		return E_FAIL;
@@ -736,6 +742,7 @@ void CBoss::Attack()
 	CBullet::BULLET_DESC Desc;
 	Desc.vDir = vDir;
 	Desc.vPos = vPos;
+	Desc.isPlayerBullet = false;
 
 	m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Bullet"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Monster_Bullet"), &Desc);
 }
@@ -749,9 +756,79 @@ void CBoss::Move(_float fTimeDelta)
 
 	_float dot = D3DXVec3Dot(&fPlayerLook, &fMonsterLook);
 	float fRadian = acosf(dot);
-	m_pTransformCom->Rotation({ 0.f, 1.f, 0.f }, fRadian);
+	//m_pTransformCom->Rotation({ 0.f, 1.f, 0.f }, fRadian);
 	m_pTransformCom->Chase(m_pPlayerTransform->Get_State(STATE::POSITION), fTimeDelta);
-	m_pTransformCom->LookAt(m_pPlayerTransform->Get_State(STATE::POSITION));
+	//m_pTransformCom->LookAt(m_pPlayerTransform->Get_State(STATE::POSITION));
+
+	//_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
+	//vDiff.y = 0.f;
+	//D3DXVec3Normalize(&vDiff, &vDiff);
+
+	//_float3 vMonsterLook = m_pTransformCom->Get_State(STATE::LOOK);
+	//vMonsterLook.y = 0.f;
+	//D3DXVec3Normalize(&vMonsterLook, &vMonsterLook);
+
+	//
+	//dot = D3DXVec3Dot(&vMonsterLook, &vDiff);
+	//dot = max(-1.f, min(1.f, dot));
+
+	//_float3 vCross;
+	//D3DXVec3Cross(&vCross, &vMonsterLook, &vDiff);
+
+	//_float fFov = cosf(D3DXToRadian(45.f));
+
+	//_float angle30 = cosf(D3DXToRadian(30.f));
+	//_float angle60 = cosf(D3DXToRadian(60.f));
+
+	//if (dot >= fFov)
+	//{
+	//	
+	//	m_strDownFrameKey = TEXT("Boss_Front_Leg");
+	//}
+	//else if (dot <= -fFov)
+	//{
+	//	
+	//	m_strDownFrameKey = TEXT("Boss_Back_Leg");
+	//}
+	//else
+	//{
+	//	if (vCross.y > 0)
+	//	{
+	//		if (dot > 0.2f)
+	//		{
+	//			
+	//			m_strDownFrameKey = TEXT("Boss_Leg_Direction_SW");
+	//		}
+	//		else if (dot > 0)
+	//		{
+	//			
+	//			m_strDownFrameKey = TEXT("Boss_Left_Leg");
+	//		}
+	//		else
+	//		{
+	//			
+	//			m_strDownFrameKey = TEXT("Boss_Leg_Direction_NW");
+	//		}
+	//	}
+	//	else
+	//	{
+	//		if (dot > 0.2f)
+	//		{
+	//			
+	//			m_strDownFrameKey = TEXT("Boss_Leg_Direction_SE");
+	//		}
+	//		else if (dot > 0)
+	//		{
+	//			
+	//			m_strDownFrameKey = TEXT("Boss_Right_Leg");
+	//		}
+	//		else
+	//		{
+	//			
+	//			m_strDownFrameKey = TEXT("Boss_Leg_Direction_NE");
+	//		}
+	//	}
+	//}
 
 	//m_pTransformCom->Chase(m_pPlayerTransform->Get_State(STATE::POSITION), fMoveTime);
 	//m_pTransformCom->Go_Straight(fTimeDelta);
