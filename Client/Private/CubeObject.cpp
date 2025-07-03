@@ -38,7 +38,7 @@ HRESULT CCubeObject::Initialize(void* pArg)
 	m_pTransformCom->Set_Scale(_float3{15.f, 15.f, 15.f});
 	m_pTransformCom->Rotation(m_pTransformCom->Get_State(STATE::LOOK), D3DXToRadian(45.f));
 
-	m_pTransformCom->Set_State(STATE::POSITION, { 10.f, -2.f, 10.f });
+	m_pTransformCom->Set_State(STATE::POSITION, { 30.f, -2.f, 30.f });
 
 	return S_OK;
 }

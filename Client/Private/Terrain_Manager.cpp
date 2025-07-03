@@ -38,6 +38,10 @@ CTerrain_Manager라고 가정하면
 =======================================================
 1. 천장에 닿는 상황은 반드시 없어야 한다. -> 불문율임..
 할거면 obb든 aabb든 콜라이더 달아서 밀어내야 한다.
+
+7월 3일 현재 이슈
+
+큐브에서 터레인으로 바뀌면 점프 상태로 바뀌지 않고 바로 달라붙는 문제가 있음
 */
 
 CTerrain_Manager::CTerrain_Manager() : 
@@ -88,7 +92,7 @@ void CTerrain_Manager::Check_Landing()
     _float3 vDist, vRayDir = _float3{ 0.f, -1.f, 0.f };
     _float fMin = FLT_MAX;
 
-    CGameObject* pNearestLand= {};
+    CGameObject* pNearestLand = {};
 
     for (auto& LandObj : m_LandObjects)
     {
@@ -101,6 +105,23 @@ void CTerrain_Manager::Check_Landing()
         */
         CTransform* pTransform = static_cast<CTransform*>(LandObj->Find_Component(TEXT("Com_Transform")));
         _float3 vPos = pTransform->Get_State(STATE::POSITION);
+
+        /*Cube 체크*/
+        for (auto& pCube : m_CubeObjects)
+        {
+            CCubeObject::CUBE_DESC CubeDesc = pCube->Get_CubeDesc();
+
+            if (CubeDesc.pBuffer->Picking(CubeDesc.pTransform, &vDist, vPos, vRayDir))
+            {
+                _float3 vDiff = vDist - vPos;
+
+                if (D3DXVec3Length(&vDiff) < fMin)
+                {
+                    fMin = D3DXVec3Length(&vDiff);
+                    pNearestLand = pCube;
+                }
+            }
+        }
 
         /* Terrain 체크 */
         for (auto& pTerrain : m_Terrains)
@@ -119,34 +140,6 @@ void CTerrain_Manager::Check_Landing()
             }
         }
 
-        /* 
-        CubeObject 체크 -> 
-        Terrain과 로직 분리하는게 추후 일 생기면 편하긴 함
-        */
-
-        /*
-        같은 x,z에 같은 평면이 두개 존재한다. 
-
-        highest y를 받아오는게 맞긴 한데
-
-       
-        */
-        for (auto& pCube : m_CubeObjects)
-        {
-            CCubeObject::CUBE_DESC CubeDesc = pCube->Get_CubeDesc();
-
-            if (CubeDesc.pBuffer->Picking(CubeDesc.pTransform, &vDist, vPos, vRayDir))
-            {
-                _float3 vDiff = vDist - vPos;
-
-                if (D3DXVec3Length(&vDiff) < fMin)
-                {
-                    fMin = D3DXVec3Length(&vDiff);
-                    pNearestLand = pCube;
-                }
-            }
-        }
-
         if (fMin != FLT_MAX)
         {
             CLandObject::LANDOBJECT_DESC Desc;
@@ -155,7 +148,7 @@ void CTerrain_Manager::Check_Landing()
             {
                 Desc = { dynamic_cast<CTerrain*>(pNearestLand)->Get_TerrainDesc().pBuffer, dynamic_cast<CTerrain*>(pNearestLand)->Get_TerrainDesc().pTransform };
 
-                if (fMin > 2.0f && LandObj->Get_Jump() == false)
+                if (fMin > 0.6f && LandObj->Get_Jump() == false)
                 {
                     LandObj->Set_Jump(true);
                     LandObj->Set_Time(0.133334f);
@@ -165,13 +158,13 @@ void CTerrain_Manager::Check_Landing()
             {
                 Desc = { dynamic_cast<CCubeObject*>(pNearestLand)->Get_CubeDesc().pBuffer, dynamic_cast<CCubeObject*>(pNearestLand)->Get_CubeDesc().pTransform };
 
-                if (fMin > 0.7f && LandObj->Get_Jump() == false)
+                if (fMin > 0.6f && LandObj->Get_Jump() == false)
                 {
                     LandObj->Set_Jump(true);
                     LandObj->Set_Time(0.133334f);
                 }
             }
-
+            
             LandObj->Change_Land(&Desc);
 
             /*
