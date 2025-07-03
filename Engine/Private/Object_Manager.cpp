@@ -132,6 +132,11 @@ map<const _wstring, class CLayer*> CObject_Manager::Get_Layers_InLevel(_uint iLa
 	return m_pLayers[iLayerLevelIndex];
 }
 
+list<class CGameObject*> CObject_Manager::Get_GameObjects_inLayer(_uint iLayerLevelIndex, const _wstring& strLayerTag)
+{
+	return Find_Layer(iLayerLevelIndex, strLayerTag)->Get_GameObjects();
+}
+
 CObject_Manager* CObject_Manager::Create(_uint iNumLevels)
 {
 	CObject_Manager* pInstance = new CObject_Manager();

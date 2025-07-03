@@ -26,6 +26,7 @@ public:
 	/* 레이어 가져오기 */
 	class CLayer* Find_Layer(_uint iLayerLevelIndex, const _wstring& strLayerTag);
 	map<const _wstring, class CLayer*> Get_Layers_InLevel(_uint iLayerLevelIndex);
+	list<class CGameObject*> Get_GameObjects_inLayer(_uint iLayerLevelIndex, const _wstring& strLayerTag);
 
 public:
 	void Priority_Update(_float fTimeDelta);

@@ -33,7 +33,6 @@ protected:
 
 protected:
     CTexture* m_pTextureCom = { nullptr };  
-    CTransform* m_pTransformCom = { nullptr };
     CTransform* m_pPlayerTransformCom = { nullptr };
     CVIBuffer_Rect* m_pVIBufferCom = { nullptr };
     CSphereCollider* m_pSphereColliderCom = { nullptr };

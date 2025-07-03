@@ -39,8 +39,7 @@ protected:
 
 	class CTransform*		m_pLandTransform = { nullptr };
 	class CVIBuffer*		m_pLandVIBuffer = { nullptr };
-	class CTransform*		m_pTransformLast = { nullptr };
-	class CVIBuffer*		m_pBufferLast = { nullptr };
+	class CTransform*		m_pTransformCom = { nullptr };
 
 protected:
 	void SetUp_OnTerrain(class CTransform* pTransform, _float fOffset = 0.f, _bool* bJump = nullptr);

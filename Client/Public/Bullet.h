@@ -22,6 +22,7 @@ public:
 	{
 		_float3 vDir = {};
 		_float3 vPos = {};
+		_bool	isPlayerBullet = {};
 	} BULLET_DESC;
 
 private:
@@ -33,6 +34,11 @@ public:
 	_float Get_Damage()
 	{
 		return m_fDamage;
+	}
+
+	_bool Get_PlayerBullet()
+	{
+		return m_bPlayerBullet;
 	}
 
 public:
@@ -47,9 +53,8 @@ public:
 	virtual void OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta) override;
 	virtual const COLLISION_DESC& Get_CollisionDesc(COLLISION eColType);
 
-
-
 private:
+	_bool m_bPlayerBullet = { false };
 	_float m_fDamage = { 10.f };
 	CTexture* m_pTextureCom = { nullptr };
 	CTransform* m_pTransformCom = { nullptr };

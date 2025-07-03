@@ -55,8 +55,7 @@ public:
 
 private:
 	CAnimation*				m_pRightHandAnimationCom = { nullptr };
-	CAnimation*				m_pLeftHandAnimationCom = { nullptr };
-	CTransform*				m_pTransformCom = { nullptr };	
+	CAnimation*				m_pLeftHandAnimationCom = { nullptr };	
 	CBoxCollider*			m_pBoxColliderCom = { nullptr };
 	CSphereCollider*		m_pSphereColliderCom = { nullptr };
 	CVIBuffer_Rect*			m_pVIBufferCom = { nullptr };

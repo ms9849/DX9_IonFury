@@ -29,7 +29,12 @@ HRESULT CBullet::Initialize(void* pArg)
 
 	m_vDir = pDesc->vDir;
 	m_pTransformCom->Set_State(STATE::POSITION, pDesc->vPos);
-	m_pTransformCom->Set_Scale(_float3(0.1f, 0.1f, 0.1f));
+
+	m_pTransformCom->LookAt(m_pTransformCom->Get_State(STATE::POSITION) + m_vDir);
+	
+	
+	m_pTransformCom->Set_Scale(_float3(0.02f, 0.02f, 0.1f));
+	m_bPlayerBullet = pDesc->isPlayerBullet;
 
 	return S_OK;
 }
@@ -50,11 +55,18 @@ void CBullet::Late_Update(_float fTimeDelta)
 
 HRESULT CBullet::Render()
 {
+	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+
 	m_pTransformCom->Set_Transform();
 
-	m_pTextureCom->Set_Texture(3);
+	if(m_bPlayerBullet)
+		m_pTextureCom->Set_Texture(0);
+	else
+		m_pTextureCom->Set_Texture(0);
 
 	m_pVIBufferCom->Render();
+
+	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 
 	return S_OK;
 }
@@ -82,7 +94,7 @@ HRESULT CBullet::Ready_Components()
 		return E_FAIL;
 
 	/* Com_Texture */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Sky"),
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Bullet"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 

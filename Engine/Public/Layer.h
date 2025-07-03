@@ -4,7 +4,7 @@
 
 NS_BEGIN(Engine)
 
-class ENGINE_DLL CLayer final : public CBase
+class CLayer final : public CBase
 {
 private:
 	CLayer();
