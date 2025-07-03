@@ -42,9 +42,9 @@ HRESULT CBoss::Initialize(void* pArg)
 	m_pTransformCom->Set_Scale({ 10.f, 10.f, 1.f });
 
 	m_pTransformCom->Set_State(STATE::POSITION, _float3(
-		m_pGameInstance->Random(0.f, 20.f),
+		m_pGameInstance->Random(10.f, 30.f),
 		0.f,
-		m_pGameInstance->Random(0.f, 20.f)));
+		m_pGameInstance->Random(10.f, 30.f)));
 
 	/*m_pTransformCom_Up->Set_State(STATE::POSITION, _float3(
 		vPos.x,
@@ -190,45 +190,59 @@ void CBoss::Update(_float fTimeDelta)
 	_float angle30 = cosf(D3DXToRadian(30.f));
 	_float angle60 = cosf(D3DXToRadian(60.f));
 
-	if (dot >= fFov)
+	if (!m_bAnimationLock)
 	{
-		m_strUpFrameKey = TEXT("Boss_Front");
-		m_strDownFrameKey = TEXT("Boss_Front_Leg");
-	}
-	else if (dot <= -fFov)
-	{
-		m_strUpFrameKey = TEXT("Boss_Back");
-		m_strDownFrameKey = TEXT("Boss_Back_Leg");
-	}
-	else
-	{
-		if (vCross.y > 0)
+		if (dot >= fFov)
 		{
-			if (dot > 0)
-			{
-				m_strUpFrameKey = TEXT("Boss_Direction_SW");
-				m_strDownFrameKey = TEXT("Boss_Leg_Direction_SW");
-			}
-			else
-			{
-				m_strUpFrameKey = TEXT("Boss_Direction_NW");
-				m_strDownFrameKey = TEXT("Boss_Leg_Direction_NW");
-			}
+			m_strUpFrameKey = TEXT("Boss_Front");
+			m_strDownFrameKey = TEXT("Boss_Front_Leg");
+		}
+		else if (dot <= -fFov)
+		{
+			m_strUpFrameKey = TEXT("Boss_Back");
+			m_strDownFrameKey = TEXT("Boss_Back_Leg");
 		}
 		else
 		{
-			if (dot > 0)
+			if (vCross.y > 0)
 			{
-				m_strUpFrameKey = TEXT("Boss_Direction_SE");
-				m_strDownFrameKey = TEXT("Boss_Leg_Direction_SE");
+				if (dot > 0.2f)
+				{
+					m_strUpFrameKey = TEXT("Boss_Direction_SW");
+					m_strDownFrameKey = TEXT("Boss_Leg_Direction_SW");
+				}
+				else if (dot > 0)
+				{
+					m_strUpFrameKey = TEXT("Boss_Left");
+					m_strDownFrameKey = TEXT("Boss_Left_Leg");
+				}
+				else
+				{
+					m_strUpFrameKey = TEXT("Boss_Direction_NW");
+					m_strDownFrameKey = TEXT("Boss_Leg_Direction_NW");
+				}
 			}
 			else
 			{
-				m_strUpFrameKey = TEXT("Boss_Direction_NE");
-				m_strDownFrameKey = TEXT("Boss_Leg_Direction_NE");
+				if (dot > 0.2f)
+				{
+					m_strUpFrameKey = TEXT("Boss_Direction_SE");
+					m_strDownFrameKey = TEXT("Boss_Leg_Direction_SE");
+				}
+				else if (dot > 0)
+				{
+					m_strUpFrameKey = TEXT("Boss_Right");
+					m_strDownFrameKey = TEXT("Boss_Right_Leg");
+				}
+				else
+				{
+					m_strUpFrameKey = TEXT("Boss_Direction_NE");
+					m_strDownFrameKey = TEXT("Boss_Leg_Direction_NE");
+				}
 			}
 		}
 	}
+
 
 	if (m_fHp <= 0)
 	{
@@ -712,7 +726,7 @@ HRESULT CBoss::End_RenderState()
 void CBoss::Attack()
 {
 	m_fSumAttackCoolTime = 0.f;
-	m_strFrameKey = TEXT("Boss_Attack_Front");
+	m_strUpFrameKey = TEXT("Boss_Attack_Front");
 	m_bAnimationLock = true;
 
 	_float3 vDir = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
