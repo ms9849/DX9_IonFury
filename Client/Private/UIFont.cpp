@@ -8,7 +8,7 @@ CUIFont::CUIFont(LPDIRECT3DDEVICE9 pGraphic_Device)
 }
 
 CUIFont::CUIFont(const CUIFont& Prototype)
-	: CUIObject{ Prototype }
+	: CUIObject(Prototype)
 {
 }
 

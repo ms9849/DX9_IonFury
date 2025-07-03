@@ -4,7 +4,8 @@
 #include "Effect.h"
 #include "Terrain.h"
 #include "Player.h"
-#include "Player_Hand.h"
+#include "Player_RightHand.h"
+#include "Player_LeftHand.h"
 #include "Sky.h"
 #include "Bullet.h"
 #include "UIHp.h"
@@ -15,10 +16,12 @@
 #include "UIAim.h"
 #include "UIArmor.h"
 #include "UIItemQueue.h"
+#include "UICardKey.h"
 #include "ItemArmor.h"
 #include "ItemHealpack.h"
 #include "ItemPistolBullet.h"
 #include "ItemShootGunBullet.h"
+#include "ItemCardKey.h"
 #include "Soldier.h"
 #include "Zombie.h"
 #include "MeleeAttack.h"
@@ -121,18 +124,13 @@ HRESULT CLoader::Loading_For_GamePlay()
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Terrain/Tile0.jpg"), 1))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_Texture_Monster */
-	/*if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Monster"),
-		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Monster/Ma.jpg"), 1))))
-		return E_FAIL;*/
-
 	/* For.Prototype_Component_Texture_Sky */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Sky"),
 		CTexture::Create(m_pGraphic_Device, TEXTURE::CUBE, TEXT("../Bin/Resources/Textures/SkyBox/Sky_%d.dds"), 4))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_Texture_Hp */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Hp"),
+	/* For.Prototype_Component_Texture_UI_Hp */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_UI_Hp"),
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/UI/Hp/Hp_%d.png"), 6))))
 		return E_FAIL;
 
@@ -141,11 +139,17 @@ HRESULT CLoader::Loading_For_GamePlay()
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Explosion/Explosion%d.png"), 90))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_Texture_Aim */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Aim"),
+	/* For.Prototype_Component_Texture_UI_Aim */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_UI_Aim"),
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/UI/Aim/Aim_0.png"), 1))))
 		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_UI_CardKey */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_UI_CardKey"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/UI/CardKey/CardKey.png"), 1))))
+		return E_FAIL;
 	
+#pragma region 아이템
 	/* For.Prototype_Component_Texture_Item_Armor_0 */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Item_Armor_0"),
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Item/Item_Armor_0.png"), 1))))
@@ -156,10 +160,16 @@ HRESULT CLoader::Loading_For_GamePlay()
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Item/Item_Healpack_0.png"), 1))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Texture_Item_CardKey_0 */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Item_CardKey_0"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Item/Item_CardKey_0.png"), 1))))
+		return E_FAIL;
+
 	/* For.Prototype_Component_Texture_Item_Bullets */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Item_Bullets"),
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Item/Item_Bullet_%d.png"), 2))))
 		return E_FAIL;
+#pragma endregion
 
 	m_strMessage = TEXT("모델를(을) 로딩 중 입니다.");
 	/* For.Prototype_Component_VIBuffer_Terrain */
@@ -167,12 +177,10 @@ HRESULT CLoader::Loading_For_GamePlay()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_VIBuffer_Terrain"),
 		CVIBuffer_Terrain::Create(m_pGraphic_Device, 128, 128))))
 		return E_FAIL;
-
 	
 	/*if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_VIBuffer_Terrain"),
 		CVIBuffer_Terrain::Create(m_pGraphic_Device, TEXT("../Bin/Resources/Textures/Terrain/Height1.bmp")))))
 		return E_FAIL;*/
-	
 
 	/* For.Prototype_GameObject_Bullet */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Bullet"),
@@ -207,30 +215,46 @@ HRESULT CLoader::Loading_For_GamePlay()
 		CTerrain::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
+#pragma region 플레이어
 	/* For.Prototype_GameObject_Player */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Player"),
 		CPlayer::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
-	/* For.Prototype_GameObject_Player_Hand */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Player_Hand"),
-		CPlayer_Hand::Create(m_pGraphic_Device))))
+	/* For.Prototype_GameObject_Player_RightHand */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Player_RightHand"),
+		CPlayer_RightHand::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
-	/* For.Prototype_GameObject_Monster */
+	/* For.Prototype_GameObject_Player_LeftHand */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Player_LeftHand"),
+		CPlayer_LeftHand::Create(m_pGraphic_Device))))
+		return E_FAIL;
+#pragma endregion	
+
+#pragma region 몬스터
+	/* For.Prototype_GameObject_Monster_Soldier */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Monster_Soldier"),
 		CSoldier::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
+	/* For.Prototype_GameObject_Monster_Zombie */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Monster_Zombie"),
 		CZombie::Create(m_pGraphic_Device))))
 		return E_FAIL;
+#pragma endregion	
 
 	/* For.Prototype_GameObject_Sky */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Sky"),
 		CSky::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
+	/* For.Prototype_GameObject_Effect */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Effect"),
+		CEffect::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+#pragma region UI
 	/* For.Prototype_GameObject_UIHp */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_UIHp"),
 		CUIHp::Create(m_pGraphic_Device))))
@@ -239,11 +263,6 @@ HRESULT CLoader::Loading_For_GamePlay()
 	/* For.Prototype_GameObject_UIArmor */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_UIArmor"),
 		CUIArmor::Create(m_pGraphic_Device))))
-		return E_FAIL;
-
-	/* For.Prototype_GameObject_Effect */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Effect"),
-		CEffect::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_UIText */
@@ -276,6 +295,13 @@ HRESULT CLoader::Loading_For_GamePlay()
 		CUIAim::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
+	/* For.Prototype_GameObject_UICardKey */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_UICardKey"),
+		CUICardKey::Create(m_pGraphic_Device))))
+		return E_FAIL;
+#pragma endregion	
+
+#pragma region 아이템
 	/* For.Prototype_GameObject_Item_Armor */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Item_Armor"),
 		CItemArmor::Create(m_pGraphic_Device))))
@@ -295,6 +321,12 @@ HRESULT CLoader::Loading_For_GamePlay()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Item_ShootGun_Bullet"),
 		CItemShootGunBullet::Create(m_pGraphic_Device))))
 		return E_FAIL;
+
+	/* For.Prototype_GameObject_Item_CardKey */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Item_CardKey"),
+		CItemCardKey::Create(m_pGraphic_Device))))
+		return E_FAIL;
+#pragma endregion	
 
 	m_strMessage = TEXT("로딩이 완료되었습니다..");
 

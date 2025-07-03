@@ -13,12 +13,12 @@ NS_END
 
 NS_BEGIN(Client)
 
-class CPlayer_Hand final : public CGameObject  
+class CPlayer_RightHand final : public CGameObject
 {  
 private:  
-    CPlayer_Hand(LPDIRECT3DDEVICE9 pGraphic_Device);  
-    CPlayer_Hand(const CPlayer_Hand& Prototype);  
-    virtual ~CPlayer_Hand() = default;  
+    CPlayer_RightHand(LPDIRECT3DDEVICE9 pGraphic_Device);
+    CPlayer_RightHand(const CPlayer_RightHand& Prototype);
+    virtual ~CPlayer_RightHand() = default;
 
 public:  
     virtual HRESULT Initialize_Prototype() override;  
@@ -33,7 +33,6 @@ public:
     void Set_Current_Animation(const _wstring& strFrameKey);
 
 private:  
-    //CTexture* m_pTextureCom = { nullptr };  
     CAnimation* m_pAnimationCom = { nullptr };  
     CTransform* m_pTransformCom = { nullptr };  
     CTransform* m_pPlayerTransformCom = { nullptr };  
@@ -42,11 +41,12 @@ private:
     map<const _wstring, CTexture*>   m_pTextureComs{};
 
     _wstring m_strFrameKey{ TEXT("Pistol_Idle") };
-    map<const _wstring, CAnimation::FRAME_DESC> m_Frames;
 
-    const _wstring m_strFrameKeys[8] = {
-        TEXT("Pistol_Idle"), TEXT("Pistol_Walk"), TEXT("Pistol_Reload"), TEXT("Pistol_Shoot"),
-        TEXT("ShootGun_Idle"), TEXT("ShootGun_Walk"), TEXT("ShootGun_Reload"), TEXT("ShootGun_Shoot")
+    const _wstring m_strFrameKeys[12] = {
+        TEXT("Pistol_Idle"), TEXT("Pistol_Walk"), TEXT("Pistol_Reload"),
+        TEXT("Pistol_Shoot"), TEXT("Pistol_Down"), TEXT("Pistol_Up"),
+        TEXT("ShootGun_Idle"), TEXT("ShootGun_Walk"), TEXT("ShootGun_Reload"),
+        TEXT("ShootGun_Shoot"), TEXT("ShootGun_Down"), TEXT("ShootGun_Up"),
     };
 
 private:  
@@ -56,7 +56,7 @@ private:
     HRESULT End_RenderState();  
 
 public:  
-    static CPlayer_Hand* Create(LPDIRECT3DDEVICE9 pGraphic_Device);  
+    static CPlayer_RightHand* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
     virtual CGameObject* Clone(void* pArg) override;  
     virtual void Free() override;  
 };  

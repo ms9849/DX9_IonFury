@@ -2,7 +2,6 @@
 
 #include "Client_Defines.h"
 #include "LandObject.h"
-#include "Player_Hand.h"
 
 NS_BEGIN(Engine)
 class CSphereCollider;
@@ -27,6 +26,8 @@ private:
 		_uint iHp{}, iBullets{}, iShootBullets{}, iArmor{};
 		_wstring strWeapon{ TEXT("Pistol") };
 		_wstring strAction{ TEXT("Idle") };
+		_wstring strItem{ TEXT("CardKey") };
+		_wstring strItemAction{ TEXT("Idle") };
 	}PLAYER_INFO;
 
 	typedef struct tagWeapon
@@ -50,9 +51,11 @@ public:
 
 public:
 	PLAYER_INFO Get_Player_Info();
+	_bool Get_CanUse_CardKey();
 
 private:
 	CAnimation*				m_pRightHandAnimationCom = { nullptr };
+	CAnimation*				m_pLeftHandAnimationCom = { nullptr };
 	CTransform*				m_pTransformCom = { nullptr };	
 	CBoxCollider*			m_pBoxColliderCom = { nullptr };
 	CSphereCollider*		m_pSphereColliderCom = { nullptr };
@@ -66,15 +69,21 @@ private:
 	_float3 Calc_BulletDir(_float3* vOffset);
 	void Insert_ItemDesc(const _wstring strItemText);
 	void Pop_ItemDesc(_float fTimeDelta);
+	_wstring Set_FrameKey(_wstring strDst, _wstring strSrc);
+
 
 private:
 	PLAYER_INFO		m_tInfo{};
-	class CPlayer_Hand*	m_pRightHand{ nullptr };
-	class CPlayer_Hand*	m_pLeftHand{ nullptr };
-	_bool			m_bWalk{ false };
+	class CPlayer_RightHand*	m_pRightHand{ nullptr };
+	class CPlayer_LeftHand*		m_pLeftHand{ nullptr };
 	map<const _wstring, WEAPON_INFO> m_Weapons{};
+	_bool			m_bWeaponChange{ false };
+	_bool			m_bUseItem{ false };
 	deque<_wstring> m_ItemQueues{};
 	_float			m_fTimeStack{0.f};
+	_wstring		m_strNextWeapon{};
+
+	_bool			m_bCanUseCardKey{ false };
 
 public:
 	virtual void OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta) override;
