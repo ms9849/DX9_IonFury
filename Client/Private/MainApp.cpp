@@ -74,7 +74,7 @@ HRESULT CMainApp::Start_Level(LEVEL eLevelID)
 	if (FAILED(m_pGameInstance->Change_Level(CLevel_Loading::Create(m_pGraphic_Device, LEVEL::LOADING, eLevelID))))
 		return E_FAIL;
 	
-	//m_pGameInstance->PlayBGM(L"TEST.mp3", 1.f);
+	m_pGameInstance->PlayBGM(L"BackGround.mp3", 0.7f);
 
 	return S_OK;
 }
@@ -418,7 +418,7 @@ HRESULT CMainApp::Ready_Prototypes()
 #pragma region 총알 등 기타 텍스쳐
 	/* For.Prototype_Component_Texture_Bullet */
 
-	/* For.Prototype_Component_Texture_Sky */
+	/* For.Prototype_Component_Texture_Bullet */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Bullet"),
 		CTexture::Create(m_pGraphic_Device, TEXTURE::CUBE, TEXT("../Bin/Resources/Textures/Bullet/Bullet%d.dds"), 1))))
 		return E_FAIL;
