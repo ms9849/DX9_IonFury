@@ -31,6 +31,7 @@ public:
 public:  
     void Set_Player_Transform(CTransform* pTransform);  
     void Set_Current_Animation(const _wstring& strFrameKey);
+    void Set_Player_TimeDelta(_float fTimeDelta);
 
 private:  
     CAnimation* m_pAnimationCom = { nullptr };  
@@ -48,6 +49,8 @@ private:
         TEXT("ShootGun_Idle"), TEXT("ShootGun_Walk"), TEXT("ShootGun_Reload"),
         TEXT("ShootGun_Shoot"), TEXT("ShootGun_Down"), TEXT("ShootGun_Up"),
     };
+
+    _float m_fPlayerTimeDelta{ 0.f };
 
 private:  
     HRESULT Ready_Components();  

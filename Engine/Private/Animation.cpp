@@ -40,31 +40,56 @@ _uint CAnimation::Get_Frame_Current_Index(const _wstring strFrameKey)
 void CAnimation::Play_Animation(const _wstring strFrameKey, _float fTimeDelta)
 {
 	auto iter = m_tFrames.find(strFrameKey);
+	if (iter == m_tFrames.end() || iter->second.iEnd == 0)
+		return;
 
-	iter->second.fTime += fTimeDelta;
-	iter->second.bFinish = false;
+	FRAME_DESC& frame = iter->second;
 
-	if (iter->second.iEnd != 0)
+	const _float frameDuration = (1.f / 60.f) * (frame.iFrameSpeed); // 초당 n프레임
+
+	frame.fTime += fTimeDelta;
+
+	while (frame.fTime >= frameDuration)
 	{
-		if (iter->second.fTime >= (fTimeDelta * iter->second.iFrameSpeed))
-		{
-			iter->second.fTime = 0.f;
-			iter->second.iCurrentFrame++;
+		frame.fTime -= frameDuration;
+		frame.iCurrentFrame++;
 
-			if (iter->second.iCurrentFrame >= iter->second.iEnd - 1)
-			{
-				iter->second.iCurrentFrame = 0;
-				iter->second.bFinish = true;
-			}
+		if (frame.iCurrentFrame >= frame.iEnd)
+		{
+			frame.iCurrentFrame = 0;
+			frame.bFinish = true;
 		}
 	}
-	else
-	{
-		iter->second.fTime = 0.f;
-		iter->second.iCurrentFrame = 0;
-		iter->second.bFinish = false;
-	}
 }
+
+//void CAnimation::Play_Animation(const _wstring strFrameKey, _float fTimeDelta)
+//{
+//	auto iter = m_tFrames.find(strFrameKey);
+//
+//	iter->second.fTime += fTimeDelta;
+//	iter->second.bFinish = false;
+//
+//	if (iter->second.iEnd != 0)
+//	{
+//		if (iter->second.fTime >= (fTimeDelta * iter->second.iFrameSpeed))
+//		{
+//			iter->second.fTime = 0.f;
+//			iter->second.iCurrentFrame++;
+//
+//			if (iter->second.iCurrentFrame >= iter->second.iEnd)
+//			{ 
+//				iter->second.iCurrentFrame = 0;
+//				iter->second.bFinish = true;
+//			}
+//		}
+//	}
+//	else
+//	{
+//		iter->second.fTime = 0.f;
+//		iter->second.iCurrentFrame = 0;
+//		iter->second.bFinish = false;
+//	}
+//}
 
 _bool CAnimation::Check_Animation_Finish()
 {
@@ -84,7 +109,9 @@ _bool CAnimation::Check_Animation_Finish()
 _bool CAnimation::Check_Animation_Finish(const _wstring strFrameKey)
 {
 	auto iter = m_tFrames.find(strFrameKey);
-	return iter->second.bFinish;
+	if (iter->second.bFinish)
+		return true;
+	return false;
 }
 
 void CAnimation::Clear_Animation()

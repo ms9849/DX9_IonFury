@@ -87,11 +87,11 @@ void CPlayer_RightHand::Priority_Update(_float fTimeDelta)
 	{
 		m_pTransformCom->Set_Scale(_float3{ 1.5f, 1.f, 1.f });
 	}
+	m_pAnimationCom->Play_Animation(m_strFrameKey, m_fPlayerTimeDelta);
 }
 
 void CPlayer_RightHand::Update(_float fTimeDelta)
 {
-	m_pAnimationCom->Play_Animation(m_strFrameKey, fTimeDelta);
 }
 
 void CPlayer_RightHand::Late_Update(_float fTimeDelta)
@@ -129,6 +129,11 @@ void CPlayer_RightHand::Set_Player_Transform(CTransform* pTransform)
 void CPlayer_RightHand::Set_Current_Animation(const _wstring& strFrameKey)
 {
 	m_strFrameKey = strFrameKey;
+}
+
+void CPlayer_RightHand::Set_Player_TimeDelta(_float fTimeDelta)
+{
+	m_fPlayerTimeDelta = fTimeDelta;
 }
 
 HRESULT CPlayer_RightHand::Ready_Components()

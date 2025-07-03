@@ -31,6 +31,7 @@ public:
 public:
     void Set_Player_Transform(CTransform* pTransform);
     void Set_Current_Animation(const _wstring& strFrameKey);
+    void Set_Player_TimeDelta(_float fTimeDelta);
 
 private:
     CAnimation* m_pAnimationCom = { nullptr };
@@ -45,6 +46,8 @@ private:
     const _wstring m_strFrameKeys[3] = {
         TEXT("CardKey_Idle"), TEXT("CardKey_Up"), TEXT("CardKey_Down")
     };
+
+    _float m_fPlayerTimeDelta{ 0.f };
 
 private:
     HRESULT Ready_Components();
