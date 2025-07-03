@@ -17,6 +17,7 @@ public:
 		_float			fRotation;
 		class CTransform* pPlayerTransform;
 		class CTransform* pMonsterTransform;
+		_bool			bTrace = false;
 	} SIGHT_DESC;
 
 private:
@@ -35,6 +36,7 @@ private:
 	_float				m_fRadian = {};
 	_float				m_fRange = {};
 	_float				m_fRotation = {};
+	_bool				m_bTrace = false;
 	class CTransform*	m_pTransform = { nullptr };
 	class CTransform*			m_pPlayerTransform = { nullptr };
 

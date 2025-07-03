@@ -27,6 +27,7 @@ HRESULT CSight::Initialize(void* pArg)
 	SIGHT_DESC* pDesc = static_cast<SIGHT_DESC*>(pArg);
 	m_fRange = pDesc->fRange;
 	m_fRotation = pDesc->fRotation;
+	m_bTrace = pDesc->bTrace;
 	m_pTransform = pDesc->pMonsterTransform;
 	m_pPlayerTransform = pDesc->pPlayerTransform;
 
@@ -64,12 +65,23 @@ _bool CSight::Check_Sight(_float fTimeDelta)
 
 	_float3 yAxis = { 0.f, 1.f, 0.f };
 
+	_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransform->Get_State(STATE::POSITION);
+
 	if (fSign >= fFov)			// 범위에 들어온 상태
 	{
-		m_pTransform->Rotation(yAxis, fRadian);
+		//m_pTransform->Rotation(yAxis, fRadian);
+		//m_pTransform->Turn(yAxis, fTimeDelta);
+		//m_pTransform->Chase(m_pPlayerTransform->Get_State(STATE::POSITION), fTimeDelta);
+		//m_pTransform->LookAt(m_pPlayerTransform->Get_State(STATE::POSITION));
+
+		return true;
+	}
+	else if (m_fRange >= D3DXVec3Length(&vDiff) && m_bTrace)
+	{
+		m_pTransform->Turn(yAxis, fTimeDelta);
+		//m_pTransform->Rotation(yAxis, fRadian);
 		//m_pTransform->Chase(m_pPlayerTransform->Get_State(STATE::POSITION), fTimeDelta);
 		m_pTransform->LookAt(m_pPlayerTransform->Get_State(STATE::POSITION));
-
 		return true;
 	}
 
