@@ -69,10 +69,10 @@ _bool CSight::Check_Sight(_float fTimeDelta)
 
 	if (fSign >= fFov)			// 범위에 들어온 상태
 	{
-		//m_pTransform->Rotation(yAxis, fRadian);
+		m_pTransform->Rotation(yAxis, fRadian);
 		//m_pTransform->Turn(yAxis, fTimeDelta);
 		//m_pTransform->Chase(m_pPlayerTransform->Get_State(STATE::POSITION), fTimeDelta);
-		//m_pTransform->LookAt(m_pPlayerTransform->Get_State(STATE::POSITION));
+		m_pTransform->LookAt(m_pPlayerTransform->Get_State(STATE::POSITION));
 
 		return true;
 	}
