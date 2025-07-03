@@ -23,9 +23,6 @@ HRESULT CZombie::Initialize_Prototype()
 
 HRESULT CZombie::Initialize(void* pArg)
 {
-	CLandObject::LANDOBJECT_DESC			Desc{};
-	Desc.pLandTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_BackGround"), TEXT("Com_Transform")));
-	Desc.pLandVIBuffer = static_cast<CVIBuffer*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_BackGround"), TEXT("Com_VIBuffer")));
 	m_pPlayerTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player"), TEXT("Com_Transform")));
 
 	if (m_pPlayerTransform == nullptr)
@@ -47,7 +44,7 @@ HRESULT CZombie::Initialize(void* pArg)
 
 	m_fDamage = 30.f;
 	m_fAttackRange = 2.f;
-	m_fAttackfCoolTime = 5.f;
+	m_fAttackCoolTime = 5.f;
 	//m_AttackfCoolTime = 1.f;
 
 	//m_pTransformCom->Rotation({0.f, 1.f, 0.f}, m_pGameInstance->Random(0.f, 180.f));
@@ -250,7 +247,7 @@ void CZombie::Update(_float fTimeDelta)
 	}
 	else if (m_pSightCom->Check_Sight(fTimeDelta) && !m_bAnimationLock)
 	{
-		if (m_fSumAttackCoolTime >= m_fAttackfCoolTime)
+		if (m_fSumAttackCoolTime >= m_fAttackCoolTime)
 		{
 			_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
 			if (D3DXVec3Length(&vDiff) <= m_fAttackRange)

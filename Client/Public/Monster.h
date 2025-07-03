@@ -39,7 +39,7 @@ protected:
 	CBoxCollider* m_pBoxColliderCom = { nullptr };
 	CSphereCollider* m_pSphereColliderCom = { nullptr };
 
-	_float m_fAttackfCoolTime = 3.f;
+	_float m_fAttackCoolTime = 3.f;
 	_float m_fSumAttackCoolTime = 3.f;
 	_float m_fMoveCoolTime = 0.05f;
 	_float m_fSumMoveCoolTime = {};
@@ -60,7 +60,7 @@ protected:
 	virtual HRESULT Ready_Components() = 0;
 	virtual HRESULT Begin_RenderState();
 	virtual HRESULT End_RenderState();
-	virtual void Attack() = 0;
+	virtual void Attack();
 	virtual void Move() = 0;
 
 	virtual void Free();
