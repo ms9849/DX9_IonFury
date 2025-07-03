@@ -296,8 +296,7 @@ void CZombie::Update(_float fTimeDelta)
 void CZombie::Late_Update(_float fTimeDelta)
 {
 	m_pAnimationCom->Play_Animation(m_strFrameKey, fTimeDelta);
-	int tempNum = m_pAnimationCom->Get_Frame_Current_Index(m_strFrameKey);
-	//m_pGameInstance->Add_RenderGroup(RENDER::NONBLEND, this);
+
 	if (m_bAnimationLock && m_pAnimationCom->Check_Animation_Finish())
 	{
 		//m_pAnimationCom->Set_Animation(&iter->second);

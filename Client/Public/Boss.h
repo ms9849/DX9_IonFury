@@ -42,9 +42,16 @@ public:
 	virtual void Move() override;
 
 private:
-	CVIBuffer_Rect* m_pVIBufferCom_Down = { nullptr };
+	void RotateToPlayer(CTransform* pTranform);
+	void RotateWithParentTransform();
+
+private:
 	CVIBuffer_Rect* m_pVIBufferCom_Up = { nullptr };
-	CAnimation* m_pAnimationCom2 = { nullptr };
+	CVIBuffer_Rect* m_pVIBufferCom_Down = { nullptr };
+	CTransform* m_pTransformCom_Up = { nullptr };
+	CTransform* m_pTransformCom_Down = { nullptr };
+	CAnimation* m_pAnimationCom_Up = { nullptr };
+	CAnimation* m_pAnimationCom_Down = { nullptr };
 	_wstring m_strUpFrameKey = {};
 	_wstring m_strDownFrameKey = {};
 	_bool m_bAnimationLock = false;

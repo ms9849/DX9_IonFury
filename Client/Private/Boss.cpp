@@ -39,12 +39,27 @@ HRESULT CBoss::Initialize(void* pArg)
 	if (FAILED(Ready_Animations()))
 		return E_FAIL;
 
-	//m_pTransformCom->Set_Scale({ 10.f, 10.f, 1.f });
+	m_pTransformCom->Set_Scale({ 10.f, 10.f, 1.f });
 
 	m_pTransformCom->Set_State(STATE::POSITION, _float3(
 		m_pGameInstance->Random(0.f, 20.f),
 		0.f,
 		m_pGameInstance->Random(0.f, 20.f)));
+
+	/*m_pTransformCom_Up->Set_State(STATE::POSITION, _float3(
+		vPos.x,
+		vPos.y,
+		vPos.z));
+
+	m_pTransformCom_Down->Set_State(STATE::POSITION, _float3(
+		vPos.x,
+		vPos.y,
+		vPos.z));*/
+
+	_float3 vPos = m_pTransformCom->Get_State(STATE::POSITION);
+	m_pTransformCom_Up->Set_State(STATE::POSITION, {vPos.x, vPos.y + 2.0f, vPos.z});
+
+	m_pTransformCom_Down->Set_State(STATE::POSITION, m_pTransformCom->Get_State(STATE::POSITION));
 	//m_pTransformCom->Set_Scale({ 100.f, 100.f, 10.f });
 	
 	/*m_pTransformCom->Set_Transform();*/
@@ -293,16 +308,18 @@ void CBoss::Update(_float fTimeDelta)
 
 void CBoss::Late_Update(_float fTimeDelta)
 {
-	auto iter = m_Frames.find(m_strUpFrameKey);
-	m_pAnimationCom->Set_Animation(&iter->second);
-	m_pAnimationCom->Play_Animation(fTimeDelta);
+	//auto iter = m_tFrames.find(m_strUpFrameKey);
+	//m_pAnimationCom_Up->Set_Animation(&iter->second);
+	//m_pAnimationCom_Up->Play_Animation(fTimeDelta);
+	m_pAnimationCom_Up->Play_Animation(m_strUpFrameKey, fTimeDelta);
+	m_pAnimationCom_Down->Play_Animation(m_strDownFrameKey, fTimeDelta);
 
-	auto iter_1 = m_Frames.find(m_strDownFrameKey);
+	//auto iter_1 = m_tFrames.find(m_strDownFrameKey);
 
-	m_pAnimationCom2->Set_Animation(&iter_1->second);
-	m_pAnimationCom2->Play_Animation(fTimeDelta);
+	/*m_pAnimationCom_Down->Set_Animation(&iter_1->second);
+	m_pAnimationCom_Down->Play_Animation(fTimeDelta);*/
 
-	if (m_bAnimationLock && m_pAnimationCom->Check_Animation_Finish())
+	if (m_bAnimationLock && m_pAnimationCom_Up->Check_Animation_Finish(m_strUpFrameKey))
 	{
 		if (m_bDying)
 		{
@@ -322,7 +339,30 @@ void CBoss::Late_Update(_float fTimeDelta)
 
 HRESULT CBoss::Render()
 {
-	_float4x4 matWorldTemp = *m_pTransformCom->Get_WorldMatrixPtr();
+	if (FAILED(Begin_RenderState()))
+		return E_FAIL;
+
+	RotateWithParentTransform();
+
+	RotateToPlayer(m_pTransformCom_Up);
+	auto iter = m_pTextureComs.find(m_strUpFrameKey);
+	iter->second->Set_Texture(m_pAnimationCom_Up->Get_Frame_Current_Index(m_strUpFrameKey));
+	m_pVIBufferCom_Up->Render();
+
+	RotateToPlayer(m_pTransformCom_Down);
+	iter = m_pTextureComs.find(m_strDownFrameKey);
+	iter->second->Set_Texture(m_pAnimationCom_Down->Get_Frame_Current_Index(m_strDownFrameKey));
+	m_pVIBufferCom_Down->Render();
+
+	if (FAILED(End_RenderState()))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+void CBoss::RotateToPlayer(CTransform* pTranform)
+{
+	_float4x4 matWorldTemp = *pTranform->Get_WorldMatrixPtr();
 
 	/*
 	matWorldTemp? ->현재 트랜스폼의 위치와 회전값을 그대로 가져옴.
@@ -332,7 +372,7 @@ HRESULT CBoss::Render()
 	실제 회전값과는 무관하게 플레이어를 바라보게만 만든 행렬
 	*/
 
-	_float3 fMonsterPos = m_pTransformCom->Get_State(STATE::POSITION);
+	_float3 fMonsterPos = pTranform->Get_State(STATE::POSITION);
 	_float3 fPlayerPos = m_pPlayerTransform->Get_State(STATE::POSITION);
 
 	_float3 fLook = fPlayerPos - fMonsterPos;
@@ -345,7 +385,7 @@ HRESULT CBoss::Render()
 	D3DXVec3Cross(&fRight, &fUp, &fLook);
 	D3DXVec3Normalize(&fRight, &fRight);
 
-	_float3 scale = m_pTransformCom->Get_Scaled();
+	_float3 scale = pTranform->Get_Scaled();
 
 	fRight *= scale.x;
 	fUp *= scale.y;
@@ -355,44 +395,31 @@ HRESULT CBoss::Render()
 	memcpy(&matWorldTemp.m[1][0], &fUp, sizeof(_float3));
 	memcpy(&matWorldTemp.m[2][0], &fLook, sizeof(_float3));
 
-	m_pTransformCom->Set_Transform(matWorldTemp);
+	pTranform->Set_Transform(matWorldTemp);
 
-	//m_pTextureCom->Set_Texture(0);
-	/*m_pTextureCom->Set_Texture(m_iNum++);
-	if (m_iNum > 3)
-		m_iNum = 0;*/
+	//return matWorldTemp;
+}
 
-	/*auto iter = m_pTextureComs.find(m_strUpFrameKey);
-	iter->second->Set_Texture(m_pAnimationCom->Get_Frame_Index());
+void CBoss::RotateWithParentTransform()
+{
+	_float3 vRootPos = m_pTransformCom->Get_State(STATE::POSITION);
 
-	auto iter_1 = m_pTextureComs.find(m_strDownFrameKey);
-	iter_1->second->Set_Texture(m_pAnimationCom2->Get_Frame_Index());
+	_float3 vUpOffset = { 0.f, 3.8f, 0.f }; 
+	_float3 vDownOffset = { 0.f, 0.f, 0.f };
 
-	auto iter = m_pTextureComs.find(m_strUpFrameKey);
-	iter->second->Set_Texture(m_pAnimationCom->Get_Frame_Index());*/
+	D3DXMATRIX matRot;
+	//D3DXMatrixRotationY(&matRot, m_pTransformCom->Get_State(STATE::POSITION).y);
 
-	if (FAILED(Begin_RenderState()))
-		return E_FAIL;
+	m_pTransformCom_Up->Set_State(STATE::POSITION, vRootPos + vUpOffset);
+	m_pTransformCom_Down->Set_State(STATE::POSITION, vRootPos + vDownOffset);
 
-	m_pGraphic_Device->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
-	m_pGraphic_Device->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-	m_pGraphic_Device->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE);
+	m_pTransformCom_Up->Set_State(STATE::RIGHT, m_pTransformCom->Get_State(STATE::RIGHT));
+	m_pTransformCom_Up->Set_State(STATE::LOOK, m_pTransformCom->Get_State(STATE::LOOK));
+	m_pTransformCom_Up->Set_State(STATE::UP, m_pTransformCom->Get_State(STATE::UP));
 
-	auto iter = m_pTextureComs.find(m_strUpFrameKey);
-	iter->second->Set_Texture(m_pAnimationCom->Get_Frame_Index());
-	m_pVIBufferCom_Up->Render();
-
-	iter = m_pTextureComs.find(m_strDownFrameKey);
-	iter->second->Set_Texture(m_pAnimationCom2->Get_Frame_Index());
-	m_pVIBufferCom_Down->Render();
-
-	/*m_pVIBufferCom_Up->Render();
-	m_pVIBufferCom_Down->Render();*/
-
-	if (FAILED(End_RenderState()))
-		return E_FAIL;
-
-	return S_OK;
+	m_pTransformCom_Down->Set_State(STATE::RIGHT, m_pTransformCom->Get_State(STATE::RIGHT));
+	m_pTransformCom_Down->Set_State(STATE::LOOK, m_pTransformCom->Get_State(STATE::LOOK));
+	m_pTransformCom_Down->Set_State(STATE::UP, m_pTransformCom->Get_State(STATE::UP));
 }
 
 HRESULT CBoss::Ready_Animations()
@@ -422,121 +449,121 @@ HRESULT CBoss::Ready_Animations()
 	auto iter = m_pTextureComs.find(TEXT("Boss_Attack_Front"));
 	Desc_0.iFrameSpeed = 15;
 	Desc_0.iEnd = iter->second->Get_Texture_Length();
-	m_Frames.emplace(TEXT("Boss_Attack_Front"), Desc_0);
+	m_pAnimationCom_Up->Set_Animation(TEXT("Boss_Attack_Front"), Desc_0);
 
 	//Boss_Attack_SE
 	iter = m_pTextureComs.find(TEXT("Boss_Attack_SE"));
 	Desc_1.iFrameSpeed = 15;
 	Desc_1.iEnd = iter->second->Get_Texture_Length();
-	m_Frames.emplace(TEXT("Boss_Attack_SE"), Desc_1);
+	m_pAnimationCom_Up->Set_Animation(TEXT("Boss_Attack_SE"), Desc_1);
 
 	//Boss_Attack_SW
 	iter = m_pTextureComs.find(TEXT("Boss_Attack_SW"));
 	Desc_2.iFrameSpeed = 15;
 	Desc_2.iEnd = iter->second->Get_Texture_Length();
-	m_Frames.emplace(TEXT("Boss_Attack_SW"), Desc_2);
+	m_pAnimationCom_Up->Set_Animation(TEXT("Boss_Attack_SW"), Desc_2);
 
 	//Boss_Die
 	iter = m_pTextureComs.find(TEXT("Boss_Die"));
 	Desc_3.iFrameSpeed = 12;
 	Desc_3.iEnd = iter->second->Get_Texture_Length();
-	m_Frames.emplace(TEXT("Boss_Die"), Desc_3);
+	m_pAnimationCom_Up->Set_Animation(TEXT("Boss_Die"), Desc_3);
 
 	//Boss_Direction_NE
 	iter = m_pTextureComs.find(TEXT("Boss_Direction_NE"));
 	Desc_4.iFrameSpeed = 12;
 	Desc_4.iEnd = iter->second->Get_Texture_Length();
-	m_Frames.emplace(TEXT("Boss_Direction_NE"), Desc_4);
+	m_pAnimationCom_Up->Set_Animation(TEXT("Boss_Direction_NE"), Desc_4);
 
 	//Boss_Direction_NW
 	iter = m_pTextureComs.find(TEXT("Boss_Direction_NW"));
 	Desc_5.iFrameSpeed = 12;
 	Desc_5.iEnd = iter->second->Get_Texture_Length();
-	m_Frames.emplace(TEXT("Boss_Direction_NW"), Desc_5);
+	m_pAnimationCom_Up->Set_Animation(TEXT("Boss_Direction_NW"), Desc_5);
 
 	//Boss_Direction_SE
 	iter = m_pTextureComs.find(TEXT("Boss_Direction_SE"));
 	Desc_6.iFrameSpeed = 7;
 	Desc_6.iEnd = iter->second->Get_Texture_Length();
-	m_Frames.emplace(TEXT("Boss_Direction_SE"), Desc_6);
+	m_pAnimationCom_Up->Set_Animation(TEXT("Boss_Direction_SE"), Desc_6);
 
 	//Boss_Direction_SW
 	iter = m_pTextureComs.find(TEXT("Boss_Direction_SW"));
 	Desc_7.iFrameSpeed = 7;
 	Desc_7.iEnd = iter->second->Get_Texture_Length();
-	m_Frames.emplace(TEXT("Boss_Direction_SW"), Desc_7);
+	m_pAnimationCom_Up->Set_Animation(TEXT("Boss_Direction_SW"), Desc_7);
 
 	//Boss_Front
 	iter = m_pTextureComs.find(TEXT("Boss_Front"));
 	Desc_8.iFrameSpeed = 7;
 	Desc_8.iEnd = iter->second->Get_Texture_Length();
-	m_Frames.emplace(TEXT("Boss_Front"), Desc_8);
+	m_pAnimationCom_Up->Set_Animation(TEXT("Boss_Front"), Desc_8);
 
 	//Boss_Back
 	iter = m_pTextureComs.find(TEXT("Boss_Back"));
 	Desc_9.iFrameSpeed = 7;
 	Desc_9.iEnd = iter->second->Get_Texture_Length();
-	m_Frames.emplace(TEXT("Boss_Back"), Desc_9);
+	m_pAnimationCom_Up->Set_Animation(TEXT("Boss_Back"), Desc_9);
 
 	//Boss_Left
 	iter = m_pTextureComs.find(TEXT("Boss_Left"));
 	Desc_10.iFrameSpeed = 7;
 	Desc_10.iEnd = iter->second->Get_Texture_Length();
-	m_Frames.emplace(TEXT("Boss_Left"), Desc_10);
+	m_pAnimationCom_Up->Set_Animation(TEXT("Boss_Left"), Desc_10);
 
 	//Boss_Right
 	iter = m_pTextureComs.find(TEXT("Boss_Right"));
 	Desc_11.iFrameSpeed = 7;
 	Desc_11.iEnd = iter->second->Get_Texture_Length();
-	m_Frames.emplace(TEXT("Boss_Right"), Desc_11);
+	m_pAnimationCom_Up->Set_Animation(TEXT("Boss_Right"), Desc_11);
 
 	//Boss_Leg_Direction_NE
 	iter = m_pTextureComs.find(TEXT("Boss_Leg_Direction_NE"));
 	Desc_12.iFrameSpeed = 7;
 	Desc_12.iEnd = iter->second->Get_Texture_Length();
-	m_Frames.emplace(TEXT("Boss_Leg_Direction_NE"), Desc_12);
+	m_pAnimationCom_Down->Set_Animation(TEXT("Boss_Leg_Direction_NE"), Desc_12);
 
 	//Boss_Leg_Direction_NW
 	iter = m_pTextureComs.find(TEXT("Boss_Leg_Direction_NW"));
 	Desc_13.iFrameSpeed = 7;
 	Desc_13.iEnd = iter->second->Get_Texture_Length();
-	m_Frames.emplace(TEXT("Boss_Leg_Direction_NW"), Desc_13);
+	m_pAnimationCom_Down->Set_Animation(TEXT("Boss_Leg_Direction_NW"), Desc_13);
 
 	//Boss_Direction_SE
 	iter = m_pTextureComs.find(TEXT("Boss_Leg_Direction_SE"));
 	Desc_13.iFrameSpeed = 7;
 	Desc_13.iEnd = iter->second->Get_Texture_Length();
-	m_Frames.emplace(TEXT("Boss_Leg_Direction_SE"), Desc_14);
+	m_pAnimationCom_Down->Set_Animation(TEXT("Boss_Leg_Direction_SE"), Desc_14);
 
 	//Boss_Direction_SW
 	iter = m_pTextureComs.find(TEXT("Boss_Leg_Direction_SW"));
 	Desc_13.iFrameSpeed = 7;
 	Desc_13.iEnd = iter->second->Get_Texture_Length();
-	m_Frames.emplace(TEXT("Boss_Leg_Direction_SW"), Desc_15);
+	m_pAnimationCom_Down->Set_Animation(TEXT("Boss_Leg_Direction_SW"), Desc_15);
 
 	//Boss_Leg_Front
 	iter = m_pTextureComs.find(TEXT("Boss_Front_Leg"));
 	Desc_13.iFrameSpeed = 7;
 	Desc_13.iEnd = iter->second->Get_Texture_Length();
-	m_Frames.emplace(TEXT("Boss_Front_Leg"), Desc_16);
+	m_pAnimationCom_Down->Set_Animation(TEXT("Boss_Front_Leg"), Desc_16);
 
 	//Boss_Leg_Back
 	iter = m_pTextureComs.find(TEXT("Boss_Back_Leg"));
 	Desc_13.iFrameSpeed = 7;
 	Desc_13.iEnd = iter->second->Get_Texture_Length();
-	m_Frames.emplace(TEXT("Boss_Back_Leg"), Desc_17);
+	m_pAnimationCom_Down->Set_Animation(TEXT("Boss_Back_Leg"), Desc_17);
 
 	//Boss_Leg_Left
 	iter = m_pTextureComs.find(TEXT("Boss_Left_Leg"));
 	Desc_13.iFrameSpeed = 7;
 	Desc_13.iEnd = iter->second->Get_Texture_Length();
-	m_Frames.emplace(TEXT("Boss_Left_Leg"), Desc_18);
+	m_pAnimationCom_Down->Set_Animation(TEXT("Boss_Left_Leg"), Desc_18);
 
 	//Boss_Leg_Right
 	iter = m_pTextureComs.find(TEXT("Boss_Right_Leg"));
 	Desc_13.iFrameSpeed = 7;
 	Desc_13.iEnd = iter->second->Get_Texture_Length();
-	m_Frames.emplace(TEXT("Boss_Right_Leg"), Desc_19);
+	m_pAnimationCom_Down->Set_Animation(TEXT("Boss_Right_Leg"), Desc_19);
 
 	return S_OK;
 }
@@ -574,6 +601,14 @@ HRESULT CBoss::Ready_Components()
 		TEXT("Com_Transform"), reinterpret_cast<CComponent**>(&m_pTransformCom), &TransformDesc)))
 		return E_FAIL;
 
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Transform"),
+		TEXT("Com_Transform_1"), reinterpret_cast<CComponent**>(&m_pTransformCom_Up), &TransformDesc)))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Transform"),
+		TEXT("Com_Transform_2"), reinterpret_cast<CComponent**>(&m_pTransformCom_Down), &TransformDesc)))
+		return E_FAIL;
+
 	/* Com_Texture */
 	for (size_t i = 0; i < (sizeof(m_strFrameKeys) / sizeof(m_strFrameKeys[0])); ++i)
 	{
@@ -598,17 +633,21 @@ HRESULT CBoss::Ready_Components()
 		return E_FAIL;
 
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Animation"),
-		TEXT("Com_Animation2"), reinterpret_cast<CComponent**>(&m_pAnimationCom2))))
+		TEXT("Com_Animation_Up"), reinterpret_cast<CComponent**>(&m_pAnimationCom_Up))))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Animation"),
+		TEXT("Com_Animation_Down"), reinterpret_cast<CComponent**>(&m_pAnimationCom_Down))))
 		return E_FAIL;
 
 	/* Com_VIBuffer */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_Rect_Up"),
-		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom_Up))))
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_Rect"),
+		TEXT("Com_VIBuffer_Up"), reinterpret_cast<CComponent**>(&m_pVIBufferCom_Up))))
 		return E_FAIL;
 
 	/* Com_VIBuffer */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_Rect_Down"),
-		TEXT("Com_VIBuffer2"), reinterpret_cast<CComponent**>(&m_pVIBufferCom_Down))))
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_Rect"),
+		TEXT("Com_VIBuffer_Down"), reinterpret_cast<CComponent**>(&m_pVIBufferCom_Down))))
 		return E_FAIL;
 
 	/* Com_Sight */
@@ -742,5 +781,8 @@ void CBoss::Free()
 	__super::Free();
 	Safe_Release(m_pVIBufferCom_Up);
 	Safe_Release(m_pVIBufferCom_Down);
-	Safe_Release(m_pAnimationCom2);
+	Safe_Release(m_pAnimationCom_Up);
+	Safe_Release(m_pAnimationCom_Down);
+	Safe_Release(m_pTransformCom_Up);
+	Safe_Release(m_pTransformCom_Down);
 }
