@@ -233,6 +233,15 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 				m_tInfo.iShootBullets = iter->second.iShootBullets;
 				m_tInfo.strAction = TEXT("Shoot");
 
+				if (m_tInfo.strWeapon.compare(TEXT("Pistol")) == 0)
+				{
+					m_pGameInstance->PlaySoundOnce(TEXT("Pistol_Shoot.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
+				}
+				else if (m_tInfo.strWeapon.compare(TEXT("ShootGun")) == 0)
+				{
+
+				}
+
 				_float3 vOffset = _float3{ 0.f, 0.f, 0.f };
 				_float3 vDir = Calc_BulletDir(&vOffset);
 				_float3 vPos = m_pTransformCom->Get_State(STATE::POSITION);

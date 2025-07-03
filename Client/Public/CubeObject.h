@@ -14,10 +14,21 @@ NS_BEGIN(Client)
 
 class CCubeObject final : public CLandObject
 {
+public:
+	typedef struct tagCubeDesc {
+		CTransform* pTransform;
+		CVIBuffer_Cube* pBuffer;
+	} CUBE_DESC;
+
 private:
 	CCubeObject(LPDIRECT3DDEVICE9 pGraphic_Device);
 	CCubeObject(const CCubeObject& Prototype);
 	virtual ~CCubeObject() = default;
+
+public:
+	const CUBE_DESC& Get_CubeDesc() {
+		return CUBE_DESC{ m_pTransformCom, m_pVIBufferCom };
+	}
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -33,7 +44,6 @@ public:
 
 private:
 	CTexture* m_pTextureCom = { nullptr };
-	CTransform* m_pTransformCom = { nullptr };
 	CVIBuffer_Cube* m_pVIBufferCom = { nullptr };
 	CBoxCollider* m_BoxColliderCom = { nullptr };
 

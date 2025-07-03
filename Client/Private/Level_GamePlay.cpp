@@ -204,6 +204,13 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const _wstring& strLayerTag)
 			ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag)))
 			return E_FAIL;
 	}
+
+	for (size_t i = 0; i < 1; i++)
+	{
+		if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Monster_Boss"),
+			ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag)))
+			return E_FAIL;
+	}
 	
 	/*if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Monster"),
 		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag)))
@@ -359,6 +366,8 @@ HRESULT CLevel_GamePlay::Ready_Layer_Cube(const _wstring& strLayerTag)
 	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_CubeObject"),
 		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag)))
 		return E_FAIL;
+
+	m_pTerrain_Manager->Add_Cube(LEVEL::GAMEPLAY);
 
 	return S_OK;
 }

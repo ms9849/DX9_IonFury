@@ -20,7 +20,7 @@ public:
 	virtual HRESULT Render();
 
 public:
-	virtual _float Compute_Height(const _float3& vLocalPos);
+	virtual _float Compute_Height(const _float3& vLocalPos, class CTransform* pTransform = nullptr);
 	virtual _bool Picking(class CTransform* pTransform, _float3* pOut, _float3 vPos, _float3 vLook) = 0;
 
 protected:

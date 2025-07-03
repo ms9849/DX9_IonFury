@@ -7,7 +7,6 @@
 NS_BEGIN(Engine)
 class CTexture;
 class CAnimation;
-class CTransform;
 class CVIBuffer_Rect;
 class CSight;
 class CBoxCollider;
@@ -34,7 +33,6 @@ public:
 
 protected:
 	CAnimation* m_pAnimationCom = { nullptr };
-	CTransform* m_pTransformCom = { nullptr };
 	CVIBuffer_Rect* m_pVIBufferCom = { nullptr };
 	CSight* m_pSightCom = { nullptr };
 	CTransform* m_pPlayerTransform = { nullptr };

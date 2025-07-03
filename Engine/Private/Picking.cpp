@@ -38,10 +38,9 @@ _bool CPicking::Picking_InLocalSpace(const _float4x4* pWorldMatrixInverse, const
     _float      fU{}, fV{}, fDist{};
     _float3     m_vRayPos, m_vRayDir = {};
 
-    D3DXVec3Normalize(&m_vRayDir, &vRayDir);
-
-    m_vRayPos = *D3DXVec3TransformCoord(&m_vRayPos, &vRayPos, pWorldMatrixInverse);
-    m_vRayDir = *D3DXVec3TransformNormal(&m_vRayDir, &vRayDir, pWorldMatrixInverse);
+    D3DXVec3TransformCoord(&m_vRayPos, &vRayPos, pWorldMatrixInverse);
+    D3DXVec3TransformNormal(&m_vRayDir, &vRayDir, pWorldMatrixInverse);
+    D3DXVec3Normalize(&m_vRayDir, &m_vRayDir);
 
     _bool       isColl = D3DXIntersectTri(&vPointA, &vPointB, &vPointC, &m_vRayPos, &m_vRayDir, &fU, &fV, &fDist);
 
@@ -49,6 +48,7 @@ _bool CPicking::Picking_InLocalSpace(const _float4x4* pWorldMatrixInverse, const
     {
         *pOut = m_vRayPos + m_vRayDir * fDist;
     }
+
 
     return isColl;
 }

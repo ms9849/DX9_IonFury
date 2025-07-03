@@ -50,7 +50,7 @@ HRESULT CVIBuffer::Render()
 	return S_OK;
 }
 
-_float CVIBuffer::Compute_Height(const _float3& vLocalPos)
+_float CVIBuffer::Compute_Height(const _float3& vLocalPos, CTransform* pTransform)
 {
 	return -1.f;
 }

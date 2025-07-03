@@ -9,7 +9,7 @@ CVIBuffer_Cube::CVIBuffer_Cube(LPDIRECT3DDEVICE9 pGraphic_Device)
 CVIBuffer_Cube::CVIBuffer_Cube(const CVIBuffer_Cube& Prototype)
 	: CVIBuffer{ Prototype }
 {
-	memcpy(m_iIndices, Prototype.m_iIndices, sizeof(_short) * 36);
+	memcpy(m_iIndices, Prototype.m_iIndices, sizeof(_ushort) * 36);
 }
 
 HRESULT CVIBuffer_Cube::Initialize_Prototype()
@@ -91,6 +91,10 @@ HRESULT CVIBuffer_Cube::Initialize_Prototype()
 	m_iIndices[30] = pIndices[30] = 0; m_iIndices[31] = pIndices[31] = 1; m_iIndices[32] = pIndices[32] = 2;
 	m_iIndices[33] = pIndices[33] = 0; m_iIndices[34] = pIndices[34] = 2; m_iIndices[35] = pIndices[35] = 3;
 
+	/*
+	정점 순서는 다 맞음
+	2트 
+	*/
 	m_pIB->Unlock();
 
 	return S_OK;
@@ -101,7 +105,8 @@ HRESULT CVIBuffer_Cube::Initialize(void* pArg)
 	return S_OK;
 }
 
-_bool CVIBuffer_Cube::Picking(CTransform* pTransform, _float3* pOut, _float3 vPos, _float3 vLook)
+/*
+* _bool CVIBuffer_Cube::Picking(CTransform* pTransform, _float3* pOut, _float3 vPos, _float3 vLook)
 {
 	_bool bPicked = false;
 	_float3 vClosestPoint = {};
@@ -138,43 +143,104 @@ _bool CVIBuffer_Cube::Picking(CTransform* pTransform, _float3* pOut, _float3 vPo
 
 	return bPicked;
 }
-
-_float CVIBuffer_Cube::Compute_Height(const _float3& vLocalPos)
+*/
+_bool CVIBuffer_Cube::Picking(CTransform* pTransform, _float3* pOut, _float3 vPos, _float3 vLook)
 {
-	_float fHighestY = -99999.f;
-	D3DXPLANE Plane = {};
+	_bool bPicked = false;
+	_float3 vClosestPoint = {};
+	_float fMinDist = FLT_MAX;
+
+	D3DXVec3Normalize(&vLook, &vLook);
 
 	for (_uint i = 0; i < m_iNumPrimitive; ++i)
 	{
-		_float3 vFirst = m_pVertexPositions[m_iIndices[i * 3 + 0]];
-		_float3 vSecond = m_pVertexPositions[m_iIndices[i * 3 + 1]];
-		_float3 vThird = m_pVertexPositions[m_iIndices[i * 3 + 2]];
+		_float3 v0 = m_pVertexPositions[m_iIndices[i * 3]];
+		_float3 v1 = m_pVertexPositions[m_iIndices[i * 3 + 1]];
+		_float3 v2 = m_pVertexPositions[m_iIndices[i * 3 + 2]];
 
-		if (!CheckInTri(vFirst, vSecond, vThird, vLocalPos))
-			continue;
+		_float3 vLocalOut;
+		if (m_pGameInstance->Picking_InLocalSpace(pTransform->Get_WorldMatrixInvPtr(), vPos, vLook, v0, v1, v2, &vLocalOut))
+		{
+			_float3 vWorldOut;
+			D3DXVec3TransformCoord(&vWorldOut, &vLocalOut, pTransform->Get_WorldMatrixPtr());
 
-		D3DXPlaneFromPoints(&Plane, &vFirst, &vSecond, &vThird);
+			_float3 vDir = vWorldOut - vPos;
+			_float fLen = D3DXVec3Length(&vDir);
 
-		if (fabsf(Plane.b) < 0.01f)
-			continue;
-
-		_float fY = (-Plane.a * vLocalPos.x - Plane.c * vLocalPos.z - Plane.d) / Plane.b;
-
-		if (fY > fHighestY)
-			fHighestY = fY;
+			if (fLen < fMinDist)
+			{
+				fMinDist = fLen;
+				vClosestPoint = vWorldOut;
+				bPicked = true;
+			}
+		}
 	}
 
-	return fHighestY;
+	if (bPicked)
+	{
+		*pOut = vClosestPoint;
+	}
+
+	return bPicked;
 }
-_bool CVIBuffer_Cube::CheckInTri(const _float3& vFirst, const _float3& vSecond, const _float3& vThird, const _float3& vLocalPos)
+
+_float CVIBuffer_Cube::Compute_Height(const _float3& vLocalPos, CTransform* pTransform)
 {
-	_float a = (vFirst.x - vLocalPos.x) * (vSecond.z - vFirst.z) - (vSecond.x - vFirst.x) * (vFirst.z - vLocalPos.z);
-	_float b = (vSecond.x - vLocalPos.x) * (vThird.z - vSecond.z) - (vThird.x - vSecond.x) * (vSecond.z - vLocalPos.z);
-	_float c = (vThird.x - vLocalPos.x) * (vFirst.z - vThird.z) - (vFirst.x - vThird.x) * (vThird.z - vLocalPos.z);
+	_float3 fResult;
+	_float4x4 WorldMat{};
+	_float3 vWorldRay = { 0.f, - 1.0f, 0.f };
+	_float3 vWorldPos;
+	D3DXVec3TransformCoord(&vWorldPos, &vLocalPos, pTransform->Get_WorldMatrixPtr());
 
-	return (a >= 0 && b >= 0 && c >= 0) || (a <= 0 && b <= 0 && c <= 0);
+	if (Picking(pTransform, &fResult, vWorldPos, vWorldRay))
+		return fResult.y;
+
+	else
+		return vWorldPos.y - 0.5f;
 }
 
+//_float CVIBuffer_Cube::Compute_Height(const _float3& vLocalPos, const _float4x4* vWorldMatInv)
+//{
+//	_float fHighestY = 0.f, fY = 0.f;
+//	_float3 vLocalPosResult = { 0.f, 0.f, 0.f };
+//
+//	D3DXPLANE Plane = {};
+//
+//	for (_uint i = 0; i < m_iNumPrimitive; ++i)
+//	{
+//		_float3 vFirst = m_pVertexPositions[m_iIndices[i * 3]];
+//		_float3 vSecond = m_pVertexPositions[m_iIndices[i * 3 + 1]];
+//		_float3 vThird = m_pVertexPositions[m_iIndices[i * 3 + 2]];
+//
+//		D3DXPlaneFromPoints(&Plane, &vFirst, &vSecond, &vThird);
+//
+//		if (fabsf(Plane.b) < 0.01f)
+//			continue;
+//		/*
+//		생각되는 원인
+//
+//		1.	로컬상의 레이가 타다가 평면인 상태에서 모서리 부분에서 레이가 평면과 평행하거나 제대로 닿지 않는 상황
+//		-> 1번 케이스는 확인 했고ㅓ 아마 아닐거임.
+//
+//		2,  여러 개의 평면 중 y가 가장 높은 곳을 고르긴 하지만
+//			로컬 기준이기 때문에 실제 월드 y를 구해줘야 함
+//		-> 오버라이딩이 아니라 각자 내부에서 구현하고 클라단에선 캐스팅해서 구현해줘야 할 듯함
+//		-> 터레인 매니저 단에서 로직은 분리해놨으니까 ... 캐스팅했을떄 큰 문제는 없을 것 같음
+//
+//		*/
+//
+//		/*
+//
+//		*/
+//		vLocalPosResult.y = (-Plane.a * vLocalPos.x - Plane.c * vLocalPos.z - Plane.d) / Plane.b;
+//		D3DXVec3TransformNormal(&vLocalPosResult, &vLocalPosResult, vWorldMatInv);
+//
+//		if (vLocalPosResult.y > fHighestY)
+//			fHighestY = vLocalPosResult.y;
+//	}
+//
+//	return fHighestY;
+//}
 
 CVIBuffer_Cube* CVIBuffer_Cube::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 {

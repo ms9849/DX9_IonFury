@@ -50,6 +50,7 @@ public:
 	class CGameObject* Find_GameObject_ToLayer(_uint iLayerLevelIndex, const _wstring& strLayerTag, void* pArg = nullptr);
 	class CLayer* Find_Layer(_uint iLayerLevelIndex, const _wstring& strLayerTag);
 	map<const _wstring, class CLayer*> Get_Layers_InLevel(_uint iLayerLevelIndex);
+	list<class CGameObject*> Get_GameObjects_inLayer(_uint iLayerLevelIndex, const _wstring& strLayerTag);
 #pragma endregion
 
 #pragma region RENDERER

@@ -1,6 +1,8 @@
 #include "LandObject.h"
 #include "Transform.h"
 #include "VIBuffer.h"
+#include "VIBuffer_Terrain.h"
+#include "VIBuffer_Cube.h"
 
 CLandObject::CLandObject(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CGameObject { pGraphic_Device }
@@ -68,36 +70,73 @@ void CLandObject::Change_Land(LANDOBJECT_DESC* pLandDesc)
 	Safe_Release(pTransformLast);
 }
 
+/*
+
+*/
 void CLandObject::SetUp_OnTerrain(CTransform* pTransform, _float fOffset, _bool* bJump)
 {
-    _float3 vWorldPos = pTransform->Get_State(STATE::POSITION);
-
-    _float3 vLocalPos = {};
-    D3DXVec3TransformCoord(&vLocalPos, &vWorldPos, m_pLandTransform->Get_WorldMatrixInvPtr());
-
-    vLocalPos.y = m_pLandVIBuffer->Compute_Height(vLocalPos);
-    if (vLocalPos.y == FLT_MIN)
-        return;
-
-    _float3 vWorldHeightPos = {};
-    D3DXVec3TransformCoord(&vWorldHeightPos, &vLocalPos, m_pLandTransform->Get_WorldMatrixPtr());
-
-	vWorldHeightPos.y += fOffset;
-
-	if (bJump == nullptr || *bJump == false)
+	if (dynamic_cast<CVIBuffer_Terrain*>(m_pLandVIBuffer) != nullptr)
 	{
-		vWorldPos.y = vWorldHeightPos.y;
-		pTransform->Set_State(STATE::POSITION, vWorldPos);
+		_float3 vLocalPos{}, vWorldPos = pTransform->Get_State(STATE::POSITION);
+
+		const _float4x4* matLandWorldInv = m_pLandTransform->Get_WorldMatrixInvPtr();
+
+		D3DXVec3TransformCoord(&vLocalPos, &vWorldPos, matLandWorldInv);
+
+		vLocalPos.y = m_pLandVIBuffer->Compute_Height(vLocalPos, m_pLandTransform);
+		if (vLocalPos.y == FLT_MIN)
+			return;
+
+		_float3 vWorldHeightPos = {};
+		D3DXVec3TransformCoord(&vWorldHeightPos, &vLocalPos, m_pLandTransform->Get_WorldMatrixPtr());
+
+		vWorldHeightPos.y += fOffset;
+
+		if (bJump == nullptr || *bJump == false)
+		{
+			vWorldPos.y = vWorldHeightPos.y;
+			pTransform->Set_State(STATE::POSITION, vWorldPos);
+		}
+		else if (*bJump == true)
+		{
+			if (vWorldPos.y < vWorldHeightPos.y)
+			{
+				vWorldPos.y = vWorldHeightPos.y;
+				*bJump = false;
+				pTransform->Set_State(STATE::POSITION, vWorldPos);
+			}
+		}
 	}
-    else if (*bJump == true)
-    {
-        if (vWorldPos.y < vWorldHeightPos.y)
-        {
-            vWorldPos.y = vWorldHeightPos.y;
-            *bJump = false;
-            pTransform->Set_State(STATE::POSITION, vWorldPos);
-        }
-    }
+	else
+	{
+		_float3 vResultPos{}, vWorldPos = pTransform->Get_State(STATE::POSITION);
+		_float3 vWorldHeightPos = vWorldPos;
+
+		const _float4x4* matLandWorldInv = m_pLandTransform->Get_WorldMatrixInvPtr();
+
+		D3DXVec3TransformCoord(&vResultPos, &vWorldPos, matLandWorldInv);
+
+		vWorldHeightPos.y = m_pLandVIBuffer->Compute_Height(vResultPos, m_pLandTransform);
+		vWorldHeightPos.y += fOffset;
+
+		if (vWorldHeightPos.y == FLT_MIN)
+			return;
+
+		if (bJump == nullptr || *bJump == false)
+		{
+			vWorldPos.y = vWorldHeightPos.y;
+			pTransform->Set_State(STATE::POSITION, vWorldPos);
+		}
+		else if (*bJump == true)
+		{
+			if (vWorldPos.y < vWorldHeightPos.y)
+			{
+				vWorldPos.y = vWorldHeightPos.y;
+				*bJump = false;
+				pTransform->Set_State(STATE::POSITION, vWorldPos);
+			}
+		}
+	}
 }
 
 void CLandObject::Free()
