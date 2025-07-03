@@ -296,7 +296,7 @@ void CZombie::Late_Update(_float fTimeDelta)
 {
 	m_pAnimationCom->Play_Animation(m_strFrameKey, fTimeDelta);
 
-	if (m_bAnimationLock && m_pAnimationCom->Check_Animation_Finish())
+	if (m_bAnimationLock && m_pAnimationCom->Check_Animation_Finish(m_strFrameKey))
 	{
 		//m_pAnimationCom->Set_Animation(&iter->second);
 		//m_Cnt++;
@@ -577,7 +577,7 @@ void CZombie::Attack()
 	/*auto iter = m_Frames.find(m_strFrameKey);
 	m_pAnimationCom->Set_Animation(&iter->second);*/
 	m_bAnimationLock = true;
-	m_bFrameBlock = true;
+	//m_bFrameBlock = true;
 	_float3 vDir = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
 	//_float3 vPos = m_pTransformCom->Get_State(STATE::POSITION);
 	_float3 vPos = m_pPlayerTransform->Get_State(STATE::POSITION);
