@@ -127,6 +127,12 @@
     <Filter Include="02.GameObjects\UI\UICardKey">
       <UniqueIdentifier>{46f9d836-92e4-4aa3-a936-dab18cc795e2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03.MapObjects">
+      <UniqueIdentifier>{3aa50a7e-3b43-4d8f-bc15-21b0e74ad4af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.MapObjects\DoorLock">
+      <UniqueIdentifier>{2f2d6cc5-5307-43a5-ab19-f4178aab6619}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -261,6 +267,9 @@
     <ClInclude Include="..\public\UICardKey.h">
       <Filter>02.GameObjects\UI\UICardKey</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\DoorLock.h">
+      <Filter>03.MapObjects\DoorLock</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -389,6 +398,9 @@
     </ClCompile>
     <ClCompile Include="..\private\UICardKey.cpp">
       <Filter>02.GameObjects\UI\UICardKey</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\DoorLock.cpp">
+      <Filter>03.MapObjects\DoorLock</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

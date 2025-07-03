@@ -32,6 +32,7 @@ private:
 
 private:
 	class CUIText* m_pText{ nullptr };
+	class CPlayer* m_pPlayer{ nullptr };
 	UIOBJECT_DESC	m_tagDesc{};
 
 private:

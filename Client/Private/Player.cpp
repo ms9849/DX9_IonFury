@@ -7,6 +7,7 @@
 #include "ItemPistolBullet.h"
 #include "ItemShootGunBullet.h"
 #include "ItemCardKey.h"
+#include "DoorLock.h"
 #include "Player_RightHand.h"
 #include "Player_LeftHand.h"
 
@@ -105,7 +106,7 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 	/* 애니메이션 제어 */
 	auto iter = m_Weapons.find(m_tInfo.strWeapon);
 
-	if (m_tInfo.strAction.compare(TEXT("Reload")) != 0)
+	if (m_tInfo.strAction.compare(TEXT("Reload")) != 0 && !m_bWeaponChange && !m_bUseCardKey)
 	{
 		if (m_pGameInstance->Key_Down('1'))
 		{
@@ -125,18 +126,18 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 				m_bWeaponChange = true;
 			}
 		}
-		if (m_bCanUseCardKey && m_pGameInstance->Key_Down('E'))
+		if (m_bCanUseCardKey && m_bCanOpenDoor && m_pGameInstance->Key_Down('E'))
 		{
 			m_tInfo.strItem = TEXT("CardKey");
 			m_tInfo.strItemAction = TEXT("Up");
 			m_tInfo.strAction = TEXT("Down");
-			m_bUseItem = true;
+			m_bUseCardKey = true;
 			m_bCanUseCardKey = false;
 		}
 	}
 
 	// 아이템 : 카드키 사용
-	if (m_bUseItem)
+	if (m_bUseCardKey)
 	{
 		if (m_pLeftHandAnimationCom->Check_Animation_Finish(Set_FrameKey(m_tInfo.strItem, TEXT("Up"))))
 		{
@@ -145,12 +146,12 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 		}
 		if (m_pLeftHandAnimationCom->Check_Animation_Finish(Set_FrameKey(m_tInfo.strItem, TEXT("Down"))))
 		{
-			m_bUseItem = false;
+			m_bUseCardKey = false;
 		}
 	}
 	if (m_pLeftHandAnimationCom->Check_Animation_Finish())
 	{
-		if(!m_bUseItem)
+		if(!m_bUseCardKey)
 			m_tInfo.strItemAction = TEXT("Idle");
 	}
 
@@ -176,7 +177,7 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 	// 오른손 애니메이션 끝나면 idle로
 	if (m_pRightHandAnimationCom->Check_Animation_Finish())
 	{
-		if(!m_bWeaponChange && !m_bUseItem)
+		if(!m_bWeaponChange && !m_bUseCardKey)
 			m_tInfo.strAction = TEXT("Idle");
 	}
 	else
@@ -213,7 +214,7 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 				m_tInfo.strAction = TEXT("Walk");
 		}
 		// 장전
-		if (m_pGameInstance->Key_Down('R'))
+		if (m_pGameInstance->Key_Down('R') && !m_bWeaponChange && !m_bUseCardKey)
 		{
 			m_tInfo.strAction = TEXT("Reload");
 			iter->second.iShootBullets = iter->second.iCanShootBullets;
@@ -293,6 +294,16 @@ CPlayer::PLAYER_INFO CPlayer::Get_Player_Info()
 _bool CPlayer::Get_CanUse_CardKey()
 {
 	return m_bCanUseCardKey;
+}
+
+_bool CPlayer::Get_Can_Open_Door()
+{
+	return m_bCanOpenDoor;
+}
+
+_bool CPlayer::Get_Use_CardKey()
+{
+	return m_bUseCardKey;
 }
 
 HRESULT CPlayer::Ready_Components()
@@ -471,6 +482,13 @@ void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 			Insert_ItemDesc(TEXT("Get CardKey"));
 			m_bCanUseCardKey = true;
 		}
+		if (dynamic_cast<CDoorLock*>(pDst) && m_bCanUseCardKey)
+		{
+			m_bCanOpenDoor = true;
+		}
+	}
+	else {
+		m_bCanOpenDoor = false;
 	}
 }
 

@@ -10,6 +10,7 @@
 #include "Terrain.h"
 #include "Terrain_Manager.h"
 #include "Player.h"
+//#include "DoorLock.h"
 
 CLevel_GamePlay::CLevel_GamePlay(LPDIRECT3DDEVICE9 pGraphic_Device, LEVEL eLevelID)
 	: CLevel { pGraphic_Device, ENUM_CLASS(eLevelID)}	
@@ -45,6 +46,9 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(Ready_Layer_Items(TEXT("Layer_Items"))))
 		return E_FAIL;
 
+	if (FAILED(Ready_Layer_Interaction_Objects(TEXT("Layer_Interaction_Objects"))))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -75,8 +79,8 @@ void CLevel_GamePlay::Update(_float fTimeDelta)
 	m_pUIHp->Set_Hp();
 	m_pUIArmor->Set_Armor();
 	m_pUIBullets->Set_Bullets();
-	m_pUIInteraction->Set_Interaction();
 	m_pUICardKey->Set_CardKey();
+	m_pUIInteraction->Set_Interaction();
 
 	size_t iItemQueueLength = dynamic_cast<CPlayer*>(
 		m_pGameInstance->Find_GameObject_ToLayer(
@@ -104,6 +108,7 @@ void CLevel_GamePlay::Update(_float fTimeDelta)
 
 	//m_pGameInstance->Check_OBBCollision(TEXT("Layer_Cube"), TEXT("Layer_Player"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta);
 	m_pGameInstance->Check_SphereCollision(TEXT("Layer_Player"), TEXT("Layer_Items"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta);
+	m_pGameInstance->Check_SphereCollision(TEXT("Layer_Player"), TEXT("Layer_Interaction_Objects"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta);
 	m_pGameInstance->Check_SphereCollision(TEXT("Layer_Player"), TEXT("Layer_Monster_Bullet"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta);
 	m_pGameInstance->Check_SphereCollision(TEXT("Layer_Player"), TEXT("Layer_Melee_Attack"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta);
 	//m_pGameInstance->Check_SphereCollision(TEXT("Layer_Player"), TEXT("Layer_Monster"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta);
@@ -403,6 +408,15 @@ HRESULT CLevel_GamePlay::Ready_Layer_Items(const _wstring& strLayerTag)
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Item_CardKey"),
+		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLevel_GamePlay::Ready_Layer_Interaction_Objects(const _wstring& strLayerTag)
+{
+	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Map_DoorLock"),
 		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag)))
 		return E_FAIL;
 
