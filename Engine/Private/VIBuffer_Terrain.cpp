@@ -312,7 +312,7 @@ _bool CVIBuffer_Terrain::Picking(CTransform* pTransform, _float3* pOut, _float3 
 	return false;
 }
 
-_float CVIBuffer_Terrain::Compute_Height(const _float3& vLocalPos)
+_float CVIBuffer_Terrain::Compute_Height(const _float3& vLocalPos, CTransform* pTransform)
 {
 	_uint			iIndex = static_cast<_uint>(vLocalPos.z) * m_iNumVerticesX + static_cast<_uint>(vLocalPos.x);
 

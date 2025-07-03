@@ -6,8 +6,10 @@
 #include "UIAim.h"
 #include "UIArmor.h"
 #include "UIItemQueue.h"
+#include "UICardKey.h"
 #include "Terrain.h"
 #include "Terrain_Manager.h"
+#include "Player.h"
 
 CLevel_GamePlay::CLevel_GamePlay(LPDIRECT3DDEVICE9 pGraphic_Device, LEVEL eLevelID)
 	: CLevel { pGraphic_Device, ENUM_CLASS(eLevelID)}	
@@ -74,6 +76,7 @@ void CLevel_GamePlay::Update(_float fTimeDelta)
 	m_pUIArmor->Set_Armor();
 	m_pUIBullets->Set_Bullets();
 	m_pUIInteraction->Set_Interaction();
+	m_pUICardKey->Set_CardKey();
 
 	size_t iItemQueueLength = dynamic_cast<CPlayer*>(
 		m_pGameInstance->Find_GameObject_ToLayer(
@@ -341,6 +344,20 @@ HRESULT CLevel_GamePlay::Ready_Layer_UI(const _wstring& strLayerTag)
 
 	m_pUIAim = dynamic_cast<CUIAim*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag));
 
+	/* Ä«µåÅ° */
+	CUIObject::UIOBJECT_DESC Desc_CardKey{};
+
+	Desc_CardKey.fSizeX = 92.f;
+	Desc_CardKey.fSizeY = 56.f;
+	Desc_CardKey.fX = g_iWinSizeX - 20.f - (Desc_CardKey.fSizeX * 0.5f);
+	Desc_CardKey.fY = g_iWinSizeY - 80.f - (Desc_CardKey.fSizeY * 0.5f);
+
+	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_UICardKey"),
+		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag, &Desc_CardKey)))
+		return E_FAIL;
+
+	m_pUICardKey = dynamic_cast<CUICardKey*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag));
+
 	return S_OK;
 }
 
@@ -349,6 +366,8 @@ HRESULT CLevel_GamePlay::Ready_Layer_Cube(const _wstring& strLayerTag)
 	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_CubeObject"),
 		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag)))
 		return E_FAIL;
+
+	m_pTerrain_Manager->Add_Cube(LEVEL::GAMEPLAY);
 
 	return S_OK;
 }
@@ -383,6 +402,10 @@ HRESULT CLevel_GamePlay::Ready_Layer_Items(const _wstring& strLayerTag)
 		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag)))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Item_CardKey"),
+		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -408,6 +431,7 @@ void CLevel_GamePlay::Free()
 	Safe_Release(m_pUIBullets);
 	Safe_Release(m_pUIInteraction);
 	Safe_Release(m_pUIAim);
+	Safe_Release(m_pUICardKey);
 	Safe_Release(m_pTerrain_Manager);
 
 	for (auto& iter : m_pUIItemQueues)

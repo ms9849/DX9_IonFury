@@ -1,8 +1,5 @@
 #include "Client_Defines.h"
 #include "UIObject.h"
-#include "UIFont.h"
-#include "UIText.h"
-
 
 NS_BEGIN(Engine)
 class CTransform;
@@ -35,7 +32,7 @@ private:
 	CVIBuffer_Rect* m_pVIBufferCom = { nullptr };
 
 private:
-	CUIText* m_pText{ nullptr };
+	class CUIText* m_pText{ nullptr };
 	UIOBJECT_DESC	m_tagDesc{};
 
 private:

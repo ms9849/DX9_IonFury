@@ -1,24 +1,24 @@
-#include "Player_Hand.h"
+#include "Player_RightHand.h"
 #include "Player.h"
 
-CPlayer_Hand::CPlayer_Hand(LPDIRECT3DDEVICE9 pGraphic_Device)
+CPlayer_RightHand::CPlayer_RightHand(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CGameObject{ pGraphic_Device }
 {
 
 }
 
-CPlayer_Hand::CPlayer_Hand(const CPlayer_Hand& Prototype)
-	: CGameObject{ Prototype }
+CPlayer_RightHand::CPlayer_RightHand(const CPlayer_RightHand& Prototype)
+	: CGameObject(Prototype)
 {
 
 }
 
-HRESULT CPlayer_Hand::Initialize_Prototype()
+HRESULT CPlayer_RightHand::Initialize_Prototype()
 {
 	return S_OK;
 }
 
-HRESULT CPlayer_Hand::Initialize(void* pArg)
+HRESULT CPlayer_RightHand::Initialize(void* pArg)
 {
 	if (FAILED(__super::Initialize(&pArg)))
 		return E_FAIL;
@@ -32,12 +32,10 @@ HRESULT CPlayer_Hand::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CPlayer_Hand::Priority_Update(_float fTimeDelta)
+void CPlayer_RightHand::Priority_Update(_float fTimeDelta)
 {
 	// 여기서 플레이어한테서 받아온 애니메이션 타입에 맞춰 애니메이션 세팅
 	// Set_Animation
-	auto iter = m_Frames.find(m_strFrameKey);
-	m_pAnimationCom->Set_Animation(&iter->second);
 
 	_float3 vHandPos = {};
 	_float4x4 PlayerMatrix{};
@@ -45,18 +43,27 @@ void CPlayer_Hand::Priority_Update(_float fTimeDelta)
 	_wstring strWeapon = dynamic_cast<CPlayer*>(m_pGameInstance->Find_GameObject_ToLayer(
 		ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player")))->Get_Player_Info().strWeapon;
 
+	_wstring strAction = dynamic_cast<CPlayer*>(m_pGameInstance->Find_GameObject_ToLayer(
+		ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player")))->Get_Player_Info().strAction;
+
 	if (strWeapon.compare(TEXT("Pistol")) == 0)
 	{
-		vHandPos = { 0.75f, -0.5f, 1.5f };
+		if(strAction.compare(TEXT("Up")) == 0)
+			vHandPos = { 0.75f, -1.4f, 1.5f };
+		else
+			vHandPos = { 0.75f, -0.5f, 1.5f };
 	}
 	else if (strWeapon.compare(TEXT("ShootGun")) == 0)
 	{
-		vHandPos = { 0.5f, -0.6f, 1.5f };
+		if (strAction.compare(TEXT("Up")) == 0)
+			vHandPos = { 0.5f, -1.5f, 1.5f };
+		else
+			vHandPos = { 0.5f, -0.6f, 1.5f };
 	}
 
-	if (m_pAnimationCom->Get_Animation()->Poses.size() > 1)
+	if (m_pAnimationCom->Get_Frame_Desc(m_strFrameKey)->Poses.size() > 1)
 	{
-		vHandPos += m_pAnimationCom->Get_Animation()->Poses[m_pAnimationCom->Get_Frame_Index()];
+		vHandPos += m_pAnimationCom->Get_Frame_Desc(m_strFrameKey)->Poses[m_pAnimationCom->Get_Frame_Current_Index(m_strFrameKey)];
 	}
 
 	PlayerMatrix = *dynamic_cast<CTransform*>(
@@ -82,28 +89,26 @@ void CPlayer_Hand::Priority_Update(_float fTimeDelta)
 	}
 }
 
-void CPlayer_Hand::Update(_float fTimeDelta)
+void CPlayer_RightHand::Update(_float fTimeDelta)
 {
-	// 애니메이션 프레임 증가
-	m_pAnimationCom->Play_Animation(fTimeDelta);
+	m_pAnimationCom->Play_Animation(m_strFrameKey, fTimeDelta);
 }
 
-void CPlayer_Hand::Late_Update(_float fTimeDelta)
+void CPlayer_RightHand::Late_Update(_float fTimeDelta)
 {
 	m_pGameInstance->Add_RenderGroup(RENDER::BLEND_LATE, this);
 }
 
-HRESULT CPlayer_Hand::Render()
+HRESULT CPlayer_RightHand::Render()
 {
  	m_pTransformCom->Set_Transform();
 
 	// 텍스쳐 컴포넌트로 텍스쳐 렌더링
-	// 텍스쳐는 MainApp에서 STATIC으로 세팅
 	auto iter = m_pTextureComs.find(m_strFrameKey);
 	if(iter->second->Get_Texture_Length() == 1)
 		iter->second->Set_Texture(0);
 	else
-		iter->second->Set_Texture(m_pAnimationCom->Get_Frame_Index());
+		iter->second->Set_Texture(m_pAnimationCom->Get_Frame_Current_Index(m_strFrameKey));
 
 	if (FAILED(Begin_RenderState()))
 		return E_FAIL;
@@ -116,17 +121,17 @@ HRESULT CPlayer_Hand::Render()
 	return S_OK;
 }
 
-void CPlayer_Hand::Set_Player_Transform(CTransform* pTransform)
+void CPlayer_RightHand::Set_Player_Transform(CTransform* pTransform)
 {
 	m_pPlayerTransformCom = pTransform;
 }
 
-void CPlayer_Hand::Set_Current_Animation(const _wstring& strFrameKey)
+void CPlayer_RightHand::Set_Current_Animation(const _wstring& strFrameKey)
 {
 	m_strFrameKey = strFrameKey;
 }
 
-HRESULT CPlayer_Hand::Ready_Components()
+HRESULT CPlayer_RightHand::Ready_Components()
 {
 	/* Com_Transform */
 	CTransform::TRANSFORM_DESC		TransformDesc{ 5.f, D3DXToRadian(90.0f) };
@@ -165,7 +170,7 @@ HRESULT CPlayer_Hand::Ready_Components()
 	return S_OK;
 }
 
-HRESULT CPlayer_Hand::Ready_Animations()
+HRESULT CPlayer_RightHand::Ready_Animations()
 {
 	// 여기서 벡터로 <구조체> 들고 있고 한 애니메이션 마다 미리 싹 세팅
 	auto iter = m_pTextureComs.find(TEXT("Pistol_Idle"));
@@ -174,7 +179,7 @@ HRESULT CPlayer_Hand::Ready_Animations()
 	//Pistol_Idle
 	CAnimation::FRAME_DESC PistolIdleDesc{};
 	PistolIdleDesc.iEnd = 0;
-	m_Frames.emplace(TEXT("Pistol_Idle"), PistolIdleDesc);
+	m_pAnimationCom->Set_Animation(TEXT("Pistol_Idle"), PistolIdleDesc);
 	
 	//Pistol_Walk
 	CAnimation::FRAME_DESC PistolWalkDesc{};
@@ -192,7 +197,47 @@ HRESULT CPlayer_Hand::Ready_Animations()
 	PistolWalkDesc.Poses.push_back(_float3{ -0.1f, 0.075f, 0.f });
 	PistolWalkDesc.Poses.push_back(_float3{ -0.05f, 0.05f, 0.f });
 
-	m_Frames.emplace(TEXT("Pistol_Walk"), PistolWalkDesc);
+	m_pAnimationCom->Set_Animation(TEXT("Pistol_Walk"), PistolWalkDesc);
+
+	//Pistol_Down
+	CAnimation::FRAME_DESC PistolDownDesc{};
+	iter = m_pTextureComs.find(TEXT("Pistol_Down"));
+	PistolDownDesc.iEnd = 10;
+	PistolDownDesc.iFrameSpeed = 2;
+	PistolDownDesc.Poses.reserve(PistolDownDesc.iEnd);
+
+	PistolDownDesc.Poses.push_back(_float3{ 0.f, 0.f, 0.f });
+	PistolDownDesc.Poses.push_back(_float3{ 0.f, -0.1f, 0.f });
+	PistolDownDesc.Poses.push_back(_float3{ 0.f, -0.2f, 0.f });
+	PistolDownDesc.Poses.push_back(_float3{ 0.f, -0.3f, 0.f });
+	PistolDownDesc.Poses.push_back(_float3{ 0.f, -0.4f, 0.f });
+	PistolDownDesc.Poses.push_back(_float3{ 0.f, -0.5f, 0.f });
+	PistolDownDesc.Poses.push_back(_float3{ 0.f, -0.6f, 0.f });
+	PistolDownDesc.Poses.push_back(_float3{ 0.f, -0.7f, 0.f });
+	PistolDownDesc.Poses.push_back(_float3{ 0.f, -0.8f, 0.f });
+	PistolDownDesc.Poses.push_back(_float3{ 0.f, -0.9f, 0.f });
+
+	m_pAnimationCom->Set_Animation(TEXT("Pistol_Down"), PistolDownDesc);
+
+	//Pistol_Up
+	CAnimation::FRAME_DESC PistolUpDesc{};
+	iter = m_pTextureComs.find(TEXT("Pistol_Up"));
+	PistolUpDesc.iEnd = 10;
+	PistolUpDesc.iFrameSpeed = 2;
+	PistolUpDesc.Poses.reserve(PistolUpDesc.iEnd);
+
+	PistolUpDesc.Poses.push_back(_float3{ 0.f, 0.f, 0.f });
+	PistolUpDesc.Poses.push_back(_float3{ 0.f, 0.1f, 0.f });
+	PistolUpDesc.Poses.push_back(_float3{ 0.f, 0.2f, 0.f });
+	PistolUpDesc.Poses.push_back(_float3{ 0.f, 0.3f, 0.f });
+	PistolUpDesc.Poses.push_back(_float3{ 0.f, 0.4f, 0.f });
+	PistolUpDesc.Poses.push_back(_float3{ 0.f, 0.5f, 0.f });
+	PistolUpDesc.Poses.push_back(_float3{ 0.f, 0.6f, 0.f });
+	PistolUpDesc.Poses.push_back(_float3{ 0.f, 0.7f, 0.f });
+	PistolUpDesc.Poses.push_back(_float3{ 0.f, 0.8f, 0.f });
+	PistolUpDesc.Poses.push_back(_float3{ 0.f, 0.9f, 0.f });
+
+	m_pAnimationCom->Set_Animation(TEXT("Pistol_Up"), PistolUpDesc);
 
 	// Pistol_Reload
 	CAnimation::FRAME_DESC PistolReloadDesc{};
@@ -200,29 +245,29 @@ HRESULT CPlayer_Hand::Ready_Animations()
 	PistolReloadDesc.iEnd = iter->second->Get_Texture_Length();
 	PistolReloadDesc.Poses.reserve(PistolReloadDesc.iEnd);
 	
-	PistolReloadDesc.Poses.push_back(_float3{0.f, 0.f, 0.f});
-	PistolReloadDesc.Poses.push_back(_float3{0.f, 0.f, 0.f});
-	PistolReloadDesc.Poses.push_back(_float3{0.f, 0.f, 0.f});
-	PistolReloadDesc.Poses.push_back(_float3{0.f, 0.f, 0.f});
-	PistolReloadDesc.Poses.push_back(_float3{0.f, 0.f, 0.f});
-	PistolReloadDesc.Poses.push_back(_float3{0.f, 0.f, 0.f});
-	PistolReloadDesc.Poses.push_back(_float3{0.f, -0.3f, 0.f});
-	PistolReloadDesc.Poses.push_back(_float3{0.f, -0.6f, 0.f});
-	PistolReloadDesc.Poses.push_back(_float3{0.f, -0.9f, 0.f});
+	PistolReloadDesc.Poses.push_back(_float3{ 0.f, 0.f, 0.f });
+	PistolReloadDesc.Poses.push_back(_float3{ 0.f, 0.f, 0.f });
+	PistolReloadDesc.Poses.push_back(_float3{ 0.f, 0.f, 0.f });
+	PistolReloadDesc.Poses.push_back(_float3{ 0.f, 0.f, 0.f });
+	PistolReloadDesc.Poses.push_back(_float3{ 0.f, 0.f, 0.f });
+	PistolReloadDesc.Poses.push_back(_float3{ 0.f, 0.f, 0.f });
+	PistolReloadDesc.Poses.push_back(_float3{ 0.f, -0.3f, 0.f });
+	PistolReloadDesc.Poses.push_back(_float3{ 0.f, -0.6f, 0.f });
+	PistolReloadDesc.Poses.push_back(_float3{ 0.f, -0.9f, 0.f });
 
-	PistolReloadDesc.Poses.push_back(_float3{0.f, -1.f, 0.f});
-	PistolReloadDesc.Poses.push_back(_float3{0.f, -1.f, 0.f});
-	PistolReloadDesc.Poses.push_back(_float3{0.f, -1.f, 0.f});
+	PistolReloadDesc.Poses.push_back(_float3{ 0.f, -1.f, 0.f });
+	PistolReloadDesc.Poses.push_back(_float3{ 0.f, -1.f, 0.f });
+	PistolReloadDesc.Poses.push_back(_float3{ 0.f, -1.f, 0.f });
 
 	PistolReloadDesc.Poses.push_back(_float3{ 0.f, -0.9f, 0.f });
 	PistolReloadDesc.Poses.push_back(_float3{ 0.f, -0.6f, 0.f });
 	PistolReloadDesc.Poses.push_back(_float3{ 0.f, -0.3f, 0.f });
-	PistolReloadDesc.Poses.push_back(_float3{0.f, -0.0f, 0.f});
-	PistolReloadDesc.Poses.push_back(_float3{0.f, -0.0f, 0.f});
-	PistolReloadDesc.Poses.push_back(_float3{0.f, -0.0f, 0.f});
-	PistolReloadDesc.Poses.push_back(_float3{0.f, -0.0f, 0.f});
+	PistolReloadDesc.Poses.push_back(_float3{ 0.f, -0.0f, 0.f });
+	PistolReloadDesc.Poses.push_back(_float3{ 0.f, -0.0f, 0.f });
+	PistolReloadDesc.Poses.push_back(_float3{ 0.f, -0.0f, 0.f });
+	PistolReloadDesc.Poses.push_back(_float3{ 0.f, -0.0f, 0.f });
 
-	m_Frames.emplace(TEXT("Pistol_Reload"), PistolReloadDesc);
+	m_pAnimationCom->Set_Animation(TEXT("Pistol_Reload"), PistolReloadDesc);
 
 	// Pistol_Shoot
 	CAnimation::FRAME_DESC PistolShootDesc{};
@@ -237,7 +282,7 @@ HRESULT CPlayer_Hand::Ready_Animations()
 	PistolShootDesc.Poses.push_back(_float3{ 0.f, 0.05f, -0.35f });
 	PistolShootDesc.Poses.push_back(_float3{ 0.f, 0.f, 0.f });
 
-	m_Frames.emplace(TEXT("Pistol_Shoot"), PistolShootDesc);
+	m_pAnimationCom->Set_Animation(TEXT("Pistol_Shoot"), PistolShootDesc);
 #pragma endregion
 
 #pragma region 샷건
@@ -245,7 +290,7 @@ HRESULT CPlayer_Hand::Ready_Animations()
 	iter = m_pTextureComs.find(TEXT("ShootGun_Idle"));
 	CAnimation::FRAME_DESC ShootGunIdleDesc{};
 	ShootGunIdleDesc.iEnd = 0;
-	m_Frames.emplace(TEXT("ShootGun_Idle"), ShootGunIdleDesc);
+	m_pAnimationCom->Set_Animation(TEXT("ShootGun_Idle"), ShootGunIdleDesc);
 
 	//ShootGun_Walk
 	CAnimation::FRAME_DESC ShootGunWalkDesc{};
@@ -263,7 +308,47 @@ HRESULT CPlayer_Hand::Ready_Animations()
 	ShootGunWalkDesc.Poses.push_back(_float3{ -0.1f, 0.075f, 0.f });
 	ShootGunWalkDesc.Poses.push_back(_float3{ -0.05f, 0.05f, 0.f });
 
-	m_Frames.emplace(TEXT("ShootGun_Walk"), ShootGunWalkDesc);
+	m_pAnimationCom->Set_Animation(TEXT("ShootGun_Walk"), ShootGunWalkDesc);
+
+	//ShootGun_Down
+	CAnimation::FRAME_DESC ShootGunDownDesc{};
+	iter = m_pTextureComs.find(TEXT("ShootGun_Down"));
+	ShootGunDownDesc.iEnd = 10;
+	ShootGunDownDesc.iFrameSpeed = 2;
+	ShootGunDownDesc.Poses.reserve(ShootGunDownDesc.iEnd);
+
+	ShootGunDownDesc.Poses.push_back(_float3{ 0.f, 0.f, 0.f });
+	ShootGunDownDesc.Poses.push_back(_float3{ 0.f, -0.1f, 0.f });
+	ShootGunDownDesc.Poses.push_back(_float3{ 0.f, -0.2f, 0.f });
+	ShootGunDownDesc.Poses.push_back(_float3{ 0.f, -0.3f, 0.f });
+	ShootGunDownDesc.Poses.push_back(_float3{ 0.f, -0.4f, 0.f });
+	ShootGunDownDesc.Poses.push_back(_float3{ 0.f, -0.5f, 0.f });
+	ShootGunDownDesc.Poses.push_back(_float3{ 0.f, -0.6f, 0.f });
+	ShootGunDownDesc.Poses.push_back(_float3{ 0.f, -0.7f, 0.f });
+	ShootGunDownDesc.Poses.push_back(_float3{ 0.f, -0.8f, 0.f });
+	ShootGunDownDesc.Poses.push_back(_float3{ 0.f, -0.9f, 0.f });
+
+	m_pAnimationCom->Set_Animation(TEXT("ShootGun_Down"), ShootGunDownDesc);
+
+	//ShootGun_Up
+	CAnimation::FRAME_DESC ShootGunUpDesc{};
+	iter = m_pTextureComs.find(TEXT("ShootGun_Up"));
+	ShootGunUpDesc.iEnd = 10;
+	ShootGunUpDesc.iFrameSpeed = 2;
+	ShootGunUpDesc.Poses.reserve(ShootGunUpDesc.iEnd);
+
+	ShootGunUpDesc.Poses.push_back(_float3{ 0.f, 0.f, 0.f });
+	ShootGunUpDesc.Poses.push_back(_float3{ 0.f, 0.1f, 0.f });
+	ShootGunUpDesc.Poses.push_back(_float3{ 0.f, 0.2f, 0.f });
+	ShootGunUpDesc.Poses.push_back(_float3{ 0.f, 0.3f, 0.f });
+	ShootGunUpDesc.Poses.push_back(_float3{ 0.f, 0.4f, 0.f });
+	ShootGunUpDesc.Poses.push_back(_float3{ 0.f, 0.5f, 0.f });
+	ShootGunUpDesc.Poses.push_back(_float3{ 0.f, 0.6f, 0.f });
+	ShootGunUpDesc.Poses.push_back(_float3{ 0.f, 0.7f, 0.f });
+	ShootGunUpDesc.Poses.push_back(_float3{ 0.f, 0.8f, 0.f });
+	ShootGunUpDesc.Poses.push_back(_float3{ 0.f, 0.9f, 0.f });
+
+	m_pAnimationCom->Set_Animation(TEXT("ShootGun_Up"), ShootGunUpDesc);
 
 	// ShootGun_Reload
 	CAnimation::FRAME_DESC ShootGunReloadDesc{};
@@ -271,7 +356,7 @@ HRESULT CPlayer_Hand::Ready_Animations()
 	ShootGunReloadDesc.iEnd = iter->second->Get_Texture_Length();
 	ShootGunReloadDesc.iFrameSpeed = 4;
 
-	m_Frames.emplace(TEXT("ShootGun_Reload"), ShootGunReloadDesc);
+	m_pAnimationCom->Set_Animation(TEXT("ShootGun_Reload"), ShootGunReloadDesc);
 
 	// ShootGun_Shoot
 	CAnimation::FRAME_DESC ShootGunShootDesc{};
@@ -293,14 +378,14 @@ HRESULT CPlayer_Hand::Ready_Animations()
 	ShootGunShootDesc.Poses.push_back(_float3{ 0.f, 0.01f, -0.15f });
 	ShootGunShootDesc.Poses.push_back(_float3{ 0.f, 0.f, 0.f });
 
-	m_Frames.emplace(TEXT("ShootGun_Shoot"), ShootGunShootDesc);
+	m_pAnimationCom->Set_Animation(TEXT("ShootGun_Shoot"), ShootGunShootDesc);
 #pragma endregion
 
 
 	return S_OK;
 }
 
-HRESULT CPlayer_Hand::Begin_RenderState()
+HRESULT CPlayer_RightHand::Begin_RenderState()
 {
 	/* 렌더링할 때 알파값을 기준으로 섞어준다.*/
 
@@ -314,7 +399,7 @@ HRESULT CPlayer_Hand::Begin_RenderState()
 	return S_OK;
 }
 
-HRESULT CPlayer_Hand::End_RenderState()
+HRESULT CPlayer_RightHand::End_RenderState()
 {
 	// m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
 	m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
@@ -324,9 +409,9 @@ HRESULT CPlayer_Hand::End_RenderState()
 	return S_OK;
 }
 
-CPlayer_Hand* CPlayer_Hand::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
+CPlayer_RightHand* CPlayer_RightHand::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 {
-	CPlayer_Hand* pInstance = new CPlayer_Hand(pGraphic_Device);
+	CPlayer_RightHand* pInstance = new CPlayer_RightHand(pGraphic_Device);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
@@ -337,24 +422,23 @@ CPlayer_Hand* CPlayer_Hand::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 	return pInstance;
 }
 
-CGameObject* CPlayer_Hand::Clone(void* pArg)
+CGameObject* CPlayer_RightHand::Clone(void* pArg)
 {
-	CPlayer_Hand* pInstance = new CPlayer_Hand(*this);
+	CPlayer_RightHand* pInstance = new CPlayer_RightHand(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Cloned : CPlayer_Hand");
+		MSG_BOX("Failed to Cloned : CPlayer_RightHand");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CPlayer_Hand::Free()
+void CPlayer_RightHand::Free()
 {
 	__super::Free();
 
-	//Safe_Release(m_pTextureCom);
 	Safe_Release(m_pAnimationCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pVIBufferCom);

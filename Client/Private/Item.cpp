@@ -8,7 +8,7 @@ CItem::CItem(LPDIRECT3DDEVICE9 pGraphic_Device)
 }
 
 CItem::CItem(const CItem& Prototype)
-	: CLandObject{ Prototype }
+	: CLandObject(Prototype)
 {
 }
 

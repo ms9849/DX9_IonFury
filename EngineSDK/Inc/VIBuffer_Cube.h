@@ -18,8 +18,8 @@ public:
 public:
 	// CVIBuffer을(를) 통해 상속됨
 	_bool Picking(CTransform* pTransform, _float3* pOut, _float3 vPos, _float3 vLook) override;
-	virtual _float Compute_Height(const _float3& vLocalPos) override;
-	_bool CheckInTri(const _float3& vFirst, const _float3& vSecond, const _float3& vThird, const _float3& vLocalPos);
+	virtual _float Compute_Height(const _float3& vLocalPos, class CTransform* pTransform = nullptr) override;
+
 private:
 	_ushort m_iIndices[36] = {};
 

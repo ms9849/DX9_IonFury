@@ -1,6 +1,9 @@
 #include "UIBullets.h"
 
 #include "GameInstance.h"
+#include "UIFont.h"
+#include "UIText.h"
+#include "Player.h"
 
 CUIBullets::CUIBullets(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CUIObject{ pGraphic_Device }
@@ -8,7 +11,7 @@ CUIBullets::CUIBullets(LPDIRECT3DDEVICE9 pGraphic_Device)
 }
 
 CUIBullets::CUIBullets(const CUIBullets& Prototype)
-	: CUIObject{ Prototype }
+	: CUIObject(Prototype)
 {
 }
 

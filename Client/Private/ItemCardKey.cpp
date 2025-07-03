@@ -1,22 +1,22 @@
-#include "ItemShootGunBullet.h"
+#include "ItemCardKey.h"
 #include "GameInstance.h"
 
-CItemShootGunBullet::CItemShootGunBullet(LPDIRECT3DDEVICE9 pGraphic_Device)
+CItemCardKey::CItemCardKey(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CItem{ pGraphic_Device }
 {
 }
 
-CItemShootGunBullet::CItemShootGunBullet(const CItemShootGunBullet& Prototype)
+CItemCardKey::CItemCardKey(const CItemCardKey& Prototype)
 	: CItem(Prototype)
 {
 }
 
-HRESULT CItemShootGunBullet::Initialize_Prototype()
+HRESULT CItemCardKey::Initialize_Prototype()
 {
 	return S_OK;
 }
 
-HRESULT CItemShootGunBullet::Initialize(void* pArg)
+HRESULT CItemCardKey::Initialize(void* pArg)
 {
 	CLandObject::LANDOBJECT_DESC			Desc{};
 	Desc.pLandTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_BackGround"), TEXT("Com_Transform")));
@@ -28,7 +28,7 @@ HRESULT CItemShootGunBullet::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-	m_pTransformCom->Set_State(STATE::POSITION, _float3(10.f, 0.f, 7.f));
+	m_pTransformCom->Set_State(STATE::POSITION, _float3(10.f, 0.f, 15.f));
 
 	SetUp_OnTerrain(m_pTransformCom, 0.5f);
 
@@ -36,36 +36,31 @@ HRESULT CItemShootGunBullet::Initialize(void* pArg)
 
 	m_pPlayerTransformCom = dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(
 		ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player"), TEXT("Com_Transform")));
-	Safe_AddRef (m_pPlayerTransformCom);
+	Safe_AddRef(m_pPlayerTransformCom);
 
 	return S_OK;
 }
 
-void CItemShootGunBullet::Priority_Update(_float fTimeDelta)
+void CItemCardKey::Priority_Update(_float fTimeDelta)
 {
 }
 
-void CItemShootGunBullet::Update(_float fTimeDelta)
+void CItemCardKey::Update(_float fTimeDelta)
 {
 	Item_Animation(fTimeDelta);
 	m_pTransformCom->LookAt(m_pPlayerTransformCom->Get_State(STATE::POSITION));
 }
 
-void CItemShootGunBullet::Late_Update(_float fTimeDelta)
+void CItemCardKey::Late_Update(_float fTimeDelta)
 {
-	//// 애니메이션 프레임 증가
-	//// 프레임 전체 런타임 -> 상수로 제어해서 처리하기
-	//m_pAnimationCom->Play_Animation(fTimeDelta);
-
-
 	m_pGameInstance->Add_RenderGroup(RENDER::BLEND, this);
 }
 
-HRESULT CItemShootGunBullet::Render()
+HRESULT CItemCardKey::Render()
 {
 	m_pTransformCom->Set_Transform();
 
-	m_pTextureCom->Set_Texture(ENUM_CLASS(BULLET::SHOOTGUN));
+	m_pTextureCom->Set_Texture(0);
 
 	if (FAILED(Begin_RenderState()))
 		return E_FAIL;
@@ -78,7 +73,7 @@ HRESULT CItemShootGunBullet::Render()
 	return S_OK;
 }
 
-HRESULT CItemShootGunBullet::Ready_Components()
+HRESULT CItemCardKey::Ready_Components()
 {
 	/* Com_Transform */
 	CTransform::TRANSFORM_DESC		TransformDesc{ 5.f, D3DXToRadian(90.0f) };
@@ -87,7 +82,7 @@ HRESULT CItemShootGunBullet::Ready_Components()
 		return E_FAIL;
 
 	/* Com_Texture */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Item_Bullets"),
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Item_CardKey_0"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
@@ -99,7 +94,7 @@ HRESULT CItemShootGunBullet::Ready_Components()
 	return S_OK;
 }
 
-HRESULT CItemShootGunBullet::Begin_RenderState()
+HRESULT CItemCardKey::Begin_RenderState()
 {
 	/* 알파 테스트 : 픽셀의 알파를 비교해서 그린다 안그린다를 설정. */
 	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
@@ -111,7 +106,7 @@ HRESULT CItemShootGunBullet::Begin_RenderState()
 	return S_OK;
 }
 
-HRESULT CItemShootGunBullet::End_RenderState()
+HRESULT CItemCardKey::End_RenderState()
 {
 	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 
@@ -120,15 +115,15 @@ HRESULT CItemShootGunBullet::End_RenderState()
 	return S_OK;
 }
 
-void CItemShootGunBullet::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta)
+void CItemCardKey::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta)
 {
 	if (eColType == COLLISION::SPHERE)
 		m_isDead = true;
 }
 
-CItemShootGunBullet* CItemShootGunBullet::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
+CItemCardKey* CItemCardKey::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 {
-	CItemShootGunBullet* pInstance = new CItemShootGunBullet(pGraphic_Device);
+	CItemCardKey* pInstance = new CItemCardKey(pGraphic_Device);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
@@ -139,20 +134,20 @@ CItemShootGunBullet* CItemShootGunBullet::Create(LPDIRECT3DDEVICE9 pGraphic_Devi
 	return pInstance;
 }
 
-CGameObject* CItemShootGunBullet::Clone(void* pArg)
+CGameObject* CItemCardKey::Clone(void* pArg)
 {
-	CItemShootGunBullet* pInstance = new CItemShootGunBullet(*this);
+	CItemCardKey* pInstance = new CItemCardKey(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Cloned : CItemShootGunBullet");
+		MSG_BOX("Failed to Cloned : CItemCardKey");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CItemShootGunBullet::Free()
+void CItemCardKey::Free()
 {
 	__super::Free();
 }

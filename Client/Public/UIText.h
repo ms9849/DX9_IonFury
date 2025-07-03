@@ -2,8 +2,6 @@
 
 #include "Client_Defines.h"
 #include "UIObject.h"
-#include "UIFont.h"
-
 
 NS_BEGIN(Engine)
 class CTransform;
@@ -44,7 +42,7 @@ public:
 	virtual void Free() override;
 
 private:
-	vector<CUIFont*> m_vecFont{};
+	vector<class CUIFont*> m_vecFont{};
 	UIOBJECT_DESC m_tagDesc{};
 };
 

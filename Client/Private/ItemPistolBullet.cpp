@@ -7,7 +7,7 @@ CItemPistolBullet::CItemPistolBullet(LPDIRECT3DDEVICE9 pGraphic_Device)
 }
 
 CItemPistolBullet::CItemPistolBullet(const CItemPistolBullet& Prototype)
-	: CItem{ Prototype }
+	: CItem(Prototype)
 {
 }
 
