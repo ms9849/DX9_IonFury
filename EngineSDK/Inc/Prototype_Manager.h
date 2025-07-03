@@ -5,6 +5,8 @@
 #include "Transform.h"
 #include "VIBuffer_Cube.h"
 #include "VIBuffer_Rect.h"
+#include "VIBuffer_Rect_Up.h"
+#include "VIBuffer_Rect_Down.h"
 #include "VIBuffer_Terrain.h"
 #include "Sight.h"
 #include "BoxCollider.h"

@@ -24,6 +24,7 @@
 #include "ItemCardKey.h"
 #include "Soldier.h"
 #include "Zombie.h"
+#include "Boss.h"
 #include "MeleeAttack.h"
 
 #include "GameInstance.h"
@@ -243,6 +244,10 @@ HRESULT CLoader::Loading_For_GamePlay()
 		CZombie::Create(m_pGraphic_Device))))
 		return E_FAIL;
 #pragma endregion	
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Monster_Boss"),
+		CBoss::Create(m_pGraphic_Device))))
+		return E_FAIL;
 
 	/* For.Prototype_GameObject_Sky */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Sky"),

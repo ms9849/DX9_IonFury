@@ -296,8 +296,7 @@ void CZombie::Update(_float fTimeDelta)
 void CZombie::Late_Update(_float fTimeDelta)
 {
 	m_pAnimationCom->Play_Animation(m_strFrameKey, fTimeDelta);
-	int tempNum = m_pAnimationCom->Get_Frame_Current_Index(m_strFrameKey);
-	//m_pGameInstance->Add_RenderGroup(RENDER::NONBLEND, this);
+
 	if (m_bAnimationLock && m_pAnimationCom->Check_Animation_Finish())
 	{
 		//m_pAnimationCom->Set_Animation(&iter->second);
@@ -335,6 +334,7 @@ HRESULT CZombie::Render()
 
 	_float3 fMonsterPos = m_pTransformCom->Get_State(STATE::POSITION);
 	_float3 fPlayerPos = m_pPlayerTransform->Get_State(STATE::POSITION);
+	//m_pTransformCom->Set_Scale({ 10.f, 10.f, 10.f });
 
 	_float3 fLook = fPlayerPos - fMonsterPos;
 	fLook.y = 0.0f;								// y축 회전용
@@ -349,6 +349,8 @@ HRESULT CZombie::Render()
 	memcpy(&matWorldTemp.m[0][0], &fRight, sizeof(_float3));
 	memcpy(&matWorldTemp.m[1][0], &fUp, sizeof(_float3));
 	memcpy(&matWorldTemp.m[2][0], &fLook, sizeof(_float3));
+
+	//m_pTransformCom->Set_Scale({ 10.f, 10.f, 10.f });
 
 	m_pTransformCom->Set_Transform(matWorldTemp);
 
