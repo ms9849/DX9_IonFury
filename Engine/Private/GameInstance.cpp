@@ -199,6 +199,10 @@ map<const _wstring, class CLayer*> CGameInstance::Get_Layers_InLevel(_uint iLaye
 {
 	return m_pObject_Manager->Get_Layers_InLevel(iLayerLevelIndex);
 }
+list<class CGameObject*> CGameInstance::Get_GameObjects_inLayer(_uint iLayerLevelIndex, const _wstring& strLayerTag)
+{
+	return m_pObject_Manager->Get_GameObjects_inLayer(iLayerLevelIndex, strLayerTag);
+}
 #pragma endregion
 
 #pragma region RENDERER

@@ -324,6 +324,14 @@ HRESULT CMainApp::Ready_Prototypes()
 		return E_FAIL;
 #pragma endregion
 
+#pragma region 총알 등 기타 텍스쳐
+	/* For.Prototype_Component_Texture_Bullet */
+
+	/* For.Prototype_Component_Texture_Sky */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Bullet"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::CUBE, TEXT("../Bin/Resources/Textures/Bullet/Bullet%d.dds"), 1))))
+		return E_FAIL;
+#pragma endregion
 	return S_OK;
 }
 

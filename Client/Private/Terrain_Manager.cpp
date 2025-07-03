@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "Layer.h"
 #include "Terrain.h"
+#include "CubeObject.h"
 #include "LandObject.h"
 
 
@@ -39,7 +40,6 @@ CTerrain_Manager라고 가정하면
 할거면 obb든 aabb든 콜라이더 달아서 밀어내야 한다.
 */
 
-
 CTerrain_Manager::CTerrain_Manager() : 
     m_pGameInstance{ CGameInstance::GetInstance() }
 {
@@ -48,15 +48,7 @@ CTerrain_Manager::CTerrain_Manager() :
 
 void CTerrain_Manager::Add_LandObject(LEVEL eLevelID, const _wstring& strLayerTag)
 {
-    CLayer* pLayer = (m_pGameInstance->Find_Layer(ENUM_CLASS(eLevelID), strLayerTag));
-    list<CGameObject*> GameObjects = pLayer->Get_GameObjects();
-
-    /* 
-    * 
-    Land Object 담기
-    이거 nullptr 이면 터질 가능성 매우 높음    
-    *
-    */
+    list<CGameObject*> GameObjects = m_pGameInstance->Get_GameObjects_inLayer(ENUM_CLASS(eLevelID), strLayerTag);
 
     for (auto& iter : GameObjects)
     {
@@ -66,13 +58,23 @@ void CTerrain_Manager::Add_LandObject(LEVEL eLevelID, const _wstring& strLayerTa
 
 void CTerrain_Manager::Add_Terrian(LEVEL eLevelID)
 {
-    CLayer* pLayer = m_pGameInstance->Find_Layer(ENUM_CLASS(eLevelID), TEXT("Layer_BackGround"));
-    list<CGameObject*> GameObjects = pLayer->Get_GameObjects();
+    list<CGameObject*> GameObjects = m_pGameInstance->Get_GameObjects_inLayer(ENUM_CLASS(eLevelID), TEXT("Layer_BackGround"));
 
     /* Terrain 담기 */
     for (auto& iter : GameObjects)
     {
         m_Terrains.push_back(reinterpret_cast<CTerrain*>(iter));
+    }
+}
+
+void CTerrain_Manager::Add_Cube(LEVEL eLevelID)
+{
+    list<CGameObject*> GameObjects = m_pGameInstance->Get_GameObjects_inLayer(ENUM_CLASS(eLevelID), TEXT("Layer_Cube"));
+
+    /* Cube 담기 */
+    for (auto& iter : GameObjects)
+    {
+        m_CubeObjects.push_back(reinterpret_cast<CCubeObject*>(iter));
     }
 }
 
@@ -85,7 +87,8 @@ void CTerrain_Manager::Check_Landing()
 {
     _float3 vDist, vRayDir = _float3{ 0.f, -1.f, 0.f };
     _float fMin = FLT_MAX;
-    CTerrain* pNearestLand = {};
+
+    CGameObject* pNearestLand= {};
 
     for (auto& LandObj : m_LandObjects)
     {
@@ -99,6 +102,7 @@ void CTerrain_Manager::Check_Landing()
         CTransform* pTransform = static_cast<CTransform*>(LandObj->Find_Component(TEXT("Com_Transform")));
         _float3 vPos = pTransform->Get_State(STATE::POSITION);
 
+        /* Terrain 체크 */
         for (auto& pTerrain : m_Terrains)
         {
             CTerrain::TERRAIN_DESC TerrainDesc = pTerrain->Get_TerrainDesc();
@@ -115,17 +119,59 @@ void CTerrain_Manager::Check_Landing()
             }
         }
 
+        /* 
+        CubeObject 체크 -> 
+        Terrain과 로직 분리하는게 추후 일 생기면 편하긴 함
+        */
+
+        /*
+        같은 x,z에 같은 평면이 두개 존재한다. 
+
+        highest y를 받아오는게 맞긴 한데
+
+       
+        */
+        for (auto& pCube : m_CubeObjects)
+        {
+            CCubeObject::CUBE_DESC CubeDesc = pCube->Get_CubeDesc();
+
+            if (CubeDesc.pBuffer->Picking(CubeDesc.pTransform, &vDist, vPos, vRayDir))
+            {
+                _float3 vDiff = vDist - vPos;
+
+                if (D3DXVec3Length(&vDiff) < fMin)
+                {
+                    fMin = D3DXVec3Length(&vDiff);
+                    pNearestLand = pCube;
+                }
+            }
+        }
+
         if (fMin != FLT_MAX)
         {
-            CLandObject::LANDOBJECT_DESC Desc = { pNearestLand->Get_TerrainDesc().pBuffer, pNearestLand->Get_TerrainDesc().pTransform };
-            
-            if (fMin > 2.0f && LandObj->Get_Jump() == false)
+            CLandObject::LANDOBJECT_DESC Desc;
+
+            if (dynamic_cast<CTerrain*>(pNearestLand) != nullptr)
             {
-                LandObj->Set_Jump(true);
-                LandObj->Set_Time(0.133334f);
+                Desc = { dynamic_cast<CTerrain*>(pNearestLand)->Get_TerrainDesc().pBuffer, dynamic_cast<CTerrain*>(pNearestLand)->Get_TerrainDesc().pTransform };
+
+                if (fMin > 2.0f && LandObj->Get_Jump() == false)
+                {
+                    LandObj->Set_Jump(true);
+                    LandObj->Set_Time(0.133334f);
+                }
+            }
+            else if (dynamic_cast<CCubeObject*>(pNearestLand) != nullptr)
+            {
+                Desc = { dynamic_cast<CCubeObject*>(pNearestLand)->Get_CubeDesc().pBuffer, dynamic_cast<CCubeObject*>(pNearestLand)->Get_CubeDesc().pTransform };
+
+                if (fMin > 0.7f && LandObj->Get_Jump() == false)
+                {
+                    LandObj->Set_Jump(true);
+                    LandObj->Set_Time(0.133334f);
+                }
             }
 
-            /*이전 지형이랑 같다면 안바꿔줘도 됨 이건 land에서 처리할까?*/
             LandObj->Change_Land(&Desc);
 
             /*
@@ -136,7 +182,7 @@ void CTerrain_Manager::Check_Landing()
             */
             /* 0.133333이 돼야 떨어지기 시작. 0.134로 세팅하면 될듯 ? */
             /*
-            이슈 -> 
+            이슈 ->
             1. 점프하거나 지형 바뀔때 약간씩 덜컹거리는 문제가 있음
             */
         }

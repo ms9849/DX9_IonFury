@@ -360,6 +360,8 @@ HRESULT CLevel_GamePlay::Ready_Layer_Cube(const _wstring& strLayerTag)
 		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag)))
 		return E_FAIL;
 
+	m_pTerrain_Manager->Add_Cube(LEVEL::GAMEPLAY);
+
 	return S_OK;
 }
 
