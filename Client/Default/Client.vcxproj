@@ -150,6 +150,7 @@
     <ClInclude Include="..\public\Camera.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
     <ClInclude Include="..\Public\CubeObject.h" />
+    <ClInclude Include="..\public\DoorLock.h" />
     <ClInclude Include="..\public\ItemCardKey.h" />
     <ClInclude Include="..\Public\Terrain_Manager.h" />
     <ClInclude Include="..\Public\MeleeAttack.h" />
@@ -192,6 +193,7 @@
     <ClCompile Include="..\Private\Boss.cpp" />
     <ClCompile Include="..\Private\Bullet.cpp" />
     <ClCompile Include="..\private\Camera.cpp" />
+    <ClCompile Include="..\private\DoorLock.cpp" />
     <ClCompile Include="..\private\UICardKey.cpp" />
     <ClCompile Include="..\private\ItemArmor.cpp" />
     <ClCompile Include="..\Private\CubeObject.cpp" />

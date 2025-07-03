@@ -26,6 +26,7 @@
 #include "Zombie.h"
 #include "Boss.h"
 #include "MeleeAttack.h"
+#include "DoorLock.h"
 
 #include "GameInstance.h"
 
@@ -171,6 +172,24 @@ HRESULT CLoader::Loading_For_GamePlay()
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Item/Item_Bullet_%d.png"), 2))))
 		return E_FAIL;
 #pragma endregion
+
+#pragma region 맵 오브젝트
+	/* For.Prototype_Component_Texture_Map_DoorLock_Idle */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Map_DoorLock_Idle"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/MapObject/DoorLock/DoorLock_0.png"), 1))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Map_DoorLock_Unlock */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Map_DoorLock_Unlock"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/MapObject/DoorLock/DoorLock_%d.png"), 7))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Map_DoorLock_Open */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Map_DoorLock_Open"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/MapObject/DoorLock/DoorLock_6.png"), 1))))
+		return E_FAIL;
+#pragma endregion
+
 
 	m_strMessage = TEXT("모델를(을) 로딩 중 입니다.");
 	/* For.Prototype_Component_VIBuffer_Terrain */
@@ -332,6 +351,13 @@ HRESULT CLoader::Loading_For_GamePlay()
 		CItemCardKey::Create(m_pGraphic_Device))))
 		return E_FAIL;
 #pragma endregion	
+
+#pragma region 맵 오브젝트
+	/* For.Prototype_GameObject_Map_DoorLock */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Map_DoorLock"),
+		CDoorLock::Create(m_pGraphic_Device))))
+#pragma endregion
+
 
 	m_strMessage = TEXT("로딩이 완료되었습니다..");
 

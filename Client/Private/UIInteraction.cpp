@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "UIFont.h"
 #include "UIText.h"
+#include "Player.h"
 
 CUIInteraction::CUIInteraction(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CUIObject{ pGraphic_Device }
@@ -56,6 +57,9 @@ HRESULT CUIInteraction::Initialize(void* pArg)
 	m_pText = dynamic_cast<CUIText*>(m_pGameInstance->Find_GameObject_ToLayer(Desc.iLayerLevelIndex, Desc.strLayerTag));
 	Safe_AddRef(m_pText);
 
+	m_pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player")));
+	Safe_AddRef(m_pPlayer);
+
 	return S_OK;
 }
 
@@ -83,7 +87,10 @@ HRESULT CUIInteraction::Render()
 
 void CUIInteraction::Set_Interaction()
 {
-	m_pText->Set_Text(TEXT("Press [E] Key"));
+	if(m_pPlayer->Get_Can_Open_Door())
+		m_pText->Set_Text(TEXT("Press [E] Key"));
+	else
+		m_pText->Set_Text(TEXT(" "));
 }
 
 HRESULT CUIInteraction::Ready_Components()
@@ -135,4 +142,5 @@ void CUIInteraction::Free()
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pText);
+	Safe_Release(m_pPlayer);
 }

@@ -27,6 +27,7 @@ private:
 	HRESULT Ready_Layer_UI(const _wstring& strLayerTag);
 	HRESULT Ready_Layer_Cube(const _wstring& strLayerTag);
 	HRESULT Ready_Layer_Items(const _wstring& strLayerTag);
+	HRESULT Ready_Layer_Interaction_Objects(const _wstring& strLayerTag);
 
 private:
 	class CTerrain_Manager* m_pTerrain_Manager = {};
@@ -36,8 +37,10 @@ private:
 	class CUIInteraction* m_pUIInteraction { nullptr };
 	class CUIAim* m_pUIAim { nullptr };
 	class CUICardKey* m_pUICardKey { nullptr };
-	vector<class CUIItemQueue*> m_pUIItemQueues{};
+	class CDoorLock* m_pDoorLock;
+	
 	CCamera::CAMERA_CONFIG m_CameraSettings;
+	vector<class CUIItemQueue*> m_pUIItemQueues{};
 
 public:
 	static CLevel_GamePlay* Create(LPDIRECT3DDEVICE9 pGraphic_Device, LEVEL eLevelID);

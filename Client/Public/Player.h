@@ -52,6 +52,8 @@ public:
 public:
 	PLAYER_INFO Get_Player_Info();
 	_bool Get_CanUse_CardKey();
+	_bool Get_Can_Open_Door();
+	_bool Get_Use_CardKey();
 
 private:
 	CAnimation*				m_pRightHandAnimationCom = { nullptr };
@@ -77,11 +79,12 @@ private:
 	class CPlayer_LeftHand*		m_pLeftHand{ nullptr };
 	map<const _wstring, WEAPON_INFO> m_Weapons{};
 	_bool			m_bWeaponChange{ false };
-	_bool			m_bUseItem{ false };
 	deque<_wstring> m_ItemQueues{};
 	_float			m_fTimeStack{0.f};
 	_wstring		m_strNextWeapon{};
 
+	_bool			m_bUseCardKey{ false };
+	_bool			m_bCanOpenDoor{ false };
 	_bool			m_bCanUseCardKey{ false };
 
 public:

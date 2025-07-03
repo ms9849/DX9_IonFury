@@ -51,7 +51,7 @@ void CAnimation::Play_Animation(const _wstring strFrameKey, _float fTimeDelta)
 			iter->second.fTime = 0.f;
 			iter->second.iCurrentFrame++;
 
-			if (iter->second.iCurrentFrame >= iter->second.iEnd)
+			if (iter->second.iCurrentFrame >= iter->second.iEnd - 1)
 			{
 				iter->second.iCurrentFrame = 0;
 				iter->second.bFinish = true;
