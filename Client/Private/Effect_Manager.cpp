@@ -73,7 +73,7 @@ void CEffect_Manager::Create_Effect(const _wstring& strEffectTag, _uint iLayerLe
 
 	for (auto& pEffect : Effects->second)
 	{
-		if (pEffect->Get_Frame() == 0.f)
+		if (pEffect->Get_Frame() == 0.f && pEffect->isDead() == false)
 		{
 			Safe_AddRef(pEffect);
 			m_pGameInstance->Add_Clone_ToLayer(pEffect, iLayerLevelIndex, strLayerTag);
