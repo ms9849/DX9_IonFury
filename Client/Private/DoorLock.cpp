@@ -101,7 +101,7 @@ HRESULT CDoorLock::Ready_Components()
 
 		CTexture* pTextureCom{ nullptr };
 
-		wsprintf(strPrototypeTag, TEXT("Prototype_Component_Texture_Map_%s"), m_strFrameKeys[i].c_str());
+		wsprintf(strPrototypeTag, TEXT("Prototype_Component_Texture_Interaction_%s"), m_strFrameKeys[i].c_str());
 		wsprintf(strComponentTag, TEXT("Com_%s_Texture"), m_strFrameKeys[i].c_str());
 
 		/* Com_Texture */
