@@ -53,6 +53,11 @@ void CItemArmor::Update(_float fTimeDelta)
 
 void CItemArmor::Late_Update(_float fTimeDelta)
 {
+	//// 애니메이션 프레임 증가
+	//// 프레임 전체 런타임 -> 상수로 제어해서 처리하기
+	//m_pAnimationCom->Play_Animation(fTimeDelta);
+
+
  	m_pGameInstance->Add_RenderGroup(RENDER::BLEND, this);
 }
 

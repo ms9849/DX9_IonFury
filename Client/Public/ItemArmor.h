@@ -3,6 +3,7 @@
 #include "Client_Defines.h"
 #include "Item.h"
 
+
 NS_BEGIN(Client)
 
 class CItemArmor final : public CItem
@@ -12,7 +13,7 @@ private:
     CItemArmor(const CItemArmor& Prototype);
     virtual ~CItemArmor() = default;
 
-private:
+public:
     virtual HRESULT Initialize_Prototype() override;
     virtual HRESULT Initialize(void* pArg) override;
     virtual void Priority_Update(_float fTimeDelta) override;
