@@ -276,9 +276,14 @@ void CSoldier::Late_Update(_float fTimeDelta)
 {
 	m_pAnimationCom->Play_Animation(m_strFrameKey, fTimeDelta);
 	int num = m_pAnimationCom->Get_Frame_Current_Index(m_strFrameKey);
-	wchar_t szDebug[256];
+	/*wchar_t szDebug[256];
 	swprintf(szDebug, 256, L"프레임 키: %s, 현재 인덱스: %d\n", m_strFrameKey.c_str(), num);
-	OutputDebugStringW(szDebug);
+	OutputDebugStringW(szDebug);*/
+	auto iter = m_pAnimationCom->Get_Frame_Desc(m_strFrameKey);
+	wchar_t szDebug_2[256];
+	swprintf(szDebug_2, 256, L"프레임 키: %s, 현재 인덱스: %d, 마지막 인덱스: %d\n", m_strFrameKey.c_str(), m_pAnimationCom->Get_Frame_Current_Index(m_strFrameKey), iter->iEnd);
+	OutputDebugStringW(szDebug_2);
+	//Get_Frame_Current_Index(m_strFrameKey) == iter->iEnd - 1
 	if (m_bAnimationLock && m_pAnimationCom->Check_Animation_Finish(m_strFrameKey))
 	{
 		if (m_bDying)
@@ -290,11 +295,14 @@ void CSoldier::Late_Update(_float fTimeDelta)
 		else
 		{
 			m_bAnimationLock = false;
-			//m_pAnimationCom->Clear_Animation();
-			//m_strFrameKey = TEXT("Soldier_Front");
+			wchar_t szDebug[256];
+			swprintf(szDebug, 256, L"종료 프레임 키: %s, 현재 인덱스: %d\n", m_strFrameKey.c_str(), num);
+			OutputDebugStringW(szDebug);
+			m_pAnimationCom->Clear_Animation(m_strFrameKey);
+			m_strFrameKey = TEXT("Soldier_Front");
 		}
 	}
-
+	/*m_pAnimationCom->Play_Animation(m_strFrameKey, fTimeDelta);*/
 	m_pGameInstance->Add_RenderGroup(RENDER::NONBLEND, this);
 }
 
@@ -585,7 +593,11 @@ void CSoldier::Attack()
 	CBullet::BULLET_DESC Desc;
 	Desc.vDir = vDir;
 	Desc.vPos = vPos;
+	Desc.vBulletScale = {0.2f, 0.2f, 0.01f};
+	Desc.fBulletSpeed = 5.f;
+
 	Desc.isPlayerBullet = false;
+
 
 	m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Bullet"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Monster_Bullet"), &Desc);
 }
