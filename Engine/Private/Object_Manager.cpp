@@ -49,6 +49,25 @@ HRESULT CObject_Manager::Add_GameObject_ToLayer(_uint iPrototypeLevelIndex, cons
 	return S_OK;
 }
 
+HRESULT CObject_Manager::Add_Clone_ToLayer(CGameObject* pClone, _uint iLayerLevelIndex, const _wstring& strLayerTag)
+{
+	if (nullptr == pClone)
+		return E_FAIL;
+
+	CLayer* pLayer = Find_Layer(iLayerLevelIndex, strLayerTag);
+	if (nullptr == pLayer)
+	{
+		pLayer = CLayer::Create();
+
+		pLayer->Add_GameObject(pClone);
+
+		m_pLayers[iLayerLevelIndex].emplace(strLayerTag, pLayer);
+	}
+	else
+		pLayer->Add_GameObject(pClone);
+	return S_OK;
+}
+
 CGameObject* CObject_Manager::Find_GameObject_ToLayer(_uint iLayerLevelIndex, const _wstring& strLayerTag, void* pArg)
 {
 	CGameObject* pGameObject{ nullptr };

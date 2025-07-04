@@ -21,14 +21,6 @@ HRESULT CEffect::Initialize_Prototype()
 
 HRESULT CEffect::Initialize(void* pArg)
 {
-	if (FAILED(Ready_Components()))
-		return E_FAIL;
-
-	m_pTransformCom->Set_State(STATE::POSITION, _float3(
-		m_pGameInstance->Random(0.f, 20.f), 
-		5.f, 
-		m_pGameInstance->Random(0.f, 20.f)));
-
 	return S_OK;
 }
 
@@ -44,13 +36,16 @@ void CEffect::Update(_float fTimeDelta)
 
 void CEffect::Late_Update(_float fTimeDelta)
 {
-	m_fFrame += 90.0f * fTimeDelta;
+	m_fFrame += m_fNumFrame * fTimeDelta;
 
-	if (m_fFrame >= 90.0f)
+	if (m_fFrame >= m_fNumFrame)
+	{
 		m_fFrame = 0.f;
+		m_isDead = true;
+	}
 	
-
-	m_pGameInstance->Add_RenderGroup(RENDER::BLEND, this);
+	if(!m_isDead)
+		m_pGameInstance->Add_RenderGroup(RENDER::BLEND, this);
 }
 
 HRESULT CEffect::Render()
@@ -70,24 +65,15 @@ HRESULT CEffect::Render()
 	return S_OK;
 }
 
+void CEffect::Set_Desc(EFFECT_DESC Desc)
+{
+	m_pTransformCom->Set_State(STATE::POSITION, Desc.vPosition);
+	m_fFrame = Desc.fFrame;
+	m_IsOrtho = Desc.bIsOrtho;
+}
+
 HRESULT CEffect::Ready_Components()
 {
-	/* Com_Transform */
-	CTransform::TRANSFORM_DESC		TransformDesc{ 5.f, D3DXToRadian(90.0f) };
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Transform"),
-		TEXT("Com_Transform"), reinterpret_cast<CComponent**>(&m_pTransformCom), &TransformDesc)))
-		return E_FAIL;
-
-	/* Com_Texture */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Effect"),
-		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
-		return E_FAIL;
-
-	/* Com_VIBuffer */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_Rect"),
-		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
-		return E_FAIL;	
-
 	return S_OK;
 }
 
@@ -126,32 +112,6 @@ HRESULT CEffect::End_RenderState()
 	//m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
 
 	return S_OK;
-}
-
-CEffect* CEffect::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
-{
-	CEffect* pInstance = new CEffect(pGraphic_Device);
-
-	if (FAILED(pInstance->Initialize_Prototype()))
-	{
-		MSG_BOX("Failed to Created : pGraphic_Device");
-		Safe_Release(pInstance);
-	}
-
-	return pInstance;
-}
-
-CGameObject* CEffect::Clone(void* pArg)
-{
-	CEffect* pInstance = new CEffect(*this);
-
-	if (FAILED(pInstance->Initialize(pArg)))
-	{
-		MSG_BOX("Failed to Cloned : CEffect");
-		Safe_Release(pInstance);
-	}
-
-	return pInstance;
 }
 
 void CEffect::Free()

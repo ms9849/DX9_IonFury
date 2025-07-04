@@ -1,7 +1,6 @@
 #include "Loader.h"
 
 #include "BackGround.h"
-#include "Effect.h"
 #include "Terrain.h"
 #include "Player.h"
 #include "Player_RightHand.h"
@@ -29,6 +28,7 @@
 #include "DoorLock.h"
 #include "Gate.h"
 #include "BossGrenade.h"
+#include "Effect_Pistol_Fire.h"
 
 #include "GameInstance.h"
 
@@ -286,8 +286,8 @@ HRESULT CLoader::Loading_For_GamePlay()
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_Effect */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Effect"),
-		CEffect::Create(m_pGraphic_Device))))
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Effect_Pistol_Fire"),
+		CEffect_Pistol_Fire::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
 #pragma region UI

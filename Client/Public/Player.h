@@ -74,6 +74,7 @@ private:
 
 
 private:
+	class CEffect_Manager* m_pEffect_Manager = { nullptr };
 	PLAYER_INFO		m_tInfo{};
 	class CPlayer_RightHand*	m_pRightHand{ nullptr };
 	class CPlayer_LeftHand*		m_pLeftHand{ nullptr };

@@ -10,7 +10,7 @@
 #include "DoorLock.h"
 #include "Player_RightHand.h"
 #include "Player_LeftHand.h"
-#include "Gate.h"
+#include "Effect_Manager.h"
 
 CPlayer::CPlayer(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CLandObject{ pGraphic_Device }
@@ -19,9 +19,10 @@ CPlayer::CPlayer(LPDIRECT3DDEVICE9 pGraphic_Device)
 }
 
 CPlayer::CPlayer(const CPlayer& Prototype)
-	: CLandObject(Prototype)
+	: CLandObject(Prototype),
+	m_pEffect_Manager { CEffect_Manager::GetInstance() }
 {
-
+	Safe_AddRef(m_pEffect_Manager);
 }
 
 HRESULT CPlayer::Initialize_Prototype()
@@ -232,6 +233,7 @@ void CPlayer::Update(_float fTimeDelta)
 				if (m_tInfo.strWeapon.compare(TEXT("Pistol")) == 0)
 				{
 					m_pGameInstance->PlaySoundOnce(TEXT("Pistol_Shoot.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
+					m_pEffect_Manager->Create_Effect(TEXT("Effect_Pistol_Fire"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Effect"));
 				}
 				else if (m_tInfo.strWeapon.compare(TEXT("ShootGun")) == 0)
 				{
@@ -561,4 +563,5 @@ void CPlayer::Free()
 	Safe_Release(m_pRightHand);
 	Safe_Release(m_pRightHandAnimationCom);
 	Safe_Release(m_pSphereColliderCom);
+	Safe_Release(m_pEffect_Manager);
 }

@@ -18,9 +18,13 @@ public:
 	HRESULT Draw();
 	void Clear_Resources(_uint iLevelIndex);
 
+	void Calc_CameraInfo();
+	const _float4x4* Get_CameraWorldInv() { return m_matCameraWorld; }
+	const _float4x4* Get_CameraWorld() { return m_matCameraWorld; }
+
 	_float Random_Normal();
 	_float Random(_float fMin, _float fMax);
-	_bool CCW(_float3 vSrc, _float3 vDst);
+	_bool CCW(const _float3& vSrc, const _float3& vDst);
 
 #pragma region GRAPHIC_DEVICE
 public:
@@ -51,6 +55,7 @@ public:
 	class CLayer* Find_Layer(_uint iLayerLevelIndex, const _wstring& strLayerTag);
 	map<const _wstring, class CLayer*> Get_Layers_InLevel(_uint iLayerLevelIndex);
 	list<class CGameObject*> Get_GameObjects_inLayer(_uint iLayerLevelIndex, const _wstring& strLayerTag);
+	HRESULT Add_Clone_ToLayer(class CGameObject* pClone, _uint iLayerLevelIndex, const _wstring& strLayerTag);
 #pragma endregion
 
 #pragma region RENDERER
@@ -95,6 +100,11 @@ private:
 	class CSound_Manager* m_pSound_Manager = { nullptr };
 	class CCollision_Manager* m_pCollision_Manager = { nullptr };
 	class CPicking* m_pPicking = { nullptr };
+
+	/* 매프레임 계산된다 */
+	_float4x4* m_matCameraWorld = {};
+	_float4x4* m_matCameraWorldInv = {};
+	LPDIRECT3DDEVICE9 m_pGraphicDev = {};
 
 public:
 	void Release_Engine();

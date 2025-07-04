@@ -31,6 +31,7 @@ private:
 	HRESULT Ready_Layer_Interaction_Objects(const _wstring& strLayerTag);
 
 private:
+	class CEffect_Manager* m_pEffect_Manager = {};
 	class CTerrain_Manager* m_pTerrain_Manager = {};
 	class CUIHp* m_pUIHp { nullptr };
 	class CUIArmor* m_pUIArmor { nullptr };

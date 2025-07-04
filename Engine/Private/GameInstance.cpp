@@ -22,6 +22,9 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& EngineDesc, LPDIRECT
 	m_pGraphic_Device = CGraphic_Device::Create(EngineDesc.hWnd, EngineDesc.eWindowMode, EngineDesc.iWinSizeX, EngineDesc.iWinSizeY, ppOut);
 	if (nullptr == m_pGraphic_Device)
 		return E_FAIL;
+	
+	m_pGraphicDev = *ppOut;
+	Safe_AddRef(m_pGraphicDev);
 
 	m_pTimer_Manager = CTimer_Manager::Create();
 	if (nullptr == m_pTimer_Manager)
@@ -66,13 +69,16 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 {
 	m_pObject_Manager->Priority_Update(fTimeDelta);
 
+	Calc_CameraInfo();
+
 	m_pObject_Manager->Update(fTimeDelta);
 
 	m_pObject_Manager->Late_Update(fTimeDelta);
+	
+	m_pObject_Manager->Clear_DeadObj();
 
 	m_pLevel_Manager->Update(fTimeDelta);
 
-	m_pObject_Manager->Clear_DeadObj();
 	/*
 	키 매니저의 업데이트는 가장 마지막에 돌아야 합니다
 	절대 바꾸시면 안돼요
@@ -97,17 +103,27 @@ void CGameInstance::Clear_Resources(_uint iLevelIndex)
 	m_pObject_Manager->Clear(iLevelIndex);
 }
 
+void CGameInstance::Calc_CameraInfo()
+{
+//	m_pGraphicDev->GetTransform(D3DTS_VIEW, m_matCameraWorld);
+//	D3DXMatrixInverse(m_matCameraWorldInv, nullptr, m_matCameraWorld);
+}
+
 _float CGameInstance::Random_Normal()
 {
+	//srand((unsigned)time(NULL));
+
 	return static_cast<_float>(rand()) / RAND_MAX;	
 }
 
 _float CGameInstance::Random(_float fMin, _float fMax)
 {
+	//srand((unsigned)time(NULL));
+
 	return fMin + Random_Normal() * (fMax - fMin);	
 }
 
-_bool CGameInstance::CCW(_float3 vSrc, _float3 vDst)
+_bool CGameInstance::CCW(const _float3& vSrc, const _float3& vDst)
 {
 	_float fSum = vSrc.x * vDst.y - vSrc.y * vDst.x;
 
@@ -202,6 +218,10 @@ list<class CGameObject*> CGameInstance::Get_GameObjects_inLayer(_uint iLayerLeve
 {
 	return m_pObject_Manager->Get_GameObjects_inLayer(iLayerLevelIndex, strLayerTag);
 }
+HRESULT CGameInstance::Add_Clone_ToLayer(CGameObject* pClone, _uint iLayerLevelIndex, const _wstring& strLayerTag)
+{
+	return m_pObject_Manager->Add_Clone_ToLayer(pClone, iLayerLevelIndex, strLayerTag);
+}
 #pragma endregion
 
 #pragma region RENDERER
@@ -293,6 +313,7 @@ void CGameInstance::Release_Engine()
 	DestroyInstance();
 
 	Safe_Release(m_pGraphic_Device);
+	Safe_Release(m_pGraphicDev);
 	Safe_Release(m_pTimer_Manager);
 	Safe_Release(m_pLevel_Manager);
 	Safe_Release(m_pPrototype_Manager);

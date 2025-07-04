@@ -153,6 +153,8 @@
     <ClInclude Include="..\Public\CubeObject.h" />
     <ClInclude Include="..\public\DoorLock.h" />
     <ClInclude Include="..\public\Gate.h" />
+    <ClInclude Include="..\Public\Effect_Manager.h" />
+    <ClInclude Include="..\Public\Effect_Pistol_Fire.h" />
     <ClInclude Include="..\public\ItemCardKey.h" />
     <ClInclude Include="..\Public\Terrain_Manager.h" />
     <ClInclude Include="..\Public\MeleeAttack.h" />
@@ -198,6 +200,8 @@
     <ClCompile Include="..\private\Camera.cpp" />
     <ClCompile Include="..\private\DoorLock.cpp" />
     <ClCompile Include="..\private\Gate.cpp" />
+    <ClCompile Include="..\Private\Effect_Manager.cpp" />
+    <ClCompile Include="..\Private\Effect_Pistol_Fire.cpp" />
     <ClCompile Include="..\private\UICardKey.cpp" />
     <ClCompile Include="..\private\ItemArmor.cpp" />
     <ClCompile Include="..\Private\CubeObject.cpp" />

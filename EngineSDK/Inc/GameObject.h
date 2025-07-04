@@ -27,6 +27,10 @@ public:
 	virtual HRESULT Render();
 
 public:
+	void  Set_Dead(_bool bDead) {
+		m_isDead = bDead;
+	}
+
 	_bool isDead() const {
 		return m_isDead;
 	}
