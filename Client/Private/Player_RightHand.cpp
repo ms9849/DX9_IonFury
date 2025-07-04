@@ -34,9 +34,6 @@ HRESULT CPlayer_RightHand::Initialize(void* pArg)
 
 void CPlayer_RightHand::Priority_Update(_float fTimeDelta)
 {
-	// 여기서 플레이어한테서 받아온 애니메이션 타입에 맞춰 애니메이션 세팅
-	// Set_Animation
-
 	_float3 vHandPos = {};
 	_float4x4 PlayerMatrix{};
 

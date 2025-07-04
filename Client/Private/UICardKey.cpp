@@ -42,7 +42,6 @@ HRESULT CUICardKey::Initialize(void* pArg)
 
 void CUICardKey::Priority_Update(_float fTimeDelta)
 {
-	int a = 10;
 }
 
 void CUICardKey::Update(_float fTimeDelta)

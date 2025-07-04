@@ -10,7 +10,6 @@
 #include "Terrain.h"
 #include "Terrain_Manager.h"
 #include "Player.h"
-//#include "DoorLock.h"
 
 CLevel_GamePlay::CLevel_GamePlay(LPDIRECT3DDEVICE9 pGraphic_Device, LEVEL eLevelID)
 	: CLevel { pGraphic_Device, ENUM_CLASS(eLevelID)}	
@@ -114,11 +113,66 @@ void CLevel_GamePlay::Update(_float fTimeDelta)
 	//m_pGameInstance->Check_SphereCollision(TEXT("Layer_Player"), TEXT("Layer_Monster"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta);
 	m_pGameInstance->Check_SphereCollision(TEXT("Layer_Monster"), TEXT("Layer_PlayerBullet"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta);
 	m_pTerrain_Manager->Check_Landing();
+
+	m_fTimeDelta = fTimeDelta;
 }
 
 HRESULT CLevel_GamePlay::Render()
 {
-	SetWindowText(g_hWnd, TEXT("게임플레이레벨이빈다"));
+	// FPS 및 애니메이션 체크
+	m_fFPSTimer += m_fTimeDelta;
+	++m_iFPSCount;
+	
+	_tchar strFPS[256];
+
+	CAnimation* pPRAnimation = dynamic_cast<CAnimation*>(m_pGameInstance->Get_Component(
+		ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player_RightHand"),
+		TEXT("Com_Animation")));
+
+	CAnimation* pPLAnimation = dynamic_cast<CAnimation*>(m_pGameInstance->Get_Component(
+		ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player_LeftHand"),
+		TEXT("Com_Animation")));
+
+	CAnimation* pDLAnimation = dynamic_cast<CAnimation*>(m_pGameInstance->Get_Component(
+		ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Interaction_Objects"),
+		TEXT("Com_Animation")));
+
+	Safe_AddRef(pPRAnimation);
+	Safe_AddRef(pPLAnimation);
+	Safe_AddRef(pDLAnimation);
+	_tchar strAni[256];
+
+	// 윈도우 타이틀에 FPS 표시
+	if (pPRAnimation->Get_FrameKey() != TEXT("")
+		&& pPLAnimation->Get_FrameKey() != TEXT("")
+		&& pDLAnimation->Get_FrameKey() != TEXT(""))
+	{
+		if (m_fFPSTimer >= 1.0f) // 1초 지났을 때 FPS 계산
+		{
+			m_iCurrentFPS = m_iFPSCount;
+			m_iFPSCount = 0;
+			m_fFPSTimer = 0.f;
+		}
+		//
+		wsprintf(strAni, TEXT("GamePlay FPS : %d | PRAnimation : %s / %d / %s | PLAnimation : %s / %d / %s | DLAnimation : %s / %d / %s"),
+			m_iCurrentFPS,
+			pPRAnimation->Get_FrameKey().c_str(),
+			pPRAnimation->Get_Frame_Current_Index(pPRAnimation->Get_FrameKey()),
+			pPRAnimation->Get_Frame_Desc(pPRAnimation->Get_FrameKey())->bFinish ? TEXT("true") : TEXT("false"),
+			pPLAnimation->Get_FrameKey().c_str(),
+			pPLAnimation->Get_Frame_Current_Index(pPLAnimation->Get_FrameKey()),
+			pPLAnimation->Get_Frame_Desc(pPLAnimation->Get_FrameKey())->bFinish ? TEXT("true") : TEXT("false"),
+			pDLAnimation->Get_FrameKey().c_str(),
+			pDLAnimation->Get_Frame_Current_Index(pDLAnimation->Get_FrameKey()),
+			pDLAnimation->Get_Frame_Desc(pDLAnimation->Get_FrameKey())->bFinish ? TEXT("true") : TEXT("false")
+		);
+		SetWindowText(g_hWnd, strAni);
+	}
+
+	Safe_Release(pPRAnimation);
+	Safe_Release(pPLAnimation);
+	Safe_Release(pDLAnimation);
+
 	return S_OK;
 }
 

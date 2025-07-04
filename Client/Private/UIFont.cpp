@@ -41,7 +41,6 @@ HRESULT CUIFont::Initialize(void* pArg)
 
 void CUIFont::Priority_Update(_float fTimeDelta)
 {
-	int a = 10;
 }
 
 void CUIFont::Update(_float fTimeDelta)

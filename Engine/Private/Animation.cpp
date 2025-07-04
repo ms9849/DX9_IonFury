@@ -40,56 +40,32 @@ _uint CAnimation::Get_Frame_Current_Index(const _wstring strFrameKey)
 void CAnimation::Play_Animation(const _wstring strFrameKey, _float fTimeDelta)
 {
 	auto iter = m_tFrames.find(strFrameKey);
-	if (iter == m_tFrames.end() || iter->second.iEnd == 0)
-		return;
+	m_strFrameKey = strFrameKey;
 
-	FRAME_DESC& frame = iter->second;
+	iter->second.fTime += fTimeDelta;
+	iter->second.bFinish = false;
 
-	const _float frameDuration = (1.f / 60.f) * (frame.iFrameSpeed); // 초당 n프레임
-
-	frame.fTime += fTimeDelta;
-
-	while (frame.fTime >= frameDuration)
+	if (iter->second.iEnd != 0)
 	{
-		frame.fTime -= frameDuration;
-		frame.iCurrentFrame++;
-
-		if (frame.iCurrentFrame >= frame.iEnd)
+		if (iter->second.fTime >= (fTimeDelta * iter->second.iFrameSpeed))
 		{
-			frame.iCurrentFrame = 0;
-			frame.bFinish = true;
+			iter->second.fTime = 0.f;
+			iter->second.iCurrentFrame++;
+
+			if (iter->second.iCurrentFrame >= iter->second.iEnd)
+			{ 
+				iter->second.iCurrentFrame = 0;
+				iter->second.bFinish = true;
+			}
 		}
 	}
+	else
+	{
+		iter->second.fTime = 0.f;
+		iter->second.iCurrentFrame = 0;
+		iter->second.bFinish = false;
+	}
 }
-
-//void CAnimation::Play_Animation(const _wstring strFrameKey, _float fTimeDelta)
-//{
-//	auto iter = m_tFrames.find(strFrameKey);
-//
-//	iter->second.fTime += fTimeDelta;
-//	iter->second.bFinish = false;
-//
-//	if (iter->second.iEnd != 0)
-//	{
-//		if (iter->second.fTime >= (fTimeDelta * iter->second.iFrameSpeed))
-//		{
-//			iter->second.fTime = 0.f;
-//			iter->second.iCurrentFrame++;
-//
-//			if (iter->second.iCurrentFrame >= iter->second.iEnd)
-//			{ 
-//				iter->second.iCurrentFrame = 0;
-//				iter->second.bFinish = true;
-//			}
-//		}
-//	}
-//	else
-//	{
-//		iter->second.fTime = 0.f;
-//		iter->second.iCurrentFrame = 0;
-//		iter->second.bFinish = false;
-//	}
-//}
 
 _bool CAnimation::Check_Animation_Finish()
 {
@@ -130,6 +106,11 @@ void CAnimation::Clear_Animation(const _wstring strFrameKey)
 	iter->second.fTime = 0.f;
 	iter->second.iCurrentFrame = 0;
 	iter->second.bFinish = true;
+}
+
+_wstring CAnimation::Get_FrameKey()
+{
+	return m_strFrameKey;
 }
 
 CAnimation* CAnimation::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
