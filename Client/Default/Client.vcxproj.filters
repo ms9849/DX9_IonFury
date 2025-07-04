@@ -114,7 +114,7 @@
     </Filter>
     <Filter Include="02.GameObjects\Monster\Boss">
       <UniqueIdentifier>{5c706583-e0a5-49b2-9a1a-1fe76cb935af}</UniqueIdentifier>
-    </Filter>      
+    </Filter>
     <Filter Include="02.GameObjects\Player\Player_RightHand">
       <UniqueIdentifier>{6b2efc96-1da8-47e3-a7fa-8fdb2ab53f72}</UniqueIdentifier>
     </Filter>
@@ -130,8 +130,14 @@
     <Filter Include="03.MapObjects">
       <UniqueIdentifier>{3aa50a7e-3b43-4d8f-bc15-21b0e74ad4af}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03.MapObjects\DoorLock">
+    <Filter Include="04.InteractionObjects">
+      <UniqueIdentifier>{aba116f7-762b-4702-b8ec-87fdb67d761f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04.InteractionObjects\DoorLock">
       <UniqueIdentifier>{2f2d6cc5-5307-43a5-ab19-f4178aab6619}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.MapObjects\Gate">
+      <UniqueIdentifier>{f5020bd1-497f-4a2c-ac2d-6612ea355dfc}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -268,7 +274,10 @@
       <Filter>02.GameObjects\UI\UICardKey</Filter>
     </ClInclude>
     <ClInclude Include="..\public\DoorLock.h">
-      <Filter>03.MapObjects\DoorLock</Filter>
+      <Filter>04.InteractionObjects\DoorLock</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Gate.h">
+      <Filter>03.MapObjects\Gate</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -400,7 +409,10 @@
       <Filter>02.GameObjects\UI\UICardKey</Filter>
     </ClCompile>
     <ClCompile Include="..\private\DoorLock.cpp">
-      <Filter>03.MapObjects\DoorLock</Filter>
+      <Filter>04.InteractionObjects\DoorLock</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Gate.cpp">
+      <Filter>03.MapObjects\Gate</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

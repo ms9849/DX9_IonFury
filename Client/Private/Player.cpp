@@ -10,6 +10,7 @@
 #include "DoorLock.h"
 #include "Player_RightHand.h"
 #include "Player_LeftHand.h"
+#include "Gate.h"
 
 CPlayer::CPlayer(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CLandObject{ pGraphic_Device }
@@ -267,6 +268,18 @@ void CPlayer::Update(_float fTimeDelta)
 
 	if (!m_ItemQueues.empty())
 		Pop_ItemDesc(fTimeDelta);
+
+	if (m_bCanOpenDoor && m_bCanUseCardKey)
+	{
+		m_fColTimeStack += fTimeDelta;
+
+		if (m_fColTimeStack >= 1.f)
+			m_bCanOpenDoor = false;
+	}
+	else
+	{
+		m_fColTimeStack = 0.f;
+	}
 }
 
 void CPlayer::Late_Update(_float fTimeDelta)
@@ -479,11 +492,7 @@ void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 		if (dynamic_cast<CDoorLock*>(pDst) && m_bCanUseCardKey)
 		{
 			m_bCanOpenDoor = true;
-		}
-		// DoorLock 에서 멀어지면 m_bCanOpenDoor false로 바꿔줘야 함
-		else
-		{
-			m_bCanOpenDoor = false;
+			m_fColTimeStack = 0.f;
 		}
 	}
 }

@@ -1,22 +1,24 @@
-#include "ItemArmor.h"
+#include "Gate.h"
+
 #include "GameInstance.h"
+#include "DoorLock.h"
 
-CItemArmor::CItemArmor(LPDIRECT3DDEVICE9 pGraphic_Device)
-	: CItem{ pGraphic_Device }
+CGate::CGate(LPDIRECT3DDEVICE9 pGraphic_Device)
+	: CLandObject{ pGraphic_Device }
 {
 }
 
-CItemArmor::CItemArmor(const CItemArmor& Prototype)
-	: CItem(Prototype)
+CGate::CGate(const CGate& Prototype)
+	: CLandObject(Prototype)
 {
 }
 
-HRESULT CItemArmor::Initialize_Prototype()
+HRESULT CGate::Initialize_Prototype()
 {
 	return S_OK;
 }
 
-HRESULT CItemArmor::Initialize(void* pArg)
+HRESULT CGate::Initialize(void* pArg)
 {
 	CLandObject::LANDOBJECT_DESC			Desc{};
 	Desc.pLandTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_BackGround"), TEXT("Com_Transform")));
@@ -28,35 +30,40 @@ HRESULT CItemArmor::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-	m_pTransformCom->Set_State(STATE::POSITION, _float3(25.f, 0.f, 5.f));
+	/* Com_SphereCollider*/
+	/*if (FAILED(Ready_Collider()))
+		return E_FAIL;*/
 
-	SetUp_OnTerrain(m_pTransformCom, 0.5f);
+	m_pTransformCom->Set_State(STATE::POSITION, _float3{ 5.0f, 0.f, 10.0f });
+	m_pTransformCom->Set_Scale(_float3{ 10.f, 6.0f, 1.0f });
 
-	m_fItemOriginPosY = m_pTransformCom->Get_State(STATE::POSITION).y;
-
-	m_pPlayerTransformCom = dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(
-		ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player"), TEXT("Com_Transform")));
-	Safe_AddRef(m_pPlayerTransformCom);
+	SetUp_OnTerrain(m_pTransformCom, 3.0f);
 
 	return S_OK;
 }
 
-void CItemArmor::Priority_Update(_float fTimeDelta)
+void CGate::Priority_Update(_float fTimeDelta)
 {
 }
 
-void CItemArmor::Update(_float fTimeDelta)
+void CGate::Update(_float fTimeDelta)
 {
-	Item_Animation(fTimeDelta);
-	m_pTransformCom->LookAt(m_pPlayerTransformCom->Get_State(STATE::POSITION));
+	if (!m_bStop)
+	{
+		m_bOpen = dynamic_cast<CDoorLock*>(
+			m_pGameInstance->Find_GameObject_ToLayer(
+				ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Interaction_Objects")))->Get_Open();
+
+		Gate_Animation(fTimeDelta);
+	}
 }
 
-void CItemArmor::Late_Update(_float fTimeDelta)
+void CGate::Late_Update(_float fTimeDelta)
 {
- 	m_pGameInstance->Add_RenderGroup(RENDER::BLEND, this);
+	m_pGameInstance->Add_RenderGroup(RENDER::BLEND, this);
 }
 
-HRESULT CItemArmor::Render()
+HRESULT CGate::Render()
 {
 	m_pTransformCom->Set_Transform();
 
@@ -66,14 +73,14 @@ HRESULT CItemArmor::Render()
 		return E_FAIL;
 
 	m_pVIBufferCom->Render();
-
+	
 	if (FAILED(End_RenderState()))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-HRESULT CItemArmor::Ready_Components()
+HRESULT CGate::Ready_Components()
 {
 	/* Com_Transform */
 	CTransform::TRANSFORM_DESC		TransformDesc{ 5.f, D3DXToRadian(90.0f) };
@@ -82,7 +89,7 @@ HRESULT CItemArmor::Ready_Components()
 		return E_FAIL;
 
 	/* Com_Texture */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Item_Armor_0"),
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Map_Gate"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
@@ -93,8 +100,7 @@ HRESULT CItemArmor::Ready_Components()
 
 	return S_OK;
 }
-
-HRESULT CItemArmor::Begin_RenderState()
+HRESULT CGate::Begin_RenderState()
 {
 	/* 알파 테스트 : 픽셀의 알파를 비교해서 그린다 안그린다를 설정. */
 	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
@@ -105,8 +111,7 @@ HRESULT CItemArmor::Begin_RenderState()
 
 	return S_OK;
 }
-
-HRESULT CItemArmor::End_RenderState()
+HRESULT CGate::End_RenderState()
 {
 	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 
@@ -115,15 +120,37 @@ HRESULT CItemArmor::End_RenderState()
 	return S_OK;
 }
 
-void CItemArmor::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta)
+void CGate::Gate_Animation(_float fTimeDelta)
 {
-	if (eColType == COLLISION::SPHERE)
-		m_isDead = true;
+	_float3 vGatePos = m_pTransformCom->Get_State(STATE::POSITION);
+
+	if (m_bOpen)
+	{
+		m_fTimeStack += fTimeDelta;
+
+		if (vGatePos.y > 6.f)
+		{
+			m_fTimeStack = 0.f;
+			m_bStop = true;
+		}
+		vGatePos.y += (fTimeDelta * 5);
+	}
+	
+	m_pTransformCom->Set_State(STATE::POSITION, vGatePos);
 }
 
-CItemArmor* CItemArmor::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
+//const COLLISION_DESC& CGate::Get_CollisionDesc(COLLISION eColType)
+//{
+//	COLLISION_DESC Desc;
+//	Desc.pCollider = m_pSphereColliderCom;
+//	Desc.pTransform = m_pTransformCom;
+//
+//	return Desc;
+//}
+
+CGate* CGate::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 {
-	CItemArmor* pInstance = new CItemArmor(pGraphic_Device);
+	CGate* pInstance = new CGate(pGraphic_Device);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
@@ -134,21 +161,25 @@ CItemArmor* CItemArmor::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 	return pInstance;
 }
 
-CGameObject* CItemArmor::Clone(void* pArg)
+CGameObject* CGate::Clone(void* pArg)
 {
-	CItemArmor* pInstance = new CItemArmor(*this);
+	CGate* pInstance = new CGate(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Cloned : CItemArmor");
+		MSG_BOX("Failed to Cloned : CGate");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CItemArmor::Free()
+void CGate::Free()
 {
 	__super::Free();
 
+	Safe_Release(m_pTextureCom);
+	Safe_Release(m_pTransformCom);
+	Safe_Release(m_pPlayerTransformCom);
+	Safe_Release(m_pVIBufferCom);
 }
