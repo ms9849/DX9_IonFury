@@ -27,6 +27,7 @@
 #include "Boss.h"
 #include "MeleeAttack.h"
 #include "DoorLock.h"
+#include "BossGrenade.h"
 
 #include "GameInstance.h"
 
@@ -205,6 +206,10 @@ HRESULT CLoader::Loading_For_GamePlay()
 	/* For.Prototype_GameObject_Bullet */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Bullet"),
 		CBullet::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_BossGrenade"),
+		CBossGrenade::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_Soldier_Bullet */
