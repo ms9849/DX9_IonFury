@@ -1,6 +1,7 @@
 #include "Boss.h"
 #include "GameInstance.h"
 #include "Bullet.h"
+#include "BossGrenade.h"
 #include "BehaviorNode.h"
 
 CBoss::CBoss(LPDIRECT3DDEVICE9 pGraphic_Device)
@@ -173,13 +174,9 @@ void CBoss::Priority_Update(_float fTimeDelta)
 
 void CBoss::Update(_float fTimeDelta)
 {
-<<<<<<< Updated upstream
-	//m_fSumAttackCoolTime += fTimeDelta;
-=======
 	__super::Jump(fTimeDelta);
 
 	m_fSumAttackCoolTime += fTimeDelta;
->>>>>>> Stashed changes
 	m_fSumMoveCoolTime += fTimeDelta;
 
 	if (!m_bAttacking)
@@ -279,6 +276,18 @@ void CBoss::Update(_float fTimeDelta)
 		m_bAnimationLock = true;
 		m_bDying = true;
 	}
+	else if (m_bAttacking)							// 어택중이면 계속 어택
+	{
+		if (m_eState == BossAttackState::END)
+		{
+			// 현재 엔진에 랜덤값 없으므로 대체
+			//m_eState = BossAttackState::MASS;
+			m_eState = BossAttackState::CHASE_MASS;
+			//m_eState = BossAttackState::BOOM;
+		}
+
+		Attack(fTimeDelta, m_eState);
+	}
 	else if (m_pSightCom->Check_Sight(fTimeDelta))
 	{
 		/*if (m_fSumAttackCoolTime >= m_fAttackfCoolTime)
@@ -306,7 +315,9 @@ void CBoss::Update(_float fTimeDelta)
 			if (m_eState == BossAttackState::END)
 			{
 				// 현재 엔진에 랜덤값 없으므로 대체
-				m_eState = BossAttackState::MASS;
+				//m_eState = BossAttackState::MASS;
+				m_eState = BossAttackState::CHASE_MASS;
+				//m_eState = BossAttackState::BOOM;
 			}
 
 			Attack(fTimeDelta, m_eState);
@@ -386,6 +397,10 @@ void CBoss::Late_Update(_float fTimeDelta)
 			m_isDead = true;
 			m_bAnimationLock = false;
 			return;
+		}
+		else if (m_bAttacking)
+		{
+			m_strUpFrameKey = TEXT("Boss_Attack_Front");
 		}
 		else
 		{
@@ -772,7 +787,11 @@ HRESULT CBoss::End_RenderState()
 
 void CBoss::Attack(_float fTimeDelta, BossAttackState state)
 {
-	m_bAttacking = true;						// 공격중 상태로 전환
+	if (!m_bAttacking)
+	{
+		m_bAttacking = true;						// 공격중 상태로 전환
+		m_vAttackPos = m_pPlayerTransform->Get_State(STATE::POSITION);
+	}
 	m_fAttackFailTime += fTimeDelta;
 
 	if (state == BossAttackState::MASS)			// 공격모드가 난사면
@@ -789,19 +808,28 @@ void CBoss::Attack(_float fTimeDelta, BossAttackState state)
 			_float3 vMonsterPos = m_pTransformCom->Get_State(STATE::POSITION);
 			vMonsterPos.y += m_vUpOffset.y;
 			/*_float3 vDir = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);*/
-			_float3 vDir = m_pPlayerTransform->Get_State(STATE::POSITION) - vMonsterPos;
+			//_float3 vDir = m_pPlayerTransform->Get_State(STATE::POSITION) - vMonsterPos;
+			
+			//srand(static_cast<unsigned int>(time(NULL)));
+			/*float min = 0.0f;
+			float max = 100.0f;
+			float r = min + static_cast<float>(rand()) / RAND_MAX * (max - min);*/
+			//m_vAttackPos += {r, r, r};
+			_float3 vDir = m_vAttackPos - vMonsterPos;									// 나중에 m_vAttackPos를 약간 랜덤하게 위치 지정
 			_float3 vPos = m_pTransformCom->Get_State(STATE::POSITION);
 			D3DXVec3Normalize(&vDir, &vDir);
 
 			CBullet::BULLET_DESC Desc;
 			Desc.vDir = vDir;
 			Desc.vPos = {vPos.x ,vPos.y += m_vUpOffset.y, vPos.z };
+			Desc.fBulletSpeed = 10.f;
+			Desc.vBulletScale = { 0.2f, 0.2f, 0.1f };
 			Desc.isPlayerBullet = false;
 			m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Bullet"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Monster_Bullet"), &Desc);
 			m_fSumLaunchCoolTime = 0.f;								// 난사 한발 사용했으므로 누적 시간 초기화
 			//m_fSumAttackCoolTime = 0.f;
 			m_uCurBullets++;										// 현재 사용한 총알 수 증가
-
+			m_pGameInstance->PlaySoundOnce(TEXT("gunfire_distant2.ogg"), CHANNELID::SOUND_EFFECT, 1.0f);
 			OutputDebugStringA("디버그 메시지: 총알 발사 완료\n");
 		}
 
@@ -816,23 +844,98 @@ void CBoss::Attack(_float fTimeDelta, BossAttackState state)
 			m_fSumAttackCoolTime = 0.f;						// 다음 공격 시간을 위한 누적시간 초기화
 			m_fAttackFailTime = 0.f;						// 비정상 상태 종료를 위한 누적시간
 		}
+	}
+	else if (state == BossAttackState::CHASE_MASS)
+	{
+		if (!m_bAnimationLock)					// 애니메이션 락이 걸렸나 확인(처음 공격하는건지 체크)
+		{										// 첫 공격이니까 프레임 키 공격으로 바꾸고 애니메이션 락을 건다
+			m_strUpFrameKey = TEXT("Boss_Attack_Front");
+			m_bAnimationLock = true;
+		}
+		m_fSumLaunchCoolTime += fTimeDelta;		// 난사 쿨타임 증가
 
-		//if (m_fAttackFailTime >= 3.f)						// 공격이 호출되고 3초이상 시전했는데 종료가 안됬다면?
-		//{													// 비정상 상태로 판단하고 초기화 작업
-		//	m_uCurBullets = 0;
-		//	m_bAnimationLock = false;
-		//	m_pAnimationCom_Up->Clear_Animation();
-		//	m_strUpFrameKey = TEXT("Boss_Front");
-		//	m_fSumAttackCoolTime = 0.f;
-		//	m_eState = BossAttackState::END;
-		//	m_bAttacking = false;
-		//	m_fSumAttackCoolTime = 0.f;
-		//	m_fAttackFailTime = 0.f;
-		//}
+		if (m_fLaunchCoolTime <= m_fSumLaunchCoolTime)			// 누적 시간이 정해둔 쿨타임보다 길면 공격
+		{
+			_float3 vMonsterPos = m_pTransformCom->Get_State(STATE::POSITION);
+			vMonsterPos.y += m_vUpOffset.y;
+
+			_float3 vDir = m_pPlayerTransform->Get_State(STATE::POSITION) - vMonsterPos;									// 나중에 m_vAttackPos를 약간 랜덤하게 위치 지정
+			_float3 vPos = m_pTransformCom->Get_State(STATE::POSITION);
+			D3DXVec3Normalize(&vDir, &vDir);
+
+			CBullet::BULLET_DESC Desc;
+			Desc.vDir = vDir;
+			Desc.vPos = { vPos.x ,vPos.y += m_vUpOffset.y, vPos.z };
+			Desc.fBulletSpeed = 10.f;
+			Desc.vBulletScale = { 0.2f, 0.2f, 0.1f };
+			Desc.isPlayerBullet = false;
+			m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Bullet"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Monster_Bullet"), &Desc);
+			m_fSumLaunchCoolTime = 0.f;								// 난사 한발 사용했으므로 누적 시간 초기화
+			//m_fSumAttackCoolTime = 0.f;
+			m_uCurBullets++;										// 현재 사용한 총알 수 증가
+			m_pGameInstance->PlaySoundOnce(TEXT("gunfire_distant2.ogg"), CHANNELID::SOUND_EFFECT, 1.0f);
+			OutputDebugStringA("디버그 메시지: 총알 발사 완료\n");
+		}
+
+		if (m_uCurBullets >= m_uMaxBullets)					// 정해둔 총알을 다 사용했으면
+		{
+			m_uCurBullets = 0;								// 총알 수 0으로 초기화
+			m_bAnimationLock = false;						// 애니메이션 락 해제
+			m_pAnimationCom_Up->Clear_Animation();			// 진행중 애니메이션 정지
+			m_strUpFrameKey = TEXT("Boss_Front");			// idle 키로 전환
+			m_eState = BossAttackState::END;				// 공격 상태 종료로 변환
+			m_bAttacking = false;							// 공격 진행중 상태 바꿈
+			m_fSumAttackCoolTime = 0.f;						// 다음 공격 시간을 위한 누적시간 초기화
+			m_fAttackFailTime = 0.f;						// 비정상 상태 종료를 위한 누적시간
+		}
 	}
 	else if (state == BossAttackState::BOOM)
 	{
 		// 다른 공격 방식
+		if (!m_bAnimationLock)					// 애니메이션 락이 걸렸나 확인(처음 공격하는건지 체크)
+		{										// 첫 공격이니까 프레임 키 공격으로 바꾸고 애니메이션 락을 건다
+			m_strUpFrameKey = TEXT("Boss_Attack_Front");
+			m_bAnimationLock = true;
+		}
+		m_fSumLaunchCoolTime += fTimeDelta;		// 난사 쿨타임 증가
+
+		if (m_fLaunchCoolTime <= m_fSumLaunchCoolTime)			// 누적 시간이 정해둔 쿨타임보다 길면 공격
+		{
+			_float3 vMonsterPos = m_pTransformCom->Get_State(STATE::POSITION);
+			vMonsterPos.y += m_vUpOffset.y;
+			/*_float3 vDir = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);*/
+			//_float3 vDir = m_pPlayerTransform->Get_State(STATE::POSITION) - vMonsterPos;
+			_float3 vDir = m_vAttackPos - vMonsterPos;
+			_float3 vPos = m_pTransformCom->Get_State(STATE::POSITION);
+			D3DXVec3Normalize(&vDir, &vDir);
+
+			CBossGrenade::BULLET_DESC Desc;
+			Desc.vDir = vDir;
+			Desc.vOffSet = m_vUpOffset;
+			Desc.fAngle = 45.f;
+			Desc.vStartPos = vMonsterPos;
+			Desc.vPlayerPos = m_pPlayerTransform->Get_State(STATE::POSITION);
+			Desc.isPlayerBullet = false;
+			Desc.fBulletSpeed = 10.f;
+			Desc.vBulletScale = { 2.f, 2.f, 0.1f };
+			m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_BossGrenade"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Monster_Bullet"), &Desc);
+			m_fSumLaunchCoolTime = 0.f;								// 유탄 한발 사용했으므로 누적 시간 초기화
+			m_uCurBullets++;										// 현재 사용한 총알 수 증가
+
+			OutputDebugStringA("디버그 메시지: 유탄 발사 완료\n");
+		}
+
+		if (m_uCurBullets >= m_uMaxBullets)					// 정해둔 총알을 다 사용했으면
+		{
+			m_uCurBullets = 0;								// 총알 수 0으로 초기화
+			m_bAnimationLock = false;						// 애니메이션 락 해제
+			m_pAnimationCom_Up->Clear_Animation();			// 진행중 애니메이션 정지
+			m_strUpFrameKey = TEXT("Boss_Front");			// idle 키로 전환
+			m_eState = BossAttackState::END;				// 공격 상태 종료로 변환
+			m_bAttacking = false;							// 공격 진행중 상태 바꿈
+			m_fSumAttackCoolTime = 0.f;						// 다음 공격 시간을 위한 누적시간 초기화
+			m_fAttackFailTime = 0.f;						// 비정상 상태 종료를 위한 누적시간
+		}
 	}
 }
 

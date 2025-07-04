@@ -242,6 +242,8 @@ void CZombie::Update(_float fTimeDelta)
 	if (m_fHp <= 0)
 	{
 		m_strFrameKey = TEXT("Zombie_Die_Default");
+		if (!m_bDying)
+			m_pGameInstance->PlaySoundOnce(TEXT("zombie_dead_1.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
 		m_bAnimationLock = true;
 		m_bDying = true;
 	}
@@ -296,7 +298,7 @@ void CZombie::Late_Update(_float fTimeDelta)
 {
 	m_pAnimationCom->Play_Animation(m_strFrameKey, fTimeDelta);
 
-	if (m_bAnimationLock && m_pAnimationCom->Check_Animation_Finish())
+	if (m_bAnimationLock && m_pAnimationCom->Check_Animation_Finish(m_strFrameKey))
 	{
 		//m_pAnimationCom->Set_Animation(&iter->second);
 		//m_Cnt++;
@@ -574,10 +576,11 @@ void CZombie::Attack()
 	//m_strFrameKey = TEXT("Zombie_Die_Explosion");
 	m_fSumAttackCoolTime = 0.f;
 	m_strFrameKey = TEXT("Zombie_Attack");
+	m_pGameInstance->PlaySoundOnce(TEXT("zombie_swing_2.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
 	/*auto iter = m_Frames.find(m_strFrameKey);
 	m_pAnimationCom->Set_Animation(&iter->second);*/
 	m_bAnimationLock = true;
-	m_bFrameBlock = true;
+	//m_bFrameBlock = true;
 	_float3 vDir = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
 	//_float3 vPos = m_pTransformCom->Get_State(STATE::POSITION);
 	_float3 vPos = m_pPlayerTransform->Get_State(STATE::POSITION);

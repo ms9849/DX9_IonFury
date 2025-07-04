@@ -168,29 +168,32 @@ void CSoldier::Update(_float fTimeDelta)
 	_float angle30 = cosf(D3DXToRadian(30.f));
 	_float angle60 = cosf(D3DXToRadian(60.f));
 
-	if (dot >= fFov)
+	if (!m_bAnimationLock)
 	{
-		m_strFrameKey = TEXT("Soldier_Front");
-	}
-	else if (dot <= -fFov)
-	{
-		m_strFrameKey = TEXT("Soldier_Back");
-	}
-	else
-	{
-		if (vCross.y > 0)
+		if (dot >= fFov)
 		{
-			if (dot > 0)
-				m_strFrameKey = TEXT("Soldier_Direction_SW");
-			else
-				m_strFrameKey = TEXT("Soldier_Direction_NW");
+			m_strFrameKey = TEXT("Soldier_Front");
+		}
+		else if (dot <= -fFov)
+		{
+			m_strFrameKey = TEXT("Soldier_Back");
 		}
 		else
 		{
-			if (dot > 0)
-				m_strFrameKey = TEXT("Soldier_Direction_SE");
+			if (vCross.y > 0)
+			{
+				if (dot > 0)
+					m_strFrameKey = TEXT("Soldier_Direction_SW");
+				else
+					m_strFrameKey = TEXT("Soldier_Direction_NW");
+			}
 			else
-				m_strFrameKey = TEXT("Soldier_Direction_NE");
+			{
+				if (dot > 0)
+					m_strFrameKey = TEXT("Soldier_Direction_SE");
+				else
+					m_strFrameKey = TEXT("Soldier_Direction_NE");
+			}
 		}
 	}
 
@@ -272,8 +275,16 @@ void CSoldier::Update(_float fTimeDelta)
 void CSoldier::Late_Update(_float fTimeDelta)
 {
 	m_pAnimationCom->Play_Animation(m_strFrameKey, fTimeDelta);
-
-	if (m_bAnimationLock && m_pAnimationCom->Check_Animation_Finish())
+	int num = m_pAnimationCom->Get_Frame_Current_Index(m_strFrameKey);
+	/*wchar_t szDebug[256];
+	swprintf(szDebug, 256, L"프레임 키: %s, 현재 인덱스: %d\n", m_strFrameKey.c_str(), num);
+	OutputDebugStringW(szDebug);*/
+	auto iter = m_pAnimationCom->Get_Frame_Desc(m_strFrameKey);
+	wchar_t szDebug_2[256];
+	swprintf(szDebug_2, 256, L"프레임 키: %s, 현재 인덱스: %d, 마지막 인덱스: %d\n", m_strFrameKey.c_str(), m_pAnimationCom->Get_Frame_Current_Index(m_strFrameKey), iter->iEnd);
+	OutputDebugStringW(szDebug_2);
+	//Get_Frame_Current_Index(m_strFrameKey) == iter->iEnd - 1
+	if (m_bAnimationLock && m_pAnimationCom->Check_Animation_Finish(m_strFrameKey))
 	{
 		if (m_bDying)
 		{
@@ -284,10 +295,14 @@ void CSoldier::Late_Update(_float fTimeDelta)
 		else
 		{
 			m_bAnimationLock = false;
+			wchar_t szDebug[256];
+			swprintf(szDebug, 256, L"종료 프레임 키: %s, 현재 인덱스: %d\n", m_strFrameKey.c_str(), num);
+			OutputDebugStringW(szDebug);
+			m_pAnimationCom->Clear_Animation(m_strFrameKey);
 			m_strFrameKey = TEXT("Soldier_Front");
 		}
 	}
-
+	/*m_pAnimationCom->Play_Animation(m_strFrameKey, fTimeDelta);*/
 	m_pGameInstance->Add_RenderGroup(RENDER::NONBLEND, this);
 }
 
@@ -578,7 +593,11 @@ void CSoldier::Attack()
 	CBullet::BULLET_DESC Desc;
 	Desc.vDir = vDir;
 	Desc.vPos = vPos;
+	Desc.vBulletScale = {0.2f, 0.2f, 0.01f};
+	Desc.fBulletSpeed = 5.f;
+
 	Desc.isPlayerBullet = false;
+
 
 	m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Bullet"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Monster_Bullet"), &Desc);
 }
@@ -587,13 +606,25 @@ void CSoldier::Move(_float fTimeDelta)
 {
 	_float3 fPlayerLook = m_pPlayerTransform->Get_State(STATE::LOOK);
 	_float3 fMonsterLook = m_pTransformCom->Get_State(STATE::LOOK);
+	_float3 vDirection = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
+	vDirection.y = 0.f;
+
 	D3DXVec3Normalize(&fPlayerLook, &fPlayerLook);
 	D3DXVec3Normalize(&fMonsterLook, &fMonsterLook);
+	D3DXVec3Normalize(&vDirection, &vDirection);
+
+	/*_float dot = D3DXVec3Dot(&fPlayerLook, &fMonsterLook);
+	float fRadian = acosf(dot);
+	m_pTransformCom->Rotation({ 0.f, 1.f, 0.f }, fRadian);
+	m_pTransformCom->Chase(m_pPlayerTransform->Get_State(STATE::POSITION), fTimeDelta);
+	m_pTransformCom->LookAt(m_pPlayerTransform->Get_State(STATE::POSITION));*/
 
 	_float dot = D3DXVec3Dot(&fPlayerLook, &fMonsterLook);
 	float fRadian = acosf(dot);
 	m_pTransformCom->Rotation({ 0.f, 1.f, 0.f }, fRadian);
-	m_pTransformCom->Chase(m_pPlayerTransform->Get_State(STATE::POSITION), fTimeDelta);
+
+	m_pTransformCom->Go_Direction(vDirection, fTimeDelta);
+
 	m_pTransformCom->LookAt(m_pPlayerTransform->Get_State(STATE::POSITION));
 
 	//m_pTransformCom->Chase(m_pPlayerTransform->Get_State(STATE::POSITION), fMoveTime);

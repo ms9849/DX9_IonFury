@@ -82,6 +82,7 @@ private:
 	deque<_wstring> m_ItemQueues{};
 	_float			m_fTimeStack{0.f};
 	_wstring		m_strNextWeapon{};
+	_float			m_fColTimeStack{ 0.f };
 
 	_bool			m_bUseCardKey{ false };
 	_bool			m_bCanOpenDoor{ false };

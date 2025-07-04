@@ -10,6 +10,7 @@
 #include "DoorLock.h"
 #include "Player_RightHand.h"
 #include "Player_LeftHand.h"
+#include "Gate.h"
 
 CPlayer::CPlayer(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CLandObject{ pGraphic_Device }
@@ -83,6 +84,19 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 void CPlayer::Priority_Update(_float fTimeDelta)
 {
+}
+
+void CPlayer::Update(_float fTimeDelta)
+{
+	/* 점프 로직*/
+	if (!m_bJump && m_pGameInstance->Key_Down(VK_SPACE))
+	{
+		m_bJump = true;
+		m_fTime = 0.f;
+	}
+
+	__super::Jump(fTimeDelta);
+
 	/* 애니메이션 제어 */
 	auto iter = m_Weapons.find(m_tInfo.strWeapon);
 
@@ -117,6 +131,7 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 	}
 
 	// 아이템 : 카드키 사용
+	// 카드키 사용 중 이동 및 다른 동작 막아야함
 	if (m_bUseCardKey)
 	{
 		if (m_pLeftHandAnimationCom->Check_Animation_Finish(Set_FrameKey(m_tInfo.strItem, TEXT("Up"))))
@@ -131,7 +146,7 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 	}
 	if (m_pLeftHandAnimationCom->Check_Animation_Finish())
 	{
-		if(!m_bUseCardKey)
+		if (!m_bUseCardKey)
 			m_tInfo.strItemAction = TEXT("Idle");
 	}
 
@@ -157,7 +172,7 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 	// 오른손 애니메이션 끝나면 idle로
 	if (m_pRightHandAnimationCom->Check_Animation_Finish())
 	{
-		if(!m_bWeaponChange && !m_bUseCardKey)
+		if (!m_bWeaponChange && !m_bUseCardKey)
 			m_tInfo.strAction = TEXT("Idle");
 	}
 	else
@@ -232,6 +247,9 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 				CBullet::BULLET_DESC Desc;
 				Desc.vDir = vDir;
 				Desc.vPos = vPos + vOffset;
+				Desc.fBulletSpeed = 5.f;
+				Desc.vBulletScale = { 0.02f, 0.02f, 0.1f };
+				Desc.isPlayerBullet = true;
 
 				m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Bullet"),
 					ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_PlayerBullet"), &Desc);
@@ -250,22 +268,21 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 
 	m_pRightHand->Set_Player_Transform(m_pTransformCom);
 	m_pLeftHand->Set_Player_Transform(m_pTransformCom);
-	
-}
-
-void CPlayer::Update(_float fTimeDelta)
-{
-	/* 점프 로직*/
-	if (!m_bJump && m_pGameInstance->Key_Down(VK_SPACE))
-	{
-		m_bJump = true;
-		m_fTime = 0.f;
-	}
-
-	__super::Jump(fTimeDelta);
 
 	if (!m_ItemQueues.empty())
 		Pop_ItemDesc(fTimeDelta);
+
+	if (m_bCanOpenDoor && m_bCanUseCardKey)
+	{
+		m_fColTimeStack += fTimeDelta;
+
+		if (m_fColTimeStack >= 1.f)
+			m_bCanOpenDoor = false;
+	}
+	else
+	{
+		m_fColTimeStack = 0.f;
+	}
 }
 
 void CPlayer::Late_Update(_float fTimeDelta)
@@ -451,7 +468,7 @@ void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 			if (iter->second.iCurrentBullets >= iter->second.iBulletsMax)
 				iter->second.iCurrentBullets = iter->second.iBulletsMax;
 
-			if(m_tInfo.strWeapon.compare(TEXT("Pistol")) == 0)
+			if (m_tInfo.strWeapon.compare(TEXT("Pistol")) == 0)
 				m_tInfo.iBullets = iter->second.iCurrentBullets;
 
 			Insert_ItemDesc(TEXT("Get Pistol Bullets [Bullet+10]"));
@@ -478,10 +495,8 @@ void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 		if (dynamic_cast<CDoorLock*>(pDst) && m_bCanUseCardKey)
 		{
 			m_bCanOpenDoor = true;
+			m_fColTimeStack = 0.f;
 		}
-	}
-	else {
-		m_bCanOpenDoor = false;
 	}
 }
 

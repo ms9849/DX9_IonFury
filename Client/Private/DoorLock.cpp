@@ -37,24 +37,25 @@ HRESULT CDoorLock::Initialize(void* pArg)
 }
 
 void CDoorLock::Priority_Update(_float fTimeDelta)
+{	
+}
+
+void CDoorLock::Update(_float fTimeDelta)
 {
 	if (m_pPlayer->Get_Use_CardKey() && !m_bOpen)
 		m_strFrameKey = TEXT("DoorLock_Unlock");
+}
+
+void CDoorLock::Late_Update(_float fTimeDelta)
+{
+	m_pAnimationCom->Play_Animation(m_strFrameKey, fTimeDelta);
 
 	if (m_pAnimationCom->Check_Animation_Finish(TEXT("DoorLock_Unlock")))
 	{
 		m_bOpen = true;
 		m_strFrameKey = TEXT("DoorLock_Open");
 	}
-}
 
-void CDoorLock::Update(_float fTimeDelta)
-{
-}
-
-void CDoorLock::Late_Update(_float fTimeDelta)
-{
-	m_pAnimationCom->Play_Animation(m_strFrameKey, fTimeDelta);
 	m_pGameInstance->Add_RenderGroup(RENDER::BLEND, this);
 }
 
@@ -80,6 +81,11 @@ HRESULT CDoorLock::Render()
 	return S_OK;
 }
 
+_bool CDoorLock::Get_Open()
+{
+	return m_bOpen;
+}
+
 HRESULT CDoorLock::Ready_Components()
 {
 	/* Com_Transform */
@@ -95,7 +101,7 @@ HRESULT CDoorLock::Ready_Components()
 
 		CTexture* pTextureCom{ nullptr };
 
-		wsprintf(strPrototypeTag, TEXT("Prototype_Component_Texture_Map_%s"), m_strFrameKeys[i].c_str());
+		wsprintf(strPrototypeTag, TEXT("Prototype_Component_Texture_Interaction_%s"), m_strFrameKeys[i].c_str());
 		wsprintf(strComponentTag, TEXT("Com_%s_Texture"), m_strFrameKeys[i].c_str());
 
 		/* Com_Texture */

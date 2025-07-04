@@ -85,12 +85,6 @@ HRESULT CUIText::Render()
 {
 	m_pTransformCom->Set_Transform();
 
-	/*__super::Begin();
-
-	m_pVIBufferCom->Render();
-
-	__super::End();*/
-
 	return S_OK;
 }
 

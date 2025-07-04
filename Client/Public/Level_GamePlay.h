@@ -27,6 +27,7 @@ private:
 	HRESULT Ready_Layer_UI(const _wstring& strLayerTag);
 	HRESULT Ready_Layer_Cube(const _wstring& strLayerTag);
 	HRESULT Ready_Layer_Items(const _wstring& strLayerTag);
+	HRESULT Ready_Layer_Map_Objects(const _wstring& strLayerTag);
 	HRESULT Ready_Layer_Interaction_Objects(const _wstring& strLayerTag);
 
 private:
@@ -37,10 +38,13 @@ private:
 	class CUIInteraction* m_pUIInteraction { nullptr };
 	class CUIAim* m_pUIAim { nullptr };
 	class CUICardKey* m_pUICardKey { nullptr };
-	class CDoorLock* m_pDoorLock;
-	
+
 	CCamera::CAMERA_CONFIG m_CameraSettings;
 	vector<class CUIItemQueue*> m_pUIItemQueues{};
+
+	// FPS 계산 변수
+	_float m_fFPSTimer{ 0.f }, m_fTimeDelta{ 0.f };
+	_uint m_iFPSCount{ 0 }, m_iCurrentFPS{ 0 };
 
 public:
 	static CLevel_GamePlay* Create(LPDIRECT3DDEVICE9 pGraphic_Device, LEVEL eLevelID);
