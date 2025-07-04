@@ -20,6 +20,8 @@ public:
 
 	/* 원형을 찾고 복제하여 레이어에 추가한다. */
 	HRESULT Add_GameObject_ToLayer(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, _uint iLayerLevelIndex, const _wstring& strLayerTag, void* pArg);
+	/* 이미 클라에서 생성된 원형을 바로 추가한다. */
+	HRESULT Add_Clone_ToLayer(class CGameObject* pClone, _uint iLayerLevelIndex, const _wstring& strLayerTag);
 
 	/* 객체 가져오기 */
 	class CGameObject* Find_GameObject_ToLayer(_uint iLayerLevelIndex, const _wstring& strLayerTag, void* pArg);

@@ -32,6 +32,8 @@ HRESULT CBackGround::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(&Desc)))
 		return E_FAIL;
 
+	__super::Update_Transform(m_pTransformCom);
+
 	return S_OK;
 }
 
@@ -42,7 +44,6 @@ void CBackGround::Priority_Update(_float fTimeDelta)
 
 void CBackGround::Update(_float fTimeDelta)
 {
-	__super::Update_Transform(m_pTransformCom);
 }
 
 void CBackGround::Late_Update(_float fTimeDelta)

@@ -37,6 +37,31 @@ _uint CAnimation::Get_Frame_Current_Index(const _wstring strFrameKey)
 	return iter->second.iCurrentFrame;
 }
 
+//void CAnimation::Play_Animation(const _wstring strFrameKey, _float fTimeDelta)
+//{
+//	auto iter = m_tFrames.find(strFrameKey);
+//	if (iter == m_tFrames.end() || iter->second.iEnd == 0)
+//		return;
+//
+//	FRAME_DESC& frame = iter->second;
+//
+//	const _float frameDuration = (1.f / 60.f) * (frame.iFrameSpeed); // 초당 n프레임
+//
+//	frame.fTime += fTimeDelta;
+//
+//	while (frame.fTime >= frameDuration)
+//	{
+//		frame.fTime -= frameDuration;
+//		frame.iCurrentFrame++;
+//
+//		if (frame.iCurrentFrame >= frame.iEnd)
+//		{
+//			frame.iCurrentFrame = 0;
+//			frame.bFinish = true;
+//		}
+//	}
+//}
+
 void CAnimation::Play_Animation(const _wstring strFrameKey, _float fTimeDelta)
 {
 	auto iter = m_tFrames.find(strFrameKey);

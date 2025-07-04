@@ -14,7 +14,7 @@ public:
 	HRESULT		Ready_GraphicDev(HWND hWnd, WINMODE eMode, _uint iSizeX, _uint iSizeY, LPDIRECT3DDEVICE9* ppGraphicDev);
 	void		Render_Begin(D3DXCOLOR Color);
 	void		Render_End(HWND hWnd = nullptr);
-
+	
 
 private:
 	LPDIRECT3D9			m_pSDK = { nullptr };		// 장치 조사 객체

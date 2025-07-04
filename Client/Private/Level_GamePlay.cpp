@@ -9,6 +9,8 @@
 #include "UICardKey.h"
 #include "Terrain.h"
 #include "Terrain_Manager.h"
+#include "Effect_Manager.h"
+
 #include "Player.h"
 
 CLevel_GamePlay::CLevel_GamePlay(LPDIRECT3DDEVICE9 pGraphic_Device, LEVEL eLevelID)
@@ -432,12 +434,9 @@ HRESULT CLevel_GamePlay::Ready_Layer_Cube(const _wstring& strLayerTag)
 
 HRESULT CLevel_GamePlay::Ready_Layer_Effect(const _wstring& strLayerTag)
 {
-	//for (size_t i = 0; i < 50; i++)
-	//{
-	//	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Effect"),
-	//		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag)))
-	//		return E_FAIL;
-	//}
+	m_pEffect_Manager = CEffect_Manager::GetInstance();
+	m_pEffect_Manager->Initialize();
+	Safe_AddRef(m_pEffect_Manager);
 
 	return S_OK;
 }
@@ -509,6 +508,9 @@ void CLevel_GamePlay::Free()
 	Safe_Release(m_pUIAim);
 	Safe_Release(m_pUICardKey);
 	Safe_Release(m_pTerrain_Manager);
+
+	m_pEffect_Manager->Release_Effect_Manager();
+	Safe_Release(m_pEffect_Manager);
 
 	for (auto& iter : m_pUIItemQueues)
 	{

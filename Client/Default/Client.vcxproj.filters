@@ -139,6 +139,12 @@
     <Filter Include="03.MapObjects\Gate">
       <UniqueIdentifier>{f5020bd1-497f-4a2c-ac2d-6612ea355dfc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\Effect\Manager">
+      <UniqueIdentifier>{451c6610-b982-494e-9e26-90dab13e5c03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Effect\Pistol_Fire">
+      <UniqueIdentifier>{fb6311fa-4a8b-46b7-b5d7-5d5039af8e05}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -282,6 +288,12 @@
     <ClInclude Include="..\Public\BossGrenade.h">
       <Filter>02.GameObjects\Bullet</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Effect_Manager.h">
+      <Filter>02.GameObjects\Effect\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Effect_Pistol_Fire.h">
+      <Filter>02.GameObjects\Effect\Pistol_Fire</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -419,6 +431,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\BossGrenade.cpp">
       <Filter>02.GameObjects\Bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect_Manager.cpp">
+      <Filter>02.GameObjects\Effect\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect_Pistol_Fire.cpp">
+      <Filter>02.GameObjects\Effect\Pistol_Fire</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
