@@ -20,7 +20,7 @@ protected:
     CDoorLock(const CDoorLock& Prototype);
     virtual ~CDoorLock() = default;
 
-protected:
+private:
     virtual HRESULT Initialize_Prototype() override;
     virtual HRESULT Initialize(void* pArg) override;
     virtual void Priority_Update(_float fTimeDelta);
@@ -28,8 +28,10 @@ protected:
     virtual void Late_Update(_float fTimeDelta);
     virtual HRESULT Render();
 
-protected:
-    //CTexture* m_pTextureCom = { nullptr };
+public:
+    _bool Get_Open();
+
+private:
     CTransform* m_pTransformCom = { nullptr };
     CVIBuffer_Rect* m_pVIBufferCom = { nullptr };
     CSphereCollider* m_pSphereColliderCom = { nullptr };
@@ -45,12 +47,12 @@ protected:
     class CPlayer*    m_pPlayer{ nullptr };
     _bool       m_bOpen{ false };
 
-protected:
+private:
     virtual HRESULT Ready_Components();
     virtual HRESULT Begin_RenderState();
     virtual HRESULT End_RenderState();
 
-protected:
+private:
     virtual void OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta) override;
     virtual const COLLISION_DESC& Get_CollisionDesc(COLLISION eColType) override;
 

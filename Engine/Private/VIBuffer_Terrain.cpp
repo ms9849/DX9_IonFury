@@ -307,17 +307,103 @@ _bool CVIBuffer_Terrain::Picking(CTransform* pTransform, _float3* pOut, _float3 
 		}
 	}
 
-;	return false;
+	return false;
 }
+
+_bool CVIBuffer_Terrain::Picking_Land(CTransform* pTransform, _float3* pOut, _float3 vPos, _float3 vLook)
+{
+	_float3 vLocalPos;
+	D3DXVec3TransformCoord(&vLocalPos, &vPos, pTransform->Get_WorldMatrixInvPtr());
+
+	_int iX = static_cast<_int>(vLocalPos.x);
+	_int iZ = static_cast<_int>(vLocalPos.z);
+
+	if (iX < 0 || iZ < 0 || iX >= (_int)m_iNumVerticesX - 1 || iZ >= (_int)m_iNumVerticesZ - 1)
+		return false;
+
+	// 주변 3x3 그리드 검사
+	for (_int dz = -1; dz <= 1; ++dz)
+	{
+		for (_int dx = -1; dx <= 1; ++dx)
+		{
+			_int cx = iX + dx;
+			_int cz = iZ + dz;
+
+			if (cx < 0 || cz < 0 || cx >= (_int)m_iNumVerticesX - 1 || cz >= (_int)m_iNumVerticesZ - 1)
+				continue;
+
+			_uint iIndex = cz * m_iNumVerticesX + cx;
+
+			_uint iIndices[4] = {
+				iIndex + m_iNumVerticesX,
+				iIndex + m_iNumVerticesX + 1,
+				iIndex + 1,
+				iIndex
+			};
+
+			// 삼각형 1
+			if (m_pGameInstance->Picking_InLocalSpace(pTransform->Get_WorldMatrixInvPtr(), vPos, vLook,
+				m_pVertexPositions[iIndices[0]], m_pVertexPositions[iIndices[1]], m_pVertexPositions[iIndices[2]], pOut))
+			{
+				D3DXVec3TransformCoord(pOut, pOut, pTransform->Get_WorldMatrixPtr());
+				return true;
+			}
+
+			// 삼각형 2
+			if (m_pGameInstance->Picking_InLocalSpace(pTransform->Get_WorldMatrixInvPtr(), vPos, vLook,
+				m_pVertexPositions[iIndices[0]], m_pVertexPositions[iIndices[2]], m_pVertexPositions[iIndices[3]], pOut))
+			{
+				D3DXVec3TransformCoord(pOut, pOut, pTransform->Get_WorldMatrixPtr());
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
+//_bool CVIBuffer_Terrain::Picking_Land(CTransform* pTransform, _float3* pOut, _float3 vPos, _float3 vLook)
+//{
+//	_float3 vLocalPos;
+//	D3DXVec3TransformCoord(&vLocalPos, &vPos, pTransform->Get_WorldMatrixInvPtr());
+//
+//	if (static_cast<_uint>(vLocalPos.x) > m_iNumVerticesX || static_cast<_uint>(vLocalPos.z) > m_iNumVerticesZ)
+//		return false;
+//
+//	_uint iIndex = static_cast<_uint>(vLocalPos.z) * m_iNumVerticesX + static_cast<_uint>(vLocalPos.x);
+//
+//	_uint iIndices[4] = {
+//		iIndex + m_iNumVerticesX,
+//		iIndex + m_iNumVerticesX + 1,
+//		iIndex + 1,
+//		iIndex
+//	};
+//
+//	if (m_pGameInstance->Picking_InLocalSpace(pTransform->Get_WorldMatrixInvPtr(), vPos, vLook,
+//		m_pVertexPositions[iIndices[0]], m_pVertexPositions[iIndices[1]], m_pVertexPositions[iIndices[2]], pOut))
+//	{
+//		D3DXVec3TransformCoord(pOut, pOut, pTransform->Get_WorldMatrixPtr());
+//		return true;
+//	}
+//
+//	if (m_pGameInstance->Picking_InLocalSpace(pTransform->Get_WorldMatrixInvPtr(), vPos, vLook,
+//		m_pVertexPositions[iIndices[0]], m_pVertexPositions[iIndices[2]], m_pVertexPositions[iIndices[3]], pOut))
+//	{
+//		D3DXVec3TransformCoord(pOut, pOut, pTransform->Get_WorldMatrixPtr());
+//		return true;
+//	}
+//
+//	return false;
+//}
 
 _float CVIBuffer_Terrain::Compute_Height(const _float3& vLocalPos, CTransform* pTransform)
 {
-	_uint			iIndex = static_cast<_uint>(vLocalPos.z) * m_iNumVerticesX + static_cast<_uint>(vLocalPos.x);
-
 	if (vLocalPos.x < 0 || vLocalPos.z < 0 ||
 		vLocalPos.x >= m_iNumVerticesX - 1 ||
 		vLocalPos.z >= m_iNumVerticesZ - 1)
-		return FLT_MIN;
+		return FLT_MAX;
+
+	_uint			iIndex = static_cast<_uint>(vLocalPos.z) * m_iNumVerticesX + static_cast<_uint>(vLocalPos.x);
 
 	_uint			iIndices[] = {
 		iIndex + m_iNumVerticesX,
@@ -331,7 +417,7 @@ _float CVIBuffer_Terrain::Compute_Height(const _float3& vLocalPos, CTransform* p
 
 	D3DXPLANE		Plane = {};
 
-	if (fWidth >= fDepth) /* 오른쪼ㅑㄱ 위 삼각형에 있다. */
+	if (fWidth > fDepth) /* 오른쪼ㅑㄱ 위 삼각형에 있다. */
 	{
 		D3DXPlaneFromPoints(&Plane, &m_pVertexPositions[iIndices[0]], &m_pVertexPositions[iIndices[1]], &m_pVertexPositions[iIndices[2]]);
 	}

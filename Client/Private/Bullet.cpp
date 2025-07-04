@@ -87,8 +87,8 @@ const COLLISION_DESC& CBullet::Get_CollisionDesc(COLLISION eColType)
 
 HRESULT CBullet::Ready_Components()
 {
-	/* Com_Transform */
-	CTransform::TRANSFORM_DESC		TransformDesc{ 3.f, D3DXToRadian(90.0f) };
+	/* Com_Transform */ //기본 속도 3
+	CTransform::TRANSFORM_DESC		TransformDesc{ 5.f, D3DXToRadian(90.0f) };
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Transform"),
 		TEXT("Com_Transform"), reinterpret_cast<CComponent**>(&m_pTransformCom), &TransformDesc)))
 		return E_FAIL;

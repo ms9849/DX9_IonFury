@@ -5,6 +5,12 @@
 
 NS_BEGIN(Client)
 
+enum class BossAttackState {
+	MASS,
+	BOOM,
+	END
+};
+
 class CBoss final : public CMonster
 {
 private:
@@ -37,6 +43,8 @@ public:
 	HRESULT Begin_RenderState() override;
 	HRESULT End_RenderState() override;
 
+	void Attack(_float fTimeDelta, BossAttackState eState);
+
 	virtual void Attack() override;
 	void Move(_float fTimeDelta);
 	virtual void Move() override;
@@ -55,6 +63,14 @@ private:
 	_wstring m_strUpFrameKey = {};
 	_wstring m_strDownFrameKey = {};
 	_bool m_bAnimationLock = false;
+	_bool m_bAttacking = false;
+	_uint m_uMaxBullets = {};
+	_uint m_uCurBullets = {};
+	_float m_fAttackFailTime = 0.f;
+	_float m_fLaunchCoolTime = 0.2f;
+	_float m_fSumLaunchCoolTime = 0.f;
+	_float3 m_vUpOffset = { 0.f, 4.2f, 0.f };
+	BossAttackState m_eState = BossAttackState::END;
 
 public:
 	static CBoss* Create(LPDIRECT3DDEVICE9 pGraphic_Device);

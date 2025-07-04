@@ -64,7 +64,6 @@ HRESULT CUIBullets::Initialize(void* pArg)
 
 void CUIBullets::Priority_Update(_float fTimeDelta)
 {
-	int a = 10;
 }
 
 void CUIBullets::Update(_float fTimeDelta)

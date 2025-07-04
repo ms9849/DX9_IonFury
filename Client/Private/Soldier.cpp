@@ -22,9 +22,6 @@ HRESULT CSoldier::Initialize_Prototype()
 
 HRESULT CSoldier::Initialize(void* pArg)
 {
-	CLandObject::LANDOBJECT_DESC			Desc{};
-	Desc.pLandTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_BackGround"), TEXT("Com_Transform")));
-	Desc.pLandVIBuffer = static_cast<CVIBuffer*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_BackGround"), TEXT("Com_VIBuffer")));
 	m_pPlayerTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player"), TEXT("Com_Transform")));
 
 	if (m_pPlayerTransform == nullptr)
@@ -147,6 +144,8 @@ void CSoldier::Priority_Update(_float fTimeDelta)
 
 void CSoldier::Update(_float fTimeDelta)
 {
+	__super::Jump(fTimeDelta);
+
 	m_fSumAttackCoolTime += fTimeDelta;
 	m_fSumMoveCoolTime += fTimeDelta;
 
@@ -169,29 +168,32 @@ void CSoldier::Update(_float fTimeDelta)
 	_float angle30 = cosf(D3DXToRadian(30.f));
 	_float angle60 = cosf(D3DXToRadian(60.f));
 
-	if (dot >= fFov)
+	if (!m_bAnimationLock)
 	{
-		m_strFrameKey = TEXT("Soldier_Front");
-	}
-	else if (dot <= -fFov)
-	{
-		m_strFrameKey = TEXT("Soldier_Back");
-	}
-	else
-	{
-		if (vCross.y > 0)
+		if (dot >= fFov)
 		{
-			if (dot > 0)
-				m_strFrameKey = TEXT("Soldier_Direction_SW");
-			else
-				m_strFrameKey = TEXT("Soldier_Direction_NW");
+			m_strFrameKey = TEXT("Soldier_Front");
+		}
+		else if (dot <= -fFov)
+		{
+			m_strFrameKey = TEXT("Soldier_Back");
 		}
 		else
 		{
-			if (dot > 0)
-				m_strFrameKey = TEXT("Soldier_Direction_SE");
+			if (vCross.y > 0)
+			{
+				if (dot > 0)
+					m_strFrameKey = TEXT("Soldier_Direction_SW");
+				else
+					m_strFrameKey = TEXT("Soldier_Direction_NW");
+			}
 			else
-				m_strFrameKey = TEXT("Soldier_Direction_NE");
+			{
+				if (dot > 0)
+					m_strFrameKey = TEXT("Soldier_Direction_SE");
+				else
+					m_strFrameKey = TEXT("Soldier_Direction_NE");
+			}
 		}
 	}
 
@@ -203,7 +205,7 @@ void CSoldier::Update(_float fTimeDelta)
 	}
 	else if (m_pSightCom->Check_Sight(fTimeDelta) && !m_bAnimationLock)
 	{
-		if (m_fSumAttackCoolTime >= m_fAttackfCoolTime)
+		if (m_fSumAttackCoolTime >= m_fAttackCoolTime)
 		{
 			_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
 			if (D3DXVec3Length(&vDiff) <= m_fAttackRange)
@@ -267,14 +269,17 @@ void CSoldier::Update(_float fTimeDelta)
 	swprintf_s(szBuffer, L"몬스터 방향 벡터 x : %.1f, y : %.1f, z : %.1f\n", m_pTransformCom->Get_State(STATE::LOOK).x, m_pTransformCom->Get_State(STATE::LOOK).y, m_pTransformCom->Get_State(STATE::LOOK).z);
 	OutputDebugString(szBuffer);*/
 
-	SetUp_OnTerrain(m_pTransformCom, 0.5f);
+	SetUp_OnTerrain(m_pTransformCom, 0.5f, &m_bJump);
 }
 
 void CSoldier::Late_Update(_float fTimeDelta)
 {
 	m_pAnimationCom->Play_Animation(m_strFrameKey, fTimeDelta);
-
-	if (m_bAnimationLock && m_pAnimationCom->Check_Animation_Finish())
+	int num = m_pAnimationCom->Get_Frame_Current_Index(m_strFrameKey);
+	wchar_t szDebug[256];
+	swprintf(szDebug, 256, L"프레임 키: %s, 현재 인덱스: %d\n", m_strFrameKey.c_str(), num);
+	OutputDebugStringW(szDebug);
+	if (m_bAnimationLock && m_pAnimationCom->Check_Animation_Finish(m_strFrameKey))
 	{
 		if (m_bDying)
 		{
@@ -285,7 +290,8 @@ void CSoldier::Late_Update(_float fTimeDelta)
 		else
 		{
 			m_bAnimationLock = false;
-			m_strFrameKey = TEXT("Soldier_Front");
+			//m_pAnimationCom->Clear_Animation();
+			//m_strFrameKey = TEXT("Soldier_Front");
 		}
 	}
 
@@ -579,6 +585,7 @@ void CSoldier::Attack()
 	CBullet::BULLET_DESC Desc;
 	Desc.vDir = vDir;
 	Desc.vPos = vPos;
+	Desc.isPlayerBullet = false;
 
 	m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Bullet"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Monster_Bullet"), &Desc);
 }
@@ -587,13 +594,25 @@ void CSoldier::Move(_float fTimeDelta)
 {
 	_float3 fPlayerLook = m_pPlayerTransform->Get_State(STATE::LOOK);
 	_float3 fMonsterLook = m_pTransformCom->Get_State(STATE::LOOK);
+	_float3 vDirection = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
+	vDirection.y = 0.f;
+
 	D3DXVec3Normalize(&fPlayerLook, &fPlayerLook);
 	D3DXVec3Normalize(&fMonsterLook, &fMonsterLook);
+	D3DXVec3Normalize(&vDirection, &vDirection);
+
+	/*_float dot = D3DXVec3Dot(&fPlayerLook, &fMonsterLook);
+	float fRadian = acosf(dot);
+	m_pTransformCom->Rotation({ 0.f, 1.f, 0.f }, fRadian);
+	m_pTransformCom->Chase(m_pPlayerTransform->Get_State(STATE::POSITION), fTimeDelta);
+	m_pTransformCom->LookAt(m_pPlayerTransform->Get_State(STATE::POSITION));*/
 
 	_float dot = D3DXVec3Dot(&fPlayerLook, &fMonsterLook);
 	float fRadian = acosf(dot);
 	m_pTransformCom->Rotation({ 0.f, 1.f, 0.f }, fRadian);
-	m_pTransformCom->Chase(m_pPlayerTransform->Get_State(STATE::POSITION), fTimeDelta);
+
+	m_pTransformCom->Go_Direction(vDirection, fTimeDelta);
+
 	m_pTransformCom->LookAt(m_pPlayerTransform->Get_State(STATE::POSITION));
 
 	//m_pTransformCom->Chase(m_pPlayerTransform->Get_State(STATE::POSITION), fMoveTime);

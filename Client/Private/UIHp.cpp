@@ -67,7 +67,6 @@ HRESULT CUIHp::Initialize(void* pArg)
 
 void CUIHp::Priority_Update(_float fTimeDelta)
 {
-	int a = 10;
 }
 
 void CUIHp::Update(_float fTimeDelta)

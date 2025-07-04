@@ -30,6 +30,7 @@ HRESULT CPlayer::Initialize_Prototype()
 
 HRESULT CPlayer::Initialize(void* pArg)
 {
+	m_bRideCube = true;
 	CLandObject::LANDOBJECT_DESC			Desc{};
 	Desc.pLandTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_BackGround"), TEXT("Com_Transform")));
 	Desc.pLandVIBuffer = static_cast<CVIBuffer*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_BackGround"), TEXT("Com_VIBuffer")));
@@ -82,6 +83,10 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 void CPlayer::Priority_Update(_float fTimeDelta)
 {
+}
+
+void CPlayer::Update(_float fTimeDelta)
+{
 	/* 점프 로직*/
 	if (!m_bJump && m_pGameInstance->Key_Down(VK_SPACE))
 	{
@@ -89,19 +94,7 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 		m_fTime = 0.f;
 	}
 
-	if (m_bJump)
-	{
-		//4.f는 점프 스피드
-		m_fFallSpeed = (4.f * m_fTime - 30.f * m_fTime * m_fTime);
-
-		if (m_fFallSpeed <= -0.2f)
-			m_fFallSpeed = -0.2f;
-
-		m_fTime += 0.3f * fTimeDelta;
-		_float3 vPosition = m_pTransformCom->Get_State(STATE::POSITION);
-		vPosition.y = vPosition.y + m_fFallSpeed;
-		m_pTransformCom->Set_State(STATE::POSITION, vPosition);
-	}
+	__super::Jump(fTimeDelta);
 
 	/* 애니메이션 제어 */
 	auto iter = m_Weapons.find(m_tInfo.strWeapon);
@@ -137,6 +130,7 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 	}
 
 	// 아이템 : 카드키 사용
+	// 카드키 사용 중 이동 및 다른 동작 막아야함
 	if (m_bUseCardKey)
 	{
 		if (m_pLeftHandAnimationCom->Check_Animation_Finish(Set_FrameKey(m_tInfo.strItem, TEXT("Up"))))
@@ -151,7 +145,7 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 	}
 	if (m_pLeftHandAnimationCom->Check_Animation_Finish())
 	{
-		if(!m_bUseCardKey)
+		if (!m_bUseCardKey)
 			m_tInfo.strItemAction = TEXT("Idle");
 	}
 
@@ -177,7 +171,7 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 	// 오른손 애니메이션 끝나면 idle로
 	if (m_pRightHandAnimationCom->Check_Animation_Finish())
 	{
-		if(!m_bWeaponChange && !m_bUseCardKey)
+		if (!m_bWeaponChange && !m_bUseCardKey)
 			m_tInfo.strAction = TEXT("Idle");
 	}
 	else
@@ -265,16 +259,13 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 	m_pRightHand->Set_Current_Animation(Set_FrameKey(m_tInfo.strWeapon, m_tInfo.strAction));
 	m_pLeftHand->Set_Current_Animation(Set_FrameKey(m_tInfo.strItem, m_tInfo.strItemAction));
 
+	/* Priority에서 한번 바뀜*/
 	SetUp_OnTerrain(m_pTransformCom, 0.5f, &m_bJump);
 
 	m_pRightHand->Set_Player_Transform(m_pTransformCom);
 	m_pLeftHand->Set_Player_Transform(m_pTransformCom);
-	
-}
 
-void CPlayer::Update(_float fTimeDelta)
-{	
-	if(!m_ItemQueues.empty())
+	if (!m_ItemQueues.empty())
 		Pop_ItemDesc(fTimeDelta);
 }
 
@@ -461,7 +452,7 @@ void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 			if (iter->second.iCurrentBullets >= iter->second.iBulletsMax)
 				iter->second.iCurrentBullets = iter->second.iBulletsMax;
 
-			if(m_tInfo.strWeapon.compare(TEXT("Pistol")) == 0)
+			if (m_tInfo.strWeapon.compare(TEXT("Pistol")) == 0)
 				m_tInfo.iBullets = iter->second.iCurrentBullets;
 
 			Insert_ItemDesc(TEXT("Get Pistol Bullets [Bullet+10]"));
@@ -489,9 +480,11 @@ void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 		{
 			m_bCanOpenDoor = true;
 		}
-	}
-	else {
-		m_bCanOpenDoor = false;
+		// DoorLock 에서 멀어지면 m_bCanOpenDoor false로 바꿔줘야 함
+		else
+		{
+			m_bCanOpenDoor = false;
+		}
 	}
 }
 
