@@ -67,7 +67,6 @@ HRESULT CUIArmor::Initialize(void* pArg)
 
 void CUIArmor::Priority_Update(_float fTimeDelta)
 {
-	int a = 10;
 }
 
 void CUIArmor::Update(_float fTimeDelta)

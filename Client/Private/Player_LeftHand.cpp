@@ -34,8 +34,6 @@ HRESULT CPlayer_LeftHand::Initialize(void* pArg)
 
 void CPlayer_LeftHand::Priority_Update(_float fTimeDelta)
 {
-	// 여기서 플레이어한테서 받아온 애니메이션 타입에 맞춰 애니메이션 세팅
-	// Set_Animation
 	_float3 vHandPos = {};
 	_float4x4 PlayerMatrix{};
 
@@ -48,8 +46,10 @@ void CPlayer_LeftHand::Priority_Update(_float fTimeDelta)
 	{
 		if (strItemAction.compare(TEXT("Down")) == 0)
 			vHandPos = { -0.75f, -0.5f, 1.5f };
-		else
+		else if(strItemAction.compare(TEXT("Up")) == 0)
 			vHandPos = { -0.75f, -1.4f, 1.5f };
+		else
+			vHandPos = { -0.75f, -2.5f, 1.5f };
 	}
 
 	if (m_pAnimationCom->Get_Frame_Desc(m_strFrameKey)->Poses.size() > 1)

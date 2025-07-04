@@ -37,24 +37,25 @@ HRESULT CDoorLock::Initialize(void* pArg)
 }
 
 void CDoorLock::Priority_Update(_float fTimeDelta)
+{	
+}
+
+void CDoorLock::Update(_float fTimeDelta)
 {
 	if (m_pPlayer->Get_Use_CardKey() && !m_bOpen)
 		m_strFrameKey = TEXT("DoorLock_Unlock");
+}
+
+void CDoorLock::Late_Update(_float fTimeDelta)
+{
+	m_pAnimationCom->Play_Animation(m_strFrameKey, fTimeDelta);
 
 	if (m_pAnimationCom->Check_Animation_Finish(TEXT("DoorLock_Unlock")))
 	{
 		m_bOpen = true;
 		m_strFrameKey = TEXT("DoorLock_Open");
 	}
-}
 
-void CDoorLock::Update(_float fTimeDelta)
-{
-}
-
-void CDoorLock::Late_Update(_float fTimeDelta)
-{
-	m_pAnimationCom->Play_Animation(m_strFrameKey, fTimeDelta);
 	m_pGameInstance->Add_RenderGroup(RENDER::BLEND, this);
 }
 
@@ -78,6 +79,11 @@ HRESULT CDoorLock::Render()
 		return E_FAIL;
 
 	return S_OK;
+}
+
+_bool CDoorLock::Get_Open()
+{
+	return m_bOpen;
 }
 
 HRESULT CDoorLock::Ready_Components()

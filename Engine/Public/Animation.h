@@ -38,9 +38,11 @@ public:
 	_bool Check_Animation_Finish(const _wstring strFrameKey); // 키값으로 특정 애니메이션 끝났는지 체크
 	void Clear_Animation(); // 모든 애니메이션 멈추기
 	void Clear_Animation(const _wstring strFrameKey); // 키값으로 특정 애니메이션 멈추기
+	_wstring Get_FrameKey();
 
 private:
 	map<const _wstring, FRAME_DESC> m_tFrames{};
+	_wstring		m_strFrameKey{};
 	_float			m_fTimeStack{ 0.f };
 
 public:

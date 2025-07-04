@@ -40,7 +40,6 @@ HRESULT CUIAim::Initialize(void* pArg)
 
 void CUIAim::Priority_Update(_float fTimeDelta)
 {
-	int a = 10;
 }
 
 void CUIAim::Update(_float fTimeDelta)

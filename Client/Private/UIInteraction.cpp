@@ -4,6 +4,7 @@
 #include "UIFont.h"
 #include "UIText.h"
 #include "Player.h"
+#include "DoorLock.h"
 
 CUIInteraction::CUIInteraction(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CUIObject{ pGraphic_Device }
@@ -65,7 +66,6 @@ HRESULT CUIInteraction::Initialize(void* pArg)
 
 void CUIInteraction::Priority_Update(_float fTimeDelta)
 {
-	int a = 10;
 }
 
 void CUIInteraction::Update(_float fTimeDelta)
@@ -87,7 +87,8 @@ HRESULT CUIInteraction::Render()
 
 void CUIInteraction::Set_Interaction()
 {
-	if(m_pPlayer->Get_Can_Open_Door())
+	if(m_pPlayer->Get_Can_Open_Door()
+		&& m_pPlayer->Get_CanUse_CardKey())
 		m_pText->Set_Text(TEXT("Press [E] Key"));
 	else
 		m_pText->Set_Text(TEXT(" "));
