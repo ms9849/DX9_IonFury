@@ -19,21 +19,26 @@ HRESULT CBullet::Initialize_Prototype()
 
 HRESULT CBullet::Initialize(void* pArg)
 {
+	BULLET_DESC* pDesc = static_cast<BULLET_DESC*>(pArg);
+	m_fBulletSpeed = pDesc->fBulletSpeed;
+
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-	BULLET_DESC* pDesc = static_cast<BULLET_DESC*>(pArg);
+	//BULLET_DESC* pDesc = static_cast<BULLET_DESC*>(pArg);
 
 	if (pDesc == nullptr)
 		return S_OK;
-
+	
 	m_vDir = pDesc->vDir;
 	m_pTransformCom->Set_State(STATE::POSITION, pDesc->vPos);
 
 	m_pTransformCom->LookAt(m_pTransformCom->Get_State(STATE::POSITION) + m_vDir);
 	
 	
-	m_pTransformCom->Set_Scale(_float3(0.02f, 0.02f, 0.1f));
+	//m_pTransformCom->Set_Scale(_float3(0.02f, 0.02f, 0.1f));
+	//m_pTransformCom->Set_Scale(_float3(0.2f, 0.2f, 0.1f));
+	m_pTransformCom->Set_Scale(pDesc->vBulletScale);
 	m_bPlayerBullet = pDesc->isPlayerBullet;
 
 	return S_OK;
@@ -88,7 +93,7 @@ const COLLISION_DESC& CBullet::Get_CollisionDesc(COLLISION eColType)
 HRESULT CBullet::Ready_Components()
 {
 	/* Com_Transform */ //기본 속도 3
-	CTransform::TRANSFORM_DESC		TransformDesc{ 5.f, D3DXToRadian(90.0f) };
+	CTransform::TRANSFORM_DESC		TransformDesc{ m_fBulletSpeed , D3DXToRadian(90.0f) };
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Transform"),
 		TEXT("Com_Transform"), reinterpret_cast<CComponent**>(&m_pTransformCom), &TransformDesc)))
 		return E_FAIL;

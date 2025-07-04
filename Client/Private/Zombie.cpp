@@ -242,6 +242,8 @@ void CZombie::Update(_float fTimeDelta)
 	if (m_fHp <= 0)
 	{
 		m_strFrameKey = TEXT("Zombie_Die_Default");
+		if (!m_bDying)
+			m_pGameInstance->PlaySoundOnce(TEXT("zombie_dead_1.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
 		m_bAnimationLock = true;
 		m_bDying = true;
 	}
@@ -574,6 +576,7 @@ void CZombie::Attack()
 	//m_strFrameKey = TEXT("Zombie_Die_Explosion");
 	m_fSumAttackCoolTime = 0.f;
 	m_strFrameKey = TEXT("Zombie_Attack");
+	m_pGameInstance->PlaySoundOnce(TEXT("zombie_swing_2.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
 	/*auto iter = m_Frames.find(m_strFrameKey);
 	m_pAnimationCom->Set_Animation(&iter->second);*/
 	m_bAnimationLock = true;
