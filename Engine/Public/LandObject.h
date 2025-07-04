@@ -24,16 +24,26 @@ public:
 	virtual void Update(_float fTimeDelta);
 	virtual void Late_Update(_float fTimeDelta);
 	virtual HRESULT Render();
-
+	void	Jump(_float fTimeDelta);
 	virtual void Change_Land(LANDOBJECT_DESC* pLandDesc);
 
+	_bool Get_RideCube() { return m_bRideCube; }
 	_bool Get_Jump() { return m_bJump; }
 	void Set_Jump(_bool bJump) { m_bJump = bJump; }
 	void Set_Time(_float fTime) { m_fTime = fTime; }
+	
+	LANDOBJECT_DESC Get_LastLandDesc() {
+		LANDOBJECT_DESC Desc;
+		Desc.pLandTransform = m_pLandTransformLast;
+		Desc.pLandVIBuffer = m_pLandBufferLast;
+
+		return Desc;
+	}
 
 protected:
 	/* 점프, 점프 시간 */
 	_bool			m_bJump = { false };
+	_bool			m_bRideCube = { false };
 	_float			m_fTime = 0.f;
 	_float			m_fFallSpeed = 0.f;
 
@@ -41,6 +51,8 @@ protected:
 	class CVIBuffer*		m_pLandVIBuffer = { nullptr };
 	class CTransform*		m_pTransformCom = { nullptr };
 
+	class CTransform*		m_pLandTransformLast = { nullptr };
+	class CVIBuffer*		m_pLandBufferLast = { nullptr };
 protected:
 	void SetUp_OnTerrain(class CTransform* pTransform, _float fOffset = 0.f, _bool* bJump = nullptr);
 	

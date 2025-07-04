@@ -30,6 +30,7 @@ HRESULT CPlayer::Initialize_Prototype()
 
 HRESULT CPlayer::Initialize(void* pArg)
 {
+	m_bRideCube = true;
 	CLandObject::LANDOBJECT_DESC			Desc{};
 	Desc.pLandTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_BackGround"), TEXT("Com_Transform")));
 	Desc.pLandVIBuffer = static_cast<CVIBuffer*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_BackGround"), TEXT("Com_VIBuffer")));
@@ -82,27 +83,6 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 void CPlayer::Priority_Update(_float fTimeDelta)
 {
-	/* 점프 로직*/
-	if (!m_bJump && m_pGameInstance->Key_Down(VK_SPACE))
-	{
-		m_bJump = true;
-		m_fTime = 0.f;
-	}
-
-	if (m_bJump)
-	{
-		//4.f는 점프 스피드
-		m_fFallSpeed = (4.f * m_fTime - 30.f * m_fTime * m_fTime);
-
-		if (m_fFallSpeed <= -0.2f)
-			m_fFallSpeed = -0.2f;
-
-		m_fTime += 0.3f * fTimeDelta;
-		_float3 vPosition = m_pTransformCom->Get_State(STATE::POSITION);
-		vPosition.y = vPosition.y + m_fFallSpeed;
-		m_pTransformCom->Set_State(STATE::POSITION, vPosition);
-	}
-
 	/* 애니메이션 제어 */
 	auto iter = m_Weapons.find(m_tInfo.strWeapon);
 
@@ -265,6 +245,7 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 	m_pRightHand->Set_Current_Animation(Set_FrameKey(m_tInfo.strWeapon, m_tInfo.strAction));
 	m_pLeftHand->Set_Current_Animation(Set_FrameKey(m_tInfo.strItem, m_tInfo.strItemAction));
 
+	/* Priority에서 한번 바뀜*/
 	SetUp_OnTerrain(m_pTransformCom, 0.5f, &m_bJump);
 
 	m_pRightHand->Set_Player_Transform(m_pTransformCom);
@@ -273,8 +254,17 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 }
 
 void CPlayer::Update(_float fTimeDelta)
-{	
-	if(!m_ItemQueues.empty())
+{
+	/* 점프 로직*/
+	if (!m_bJump && m_pGameInstance->Key_Down(VK_SPACE))
+	{
+		m_bJump = true;
+		m_fTime = 0.f;
+	}
+
+	__super::Jump(fTimeDelta);
+
+	if (!m_ItemQueues.empty())
 		Pop_ItemDesc(fTimeDelta);
 }
 

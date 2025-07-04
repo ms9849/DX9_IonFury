@@ -30,19 +30,9 @@ HRESULT CMonster::Initialize()
 	CLandObject::LANDOBJECT_DESC			Desc{};
 	Desc.pLandTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_BackGround"), TEXT("Com_Transform")));
 	Desc.pLandVIBuffer = static_cast<CVIBuffer*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_BackGround"), TEXT("Com_VIBuffer")));
-	m_pPlayerTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player"), TEXT("Com_Transform")));
-
-	//if (m_pPlayerTransform == nullptr)
-	//	return E_FAIL;
 
 	if (FAILED(__super::Initialize(&Desc)))
 		return E_FAIL;
-
-	//if (FAILED(Ready_Components()))
-	//	return E_FAIL;
-
-	//if (FAILED(Ready_Animations()))
-	//	return E_FAIL;
 
 	return S_OK;
 }

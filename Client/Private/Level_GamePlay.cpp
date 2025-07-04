@@ -137,11 +137,9 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const _wstring& strLayerTag)
 		return E_FAIL;
 	
 	dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_BackGround"), TEXT("Com_Transform"), 1))->Set_State(STATE::POSITION, _float3{ 5.f, 0.f, 5.f });
-
 	dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_BackGround"), TEXT("Com_Transform"), 1))->Rotation(
-		dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_BackGround"), TEXT("Com_Transform"), 1))->Get_State(STATE::RIGHT), D3DXToRadian(-20.f)
-	);
-
+		dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_BackGround"), TEXT("Com_Transform"), 1))->Get_State(STATE::RIGHT), D3DXToRadian(-20.f));
+	
 	m_pTerrain_Manager = CTerrain_Manager::Create();
 	m_pTerrain_Manager->Add_Terrian(LEVEL::GAMEPLAY);
 
@@ -160,7 +158,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _wstring& strLayerTag)
 	CameraDesc.fFar = 300.f;
 	CameraDesc.vEye = dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player"), TEXT("Com_Transform")))->Get_State(STATE::POSITION);
 	CameraDesc.vAt = dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player"), TEXT("Com_Transform")))->Get_State(STATE::LOOK);
-	CameraDesc.fSpeedPerSec = 5.f;
+	CameraDesc.fSpeedPerSec = 4.f;
 	CameraDesc.fRotationPerSec = D3DXToRadian(90.0f);
 
 	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Camera"),
@@ -196,14 +194,14 @@ HRESULT CLevel_GamePlay::Ready_Layer_Player(const _wstring& strLayerTag)
 
 HRESULT CLevel_GamePlay::Ready_Layer_Monster(const _wstring& strLayerTag)
 {
-	for (size_t i = 0; i < 2; i++)
+	for (size_t i = 0; i < 1; i++)
 	{
 		if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Monster_Soldier"),
 			ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag)))
 			return E_FAIL;
 	}
 
-	for (size_t i = 0; i < 2; i++)
+	for (size_t i = 0; i < 6; i++)
 	{
 		if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Monster_Zombie"),
 			ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag)))
@@ -216,10 +214,8 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const _wstring& strLayerTag)
 			ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag)))
 			return E_FAIL;
 	}
-	
-	/*if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Monster"),
-		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag)))
-		return E_FAIL;*/
+
+	//m_pTerrain_Manager->Add_LandObject(LEVEL::GAMEPLAY, TEXT("Layer_Monster"));
 
 	return S_OK;
 }
@@ -379,12 +375,12 @@ HRESULT CLevel_GamePlay::Ready_Layer_Cube(const _wstring& strLayerTag)
 
 HRESULT CLevel_GamePlay::Ready_Layer_Effect(const _wstring& strLayerTag)
 {
-	for (size_t i = 0; i < 50; i++)
-	{
-		if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Effect"),
-			ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag)))
-			return E_FAIL;
-	}
+	//for (size_t i = 0; i < 50; i++)
+	//{
+	//	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Effect"),
+	//		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag)))
+	//		return E_FAIL;
+	//}
 
 	return S_OK;
 }

@@ -70,10 +70,9 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 
 	m_pObject_Manager->Late_Update(fTimeDelta);
 
-	m_pObject_Manager->Clear_DeadObj();
-
 	m_pLevel_Manager->Update(fTimeDelta);
 
+	m_pObject_Manager->Clear_DeadObj();
 	/*
 	키 매니저의 업데이트는 가장 마지막에 돌아야 합니다
 	절대 바꾸시면 안돼요

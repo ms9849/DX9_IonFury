@@ -19,6 +19,8 @@ public:
 public:
 	// CVIBuffer을(를) 통해 상속됨
 	_bool Picking(CTransform* pTransform, _float3* pOut, _float3 vPos, _float3 vLook) override;
+	_bool Picking_Land(CTransform* pTransform, _float3* pOut, _float3 vPos, _float3 vLook);
+
 	virtual _float Compute_Height(const _float3& vLocalPos, class CTransform* pTransform) override;
 
 public:
