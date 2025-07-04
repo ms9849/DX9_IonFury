@@ -284,8 +284,8 @@ void CBoss::Update(_float fTimeDelta)
 		{
 			// 현재 엔진에 랜덤값 없으므로 대체
 			//m_eState = BossAttackState::MASS;
-			m_eState = BossAttackState::CHASE_MASS;
-			//m_eState = BossAttackState::BOOM;
+			//m_eState = BossAttackState::CHASE_MASS;
+			m_eState = BossAttackState::BOOM;
 		}
 
 		Attack(fTimeDelta, m_eState);
@@ -318,8 +318,8 @@ void CBoss::Update(_float fTimeDelta)
 			{
 				// 현재 엔진에 랜덤값 없으므로 대체
 				//m_eState = BossAttackState::MASS;
-				m_eState = BossAttackState::CHASE_MASS;
-				//m_eState = BossAttackState::BOOM;
+				//m_eState = BossAttackState::CHASE_MASS;
+				m_eState = BossAttackState::BOOM;
 			}
 
 			Attack(fTimeDelta, m_eState);
@@ -424,13 +424,13 @@ HRESULT CBoss::Render()
 	RotateToPlayer(m_pTransformCom_Up);
 	auto iter = m_pTextureComs.find(m_strUpFrameKey);
 	iter->second->Set_Texture(m_pAnimationCom_Up->Get_Frame_Current_Index(m_strUpFrameKey));
-	_uint num = m_pAnimationCom_Up->Get_Frame_Current_Index(m_strUpFrameKey);
+	//_uint num = m_pAnimationCom_Up->Get_Frame_Current_Index(m_strUpFrameKey);
 	m_pVIBufferCom_Up->Render();
 
 	RotateToPlayer(m_pTransformCom_Down);
 	iter = m_pTextureComs.find(m_strDownFrameKey);
 	iter->second->Set_Texture(m_pAnimationCom_Down->Get_Frame_Current_Index(m_strDownFrameKey));
-	_uint num_2 = m_pAnimationCom_Down->Get_Frame_Current_Index(m_strDownFrameKey);
+	//_uint num_2 = m_pAnimationCom_Down->Get_Frame_Current_Index(m_strDownFrameKey);
 	m_pVIBufferCom_Down->Render();
 
 	if (FAILED(End_RenderState()))
@@ -920,6 +920,8 @@ void CBoss::Attack(_float fTimeDelta, BossAttackState state)
 			Desc.isPlayerBullet = false;
 			Desc.fBulletSpeed = 10.f;
 			Desc.vBulletScale = { 2.f, 2.f, 0.1f };
+			Desc.pPlayerTransform = m_pPlayerTransform;
+			Desc.fDuration = 2.f;
 			m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_BossGrenade"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Monster_Bullet"), &Desc);
 			m_fSumLaunchCoolTime = 0.f;								// 유탄 한발 사용했으므로 누적 시간 초기화
 			m_uCurBullets++;										// 현재 사용한 총알 수 증가
