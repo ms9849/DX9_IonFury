@@ -25,6 +25,9 @@ HRESULT CBossGrenade::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
+	if (FAILED(Ready_Animations()))
+		return E_FAIL;
+
 	if (pDesc == nullptr)
 		return S_OK;
 	
@@ -34,6 +37,10 @@ HRESULT CBossGrenade::Initialize(void* pArg)
 	m_vPlayerPos = pDesc->vPlayerPos;
 	m_fAngle = pDesc->fAngle;
 	m_vScale = pDesc->vBulletScale;
+	m_pPlayerTransform = pDesc->pPlayerTransform;
+	m_fDuration = pDesc->fDuration;
+
+	Safe_AddRef(m_pPlayerTransform);
 
 	_float fAngle = D3DXToRadian(m_fAngle);
 
@@ -56,6 +63,8 @@ HRESULT CBossGrenade::Initialize(void* pArg)
 	pSdesc->fRadius = 10.f;
 	m_pSphereColliderCom->Initialize(pSdesc);*/
 
+	m_strFrameKey = TEXT("Grenade_Explosion");
+
 	return S_OK;
 }
 
@@ -65,17 +74,35 @@ void CBossGrenade::Priority_Update(_float fTimeDelta)
 
 void CBossGrenade::Update(_float fTimeDelta)
 {
+	m_fSumTime += fTimeDelta;
+	if (m_fSumTime >= m_fDuration)
+		m_isDead = true;
+
+	// 0.5는 임시값 나중에 바꿔야함
+	if (m_pTransformCom->Get_State(STATE::POSITION).y - 0.5f <= m_vPlayerPos.y || m_bAnimateionOn)			// 유탄이 플레이어의 시작 지점보다 낮아지면 폭발 모습 보이게
+	{
+		// 빌보드 효과를 줘서 플레이어가 어디서든 항상 터지는 애니메이션을 볼 수 있도록 하자
+		m_bAnimateionOn = true;
+		m_pAnimationCom->Play_Animation(m_strFrameKey, fTimeDelta);
+		if (m_pAnimationCom->Check_Animation_Finish(m_strFrameKey))
+		{
+			m_isDead = true;
+		}
+
+		return;
+	}
+
 	//OutputDebugStringA("디버그 메시지: 유탄 업데이트 진입 완료\n");
 	//m_pTransformCom->Go_Direction(m_vDir, fTimeDelta);
-	m_fElapsedTime += fTimeDelta;  // 경과 시간
+	//m_fElapsedTime += fTimeDelta;  // 경과 시간
 
 	/*m_pTransformCom->Set_State(STATE::POSITION, { (m_vStartPos.x + m_vOffSet.x + m_vVelocity.x) * m_fElapsedTime * 0.001f,
 		(m_vStartPos.y + m_vOffSet.y + m_vVelocity.y) * m_fElapsedTime - 0.5f * m_fGravity * m_fElapsedTime * m_fElapsedTime * 0.001f,
 		(m_vStartPos.z + m_vOffSet.z + m_vVelocity.z) * m_fElapsedTime * 0.001f });*/
 
-	m_pTransformCom->Set_State(STATE::POSITION, { m_vStartPos.x + (m_vVelocity.x * m_fElapsedTime ),
-		m_vStartPos.y + (m_vVelocity.y * m_fElapsedTime) + ( - 0.5f * m_fGravity * m_fElapsedTime * m_fElapsedTime),
-		m_vStartPos.z + (m_vVelocity.z * m_fElapsedTime ) });
+	m_pTransformCom->Set_State(STATE::POSITION, { m_vStartPos.x + (m_vVelocity.x * m_fSumTime),
+		m_vStartPos.y + (m_vVelocity.y * m_fSumTime) + ( - 0.5f * m_fGravity * m_fSumTime * m_fSumTime),
+		m_vStartPos.z + (m_vVelocity.z * m_fSumTime) });
 
 	//wchar_t szBuffer[128];
 	//swprintf_s(szBuffer, 128, L"StartPos: X=%.2f Y=%.2f Z=%.2f\n", m_vStartPos.x, m_vStartPos.y, m_vStartPos.z);
@@ -91,25 +118,90 @@ void CBossGrenade::Late_Update(_float fTimeDelta)
 
 HRESULT CBossGrenade::Render()
 {
-	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+	//m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 
-	m_pTransformCom->Set_Transform();
+	if (FAILED(Begin_RenderState()))
+		return E_FAIL;
+	//m_pTransformCom->Set_Transform();
+
+	RotateToPlayer(m_pTransformCom);
 
 	if(m_bPlayerBullet)
 		m_pTextureCom->Set_Texture(0);
 	else
 		m_pTextureCom->Set_Texture(0);
 
-	m_pVIBufferCom->Render();
+	//m_pTransformCom->Set_Transform();
 
-	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+	if (m_bAnimateionOn)
+	{
+		auto iter = m_pTextureComs.find(m_strFrameKey);
+		iter->second->Set_Texture(m_pAnimationCom->Get_Frame_Current_Index(m_strFrameKey));
+		_uint num = m_pAnimationCom->Get_Frame_Current_Index(m_strFrameKey);
+		//m_pVIBufferCom->Render();
+		m_pVIBufferCom_Rect->Render();
+	}
+	else
+		m_pVIBufferCom->Render();
+
+	/*auto iter = m_pTextureComs.find(m_strFrameKey);
+	iter->second->Set_Texture(m_pAnimationCom->Get_Frame_Current_Index(m_strFrameKey));
+	_uint num = m_pAnimationCom->Get_Frame_Current_Index(m_strFrameKey);
+	m_pVIBufferCom->Render();*/
+
+	if (FAILED(End_RenderState()))
+		return E_FAIL;
+	/*m_pVIBufferCom->Render();*/
+	//m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 
 	return S_OK;
 }
 
+void CBossGrenade::RotateToPlayer(CTransform* pTranform)
+{
+	_float4x4 matWorldTemp = *pTranform->Get_WorldMatrixPtr();
+
+	/*
+	matWorldTemp? ->현재 트랜스폼의 위치와 회전값을 그대로 가져옴.
+
+	지금 이 상태에서 플레이어를 바라보게끔 회전만 시키면 되는 상황
+
+	실제 회전값과는 무관하게 플레이어를 바라보게만 만든 행렬
+	*/
+
+	_float3 fMonsterPos = pTranform->Get_State(STATE::POSITION);
+	_float3 fPlayerPos = m_pPlayerTransform->Get_State(STATE::POSITION);
+
+	_float3 fLook = fPlayerPos - fMonsterPos;
+	fLook.y = 0.0f;								// y축 회전용
+	D3DXVec3Normalize(&fLook, &fLook);
+
+	_float3 fUp = { 0.0f, 1.0f, 0.0f };
+
+	_float3 fRight;
+	D3DXVec3Cross(&fRight, &fUp, &fLook);
+	D3DXVec3Normalize(&fRight, &fRight);
+
+	_float3 scale = pTranform->Get_Scaled();
+
+	fRight *= scale.x;
+	fUp *= scale.y;
+	fLook *= scale.z;
+
+	memcpy(&matWorldTemp.m[0][0], &fRight, sizeof(_float3));
+	memcpy(&matWorldTemp.m[1][0], &fUp, sizeof(_float3));
+	memcpy(&matWorldTemp.m[2][0], &fLook, sizeof(_float3));
+
+	pTranform->Set_Transform(matWorldTemp);
+
+	//return matWorldTemp;
+}
+
 void CBossGrenade::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta)
 {
-	m_isDead = true;
+	//m_isDead = true;
+	// 충돌 했으면 애니메이션 출력을 하도록 bool값을 변경
+	m_bAnimateionOn = true;
 }
 
 const COLLISION_DESC& CBossGrenade::Get_CollisionDesc(COLLISION eColType)
@@ -134,9 +226,36 @@ HRESULT CBossGrenade::Ready_Components()
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
+	/* Com_Texture */
+	for (size_t i = 0; i < (sizeof(m_strFrameKeys) / sizeof(m_strFrameKeys[0])); ++i)
+	{
+		_tchar strPrototypeTag[256];
+		_tchar strComponentTag[256];
+
+		CTexture* pTextureCom{ nullptr };
+
+		wsprintf(strPrototypeTag, TEXT("Prototype_Component_Texture_%s"), m_strFrameKeys[i].c_str());
+		wsprintf(strComponentTag, TEXT("Com_%s_Texture"), m_strFrameKeys[i].c_str());
+
+		if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), strPrototypeTag,
+			strComponentTag, reinterpret_cast<CComponent**>(&pTextureCom))))
+			return E_FAIL;
+
+		m_pTextureComs.emplace(m_strFrameKeys[i], pTextureCom);
+	}
+
+	/* Com_Animation */
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Animation"),
+		TEXT("Com_Animation"), reinterpret_cast<CComponent**>(&m_pAnimationCom))))
+		return E_FAIL;
+
 	/* Com_VIBuffer */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_VIBuffer_Cube"),
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_Rect"),
+		TEXT("Com_VIBuffer_Rect"), reinterpret_cast<CComponent**>(&m_pVIBufferCom_Rect))))
 		return E_FAIL;
 
 	/* Com_SphereCollider */
@@ -146,6 +265,60 @@ HRESULT CBossGrenade::Ready_Components()
 
 	return S_OK;
 }
+
+HRESULT CBossGrenade::Ready_Animations()
+{
+	CAnimation::FRAME_DESC Desc_0{};
+
+	//Grenade_Explosion
+	auto iter = m_pTextureComs.find(TEXT("Grenade_Explosion"));
+	Desc_0.iFrameSpeed = 10;
+	Desc_0.iEnd = iter->second->Get_Texture_Length();
+	m_pAnimationCom->Set_Animation(TEXT("Grenade_Explosion"), Desc_0);
+
+	return S_OK;
+}
+
+HRESULT CBossGrenade::Begin_RenderState()
+{
+	/* 렌더링할 때 알파값을 기준으로 섞어준다.*/
+
+	/*
+	float4		vSourColor, vDestColor;
+	vSourColor.rgb * vSourColor.a + vDestColor.rgb * (1.f - vSourColor.a);
+	*/
+
+
+	/*m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+	m_pGraphic_Device->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
+	m_pGraphic_Device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+	m_pGraphic_Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);*/
+
+	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+
+	//m_pGraphic_Device->SetRenderState(D3DRS_LIGHTING, FALSE);
+
+	/* 알파 테스트 : 픽셀의 알파를 비교해서 그린다 안그린다를 설정. */
+	m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+	m_pGraphic_Device->SetRenderState(D3DRS_ALPHAREF, 0);
+	m_pGraphic_Device->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
+
+
+
+	return S_OK;
+}
+
+HRESULT CBossGrenade::End_RenderState()
+{
+	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+	//m_pGraphic_Device->SetRenderState(D3DRS_LIGHTING, TRUE);
+
+	//m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+	m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+
+	return S_OK;
+}
+
 
 CBossGrenade* CBossGrenade::Create(LPDIRECT3DDEVICE9 pGraphicDev)
 {
@@ -181,4 +354,7 @@ void CBossGrenade::Free()
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pSphereColliderCom);
+	Safe_Release(m_pVIBufferCom_Rect);
+	Safe_Release(m_pAnimationCom);
+	Safe_Release(m_pPlayerTransform);
 }

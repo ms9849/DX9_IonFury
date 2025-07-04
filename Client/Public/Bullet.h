@@ -21,6 +21,7 @@ public:
 	typedef struct tagBulletDesc
 	{
 		_float fBulletSpeed = {};
+		_float fDuration = {};
 		_float3 vDir = {};
 		_float3 vPos = {};
 		_float3 vBulletScale = {};
@@ -59,6 +60,8 @@ protected:
 	_bool m_bPlayerBullet = { false };
 	_float m_fDamage = { 10.f };
 	_float m_fBulletSpeed = {};
+	_float m_fDuration = 5.f;
+	_float m_fSumTime = 0.f;
 	_float3 m_vDir = {};
 	CTexture* m_pTextureCom = { nullptr };
 	CTransform* m_pTransformCom = { nullptr };

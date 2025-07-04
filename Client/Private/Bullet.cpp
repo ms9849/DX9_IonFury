@@ -31,6 +31,7 @@ HRESULT CBullet::Initialize(void* pArg)
 		return S_OK;
 	
 	m_vDir = pDesc->vDir;
+	m_fDuration = pDesc->fDuration;
 	m_pTransformCom->Set_State(STATE::POSITION, pDesc->vPos);
 
 	m_pTransformCom->LookAt(m_pTransformCom->Get_State(STATE::POSITION) + m_vDir);
@@ -50,6 +51,10 @@ void CBullet::Priority_Update(_float fTimeDelta)
 
 void CBullet::Update(_float fTimeDelta)
 {
+	m_fSumTime += fTimeDelta;
+	if (m_fSumTime >= m_fDuration)
+		m_isDead = true;
+
 	m_pTransformCom->Go_Direction(m_vDir, fTimeDelta);
 }
 

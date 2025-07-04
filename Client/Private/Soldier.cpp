@@ -276,13 +276,11 @@ void CSoldier::Late_Update(_float fTimeDelta)
 {
 	m_pAnimationCom->Play_Animation(m_strFrameKey, fTimeDelta);
 	int num = m_pAnimationCom->Get_Frame_Current_Index(m_strFrameKey);
-	/*wchar_t szDebug[256];
-	swprintf(szDebug, 256, L"프레임 키: %s, 현재 인덱스: %d\n", m_strFrameKey.c_str(), num);
-	OutputDebugStringW(szDebug);*/
-	auto iter = m_pAnimationCom->Get_Frame_Desc(m_strFrameKey);
+
+	/*auto iter = m_pAnimationCom->Get_Frame_Desc(m_strFrameKey);
 	wchar_t szDebug_2[256];
 	swprintf(szDebug_2, 256, L"프레임 키: %s, 현재 인덱스: %d, 마지막 인덱스: %d\n", m_strFrameKey.c_str(), m_pAnimationCom->Get_Frame_Current_Index(m_strFrameKey), iter->iEnd);
-	OutputDebugStringW(szDebug_2);
+	OutputDebugStringW(szDebug_2);*/
 	//Get_Frame_Current_Index(m_strFrameKey) == iter->iEnd - 1
 	if (m_bAnimationLock && m_pAnimationCom->Check_Animation_Finish(m_strFrameKey))
 	{
@@ -295,10 +293,10 @@ void CSoldier::Late_Update(_float fTimeDelta)
 		else
 		{
 			m_bAnimationLock = false;
-			wchar_t szDebug[256];
+			/*wchar_t szDebug[256];
 			swprintf(szDebug, 256, L"종료 프레임 키: %s, 현재 인덱스: %d\n", m_strFrameKey.c_str(), num);
 			OutputDebugStringW(szDebug);
-			m_pAnimationCom->Clear_Animation(m_strFrameKey);
+			m_pAnimationCom->Clear_Animation(m_strFrameKey);*/
 			m_strFrameKey = TEXT("Soldier_Front");
 		}
 	}
@@ -595,6 +593,8 @@ void CSoldier::Attack()
 	Desc.vPos = vPos;
 	Desc.vBulletScale = {0.2f, 0.2f, 0.01f};
 	Desc.fBulletSpeed = 5.f;
+	Desc.fDuration = 5.f;
+	Desc.isPlayerBullet = false;
 
 	Desc.isPlayerBullet = false;
 
