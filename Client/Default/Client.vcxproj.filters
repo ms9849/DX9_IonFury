@@ -327,6 +327,9 @@
     <ClInclude Include="..\Public\Spider.h">
       <Filter>02.GameObjects\Monster\Melee</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\EliteSoldier.h">
+      <Filter>02.GameObjects\Monster\Range</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -491,6 +494,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Spider.cpp">
       <Filter>02.GameObjects\Monster\Melee</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\EliteSoldier.cpp">
+      <Filter>02.GameObjects\Monster\Range</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
