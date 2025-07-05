@@ -41,7 +41,7 @@ HRESULT CSoldier::Initialize(void* pArg)
 		0.f,
 		m_pGameInstance->Random(0.f, 20.f)));
 
-	m_fAttackRange = 5.f;
+	m_fAttackRange = 2.f;
 	//m_pTransformCom->Rotation({0.f, 1.f, 0.f}, m_pGameInstance->Random(0.f, 180.f));
 	//m_pTransformCom->LookAt(m_pPlayerTransform->Get_State(STATE::POSITION));
 
@@ -164,7 +164,6 @@ void CSoldier::Update(_float fTimeDelta)
 	D3DXVec3Cross(&vCross, &vMonsterLook, &vDiff);
 
 	_float fFov = cosf(D3DXToRadian(45.f));
-
 	_float angle30 = cosf(D3DXToRadian(30.f));
 	_float angle60 = cosf(D3DXToRadian(60.f));
 
@@ -195,6 +194,7 @@ void CSoldier::Update(_float fTimeDelta)
 					m_strFrameKey = TEXT("Soldier_Direction_NE");
 			}
 		}
+		m_isMove = false;
 	}
 
 	if (m_fHp <= 0)
@@ -213,12 +213,14 @@ void CSoldier::Update(_float fTimeDelta)
 				Attack();
 			}
 		}
-		else if (m_fSumMoveCoolTime >= m_fMoveCoolTime)
+
+		if (m_fSumMoveCoolTime >= m_fMoveCoolTime)
 		{
 			_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
 			if (D3DXVec3Length(&vDiff) <= m_fChaseRange && D3DXVec3Length(&vDiff) >= m_fAttackRange - 1.f)
 			{
 				Move(fTimeDelta);
+				m_isMove = true;
 				m_fSumMoveCoolTime = 0.f;
 			}
 		}
@@ -274,8 +276,9 @@ void CSoldier::Update(_float fTimeDelta)
 
 void CSoldier::Late_Update(_float fTimeDelta)
 {
-	m_pAnimationCom->Play_Animation(m_strFrameKey, fTimeDelta);
-	int num = m_pAnimationCom->Get_Frame_Current_Index(m_strFrameKey);
+	if (m_isMove || m_bAnimationLock)
+		m_pAnimationCom->Play_Animation(m_strFrameKey, fTimeDelta);
+	//int num = m_pAnimationCom->Get_Frame_Current_Index(m_strFrameKey);
 
 	/*auto iter = m_pAnimationCom->Get_Frame_Desc(m_strFrameKey);
 	wchar_t szDebug_2[256];
@@ -592,10 +595,8 @@ void CSoldier::Attack()
 	Desc.vDir = vDir;
 	Desc.vPos = vPos;
 	Desc.vBulletScale = {0.2f, 0.2f, 0.01f};
-	Desc.fBulletSpeed = 5.f;
-	Desc.fDuration = 5.f;
-	Desc.isPlayerBullet = false;
-
+	Desc.fBulletSpeed = Desc.fBulletSpeed;
+	Desc.fDuration = Desc.fDuration;
 	Desc.isPlayerBullet = false;
 
 

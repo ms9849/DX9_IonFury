@@ -80,8 +80,8 @@ private:
 	HRESULT Ready_Components();
 
 private:
-	CAnimation* m_pAnimationCom;
-	CTransform* m_pPlayerTransform;
+	CAnimation* m_pAnimationCom = { nullptr };
+	CTransform* m_pPlayerTransform = { nullptr };;
 	CVIBuffer_Rect* m_pVIBufferCom_Rect = { nullptr };
 	map<const _wstring, CTexture*> m_pTextureComs;
 	_wstring m_strFrameKey = {};

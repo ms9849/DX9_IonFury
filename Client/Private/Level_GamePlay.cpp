@@ -124,7 +124,7 @@ void CLevel_GamePlay::Update(_float fTimeDelta)
 
 HRESULT CLevel_GamePlay::Render()
 {
-	// FPS 및 애니메이션 체크
+	//// FPS 및 애니메이션 체크
 	m_fFPSTimer += m_fTimeDelta;
 	++m_iFPSCount;
 	
