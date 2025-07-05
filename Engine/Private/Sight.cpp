@@ -31,6 +31,10 @@ HRESULT CSight::Initialize(void* pArg)
 	m_pTransform = pDesc->pMonsterTransform;
 	m_pPlayerTransform = pDesc->pPlayerTransform;
 
+	Safe_AddRef(m_pTransform);
+	Safe_AddRef(m_pPlayerTransform);
+
+
     return S_OK;
 }
 
@@ -118,4 +122,6 @@ void CSight::Free()
 {
     __super::Free();
 
+	Safe_Release(m_pTransform);
+	Safe_Release(m_pPlayerTransform);
 }
