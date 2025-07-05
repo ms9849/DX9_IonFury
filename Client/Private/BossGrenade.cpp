@@ -348,8 +348,6 @@ CGameObject* CBossGrenade::Clone(void* pArg)
 
 void CBossGrenade::Free()
 {
-
-	//Safe_Release(m_pPlayerTransform);
 	__super::Free();
 
 	for (auto& iter : m_pTextureComs)
@@ -357,10 +355,7 @@ void CBossGrenade::Free()
 		Safe_Release(iter.second);
 	}
 	m_pTextureComs.clear();
-	//Safe_Release(m_pTextureCom);
-	Safe_Release(m_pTransformCom);
-	Safe_Release(m_pVIBufferCom);
-	Safe_Release(m_pSphereColliderCom);
+	
 	Safe_Release(m_pVIBufferCom_Rect);
 	Safe_Release(m_pAnimationCom);
 	Safe_Release(m_pPlayerTransform);
