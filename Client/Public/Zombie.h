@@ -12,11 +12,11 @@ private:
 	CZombie(const CZombie& Prototype);
 	virtual ~CZombie() = default;
 
-	const _wstring m_strFrameKeys[11] = {
+	const _wstring m_strFrameKeys[12] = {
 		TEXT("Zombie_Attack"), TEXT("Zombie_Die_Default"), TEXT("Zombie_Direction_NE"), 
 		TEXT("Zombie_Direction_NW"), TEXT("Zombie_Direction_SE"), TEXT("Zombie_Direction_SW"),
 		TEXT("Zombie_Front"), TEXT("Zombie_Back"), TEXT("Zombie_Left"),
-		TEXT("Zombie_Right"), TEXT("Zombie_Die_Explosion")
+		TEXT("Zombie_Right"), TEXT("Zombie_Die_Explosion"), TEXT("Zombie_Die_Idle")
 	};
 
 public:
