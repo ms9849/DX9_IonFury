@@ -159,6 +159,7 @@
     <ClInclude Include="..\Public\Effect_Manager.h" />
     <ClInclude Include="..\Public\Effect_Pistol_Fire.h" />
     <ClInclude Include="..\public\ItemCardKey.h" />
+    <ClInclude Include="..\Public\Spider.h" />
     <ClInclude Include="..\Public\Terrain_Manager.h" />
     <ClInclude Include="..\Public\MeleeAttack.h" />
     <ClInclude Include="..\public\Player_LeftHand.h" />
@@ -209,6 +210,7 @@
     <ClCompile Include="..\private\MapGate.cpp" />
     <ClCompile Include="..\Private\Effect_Manager.cpp" />
     <ClCompile Include="..\Private\Effect_Pistol_Fire.cpp" />
+    <ClCompile Include="..\Private\Spider.cpp" />
     <ClCompile Include="..\private\UICardKey.cpp" />
     <ClCompile Include="..\private\ItemArmor.cpp" />
     <ClCompile Include="..\Private\CubeObject.cpp" />

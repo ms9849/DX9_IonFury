@@ -318,6 +318,15 @@
     <ClInclude Include="..\public\MapContainerBox.h">
       <Filter>03.MapObjects\Container</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Spider.h">
+      <Filter>02.GameObjects\Monster\Melee</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Spider.h">
+      <Filter>02.GameObjects\Monster\Melee</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Spider.h">
+      <Filter>02.GameObjects\Monster\Melee</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -473,6 +482,15 @@
     </ClCompile>
     <ClCompile Include="..\private\MapContainerBox.cpp">
       <Filter>03.MapObjects\Container</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Spider.cpp">
+      <Filter>02.GameObjects\Monster\Melee</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Spider.cpp">
+      <Filter>02.GameObjects\Monster\Melee</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Spider.cpp">
+      <Filter>02.GameObjects\Monster\Melee</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

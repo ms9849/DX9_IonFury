@@ -23,6 +23,7 @@
 #include "ItemCardKey.h"
 #include "Soldier.h"
 #include "Zombie.h"
+#include "Spider.h"
 #include "Boss.h"
 #include "MeleeAttack.h"
 #include "DoorLock.h"
@@ -297,6 +298,11 @@ HRESULT CLoader::Loading_For_GamePlay()
 	/* For.Prototype_GameObject_Monster_Zombie */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Monster_Zombie"),
 		CZombie::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Monster_Spider */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Monster_Spider"),
+		CSpider::Create(m_pGraphic_Device))))
 		return E_FAIL;
 #pragma endregion	
 
