@@ -22,6 +22,7 @@
 #include "ItemShootGunBullet.h"
 #include "ItemCardKey.h"
 #include "Soldier.h"
+#include "EliteSoldier.h"
 #include "Zombie.h"
 #include "Spider.h"
 #include "Boss.h"
@@ -293,6 +294,11 @@ HRESULT CLoader::Loading_For_GamePlay()
 	/* For.Prototype_GameObject_Monster_Soldier */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Monster_Soldier"),
 		CSoldier::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Monster_EliteSoldier */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Monster_EliteSoldier"),
+		CEliteSoldier::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_Monster_Zombie */

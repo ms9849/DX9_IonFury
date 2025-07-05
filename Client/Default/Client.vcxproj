@@ -147,6 +147,7 @@
     <ClInclude Include="..\Public\BehaviorNode.h" />
     <ClInclude Include="..\Public\Boss.h" />
     <ClInclude Include="..\Public\BossGrenade.h" />
+    <ClInclude Include="..\Public\EliteSoldier.h" />
     <ClInclude Include="..\public\MapContainerBox.h" />
     <ClInclude Include="..\public\MapBox.h" />
     <ClInclude Include="..\public\MapBuilding.h" />
@@ -201,6 +202,7 @@
     <ClCompile Include="..\Private\BehaviorNode.cpp" />
     <ClCompile Include="..\Private\Boss.cpp" />
     <ClCompile Include="..\Private\BossGrenade.cpp" />
+    <ClCompile Include="..\Private\EliteSoldier.cpp" />
     <ClCompile Include="..\private\MapContainerBox.cpp" />
     <ClCompile Include="..\private\MapBox.cpp" />
     <ClCompile Include="..\private\MapBuilding.cpp" />

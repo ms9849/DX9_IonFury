@@ -1,26 +1,26 @@
-#include "Soldier.h"
+#include "EliteSoldier.h"
 #include "GameInstance.h"
 #include "Bullet.h"
 #include "BehaviorNode.h"
 
-CSoldier::CSoldier(LPDIRECT3DDEVICE9 pGraphic_Device)
+CEliteSoldier::CEliteSoldier(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CMonster{ pGraphic_Device }
 {
 
 }
 
-CSoldier::CSoldier(const CSoldier& Prototype)
+CEliteSoldier::CEliteSoldier(const CEliteSoldier& Prototype)
 	: CMonster(Prototype)
 {
 
 }
 
-HRESULT CSoldier::Initialize_Prototype()
+HRESULT CEliteSoldier::Initialize_Prototype()
 {
 	return S_OK;
 }
 
-HRESULT CSoldier::Initialize(void* pArg)
+HRESULT CEliteSoldier::Initialize(void* pArg)
 {
 	m_pPlayerTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player"), TEXT("Com_Transform")));
 
@@ -41,7 +41,9 @@ HRESULT CSoldier::Initialize(void* pArg)
 		0.f,
 		m_pGameInstance->Random(0.f, 20.f)));
 
-	m_fAttackRange = 2.f;
+	m_fAttackRange = 5.f;
+	m_fChaseRange = 10.f;
+	m_fMaxRange = 15.f;
 	//m_pTransformCom->Rotation({0.f, 1.f, 0.f}, m_pGameInstance->Random(0.f, 180.f));
 	//m_pTransformCom->LookAt(m_pPlayerTransform->Get_State(STATE::POSITION));
 
@@ -137,12 +139,12 @@ HRESULT CSoldier::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CSoldier::Priority_Update(_float fTimeDelta)
+void CEliteSoldier::Priority_Update(_float fTimeDelta)
 {
 
 }
 
-void CSoldier::Update(_float fTimeDelta)
+void CEliteSoldier::Update(_float fTimeDelta)
 {
 	__super::Jump(fTimeDelta);
 
@@ -171,27 +173,27 @@ void CSoldier::Update(_float fTimeDelta)
 	{
 		if (dot >= fFov)
 		{
-			m_strFrameKey = TEXT("Soldier_Front");
+			m_strFrameKey = TEXT("EliteSoldier_Front");
 		}
 		else if (dot <= -fFov)
 		{
-			m_strFrameKey = TEXT("Soldier_Back");
+			m_strFrameKey = TEXT("EliteSoldier_Back");
 		}
 		else
 		{
 			if (vCross.y > 0)
 			{
 				if (dot > 0)
-					m_strFrameKey = TEXT("Soldier_Direction_SW");
+					m_strFrameKey = TEXT("EliteSoldier_Direction_SW");
 				else
-					m_strFrameKey = TEXT("Soldier_Direction_NW");
+					m_strFrameKey = TEXT("EliteSoldier_Direction_NW");
 			}
 			else
 			{
 				if (dot > 0)
-					m_strFrameKey = TEXT("Soldier_Direction_SE");
+					m_strFrameKey = TEXT("EliteSoldier_Direction_SE");
 				else
-					m_strFrameKey = TEXT("Soldier_Direction_NE");
+					m_strFrameKey = TEXT("EliteSoldier_Direction_NE");
 			}
 		}
 		m_isMove = false;
@@ -199,7 +201,7 @@ void CSoldier::Update(_float fTimeDelta)
 
 	if (m_fHp <= 0)
 	{
-		m_strFrameKey = TEXT("Soldier_Die_Default");
+		m_strFrameKey = TEXT("EliteSoldier_Die_Default");
 		m_bAnimationLock = true;
 		m_bDying = true;
 	}
@@ -210,7 +212,14 @@ void CSoldier::Update(_float fTimeDelta)
 			_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
 			if (D3DXVec3Length(&vDiff) <= m_fAttackRange)
 			{
-				Attack();
+				if (m_eState == EliteSoldierState::END)
+				{
+					// 랜덤으로 하나 골라지게 함
+					//m_eState = EliteSoldierState::ONESHOT;
+					m_eState = EliteSoldierState::MASS;
+				}
+
+				Attack(m_eState);
 			}
 		}
 
@@ -274,7 +283,7 @@ void CSoldier::Update(_float fTimeDelta)
 	SetUp_OnTerrain(m_pTransformCom, 0.5f, &m_bJump);
 }
 
-void CSoldier::Late_Update(_float fTimeDelta)
+void CEliteSoldier::Late_Update(_float fTimeDelta)
 {
 	if (m_isMove || m_bAnimationLock)
 		m_pAnimationCom->Play_Animation(m_strFrameKey, fTimeDelta);
@@ -300,14 +309,14 @@ void CSoldier::Late_Update(_float fTimeDelta)
 			swprintf(szDebug, 256, L"종료 프레임 키: %s, 현재 인덱스: %d\n", m_strFrameKey.c_str(), num);
 			OutputDebugStringW(szDebug);
 			m_pAnimationCom->Clear_Animation(m_strFrameKey);*/
-			m_strFrameKey = TEXT("Soldier_Front");
+			m_strFrameKey = TEXT("EliteSoldier_Front");
 		}
 	}
 	/*m_pAnimationCom->Play_Animation(m_strFrameKey, fTimeDelta);*/
 	m_pGameInstance->Add_RenderGroup(RENDER::BLEND, this);
 }
 
-HRESULT CSoldier::Render()
+HRESULT CEliteSoldier::Render()
 {
 	_float4x4 matWorldTemp = *m_pTransformCom->Get_WorldMatrixPtr();
 
@@ -357,7 +366,7 @@ HRESULT CSoldier::Render()
 	return S_OK;
 }
 
-HRESULT CSoldier::Ready_Animations()
+HRESULT CEliteSoldier::Ready_Animations()
 {
 	CAnimation::FRAME_DESC Desc_0{};
 	CAnimation::FRAME_DESC Desc_1{};
@@ -370,98 +379,78 @@ HRESULT CSoldier::Ready_Animations()
 	CAnimation::FRAME_DESC Desc_8{};
 	CAnimation::FRAME_DESC Desc_9{};
 	CAnimation::FRAME_DESC Desc_10{};
-	CAnimation::FRAME_DESC Desc_11{};
-	CAnimation::FRAME_DESC Desc_12{};
-	CAnimation::FRAME_DESC Desc_13{};
 
-	auto iter = m_pTextureComs.find(TEXT("Soldier_Attack_Front"));
+	//EliteSoldier_Attack
+	auto iter = m_pTextureComs.find(TEXT("EliteSoldier_Attack_Front"));
 	Desc_0.iFrameSpeed = 15;
 	Desc_0.iEnd = iter->second->Get_Texture_Length();
-	m_pAnimationCom->Set_Animation(TEXT("Soldier_Attack_Front"), Desc_0);
+	m_pAnimationCom->Set_Animation(TEXT("EliteSoldier_Attack_Front"), Desc_0);
 
-	//Soldier_Attack_SE
-	iter = m_pTextureComs.find(TEXT("Soldier_Attack_SE"));
+	//EliteSoldier_Attack_Seat
+	iter = m_pTextureComs.find(TEXT("EliteSoldier_Attack_Seat"));
 	Desc_1.iFrameSpeed = 15;
 	Desc_1.iEnd = iter->second->Get_Texture_Length();
-	m_pAnimationCom->Set_Animation(TEXT("Soldier_Attack_SE"), Desc_1);
+	m_pAnimationCom->Set_Animation(TEXT("EliteSoldier_Attack_Seat"), Desc_1);
 
-	//Soldier_Attack_SW
-	iter = m_pTextureComs.find(TEXT("Soldier_Attack_SW"));
-	Desc_2.iFrameSpeed = 15;
+	//EliteSoldier_Die_Default
+	iter = m_pTextureComs.find(TEXT("EliteSoldier_Die_Default"));
+	Desc_2.iFrameSpeed = 12;
 	Desc_2.iEnd = iter->second->Get_Texture_Length();
-	m_pAnimationCom->Set_Animation(TEXT("Soldier_Attack_SW"), Desc_2);
+	m_pAnimationCom->Set_Animation(TEXT("EliteSoldier_Die_Default"), Desc_2);
 
-	//Soldier_Die_Default
-	iter = m_pTextureComs.find(TEXT("Soldier_Die_Default"));
-	Desc_3.iFrameSpeed = 12;
+	//EliteSoldier_Direction_NE
+	iter = m_pTextureComs.find(TEXT("EliteSoldier_Direction_NE"));
+	Desc_3.iFrameSpeed = 7;
 	Desc_3.iEnd = iter->second->Get_Texture_Length();
-	m_pAnimationCom->Set_Animation(TEXT("Soldier_Die_Default"), Desc_3);
+	m_pAnimationCom->Set_Animation(TEXT("EliteSoldier_Direction_NE"), Desc_3);
 
-	//Soldier_Die_Explosion
-	iter = m_pTextureComs.find(TEXT("Soldier_Die_Explosion"));
-	Desc_4.iFrameSpeed = 12;
+	//EliteSoldier_Direction_NW
+	iter = m_pTextureComs.find(TEXT("EliteSoldier_Direction_NW"));
+	Desc_4.iFrameSpeed = 7;
 	Desc_4.iEnd = iter->second->Get_Texture_Length();
-	m_pAnimationCom->Set_Animation(TEXT("Soldier_Die_Explosion"), Desc_4);
+	m_pAnimationCom->Set_Animation(TEXT("EliteSoldier_Direction_NW"), Desc_4);
 
-	//Soldier_Die_HeadShot
-	iter = m_pTextureComs.find(TEXT("Soldier_Die_HeadShot"));
-	Desc_5.iFrameSpeed = 12;
+	//EliteSoldier_Direction_SE
+	iter = m_pTextureComs.find(TEXT("EliteSoldier_Direction_SE"));
+	Desc_5.iFrameSpeed = 7;
 	Desc_5.iEnd = iter->second->Get_Texture_Length();
-	m_pAnimationCom->Set_Animation(TEXT("Soldier_Die_HeadShot"), Desc_5);
+	m_pAnimationCom->Set_Animation(TEXT("EliteSoldier_Direction_SE"), Desc_5);
 
-	//Soldier_Direction_NE
-	iter = m_pTextureComs.find(TEXT("Soldier_Direction_NE"));
+	//EliteSoldier_Direction_SW
+	iter = m_pTextureComs.find(TEXT("EliteSoldier_Direction_SW"));
 	Desc_6.iFrameSpeed = 7;
 	Desc_6.iEnd = iter->second->Get_Texture_Length();
-	m_pAnimationCom->Set_Animation(TEXT("Soldier_Direction_NE"), Desc_6);
+	m_pAnimationCom->Set_Animation(TEXT("EliteSoldier_Direction_SW"), Desc_6);
 
-	//Soldier_Direction_NW
-	iter = m_pTextureComs.find(TEXT("Soldier_Direction_NW"));
+	//EliteSoldier_Front
+	iter = m_pTextureComs.find(TEXT("EliteSoldier_Front"));
 	Desc_7.iFrameSpeed = 7;
 	Desc_7.iEnd = iter->second->Get_Texture_Length();
-	m_pAnimationCom->Set_Animation(TEXT("Soldier_Direction_NW"), Desc_7);
+	m_pAnimationCom->Set_Animation(TEXT("EliteSoldier_Front"), Desc_7);
 
-	//Soldier_Direction_SE
-	iter = m_pTextureComs.find(TEXT("Soldier_Direction_SE"));
+	//EliteSoldier_Back
+	iter = m_pTextureComs.find(TEXT("EliteSoldier_Back"));
 	Desc_8.iFrameSpeed = 7;
 	Desc_8.iEnd = iter->second->Get_Texture_Length();
-	m_pAnimationCom->Set_Animation(TEXT("Soldier_Direction_SE"), Desc_8);
+	m_pAnimationCom->Set_Animation(TEXT("EliteSoldier_Back"), Desc_8);
 
-	//Soldier_Direction_SW
-	iter = m_pTextureComs.find(TEXT("Soldier_Direction_SW"));
+	//EliteSoldier_Left
+	iter = m_pTextureComs.find(TEXT("EliteSoldier_Left"));
 	Desc_9.iFrameSpeed = 7;
 	Desc_9.iEnd = iter->second->Get_Texture_Length();
-	m_pAnimationCom->Set_Animation(TEXT("Soldier_Direction_SW"), Desc_9);
+	m_pAnimationCom->Set_Animation(TEXT("EliteSoldier_Left"), Desc_9);
 
-	//Soldier_Front
-	iter = m_pTextureComs.find(TEXT("Soldier_Front"));
+	//EliteSoldier_Right
+	iter = m_pTextureComs.find(TEXT("EliteSoldier_Right"));
 	Desc_10.iFrameSpeed = 7;
 	Desc_10.iEnd = iter->second->Get_Texture_Length();
-	m_pAnimationCom->Set_Animation(TEXT("Soldier_Front"), Desc_10);
-
-	//Soldier_Back
-	iter = m_pTextureComs.find(TEXT("Soldier_Back"));
-	Desc_11.iFrameSpeed = 7;
-	Desc_11.iEnd = iter->second->Get_Texture_Length();
-	m_pAnimationCom->Set_Animation(TEXT("Soldier_Back"), Desc_11);
-
-	//Soldier_Left
-	iter = m_pTextureComs.find(TEXT("Soldier_Left"));
-	Desc_12.iFrameSpeed = 7;
-	Desc_12.iEnd = iter->second->Get_Texture_Length();
-	m_pAnimationCom->Set_Animation(TEXT("Soldier_Left"), Desc_12);
-
-	//Soldier_Right
-	iter = m_pTextureComs.find(TEXT("Soldier_Right"));
-	Desc_13.iFrameSpeed = 7;
-	Desc_13.iEnd = iter->second->Get_Texture_Length();
-	m_pAnimationCom->Set_Animation(TEXT("Soldier_Right"), Desc_13);
+	m_pAnimationCom->Set_Animation(TEXT("EliteSoldier_Right"), Desc_10);
 
 
 	return S_OK;
 }
 
-void CSoldier::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta)
+void CEliteSoldier::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta)
 {
 	if (eColType == COLLISION::SPHERE)
 	{
@@ -473,7 +462,7 @@ void CSoldier::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDe
 	return;
 }
 
-const COLLISION_DESC& CSoldier::Get_CollisionDesc(COLLISION eColType)
+const COLLISION_DESC& CEliteSoldier::Get_CollisionDesc(COLLISION eColType)
 {
 	COLLISION_DESC Desc;
 	Desc.pTransform = m_pTransformCom;
@@ -486,7 +475,7 @@ const COLLISION_DESC& CSoldier::Get_CollisionDesc(COLLISION eColType)
 	return Desc;
 }
 
-HRESULT CSoldier::Ready_Components()
+HRESULT CEliteSoldier::Ready_Components()
 {
 	/* Com_Transform */
 	CTransform::TRANSFORM_DESC		TransformDesc{ 5.f, D3DXToRadian(90.0f) };
@@ -523,7 +512,7 @@ HRESULT CSoldier::Ready_Components()
 		return E_FAIL;
 
 	/* Com_Sight */
-	CSight::SIGHT_DESC		SightDesc{ 5.f, D3DXToRadian(90.0f), m_pPlayerTransform, m_pTransformCom };
+	CSight::SIGHT_DESC		SightDesc{ 5.f, D3DXToRadian(120.0f), m_pPlayerTransform, m_pTransformCom};
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Sight"),
 		TEXT("Com_Sight"), reinterpret_cast<CComponent**>(&m_pSightCom), &SightDesc)))
 		return E_FAIL;
@@ -541,7 +530,7 @@ HRESULT CSoldier::Ready_Components()
 	return S_OK;
 }
 
-HRESULT CSoldier::Begin_RenderState()
+HRESULT CEliteSoldier::Begin_RenderState()
 {
 	/* 렌더링할 때 알파값을 기준으로 섞어준다.*/
 
@@ -570,7 +559,7 @@ HRESULT CSoldier::Begin_RenderState()
 	return S_OK;
 }
 
-HRESULT CSoldier::End_RenderState()
+HRESULT CEliteSoldier::End_RenderState()
 {
 	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 	//m_pGraphic_Device->SetRenderState(D3DRS_LIGHTING, TRUE);
@@ -581,29 +570,56 @@ HRESULT CSoldier::End_RenderState()
 	return S_OK;
 }
 
-void CSoldier::Attack()
+void CEliteSoldier::Attack(EliteSoldierState eState)
 {
-	m_fSumAttackCoolTime = 0.f;
-	m_strFrameKey = TEXT("Soldier_Attack_Front");
-	m_bAnimationLock = true;
+	if (eState == EliteSoldierState::ONESHOT)
+	{
+		m_fSumAttackCoolTime = 0.f;
+		m_strFrameKey = TEXT("EliteSoldier_Attack_Seat");
+		m_bAnimationLock = true;
 
-	_float3 vDir = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
-	_float3 vPos = m_pTransformCom->Get_State(STATE::POSITION);
-	D3DXVec3Normalize(&vDir, &vDir);
+		_float3 vDir = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
+		_float3 vPos = m_pTransformCom->Get_State(STATE::POSITION);
+		D3DXVec3Normalize(&vDir, &vDir);
 
-	CBullet::BULLET_DESC Desc;
-	Desc.vDir = vDir;
-	Desc.vPos = vPos;
-	Desc.vBulletScale = {0.2f, 0.2f, 0.01f};
-	Desc.fBulletSpeed = 5.f;
-	Desc.fDuration = 5.f;
-	Desc.isPlayerBullet = false;
+		CBullet::BULLET_DESC Desc;
+		Desc.vDir = vDir;
+		Desc.vPos = vPos;
+		Desc.vBulletScale = { 0.2f, 0.2f, 0.01f };
+		Desc.fBulletSpeed = 8.f;
+		Desc.fDuration = 5.f;
+		Desc.isPlayerBullet = false;
 
 
-	m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Bullet"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Monster_Bullet"), &Desc);
+		m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Bullet"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Monster_Bullet"), &Desc);
+	}
+	else if (eState == EliteSoldierState::MASS)
+	{
+		m_fSumAttackCoolTime = 0.f;
+		m_strFrameKey = TEXT("EliteSoldier_Attack_Front");
+		m_bAnimationLock = true;
+
+		_float3 vDir = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
+		_float3 vPos = m_pTransformCom->Get_State(STATE::POSITION);
+		D3DXVec3Normalize(&vDir, &vDir);
+
+		_uint len = sizeof(m_vShootPosOffset) / sizeof(m_vShootPosOffset[0]);
+
+		for (int i = 0; i < len; i++)		// 방향벡터는 유지하되 생성되는 위치를 근처로 해서 쏘게하자
+		{
+			CBullet::BULLET_DESC Desc;
+			Desc.vDir = vDir + m_vShootPosOffset[i];
+			Desc.vPos = vPos;
+			Desc.vBulletScale = { 0.2f, 0.2f, 0.01f };
+			Desc.fBulletSpeed = 5.f;
+			Desc.fDuration = 5.f;
+			Desc.isPlayerBullet = false;
+			m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Bullet"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Monster_Bullet"), &Desc);
+		}
+	}
 }
 
-void CSoldier::Move(_float fTimeDelta)
+void CEliteSoldier::Move(_float fTimeDelta)
 {
 	_float3 fPlayerLook = m_pPlayerTransform->Get_State(STATE::LOOK);
 	_float3 fMonsterLook = m_pTransformCom->Get_State(STATE::LOOK);
@@ -632,15 +648,14 @@ void CSoldier::Move(_float fTimeDelta)
 	//m_pTransformCom->Go_Straight(fTimeDelta);
 }
 
-void CSoldier::Move()
+void CEliteSoldier::Move()
 {
-	//m_pTransformCom->R
 	m_pTransformCom->Get_State(STATE::POSITION);
 }
 
-CSoldier* CSoldier::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
+CEliteSoldier* CEliteSoldier::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 {
-	CSoldier* pInstance = new CSoldier(pGraphic_Device);
+	CEliteSoldier* pInstance = new CEliteSoldier(pGraphic_Device);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
@@ -651,21 +666,20 @@ CSoldier* CSoldier::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 	return pInstance;
 }
 
-CGameObject* CSoldier::Clone(void* pArg)
+CGameObject* CEliteSoldier::Clone(void* pArg)
 {
-	CSoldier* pInstance = new CSoldier(*this);
+	CEliteSoldier* pInstance = new CEliteSoldier(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Cloned : Soldier");
+		MSG_BOX("Failed to Cloned : CEliteSoldier");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CSoldier::Free()
+void CEliteSoldier::Free()
 {
-	//m_pRoot->ReleaseSubtree();
 	__super::Free();
 }
