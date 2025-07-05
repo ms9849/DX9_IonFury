@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Client_Defines.h"
-#include "LandObject.h"
+#include "GameObject.h"
 
 NS_BEGIN(Engine)
 class CTexture;
@@ -12,7 +12,7 @@ NS_END
 
 NS_BEGIN(Client)
 
-class CMapBox final : public CLandObject
+class CMapBox final : public CGameObject
 {
 public:
 	typedef struct tagCubeDesc {
@@ -44,6 +44,7 @@ public:
 
 private:
 	CTexture* m_pTextureCom = { nullptr };
+	CTransform* m_pTransformCom = { nullptr };
 	CVIBuffer_Cube* m_pVIBufferCom = { nullptr };
 	CBoxCollider* m_BoxColliderCom = { nullptr };
 

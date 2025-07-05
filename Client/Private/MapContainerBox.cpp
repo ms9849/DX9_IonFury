@@ -3,12 +3,12 @@
 #include "GameInstance.h"
 
 CMapContainerBox::CMapContainerBox(LPDIRECT3DDEVICE9 pGraphic_Device)
-	: CLandObject{ pGraphic_Device }
+	: CGameObject{ pGraphic_Device }
 {
 }
 
 CMapContainerBox::CMapContainerBox(const CMapContainerBox& Prototype)
-	: CLandObject(Prototype)
+	: CGameObject(Prototype)
 {
 }
 
@@ -23,20 +23,14 @@ HRESULT CMapContainerBox::Initialize_Prototype()
 
 HRESULT CMapContainerBox::Initialize(void* pArg)
 {
-	CLandObject::LANDOBJECT_DESC			Desc{};
-	Desc.pLandTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_BackGround"), TEXT("Com_Transform")));
-	Desc.pLandVIBuffer = static_cast<CVIBuffer*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_BackGround"), TEXT("Com_VIBuffer")));
-
-	if (FAILED(__super::Initialize(&Desc)))
+	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
 	m_pTransformCom->Set_Scale(_float3{ 1.5f, 1.5f, 3.f });
-	m_pTransformCom->Set_State(STATE::POSITION, { 5.f, 0.f, 5.f });
-
-	SetUp_OnTerrain(m_pTransformCom, 0.751f);
+	//m_pTransformCom->Set_State(STATE::POSITION, { 5.f, 0.f, 5.f });
 
 	return S_OK;
 }
@@ -57,7 +51,7 @@ void CMapContainerBox::Late_Update(_float fTimeDelta)
 HRESULT CMapContainerBox::Render()
 {
 	m_pTransformCom->Set_Transform();
-	
+
 	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 
 	m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
@@ -145,5 +139,6 @@ void CMapContainerBox::Free()
 
 	Safe_Release(m_pTextureCom);
 	Safe_Release(m_pVIBufferCom);
+	Safe_Release(m_pTransformCom);
 	Safe_Release(m_BoxColliderCom);
 }

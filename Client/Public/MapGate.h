@@ -11,7 +11,7 @@ NS_END
 
 NS_BEGIN(Client)
 
-class CMapGate final : public CLandObject
+class CMapGate final : public CGameObject
 {
 private:
     CMapGate(LPDIRECT3DDEVICE9 pGraphic_Device);
@@ -35,6 +35,7 @@ private:
 
 private:
     CTexture* m_pTextureCom = { nullptr };
+    CTransform* m_pTransformCom = { nullptr };
     CTransform* m_pPlayerTransformCom = { nullptr };
     CVIBuffer_Rect* m_pVIBufferCom = { nullptr };
 
