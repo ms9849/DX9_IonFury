@@ -8,7 +8,7 @@ CCubeObject::CCubeObject(LPDIRECT3DDEVICE9 pGraphic_Device)
 }
 
 CCubeObject::CCubeObject(const CCubeObject& Prototype)
-	: CLandObject { Prototype }
+	: CLandObject ( Prototype )
 {
 }
 

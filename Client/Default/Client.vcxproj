@@ -147,12 +147,15 @@
     <ClInclude Include="..\Public\BehaviorNode.h" />
     <ClInclude Include="..\Public\Boss.h" />
     <ClInclude Include="..\Public\BossGrenade.h" />
+    <ClInclude Include="..\public\MapContainerBox.h" />
+    <ClInclude Include="..\public\MapBox.h" />
+    <ClInclude Include="..\public\MapBuilding.h" />
     <ClInclude Include="..\Public\Bullet.h" />
     <ClInclude Include="..\public\Camera.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
     <ClInclude Include="..\Public\CubeObject.h" />
     <ClInclude Include="..\public\DoorLock.h" />
-    <ClInclude Include="..\public\Gate.h" />
+    <ClInclude Include="..\public\MapGate.h" />
     <ClInclude Include="..\Public\Effect_Manager.h" />
     <ClInclude Include="..\Public\Effect_Pistol_Fire.h" />
     <ClInclude Include="..\public\ItemCardKey.h" />
@@ -185,6 +188,7 @@
     <ClInclude Include="..\Public\UIHp.h" />
     <ClInclude Include="..\Public\UIInteraction.h" />
     <ClInclude Include="..\Public\UIText.h" />
+    <ClInclude Include="..\Public\MapWall.h" />
     <ClInclude Include="..\public\Zombie.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="framework.h" />
@@ -196,10 +200,13 @@
     <ClCompile Include="..\Private\BehaviorNode.cpp" />
     <ClCompile Include="..\Private\Boss.cpp" />
     <ClCompile Include="..\Private\BossGrenade.cpp" />
+    <ClCompile Include="..\private\MapContainerBox.cpp" />
+    <ClCompile Include="..\private\MapBox.cpp" />
+    <ClCompile Include="..\private\MapBuilding.cpp" />
     <ClCompile Include="..\Private\Bullet.cpp" />
     <ClCompile Include="..\private\Camera.cpp" />
     <ClCompile Include="..\private\DoorLock.cpp" />
-    <ClCompile Include="..\private\Gate.cpp" />
+    <ClCompile Include="..\private\MapGate.cpp" />
     <ClCompile Include="..\Private\Effect_Manager.cpp" />
     <ClCompile Include="..\Private\Effect_Pistol_Fire.cpp" />
     <ClCompile Include="..\private\UICardKey.cpp" />
@@ -233,6 +240,7 @@
     <ClCompile Include="..\Private\UIInteraction.cpp" />
     <ClCompile Include="..\private\UIItemQueue.cpp" />
     <ClCompile Include="..\Private\UIText.cpp" />
+    <ClCompile Include="..\Private\MapWall.cpp" />
     <ClCompile Include="..\private\Zombie.cpp" />
     <ClCompile Include="Client.cpp" />
   </ItemGroup>
