@@ -8,7 +8,7 @@ CEffect_Pistol_Fire::CEffect_Pistol_Fire(LPDIRECT3DDEVICE9 pGraphic_Device):
 }
 
 CEffect_Pistol_Fire::CEffect_Pistol_Fire(const CEffect_Pistol_Fire& Prototype) :
-    CEffect{ Prototype }
+    CEffect( Prototype )
 {
 }
 

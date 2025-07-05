@@ -11,12 +11,12 @@ NS_END
 
 NS_BEGIN(Client)
 
-class CGate final : public CLandObject
+class CMapGate final : public CLandObject
 {
 private:
-    CGate(LPDIRECT3DDEVICE9 pGraphic_Device);
-    CGate(const CGate& Prototype);
-    virtual ~CGate() = default;
+    CMapGate(LPDIRECT3DDEVICE9 pGraphic_Device);
+    CMapGate(const CMapGate& Prototype);
+    virtual ~CMapGate() = default;
 
 private:
     virtual HRESULT Initialize_Prototype() override;
@@ -46,7 +46,7 @@ public:
     //virtual const COLLISION_DESC& Get_CollisionDesc(COLLISION eColType) override;
 
 public:
-    static CGate* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
+    static CMapGate* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
     virtual CGameObject* Clone(void* pArg) override;
     virtual void Free() override;
 };

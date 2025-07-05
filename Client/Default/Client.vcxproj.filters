@@ -145,6 +145,18 @@
     <Filter Include="02.GameObjects\Effect\Pistol_Fire">
       <UniqueIdentifier>{fb6311fa-4a8b-46b7-b5d7-5d5039af8e05}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03.MapObjects\Building">
+      <UniqueIdentifier>{7d1f9048-b76b-407f-bf55-798883f03eb1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.MapObjects\Wall">
+      <UniqueIdentifier>{bd1ef4e0-00cf-4e6b-a2bb-ec0741b84c92}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.MapObjects\Box">
+      <UniqueIdentifier>{47149285-d4ad-4e5a-ba70-96b8bf247d40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.MapObjects\Container">
+      <UniqueIdentifier>{c0027bf5-6103-4201-8387-3ea73dc1ab32}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -282,7 +294,7 @@
     <ClInclude Include="..\public\DoorLock.h">
       <Filter>04.InteractionObjects\DoorLock</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Gate.h">
+    <ClInclude Include="..\public\MapGate.h">
       <Filter>03.MapObjects\Gate</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\BossGrenade.h">
@@ -293,6 +305,18 @@
     </ClInclude>
     <ClInclude Include="..\Public\Effect_Pistol_Fire.h">
       <Filter>02.GameObjects\Effect\Pistol_Fire</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\MapBuilding.h">
+      <Filter>03.MapObjects\Building</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MapWall.h">
+      <Filter>03.MapObjects\Wall</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\MapBox.h">
+      <Filter>03.MapObjects\Box</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\MapContainerBox.h">
+      <Filter>03.MapObjects\Container</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -426,7 +450,7 @@
     <ClCompile Include="..\private\DoorLock.cpp">
       <Filter>04.InteractionObjects\DoorLock</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Gate.cpp">
+    <ClCompile Include="..\private\MapGate.cpp">
       <Filter>03.MapObjects\Gate</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\BossGrenade.cpp">
@@ -437,6 +461,18 @@
     </ClCompile>
     <ClCompile Include="..\Private\Effect_Pistol_Fire.cpp">
       <Filter>02.GameObjects\Effect\Pistol_Fire</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\MapBuilding.cpp">
+      <Filter>03.MapObjects\Building</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MapWall.cpp">
+      <Filter>03.MapObjects\Wall</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\MapBox.cpp">
+      <Filter>03.MapObjects\Box</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\MapContainerBox.cpp">
+      <Filter>03.MapObjects\Container</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
