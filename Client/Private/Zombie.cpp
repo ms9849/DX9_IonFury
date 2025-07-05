@@ -43,8 +43,10 @@ HRESULT CZombie::Initialize(void* pArg)
 		m_pGameInstance->Random(0.f, 20.f)));
 
 	m_fDamage = 30.f;
-	m_fAttackRange = 2.f;
+	m_fAttackRange = 1.5f;
 	m_fAttackCoolTime = 5.f;
+	m_fChaseRange = 10.f;
+	m_fMaxRange = 10.f;
 	//m_AttackfCoolTime = 1.f;
 
 	//m_pTransformCom->Rotation({0.f, 1.f, 0.f}, m_pGameInstance->Random(0.f, 180.f));
@@ -148,12 +150,27 @@ void CZombie::Priority_Update(_float fTimeDelta)
 
 void CZombie::Update(_float fTimeDelta)
 {
+	_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
+	_float fDist = D3DXVec3Length(&vDiff);
+
+	if (m_bDying && !m_bAnimationLock && fDist >= m_fMaxRange)
+	{
+		m_isDead = true;
+		return;
+	}
+
+	if (m_bDying)
+	{
+		SetUp_OnTerrain(m_pTransformCom, 0.35f, &m_bJump);
+		return;
+	}
+
 	m_bRideCube = true;
 	m_fSumAttackCoolTime += fTimeDelta;
 	m_fSumMoveCoolTime += fTimeDelta;
 
 	//OutputDebugStringA(("Zombie Update m_fSumAttackCoolTime: " + std::to_string(m_fSumAttackCoolTime) + "\n").c_str());
-	_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
+	//_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
 	vDiff.y = 0.f;
 	D3DXVec3Normalize(&vDiff, &vDiff);
 
@@ -261,7 +278,7 @@ void CZombie::Update(_float fTimeDelta)
 
 void CZombie::Late_Update(_float fTimeDelta)
 {
-	if (m_isMove || m_bAnimationLock)
+	if (m_isMove || m_bAnimationLock || m_bDying)
 		m_pAnimationCom->Play_Animation(m_strFrameKey, fTimeDelta);
 
 	if (m_bAnimationLock && m_pAnimationCom->Check_Animation_Finish(m_strFrameKey))
@@ -271,7 +288,8 @@ void CZombie::Late_Update(_float fTimeDelta)
 
 		if (m_bDying)
 		{
-			m_isDead = true;
+			//m_isDead = true;
+			m_strFrameKey = TEXT("Zombie_Die_Idle");
 			m_bAnimationLock = false;
 			return;
 		}
@@ -348,9 +366,7 @@ HRESULT CZombie::Ready_Animations()
 	CAnimation::FRAME_DESC Desc_8{};
 	CAnimation::FRAME_DESC Desc_9{};
 	CAnimation::FRAME_DESC Desc_10{};
-	/*CAnimation::FRAME_DESC Desc_11{};
-	CAnimation::FRAME_DESC Desc_12
-	CAnimation::FRAME_DESC Desc_13{};*/
+	CAnimation::FRAME_DESC Desc_11{};
 
 	auto iter = m_pTextureComs.find(TEXT("Zombie_Attack"));
 	Desc_0.iFrameSpeed = 15;
@@ -417,6 +433,11 @@ HRESULT CZombie::Ready_Animations()
 	Desc_10.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom->Set_Animation(TEXT("Zombie_Die_Explosion"), Desc_10);
 
+	//Zombie_Die_Idle
+	iter = m_pTextureComs.find(TEXT("Zombie_Die_Idle"));
+	Desc_11.iFrameSpeed = 20;
+	Desc_11.iEnd = iter->second->Get_Texture_Length();
+	m_pAnimationCom->Set_Animation(TEXT("Zombie_Die_Idle"), Desc_11);
 
 	return S_OK;
 }

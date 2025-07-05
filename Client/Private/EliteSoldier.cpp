@@ -43,7 +43,7 @@ HRESULT CEliteSoldier::Initialize(void* pArg)
 
 	m_fAttackRange = 5.f;
 	m_fChaseRange = 10.f;
-	m_fMaxRange = 15.f;
+	m_fMaxRange = 10.f;
 	//m_pTransformCom->Rotation({0.f, 1.f, 0.f}, m_pGameInstance->Random(0.f, 180.f));
 	//m_pTransformCom->LookAt(m_pPlayerTransform->Get_State(STATE::POSITION));
 
@@ -146,12 +146,27 @@ void CEliteSoldier::Priority_Update(_float fTimeDelta)
 
 void CEliteSoldier::Update(_float fTimeDelta)
 {
+	_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
+	_float fDist = D3DXVec3Length(&vDiff);
+
+	if (m_bDying && !m_bAnimationLock && fDist >= m_fMaxRange)
+	{
+		m_isDead = true;
+		return;
+	}
+
+	if (m_bDying)
+	{
+		SetUp_OnTerrain(m_pTransformCom, 0.35f, &m_bJump);
+		return;
+	}
+
 	__super::Jump(fTimeDelta);
 
 	m_fSumAttackCoolTime += fTimeDelta;
 	m_fSumMoveCoolTime += fTimeDelta;
 
-	_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
+	//_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
 	vDiff.y = 0.f;
 	D3DXVec3Normalize(&vDiff, &vDiff);
 
@@ -285,7 +300,7 @@ void CEliteSoldier::Update(_float fTimeDelta)
 
 void CEliteSoldier::Late_Update(_float fTimeDelta)
 {
-	if (m_isMove || m_bAnimationLock)
+	if (m_isMove || m_bAnimationLock || m_bDying)
 		m_pAnimationCom->Play_Animation(m_strFrameKey, fTimeDelta);
 	//int num = m_pAnimationCom->Get_Frame_Current_Index(m_strFrameKey);
 
@@ -298,7 +313,8 @@ void CEliteSoldier::Late_Update(_float fTimeDelta)
 	{
 		if (m_bDying)
 		{
-			m_isDead = true;
+			//m_isDead = true;
+			m_strFrameKey = TEXT("EliteSoldier_Die_Idle");
 			m_bAnimationLock = false;
 			return;
 		}
@@ -379,6 +395,7 @@ HRESULT CEliteSoldier::Ready_Animations()
 	CAnimation::FRAME_DESC Desc_8{};
 	CAnimation::FRAME_DESC Desc_9{};
 	CAnimation::FRAME_DESC Desc_10{};
+	CAnimation::FRAME_DESC Desc_11{};
 
 	//EliteSoldier_Attack
 	auto iter = m_pTextureComs.find(TEXT("EliteSoldier_Attack_Front"));
@@ -445,6 +462,12 @@ HRESULT CEliteSoldier::Ready_Animations()
 	Desc_10.iFrameSpeed = 7;
 	Desc_10.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom->Set_Animation(TEXT("EliteSoldier_Right"), Desc_10);
+
+	//EliteSoldier_Right
+	iter = m_pTextureComs.find(TEXT("EliteSoldier_Die_Idle"));
+	Desc_11.iFrameSpeed = 7;
+	Desc_11.iEnd = iter->second->Get_Texture_Length();
+	m_pAnimationCom->Set_Animation(TEXT("EliteSoldier_Die_Idle"), Desc_11);
 
 
 	return S_OK;

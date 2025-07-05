@@ -12,11 +12,11 @@ private:
 	CSpider(const CSpider& Prototype);
 	virtual ~CSpider() = default;
 
-	const _wstring m_strFrameKeys[10] = {
+	const _wstring m_strFrameKeys[11] = {
 		TEXT("Spider_Attack"), TEXT("Spider_Die_Default"), TEXT("Spider_Direction_NE"), 
 		TEXT("Spider_Direction_NW"), TEXT("Spider_Direction_SE"), TEXT("Spider_Direction_SW"),
 		TEXT("Spider_Front"), TEXT("Spider_Back"), TEXT("Spider_Left"),
-		TEXT("Spider_Right")
+		TEXT("Spider_Right"), TEXT("Spider_Die_Idle")
 	};
 
 public:

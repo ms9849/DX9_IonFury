@@ -41,7 +41,11 @@ HRESULT CSoldier::Initialize(void* pArg)
 		0.f,
 		m_pGameInstance->Random(0.f, 20.f)));
 
-	m_fAttackRange = 2.f;
+	m_fAttackRange = 4.f;
+	m_fDamage = 30.f;
+	m_fAttackCoolTime = 5.f;
+	m_fChaseRange = 7.f;
+	m_fMaxRange = 10.f;
 	//m_pTransformCom->Rotation({0.f, 1.f, 0.f}, m_pGameInstance->Random(0.f, 180.f));
 	//m_pTransformCom->LookAt(m_pPlayerTransform->Get_State(STATE::POSITION));
 
@@ -144,12 +148,28 @@ void CSoldier::Priority_Update(_float fTimeDelta)
 
 void CSoldier::Update(_float fTimeDelta)
 {
+	_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
+	_float fDist = D3DXVec3Length(&vDiff);
+
+	if (m_bDying && !m_bAnimationLock && fDist >= m_fMaxRange)
+	{
+		m_isDead = true;
+		return;
+	}
+
+	if (m_bDying)
+	{
+		SetUp_OnTerrain(m_pTransformCom, 0.35f, &m_bJump);
+		return;
+	}
+
+
 	__super::Jump(fTimeDelta);
 
 	m_fSumAttackCoolTime += fTimeDelta;
 	m_fSumMoveCoolTime += fTimeDelta;
 
-	_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
+	//_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
 	vDiff.y = 0.f;
 	D3DXVec3Normalize(&vDiff, &vDiff);
 
@@ -276,7 +296,7 @@ void CSoldier::Update(_float fTimeDelta)
 
 void CSoldier::Late_Update(_float fTimeDelta)
 {
-	if (m_isMove || m_bAnimationLock)
+	if (m_isMove || m_bAnimationLock || m_bDying)
 		m_pAnimationCom->Play_Animation(m_strFrameKey, fTimeDelta);
 	//int num = m_pAnimationCom->Get_Frame_Current_Index(m_strFrameKey);
 
@@ -289,7 +309,8 @@ void CSoldier::Late_Update(_float fTimeDelta)
 	{
 		if (m_bDying)
 		{
-			m_isDead = true;
+			//m_isDead = true;
+			m_strFrameKey = TEXT("Soldier_Die_Idle");
 			m_bAnimationLock = false;
 			return;
 		}
@@ -373,6 +394,7 @@ HRESULT CSoldier::Ready_Animations()
 	CAnimation::FRAME_DESC Desc_11{};
 	CAnimation::FRAME_DESC Desc_12{};
 	CAnimation::FRAME_DESC Desc_13{};
+	CAnimation::FRAME_DESC Desc_14{};
 
 	auto iter = m_pTextureComs.find(TEXT("Soldier_Attack_Front"));
 	Desc_0.iFrameSpeed = 15;
@@ -456,6 +478,12 @@ HRESULT CSoldier::Ready_Animations()
 	Desc_13.iFrameSpeed = 7;
 	Desc_13.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom->Set_Animation(TEXT("Soldier_Right"), Desc_13);
+
+	//Soldier_Die_Idle
+	iter = m_pTextureComs.find(TEXT("Soldier_Die_Idle"));
+	Desc_14.iFrameSpeed = 12;
+	Desc_14.iEnd = iter->second->Get_Texture_Length();
+	m_pAnimationCom->Set_Animation(TEXT("Soldier_Die_Idle"), Desc_14);
 
 
 	return S_OK;
