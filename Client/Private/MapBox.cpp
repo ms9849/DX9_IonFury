@@ -3,12 +3,12 @@
 #include "GameInstance.h"
 
 CMapBox::CMapBox(LPDIRECT3DDEVICE9 pGraphic_Device)
-	: CLandObject{ pGraphic_Device }
+	: CGameObject{ pGraphic_Device }
 {
 }
 
 CMapBox::CMapBox(const CMapBox& Prototype)
-	: CLandObject(Prototype)
+	: CGameObject(Prototype)
 {
 }
 
@@ -23,19 +23,13 @@ HRESULT CMapBox::Initialize_Prototype()
 
 HRESULT CMapBox::Initialize(void* pArg)
 {
-	CLandObject::LANDOBJECT_DESC			Desc{};
-	Desc.pLandTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_BackGround"), TEXT("Com_Transform")));
-	Desc.pLandVIBuffer = static_cast<CVIBuffer*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_BackGround"), TEXT("Com_VIBuffer")));
-
-	if (FAILED(__super::Initialize(&Desc)))
+	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
 	m_pTransformCom->Set_State(STATE::POSITION, { 2.f, 0.f, 2.f });
-
-	SetUp_OnTerrain(m_pTransformCom, 0.5f);
 
 	return S_OK;
 }
@@ -137,5 +131,6 @@ void CMapBox::Free()
 
 	Safe_Release(m_pTextureCom);
 	Safe_Release(m_pVIBufferCom);
+	Safe_Release(m_pTransformCom);
 	Safe_Release(m_BoxColliderCom);
 }

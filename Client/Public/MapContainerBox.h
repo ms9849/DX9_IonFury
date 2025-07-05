@@ -12,7 +12,7 @@ NS_END
 
 NS_BEGIN(Client)
 
-class CMapContainerBox final : public CLandObject
+class CMapContainerBox final : public CGameObject
 {
 public:
 	typedef struct tagCubeDesc {
@@ -44,6 +44,7 @@ public:
 
 private:
 	CTexture* m_pTextureCom = { nullptr };
+	CTransform* m_pTransformCom = { nullptr };
 	CVIBuffer_Cube* m_pVIBufferCom = { nullptr };
 	CBoxCollider* m_BoxColliderCom = { nullptr };
 

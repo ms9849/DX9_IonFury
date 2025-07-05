@@ -4,12 +4,12 @@
 #include "DoorLock.h"
 
 CMapGate::CMapGate(LPDIRECT3DDEVICE9 pGraphic_Device)
-	: CLandObject{ pGraphic_Device }
+	: CGameObject{ pGraphic_Device }
 {
 }
 
 CMapGate::CMapGate(const CMapGate& Prototype)
-	: CLandObject(Prototype)
+	: CGameObject(Prototype)
 {
 }
 
@@ -36,8 +36,6 @@ HRESULT CMapGate::Initialize(void* pArg)
 
 	m_pTransformCom->Set_State(STATE::POSITION, _float3{ 5.0f, 0.f, 10.0f });
 	m_pTransformCom->Set_Scale(_float3{ 10.f, 6.0f, 1.0f });
-
-	SetUp_OnTerrain(m_pTransformCom, 3.0f);
 
 	return S_OK;
 }
@@ -73,7 +71,7 @@ HRESULT CMapGate::Render()
 		return E_FAIL;
 
 	m_pVIBufferCom->Render();
-	
+
 	if (FAILED(End_RenderState()))
 		return E_FAIL;
 
@@ -135,7 +133,7 @@ void CMapGate::Gate_Animation(_float fTimeDelta)
 		}
 		vGatePos.y += (fTimeDelta * 5);
 	}
-	
+
 	m_pTransformCom->Set_State(STATE::POSITION, vGatePos);
 }
 
