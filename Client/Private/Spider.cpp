@@ -1,26 +1,27 @@
-#include "Soldier.h"
+#include "Spider.h"
 #include "GameInstance.h"
 #include "Bullet.h"
+#include "MeleeAttack.h"
 #include "BehaviorNode.h"
 
-CSoldier::CSoldier(LPDIRECT3DDEVICE9 pGraphic_Device)
+CSpider::CSpider(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CMonster{ pGraphic_Device }
 {
 
 }
 
-CSoldier::CSoldier(const CSoldier& Prototype)
+CSpider::CSpider(const CSpider& Prototype)
 	: CMonster(Prototype)
 {
 
 }
 
-HRESULT CSoldier::Initialize_Prototype()
+HRESULT CSpider::Initialize_Prototype()
 {
 	return S_OK;
 }
 
-HRESULT CSoldier::Initialize(void* pArg)
+HRESULT CSpider::Initialize(void* pArg)
 {
 	m_pPlayerTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player"), TEXT("Com_Transform")));
 
@@ -36,58 +37,69 @@ HRESULT CSoldier::Initialize(void* pArg)
 	if (FAILED(Ready_Animations()))
 		return E_FAIL;
 
+	m_pTransformCom->Set_Scale({ 0.25f, 0.25f, 0.1f });
+
 	m_pTransformCom->Set_State(STATE::POSITION, _float3(
 		m_pGameInstance->Random(0.f, 20.f),
 		0.f,
 		m_pGameInstance->Random(0.f, 20.f)));
 
+	m_fDamage = 30.f;
 	m_fAttackRange = 2.f;
+	m_fAttackCoolTime = 5.f;
+	m_fJumpPower = 2.5f;
+	//m_AttackfCoolTime = 1.f;
+
 	//m_pTransformCom->Rotation({0.f, 1.f, 0.f}, m_pGameInstance->Random(0.f, 180.f));
 	//m_pTransformCom->LookAt(m_pPlayerTransform->Get_State(STATE::POSITION));
+
+
+	// 구조 변경
 
 	//CSelectorNode* root = new CSelectorNode();
 
 	//CSequenceNode* CCheckHpSequence = new CSequenceNode();
 	//CCheckHpSequence->AddChild(new CConditionNode([this]() {
-	//	/*if (m_fHp >= 0)
-	//		m_fHp -= 0.1f;*/
-
 	//	return this->m_fHp <= 0;
 	//	}));
 
 	//CCheckHpSequence->AddChild(new CActionNode([this]() {
-	//	m_strFrameKey = TEXT("Soldier_Die_Explosion");
+	//	m_strFrameKey = TEXT("Spider_Die_Default");		// 나중엔 함수만들어서 조절하는게 좋을거 같음
 	//	m_bAnimationLock = true;
 	//	m_bDying = true;
 	//	}));
 
 	//CSequenceNode* CAttackSequence = new CSequenceNode();
 	//CAttackSequence->AddChild(new CConditionNode([this](_float fTimeDelta) {
+	//	//OutputDebugStringA(("Spider Update m_fSumAttackCoolTime: " + std::to_string(m_fSumAttackCoolTime) + "\n").c_str());
 	//	return this->m_pSightCom->Check_Sight(fTimeDelta);
 	//	}));
 
 	//CAttackSequence->AddChild(new CConditionNode([this](_float fTimeDelta) {
-	//	m_fSumAttackCoolTime += fTimeDelta;
 	//	return m_fSumAttackCoolTime >= m_fAttackfCoolTime;
 	//	}));
 
 	//CAttackSequence->AddChild(new CConditionNode([this]() {
+	//	//OutputDebugStringA(("Spider Update m_fSumAttackCoolTime: " + std::to_string(m_fSumAttackCoolTime) + "\n").c_str());
 	//	_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
 
 	//	return D3DXVec3Length(&vDiff) <= m_fAttackRange;
 	//	}));
 
 	//CAttackSequence->AddChild(new CActionNode([this]() {
-	//	m_strFrameKey = TEXT("Soldier_Attack_Front");
-	//	m_bAnimationLock = true;
-	//	this->Attack();
-	//	m_fSumAttackCoolTime = 0.f;
-	//	}));
+	//	OutputDebugStringW((L"Spider FrameKey: " + m_strFrameKey + L"\n").c_str());
+	//	if (m_strFrameKey == TEXT("Spider_Attack"))
+	//		return false;
 
+	//	this->Attack();
+
+	//	}));
+	//
 	//CSelectorNode* CMoveCheckSequence = new CSelectorNode();
 	//CSequenceNode* CSightSucessSequence = new CSequenceNode();
 	//CSequenceNode* CSightFailSequence = new CSequenceNode();
 	//CSightFailSequence->AddChild(new CConditionNode([this](_float fTimeDelta) {
+	//	//OutputDebugStringA(("Spider Update TimeDelta: " + std::to_string(fTimeDelta) + "\n").c_str());
 	//	return !this->m_pSightCom->Check_Sight(fTimeDelta);
 	//	}));
 
@@ -97,13 +109,11 @@ HRESULT CSoldier::Initialize(void* pArg)
 	//	}));
 
 	//CSightFailSequence->AddChild(new CConditionNode([this](_float fTimeDelta) {
-	//	m_fSumMoveCoolTime += fTimeDelta;
 	//	return m_fSumMoveCoolTime >= m_fMoveCoolTime;
 	//	}));
 
 	//CSightFailSequence->AddChild(new CActionNode([this](_float fTimeDelta) {
 	//	this->Move(fTimeDelta);
-	//	m_fSumMoveCoolTime = 0.f;
 	//	}));
 
 	//CSightSucessSequence->AddChild(new CConditionNode([this](_float fTimeDelta) {
@@ -116,13 +126,11 @@ HRESULT CSoldier::Initialize(void* pArg)
 	//	}));
 
 	//CSightSucessSequence->AddChild(new CConditionNode([this](_float fTimeDelta) {
-	//	m_fSumMoveCoolTime += fTimeDelta;
 	//	return m_fSumMoveCoolTime >= m_fMoveCoolTime;
 	//	}));
 
 	//CSightSucessSequence->AddChild(new CActionNode([this](_float fTimeDelta) {
 	//	this->Move(fTimeDelta);
-	//	m_fSumMoveCoolTime = 0.f;
 	//	}));
 
 	//CMoveCheckSequence->AddChild(CSightSucessSequence);
@@ -137,18 +145,17 @@ HRESULT CSoldier::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CSoldier::Priority_Update(_float fTimeDelta)
+void CSpider::Priority_Update(_float fTimeDelta)
 {
-
 }
 
-void CSoldier::Update(_float fTimeDelta)
+void CSpider::Update(_float fTimeDelta)
 {
-	__super::Jump(fTimeDelta);
-
+	m_bRideCube = true;
 	m_fSumAttackCoolTime += fTimeDelta;
 	m_fSumMoveCoolTime += fTimeDelta;
 
+	//OutputDebugStringA(("Spider Update m_fSumAttackCoolTime: " + std::to_string(m_fSumAttackCoolTime) + "\n").c_str());
 	_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
 	vDiff.y = 0.f;
 	D3DXVec3Normalize(&vDiff, &vDiff);
@@ -171,35 +178,38 @@ void CSoldier::Update(_float fTimeDelta)
 	{
 		if (dot >= fFov)
 		{
-			m_strFrameKey = TEXT("Soldier_Front");
+			m_strFrameKey = TEXT("Spider_Front");
 		}
 		else if (dot <= -fFov)
 		{
-			m_strFrameKey = TEXT("Soldier_Back");
+			m_strFrameKey = TEXT("Spider_Back");
 		}
 		else
 		{
 			if (vCross.y > 0)
 			{
 				if (dot > 0)
-					m_strFrameKey = TEXT("Soldier_Direction_SW");
+					m_strFrameKey = TEXT("Spider_Direction_SW");
 				else
-					m_strFrameKey = TEXT("Soldier_Direction_NW");
+					m_strFrameKey = TEXT("Spider_Direction_NW");
 			}
 			else
 			{
 				if (dot > 0)
-					m_strFrameKey = TEXT("Soldier_Direction_SE");
+					m_strFrameKey = TEXT("Spider_Direction_SE");
 				else
-					m_strFrameKey = TEXT("Soldier_Direction_NE");
+					m_strFrameKey = TEXT("Spider_Direction_NE");
 			}
 		}
 		m_isMove = false;
 	}
 
+
 	if (m_fHp <= 0)
 	{
-		m_strFrameKey = TEXT("Soldier_Die_Default");
+		m_strFrameKey = TEXT("Spider_Die_Default");
+		if (!m_bDying)
+			//m_pGameInstance->PlaySoundOnce(TEXT("Spider_dead_1.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
 		m_bAnimationLock = true;
 		m_bDying = true;
 	}
@@ -210,7 +220,15 @@ void CSoldier::Update(_float fTimeDelta)
 			_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
 			if (D3DXVec3Length(&vDiff) <= m_fAttackRange)
 			{
+				m_bJump = true;
+				m_fTime = 0.f;
+				wchar_t szBuffer[128];
+				swprintf_s(szBuffer, 128, L"[Transform Pos] X: %.2f, Y: %.2f, Z: %.2f\n", m_pTransformCom->Get_State(STATE::POSITION).x, m_pTransformCom->Get_State(STATE::POSITION).y, m_pTransformCom->Get_State(STATE::POSITION).z);
+				OutputDebugStringW(szBuffer);
+				//__super::Jump(fTimeDelta);
+				/*Jump(fTimeDelta, 4.0f);*/
 				Attack();
+				//m_bJump = false;
 			}
 		}
 
@@ -226,67 +244,43 @@ void CSoldier::Update(_float fTimeDelta)
 		}
 	}
 
+	/*m_pRoot->Run(fTimeDelta);*/
+
 	/*if (!m_bAnimationLock)
-	{
-		_float angle30 = cosf(D3DXToRadian(30.f));
-		_float angle60 = cosf(D3DXToRadian(60.f));
-
-		if (dot >= fFov)
-		{
-			m_strFrameKey = TEXT("Soldier_Front");
-		}
-		else if (dot <= -fFov)
-		{
-			m_strFrameKey = TEXT("Soldier_Back");
-		}
-		else
-		{
-			if (vCross.y > 0)
-			{
-				if (dot > 0)
-					m_strFrameKey = TEXT("Soldier_Direction_SW");
-				else
-					m_strFrameKey = TEXT("Soldier_Direction_NW");
-			}
-			else
-			{
-				if (dot > 0)
-					m_strFrameKey = TEXT("Soldier_Direction_SE");
-				else
-					m_strFrameKey = TEXT("Soldier_Direction_NE");
-			}
-		}
-	}*/
-
+		m_pRoot->Run(fTimeDelta);*/
 	//m_pRoot->Run(fTimeDelta);
 
-	/*if (m_bAnimationLock && m_pAnimationCom->Check_Animation_Finish())
+	/*auto iter = m_Frames.find(m_strFrameKey);
+	m_pAnimationCom->Set_Animation(&iter->second);*/
+
+
+		//auto iter = m_Frames.find(m_strFrameKey);
+	/*auto iter = m_Frames.find(m_strFrameKey);
+	m_pAnimationCom->Set_Animation(&iter->second);*/
+
+	/*if (m_bAnimationLock)
 	{
-		if (m_bDying)
-			m_isDead = true;
-		m_bAnimationLock = false;
+		if (m_pAnimationCom->Check_Animation_Finish())
+			m_bAnimationLock = false;
 	}*/
+	//auto iter = m_Frames.find(m_strFrameKey);
+	//m_pAnimationCom->Set_Animation(&iter->second);
 
-	/*szBuffer[128];
-	swprintf_s(szBuffer, L"몬스터 방향 벡터 x : %.1f, y : %.1f, z : %.1f\n", m_pTransformCom->Get_State(STATE::LOOK).x, m_pTransformCom->Get_State(STATE::LOOK).y, m_pTransformCom->Get_State(STATE::LOOK).z);
-	OutputDebugString(szBuffer);*/
-
-	SetUp_OnTerrain(m_pTransformCom, 0.5f, &m_bJump);
+	//__super::Jump(fTimeDelta);
+	Jump(fTimeDelta, m_fJumpPower);
+	SetUp_OnTerrain(m_pTransformCom, 0.25f, &m_bJump);
 }
 
-void CSoldier::Late_Update(_float fTimeDelta)
+void CSpider::Late_Update(_float fTimeDelta)
 {
 	if (m_isMove || m_bAnimationLock)
 		m_pAnimationCom->Play_Animation(m_strFrameKey, fTimeDelta);
-	//int num = m_pAnimationCom->Get_Frame_Current_Index(m_strFrameKey);
 
-	/*auto iter = m_pAnimationCom->Get_Frame_Desc(m_strFrameKey);
-	wchar_t szDebug_2[256];
-	swprintf(szDebug_2, 256, L"프레임 키: %s, 현재 인덱스: %d, 마지막 인덱스: %d\n", m_strFrameKey.c_str(), m_pAnimationCom->Get_Frame_Current_Index(m_strFrameKey), iter->iEnd);
-	OutputDebugStringW(szDebug_2);*/
-	//Get_Frame_Current_Index(m_strFrameKey) == iter->iEnd - 1
 	if (m_bAnimationLock && m_pAnimationCom->Check_Animation_Finish(m_strFrameKey))
 	{
+		//m_pAnimationCom->Set_Animation(&iter->second);
+		//m_Cnt++;
+
 		if (m_bDying)
 		{
 			m_isDead = true;
@@ -296,18 +290,16 @@ void CSoldier::Late_Update(_float fTimeDelta)
 		else
 		{
 			m_bAnimationLock = false;
-			/*wchar_t szDebug[256];
-			swprintf(szDebug, 256, L"종료 프레임 키: %s, 현재 인덱스: %d\n", m_strFrameKey.c_str(), num);
-			OutputDebugStringW(szDebug);
-			m_pAnimationCom->Clear_Animation(m_strFrameKey);*/
-			m_strFrameKey = TEXT("Soldier_Front");
+			m_strFrameKey = TEXT("Spider_Front");
 		}
 	}
-	/*m_pAnimationCom->Play_Animation(m_strFrameKey, fTimeDelta);*/
+	/*m_pAnimationCom->Set_Animation(&iter->second);
+	m_pAnimationCom->Play_Animation(fTimeDelta);*/
+	//m_pAnimationCom->Play_Animation(fTimeDelta);
 	m_pGameInstance->Add_RenderGroup(RENDER::BLEND, this);
 }
 
-HRESULT CSoldier::Render()
+HRESULT CSpider::Render()
 {
 	_float4x4 matWorldTemp = *m_pTransformCom->Get_WorldMatrixPtr();
 
@@ -321,6 +313,7 @@ HRESULT CSoldier::Render()
 
 	_float3 fMonsterPos = m_pTransformCom->Get_State(STATE::POSITION);
 	_float3 fPlayerPos = m_pPlayerTransform->Get_State(STATE::POSITION);
+	//m_pTransformCom->Set_Scale({ 0.1f, 0.1f, 0.1f });
 
 	_float3 fLook = fPlayerPos - fMonsterPos;
 	fLook.y = 0.0f;								// y축 회전용
@@ -332,16 +325,19 @@ HRESULT CSoldier::Render()
 	D3DXVec3Cross(&fRight, &fUp, &fLook);
 	D3DXVec3Normalize(&fRight, &fRight);
 
+	_float3 scale = m_pTransformCom->Get_Scaled();
+
+	fRight *= scale.x;
+	fUp *= scale.y;
+	fLook *= scale.z;
+
 	memcpy(&matWorldTemp.m[0][0], &fRight, sizeof(_float3));
 	memcpy(&matWorldTemp.m[1][0], &fUp, sizeof(_float3));
 	memcpy(&matWorldTemp.m[2][0], &fLook, sizeof(_float3));
 
-	m_pTransformCom->Set_Transform(matWorldTemp);
+	//m_pTransformCom->Set_Scale({ 10.f, 10.f, 10.f });
 
-	//m_pTextureCom->Set_Texture(0);
-	/*m_pTextureCom->Set_Texture(m_iNum++);
-	if (m_iNum > 3)
-		m_iNum = 0;*/
+	m_pTransformCom->Set_Transform(matWorldTemp);
 
 	auto iter = m_pTextureComs.find(m_strFrameKey);
 	iter->second->Set_Texture(m_pAnimationCom->Get_Frame_Current_Index(m_strFrameKey));
@@ -357,7 +353,7 @@ HRESULT CSoldier::Render()
 	return S_OK;
 }
 
-HRESULT CSoldier::Ready_Animations()
+HRESULT CSpider::Ready_Animations()
 {
 	CAnimation::FRAME_DESC Desc_0{};
 	CAnimation::FRAME_DESC Desc_1{};
@@ -369,99 +365,70 @@ HRESULT CSoldier::Ready_Animations()
 	CAnimation::FRAME_DESC Desc_7{};
 	CAnimation::FRAME_DESC Desc_8{};
 	CAnimation::FRAME_DESC Desc_9{};
-	CAnimation::FRAME_DESC Desc_10{};
-	CAnimation::FRAME_DESC Desc_11{};
-	CAnimation::FRAME_DESC Desc_12{};
-	CAnimation::FRAME_DESC Desc_13{};
 
-	auto iter = m_pTextureComs.find(TEXT("Soldier_Attack_Front"));
+	auto iter = m_pTextureComs.find(TEXT("Spider_Attack"));
 	Desc_0.iFrameSpeed = 15;
 	Desc_0.iEnd = iter->second->Get_Texture_Length();
-	m_pAnimationCom->Set_Animation(TEXT("Soldier_Attack_Front"), Desc_0);
+	m_pAnimationCom->Set_Animation(TEXT("Spider_Attack"), Desc_0);
 
-	//Soldier_Attack_SE
-	iter = m_pTextureComs.find(TEXT("Soldier_Attack_SE"));
-	Desc_1.iFrameSpeed = 15;
+	//Spider_Die_Default
+	iter = m_pTextureComs.find(TEXT("Spider_Die_Default"));
+	Desc_1.iFrameSpeed = 12;
 	Desc_1.iEnd = iter->second->Get_Texture_Length();
-	m_pAnimationCom->Set_Animation(TEXT("Soldier_Attack_SE"), Desc_1);
+	m_pAnimationCom->Set_Animation(TEXT("Spider_Die_Default"), Desc_1);
 
-	//Soldier_Attack_SW
-	iter = m_pTextureComs.find(TEXT("Soldier_Attack_SW"));
-	Desc_2.iFrameSpeed = 15;
+	//Spider_Direction_NE
+	iter = m_pTextureComs.find(TEXT("Spider_Direction_NE"));
+	Desc_2.iFrameSpeed = 10;
 	Desc_2.iEnd = iter->second->Get_Texture_Length();
-	m_pAnimationCom->Set_Animation(TEXT("Soldier_Attack_SW"), Desc_2);
+	m_pAnimationCom->Set_Animation(TEXT("Spider_Direction_NE"), Desc_2);
 
-	//Soldier_Die_Default
-	iter = m_pTextureComs.find(TEXT("Soldier_Die_Default"));
-	Desc_3.iFrameSpeed = 12;
+	//Spider_Direction_NW
+	iter = m_pTextureComs.find(TEXT("Spider_Direction_NW"));
+	Desc_3.iFrameSpeed = 10;
 	Desc_3.iEnd = iter->second->Get_Texture_Length();
-	m_pAnimationCom->Set_Animation(TEXT("Soldier_Die_Default"), Desc_3);
+	m_pAnimationCom->Set_Animation(TEXT("Spider_Direction_NW"), Desc_3);
 
-	//Soldier_Die_Explosion
-	iter = m_pTextureComs.find(TEXT("Soldier_Die_Explosion"));
-	Desc_4.iFrameSpeed = 12;
+	//Spider_Direction_SE
+	iter = m_pTextureComs.find(TEXT("Spider_Direction_SE"));
+	Desc_4.iFrameSpeed = 10;
 	Desc_4.iEnd = iter->second->Get_Texture_Length();
-	m_pAnimationCom->Set_Animation(TEXT("Soldier_Die_Explosion"), Desc_4);
+	m_pAnimationCom->Set_Animation(TEXT("Spider_Direction_SE"), Desc_4);
 
-	//Soldier_Die_HeadShot
-	iter = m_pTextureComs.find(TEXT("Soldier_Die_HeadShot"));
-	Desc_5.iFrameSpeed = 12;
+	//Spider_Direction_SW
+	iter = m_pTextureComs.find(TEXT("Spider_Direction_SW"));
+	Desc_5.iFrameSpeed = 10;
 	Desc_5.iEnd = iter->second->Get_Texture_Length();
-	m_pAnimationCom->Set_Animation(TEXT("Soldier_Die_HeadShot"), Desc_5);
+	m_pAnimationCom->Set_Animation(TEXT("Spider_Direction_SW"), Desc_5);
 
-	//Soldier_Direction_NE
-	iter = m_pTextureComs.find(TEXT("Soldier_Direction_NE"));
-	Desc_6.iFrameSpeed = 7;
+	//Spider_Front
+	iter = m_pTextureComs.find(TEXT("Spider_Front"));
+	Desc_6.iFrameSpeed = 10;
 	Desc_6.iEnd = iter->second->Get_Texture_Length();
-	m_pAnimationCom->Set_Animation(TEXT("Soldier_Direction_NE"), Desc_6);
+	m_pAnimationCom->Set_Animation(TEXT("Spider_Front"), Desc_6);
 
-	//Soldier_Direction_NW
-	iter = m_pTextureComs.find(TEXT("Soldier_Direction_NW"));
-	Desc_7.iFrameSpeed = 7;
+	//Spider_Back
+	iter = m_pTextureComs.find(TEXT("Spider_Back"));
+	Desc_7.iFrameSpeed = 10;
 	Desc_7.iEnd = iter->second->Get_Texture_Length();
-	m_pAnimationCom->Set_Animation(TEXT("Soldier_Direction_NW"), Desc_7);
+	m_pAnimationCom->Set_Animation(TEXT("Spider_Back"), Desc_7);
 
-	//Soldier_Direction_SE
-	iter = m_pTextureComs.find(TEXT("Soldier_Direction_SE"));
-	Desc_8.iFrameSpeed = 7;
+	//Spider_Left
+	iter = m_pTextureComs.find(TEXT("Spider_Left"));
+	Desc_8.iFrameSpeed = 10;
 	Desc_8.iEnd = iter->second->Get_Texture_Length();
-	m_pAnimationCom->Set_Animation(TEXT("Soldier_Direction_SE"), Desc_8);
+	m_pAnimationCom->Set_Animation(TEXT("Spider_Left"), Desc_8);
 
-	//Soldier_Direction_SW
-	iter = m_pTextureComs.find(TEXT("Soldier_Direction_SW"));
-	Desc_9.iFrameSpeed = 7;
+	//Spider_Right
+	iter = m_pTextureComs.find(TEXT("Spider_Right"));
+	Desc_9.iFrameSpeed = 10;
 	Desc_9.iEnd = iter->second->Get_Texture_Length();
-	m_pAnimationCom->Set_Animation(TEXT("Soldier_Direction_SW"), Desc_9);
-
-	//Soldier_Front
-	iter = m_pTextureComs.find(TEXT("Soldier_Front"));
-	Desc_10.iFrameSpeed = 7;
-	Desc_10.iEnd = iter->second->Get_Texture_Length();
-	m_pAnimationCom->Set_Animation(TEXT("Soldier_Front"), Desc_10);
-
-	//Soldier_Back
-	iter = m_pTextureComs.find(TEXT("Soldier_Back"));
-	Desc_11.iFrameSpeed = 7;
-	Desc_11.iEnd = iter->second->Get_Texture_Length();
-	m_pAnimationCom->Set_Animation(TEXT("Soldier_Back"), Desc_11);
-
-	//Soldier_Left
-	iter = m_pTextureComs.find(TEXT("Soldier_Left"));
-	Desc_12.iFrameSpeed = 7;
-	Desc_12.iEnd = iter->second->Get_Texture_Length();
-	m_pAnimationCom->Set_Animation(TEXT("Soldier_Left"), Desc_12);
-
-	//Soldier_Right
-	iter = m_pTextureComs.find(TEXT("Soldier_Right"));
-	Desc_13.iFrameSpeed = 7;
-	Desc_13.iEnd = iter->second->Get_Texture_Length();
-	m_pAnimationCom->Set_Animation(TEXT("Soldier_Right"), Desc_13);
-
+	m_pAnimationCom->Set_Animation(TEXT("Spider_Right"), Desc_9);
 
 	return S_OK;
 }
 
-void CSoldier::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta)
+void CSpider::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta)
 {
 	if (eColType == COLLISION::SPHERE)
 	{
@@ -473,7 +440,7 @@ void CSoldier::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDe
 	return;
 }
 
-const COLLISION_DESC& CSoldier::Get_CollisionDesc(COLLISION eColType)
+const COLLISION_DESC& CSpider::Get_CollisionDesc(COLLISION eColType)
 {
 	COLLISION_DESC Desc;
 	Desc.pTransform = m_pTransformCom;
@@ -486,7 +453,7 @@ const COLLISION_DESC& CSoldier::Get_CollisionDesc(COLLISION eColType)
 	return Desc;
 }
 
-HRESULT CSoldier::Ready_Components()
+HRESULT CSpider::Ready_Components()
 {
 	/* Com_Transform */
 	CTransform::TRANSFORM_DESC		TransformDesc{ 5.f, D3DXToRadian(90.0f) };
@@ -508,7 +475,7 @@ HRESULT CSoldier::Ready_Components()
 		if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), strPrototypeTag,
 			strComponentTag, reinterpret_cast<CComponent**>(&pTextureCom))))
 			return E_FAIL;
-		//tempNum++;
+
 		m_pTextureComs.emplace(m_strFrameKeys[i], pTextureCom);
 	}
 
@@ -523,7 +490,7 @@ HRESULT CSoldier::Ready_Components()
 		return E_FAIL;
 
 	/* Com_Sight */
-	CSight::SIGHT_DESC		SightDesc{ 5.f, D3DXToRadian(90.0f), m_pPlayerTransform, m_pTransformCom };
+	CSight::SIGHT_DESC		SightDesc{ 5.f, D3DXToRadian(90.0f), m_pPlayerTransform, m_pTransformCom, true };
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Sight"),
 		TEXT("Com_Sight"), reinterpret_cast<CComponent**>(&m_pSightCom), &SightDesc)))
 		return E_FAIL;
@@ -541,24 +508,16 @@ HRESULT CSoldier::Ready_Components()
 	return S_OK;
 }
 
-HRESULT CSoldier::Begin_RenderState()
+HRESULT CSpider::Begin_RenderState()
 {
 	/* 렌더링할 때 알파값을 기준으로 섞어준다.*/
-
-	/*
-	float4		vSourColor, vDestColor;
-	vSourColor.rgb * vSourColor.a + vDestColor.rgb * (1.f - vSourColor.a);
-	*/
-
 	
 	m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
 	m_pGraphic_Device->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
 	m_pGraphic_Device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
 	m_pGraphic_Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-	
-	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 
-	//m_pGraphic_Device->SetRenderState(D3DRS_LIGHTING, FALSE);
+	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 
 	/* 알파 테스트 : 픽셀의 알파를 비교해서 그린다 안그린다를 설정. */
 	/*m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
@@ -570,7 +529,7 @@ HRESULT CSoldier::Begin_RenderState()
 	return S_OK;
 }
 
-HRESULT CSoldier::End_RenderState()
+HRESULT CSpider::End_RenderState()
 {
 	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 	//m_pGraphic_Device->SetRenderState(D3DRS_LIGHTING, TRUE);
@@ -581,29 +540,38 @@ HRESULT CSoldier::End_RenderState()
 	return S_OK;
 }
 
-void CSoldier::Attack()
+void CSpider::Attack()
 {
+	//m_bAttackStarted = true;
+	//m_bAttackStarted = true;
+	//m_strFrameKey = TEXT("Spider_Die_Explosion");
 	m_fSumAttackCoolTime = 0.f;
-	m_strFrameKey = TEXT("Soldier_Attack_Front");
+	m_strFrameKey = TEXT("Spider_Attack");
+	//m_pGameInstance->PlaySoundOnce(TEXT("Spider_swing_2.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
+	/*auto iter = m_Frames.find(m_strFrameKey);
+	m_pAnimationCom->Set_Animation(&iter->second);*/
 	m_bAnimationLock = true;
-
+	//m_bFrameBlock = true;
 	_float3 vDir = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
-	_float3 vPos = m_pTransformCom->Get_State(STATE::POSITION);
+	//_float3 vPos = m_pTransformCom->Get_State(STATE::POSITION);
+	_float3 vPos = m_pPlayerTransform->Get_State(STATE::POSITION);
 	D3DXVec3Normalize(&vDir, &vDir);
 
-	CBullet::BULLET_DESC Desc;
+	/*CBullet::BULLET_DESC Desc;
+	Desc.vDir = vDir;
+	Desc.vPos = vPos;*/
+
+	CMeleeAttack::MELEEATTACK_DESC Desc;
 	Desc.vDir = vDir;
 	Desc.vPos = vPos;
-	Desc.vBulletScale = {0.2f, 0.2f, 0.01f};
-	Desc.fBulletSpeed = Desc.fBulletSpeed;
-	Desc.fDuration = Desc.fDuration;
-	Desc.isPlayerBullet = false;
+	Desc.fDamage = m_fDamage;
+	Desc.fDurationTime = 10.f;
 
-
-	m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Bullet"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Monster_Bullet"), &Desc);
+	m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Melee_Attack"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Melee_Attack"), &Desc);
+	//m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Bullet"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Spider_Bullet"), &Desc);
 }
 
-void CSoldier::Move(_float fTimeDelta)
+void CSpider::Move(_float fTimeDelta)
 {
 	_float3 fPlayerLook = m_pPlayerTransform->Get_State(STATE::LOOK);
 	_float3 fMonsterLook = m_pTransformCom->Get_State(STATE::LOOK);
@@ -614,12 +582,6 @@ void CSoldier::Move(_float fTimeDelta)
 	D3DXVec3Normalize(&fMonsterLook, &fMonsterLook);
 	D3DXVec3Normalize(&vDirection, &vDirection);
 
-	/*_float dot = D3DXVec3Dot(&fPlayerLook, &fMonsterLook);
-	float fRadian = acosf(dot);
-	m_pTransformCom->Rotation({ 0.f, 1.f, 0.f }, fRadian);
-	m_pTransformCom->Chase(m_pPlayerTransform->Get_State(STATE::POSITION), fTimeDelta);
-	m_pTransformCom->LookAt(m_pPlayerTransform->Get_State(STATE::POSITION));*/
-
 	_float dot = D3DXVec3Dot(&fPlayerLook, &fMonsterLook);
 	float fRadian = acosf(dot);
 	m_pTransformCom->Rotation({ 0.f, 1.f, 0.f }, fRadian);
@@ -628,19 +590,55 @@ void CSoldier::Move(_float fTimeDelta)
 
 	m_pTransformCom->LookAt(m_pPlayerTransform->Get_State(STATE::POSITION));
 
+	
+
 	//m_pTransformCom->Chase(m_pPlayerTransform->Get_State(STATE::POSITION), fMoveTime);
 	//m_pTransformCom->Go_Straight(fTimeDelta);
 }
 
-void CSoldier::Move()
+/*
+void CSpider::Move(_float fTimeDelta)
 {
-	//m_pTransformCom->R
+	_float3 fPlayerLook = m_pPlayerTransform->Get_State(STATE::LOOK);
+	_float3 fMonsterLook = m_pTransformCom->Get_State(STATE::LOOK);
+	D3DXVec3Normalize(&fPlayerLook, &fPlayerLook);
+	D3DXVec3Normalize(&fMonsterLook, &fMonsterLook);
+
+	_float dot = D3DXVec3Dot(&fPlayerLook, &fMonsterLook);
+	float fRadian = acosf(dot);
+	m_pTransformCom->Rotation({ 0.f, 1.f, 0.f }, fRadian);
+	m_pTransformCom->Chase(m_pPlayerTransform->Get_State(STATE::POSITION), fTimeDelta);
+	m_pTransformCom->LookAt(m_pPlayerTransform->Get_State(STATE::POSITION));
+
+	//m_pTransformCom->Chase(m_pPlayerTransform->Get_State(STATE::POSITION), fMoveTime);
+	//m_pTransformCom->Go_Straight(fTimeDelta);
+}
+*/
+
+void CSpider::Move()
+{
 	m_pTransformCom->Get_State(STATE::POSITION);
 }
 
-CSoldier* CSoldier::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
+void CSpider::Jump(_float fTimeDelta, _float fJumpPower)								// 임시 사용 함수 LandObject꺼 오버라이딩 구조 변경 or 오버로딩할것
 {
-	CSoldier* pInstance = new CSoldier(pGraphic_Device);
+	if (m_bJump)
+	{
+		m_fFallSpeed = (fJumpPower * m_fTime - 30.f * m_fTime * m_fTime);
+
+		if (m_fFallSpeed <= -0.2f)
+			m_fFallSpeed = -0.2f;
+
+		m_fTime += 0.3f * fTimeDelta;
+		_float3 vPosition = m_pTransformCom->Get_State(STATE::POSITION);
+		vPosition.y = vPosition.y + m_fFallSpeed;
+		m_pTransformCom->Set_State(STATE::POSITION, vPosition);
+	}
+}
+
+CSpider* CSpider::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
+{
+	CSpider* pInstance = new CSpider(pGraphic_Device);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
@@ -651,20 +649,20 @@ CSoldier* CSoldier::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 	return pInstance;
 }
 
-CGameObject* CSoldier::Clone(void* pArg)
+CGameObject* CSpider::Clone(void* pArg)
 {
-	CSoldier* pInstance = new CSoldier(*this);
+	CSpider* pInstance = new CSpider(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Cloned : CMonster");
+		MSG_BOX("Failed to Cloned : Spider");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CSoldier::Free()
+void CSpider::Free()
 {
 	//m_pRoot->ReleaseSubtree();
 	__super::Free();
