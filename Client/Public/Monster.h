@@ -49,6 +49,7 @@ protected:
 	_float m_fHp = 100.f;
 	_float m_fDamage = {};
 	_bool m_bDying = false;
+	_bool m_isMove = false;
 
 	class CBehaviorNode* m_pRoot = { nullptr };
 

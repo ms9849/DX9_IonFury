@@ -350,10 +350,12 @@ void CBossGrenade::Free()
 {
 	__super::Free();
 
-	Safe_Release(m_pTextureCom);
-	Safe_Release(m_pTransformCom);
-	Safe_Release(m_pVIBufferCom);
-	Safe_Release(m_pSphereColliderCom);
+	for (auto& iter : m_pTextureComs)
+	{
+		Safe_Release(iter.second);
+	}
+	m_pTextureComs.clear();
+	
 	Safe_Release(m_pVIBufferCom_Rect);
 	Safe_Release(m_pAnimationCom);
 	Safe_Release(m_pPlayerTransform);
