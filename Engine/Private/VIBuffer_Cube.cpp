@@ -272,3 +272,4 @@ void CVIBuffer_Cube::Free()
 {
 	__super::Free();
 }
+

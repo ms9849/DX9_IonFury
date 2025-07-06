@@ -337,7 +337,7 @@ const COLLISION_DESC& CEliteSoldier::Get_CollisionDesc(COLLISION eColType)
 
 	if (eColType == COLLISION::SPHERE)
 		Desc.pCollider = m_pSphereColliderCom;
-	else if (eColType == COLLISION::OBB)
+	else if (eColType == COLLISION::BOX)
 		Desc.pCollider = m_pBoxColliderCom;
 
 	return Desc;

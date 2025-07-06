@@ -44,8 +44,30 @@ public:
 public:
 	virtual HRESULT Initialize_Prototype();
 	virtual HRESULT Initialize(void* pArg);
-
+	/*
+	콜라이더의 크기에 따라 동적으로 보여줘야 할 것이다
+	*/
+	void Render(const _float3& vPos);
 private:
+	/* VIBuffer에서 그대로 가져온, 콜라이더 범위 출력을 위한 정점 */
+	LPDIRECT3DVERTEXBUFFER9				m_pVB = { nullptr };
+	LPDIRECT3DINDEXBUFFER9				m_pIB = { nullptr };
+
+	_uint								m_iVertexStride = { };
+
+	_uint								m_iNumVerticesX{}, m_iNumVerticesZ{};
+	_uint								m_iNumVertices = { };
+
+	_uint								m_iIndexStride = {};
+	_uint								m_iNumIndices = {};
+
+	_uint								m_iFVF = {};
+	D3DPRIMITIVETYPE					m_ePrimitiveType = {};
+	_uint								m_iNumPrimitive = {};
+
+	D3DFORMAT							m_eIndexFormat = {};
+
+
 	_float3 m_vLocalPos[8] = {};
 	_float3 m_vScale = {};
 	_float3 m_vAxis[3] = {};

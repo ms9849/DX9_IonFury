@@ -39,6 +39,11 @@ namespace Engine
 		D3DXVECTOR3			vTexcoord;
 	}VTXCUBE;
 	
+	typedef struct tagVertexColor
+	{
+		D3DXVECTOR3			vPosition;
+		D3DCOLOR 			vColor;
+	}VTXCOLOR;
 }
 
 

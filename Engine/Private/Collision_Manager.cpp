@@ -40,8 +40,8 @@ void CCollision_Manager::Check_OBBCollision(const _wstring& strLayerTagSrc, cons
  				CTransform* pTransformDst = static_cast<CTransform*>(pDst->Find_Component(TEXT("Com_Transform")));
 				pTransformDst->Add_Pos(vMTV);
 
-                pSrc->OnCollision(pDst, COLLISION::OBB, fTimeDelta);
-                pDst->OnCollision(pSrc, COLLISION::OBB, fTimeDelta);
+                pSrc->OnCollision(pDst, COLLISION::BOX, fTimeDelta);
+                pDst->OnCollision(pSrc, COLLISION::BOX, fTimeDelta);
 			}
 		}
 	}
@@ -65,14 +65,15 @@ void CCollision_Manager::Check_AABBCollision(const _wstring& strLayerTagSrc, con
     {
         for (auto& pDst : GameObjectDst)
         {
-            _float3 vMTV = {};
+            _float3 vMTV = {0.f, 0.f, 0.f};
             if (AABB_Collision(pSrc, pDst, &vMTV))
             {
-                CTransform* pTransformDst = static_cast<CTransform*>(pDst->Find_Component(TEXT("Com_Transform")));
-                pTransformDst->Add_Pos(vMTV);
+                //Src쪽이 보정을 받게된다.
+                CTransform* pTransformSrc = static_cast<CTransform*>(pSrc->Find_Component(TEXT("Com_Transform")));
+                pTransformSrc->Add_Pos(vMTV);
 
-                pSrc->OnCollision(pDst, COLLISION::AABB, fTimeDelta);
-                pDst->OnCollision(pSrc, COLLISION::AABB, fTimeDelta);
+                pSrc->OnCollision(pDst, COLLISION::BOX, fTimeDelta);
+                pDst->OnCollision(pSrc, COLLISION::BOX, fTimeDelta);
             }
         }
     }
@@ -159,8 +160,8 @@ _bool CCollision_Manager::OBB_Collision(CGameObject* pSrc, CGameObject* pDst, _f
     2. 연산량이 엄청남..
        축을 줄이던가 미리 가지고 있을 순 없나?
     */
-    COLLISION_DESC DescSrc = pSrc->Get_CollisionDesc(COLLISION::OBB);
-    COLLISION_DESC DescDst = pDst->Get_CollisionDesc(COLLISION::OBB);
+    COLLISION_DESC DescSrc = pSrc->Get_CollisionDesc(COLLISION::BOX);
+    COLLISION_DESC DescDst = pDst->Get_CollisionDesc(COLLISION::BOX);
 
     CTransform* pTransformSrc = DescSrc.pTransform;
     CBoxCollider* pColliderSrc = static_cast<CBoxCollider*>(DescSrc.pCollider);
@@ -274,8 +275,8 @@ _bool CCollision_Manager::AABB_Collision(CGameObject* pSrc, CGameObject* pDst, _
     /*
     AABB 충돌 구현.
     */
-    COLLISION_DESC DescSrc = pSrc->Get_CollisionDesc(COLLISION::AABB);
-    COLLISION_DESC DescDst = pDst->Get_CollisionDesc(COLLISION::AABB);
+    COLLISION_DESC DescSrc = pSrc->Get_CollisionDesc(COLLISION::BOX);
+    COLLISION_DESC DescDst = pDst->Get_CollisionDesc(COLLISION::BOX);
 
     CTransform* pTransformSrc = DescSrc.pTransform;
     CBoxCollider* pColliderSrc = static_cast<CBoxCollider*>(DescSrc.pCollider);
@@ -300,14 +301,40 @@ _bool CCollision_Manager::AABB_Collision(CGameObject* pSrc, CGameObject* pDst, _
     vMaxSrc += vPosSrc;
     
     vMinDst += vPosDst;
-    vMinDst += vPosDst;
+    vMaxDst += vPosDst;
 
     /*
     AABB 로직? -> OBB 하위호환. 가장 큰 fMin과 가장 작은 fMax를 비교해서 부등호가 > 라면 충돌.
     보정값도 fMin - fMax, MTV도 구해낼 수 있다.
     (fMin과 fMax를 벡터의 형태로 가지고 있다면 보정값의 부호도 알아서 바뀌니까 신경 안써도 됨)
     */
-    return true;
+    
+    _bool isXOverlap = (vMinSrc.x <= vMaxDst.x && vMaxSrc.x >= vMinDst.x);
+    _float fXDist = vPosSrc.x < vPosDst.x ? vMinDst.x - vMaxSrc.x : vMaxDst.x - vMinSrc.x;
+
+    _bool isYOverlap = (vMinSrc.y <= vMaxDst.y && vMaxSrc.y >= vMinDst.y);
+    _float fYDist = vPosSrc.y < vPosDst.y ? vMaxSrc.y - vMinDst.y : vMaxDst.y - vMinSrc.y;
+
+    _bool isZOverlap = (vMinSrc.z <= vMaxDst.z && vMaxSrc.z >= vMinDst.z);
+    _float fZDist = vPosSrc.z < vPosDst.z ? vMinDst.z - vMaxSrc.z : vMaxDst.z - vMinSrc.z;
+
+
+    /*  보정이 들어가는 부분. 
+        비교하는 두 대상 중 어느 대상이 상대적으로 더 x, z가 
+        큰지 확인하여 보정값의 방향을 설정해준다.
+    */
+    if (isXOverlap && isYOverlap && isZOverlap)
+    {
+        if (fabsf(fXDist) < fabsf(fYDist) && fabsf(fXDist) < fabsf(fZDist))
+            vMTV->x = fXDist;
+        
+        else if (fabsf(fZDist) < fabsf(fYDist) && fabsf(fZDist) < fabsf(fXDist))
+            vMTV->z = fZDist;
+
+        return true;
+    }
+  
+    return false;
 }
 
 _bool CCollision_Manager::Look_Collision(CGameObject* pDst, _float3* vCollisionPos, _float3 vPos, _float3 vLook)

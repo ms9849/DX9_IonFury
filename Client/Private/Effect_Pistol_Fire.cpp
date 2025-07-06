@@ -50,6 +50,7 @@ void CEffect_Pistol_Fire::Update(_float fTimeDelta)
 void CEffect_Pistol_Fire::Late_Update(_float fTimeDelta)
 {
     __super::Late_Update(fTimeDelta);
+    m_fCamDistance = 0.1f;
 }
 
 HRESULT CEffect_Pistol_Fire::Render()
