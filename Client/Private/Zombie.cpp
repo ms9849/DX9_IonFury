@@ -193,6 +193,8 @@ void CZombie::Late_Update(_float fTimeDelta)
 
 HRESULT CZombie::Render()
 {
+	m_pBoxColliderCom->Render(m_pTransformCom->Get_State(STATE::POSITION));
+
 	RotateToPlayer(m_pTransformCom);
 
 	auto iter = m_pTextureComs.find(m_strFrameKey);
@@ -327,7 +329,7 @@ const COLLISION_DESC& CZombie::Get_CollisionDesc(COLLISION eColType)
 
 	if (eColType == COLLISION::SPHERE)
 		Desc.pCollider = m_pSphereColliderCom;
-	else if (eColType == COLLISION::OBB)
+	else if (eColType == COLLISION::BOX)
 		Desc.pCollider = m_pBoxColliderCom;
 
 	return Desc;
@@ -376,8 +378,12 @@ HRESULT CZombie::Ready_Components()
 		return E_FAIL;
 
 	/* Com_BoxCollider */
+	CBoxCollider::BOXCOLLIDER_DESC Desc;
+	Desc.fScaleX = 0.2f;
+	Desc.fScaleZ = 0.2f;
+	Desc.fScaleY = 0.8f;
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_BoxCollider"),
-		TEXT("Com_BoxCollider"), reinterpret_cast<CComponent**>(&m_pBoxColliderCom))))
+		TEXT("Com_BoxCollider"), reinterpret_cast<CComponent**>(&m_pBoxColliderCom), &Desc)))
 		return E_FAIL;
 
 	/* Com_SphereCollider */

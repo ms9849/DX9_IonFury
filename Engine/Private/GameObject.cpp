@@ -78,7 +78,7 @@ void CGameObject::Compute_CamDistance(const _float3& vWorldPos)
 	직교 투영 되는 것들은 Compute_CamDistance할 의미가 없나?..
 	*/
 	_float3			vCamPos = {};
-	memcpy(&vCamPos, &m_pGameInstance->Get_CameraWorldInv()[3], sizeof(_float3));
+	memcpy(&vCamPos, &m_pGameInstance->Get_CameraWorld().m[3][0], sizeof(_float3));
 
 	_float3			vDir = vCamPos - vWorldPos;
 	m_fCamDistance = D3DXVec3Length(&vDir);
