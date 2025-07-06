@@ -249,12 +249,6 @@
     <ClInclude Include="..\Public\SphereCollider.h">
       <Filter>01.Uitility\05.Component\SphereCollider</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\VIBuffer_Rect_Up.h">
-      <Filter>01.Uitility\05.Component\VIBuffer\Rect</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\VIBuffer_Rect_Down.h">
-      <Filter>01.Uitility\05.Component\VIBuffer\Rect</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\ParticleSystem.h">
       <Filter>01.Uitility\03.GameObject\ParticleSystem</Filter>
     </ClInclude>
@@ -352,12 +346,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\SphereCollider.cpp">
       <Filter>01.Uitility\05.Component\SphereCollider</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\VIBuffer_Rect_Down.cpp">
-      <Filter>01.Uitility\05.Component\VIBuffer\Rect</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\VIBuffer_Rect_Up.cpp">
-      <Filter>01.Uitility\05.Component\VIBuffer\Rect</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ParticleSystem.cpp">
       <Filter>01.Uitility\03.GameObject\ParticleSystem</Filter>

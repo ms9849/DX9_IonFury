@@ -1,10 +1,10 @@
 #pragma once
 
-#include "AlphaObject.h"
+#include "GameObject.h"
 
 NS_BEGIN(Engine)
 
-class ENGINE_DLL CParticleSystem abstract : public CAlphaObject
+class ENGINE_DLL CParticleSystem abstract : public CGameObject
 {
 public:
 	/* 

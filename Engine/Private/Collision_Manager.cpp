@@ -47,6 +47,37 @@ void CCollision_Manager::Check_OBBCollision(const _wstring& strLayerTagSrc, cons
 	}
 }
 
+void CCollision_Manager::Check_AABBCollision(const _wstring& strLayerTagSrc, const _wstring& strLayerTagDst, _uint iLayerLevel, _float fTimeDelta)
+{
+    CLayer* pSrcLayer = m_pGameInstance->Find_Layer(iLayerLevel, strLayerTagSrc);
+    CLayer* pDstLayer = m_pGameInstance->Find_Layer(iLayerLevel, strLayerTagDst);
+
+    if (pSrcLayer == nullptr || pDstLayer == nullptr)
+        return;
+
+    list<CGameObject*> GameObjectSrc = pSrcLayer->Get_GameObjects();
+    list<CGameObject*> GameObjectDst = pDstLayer->Get_GameObjects();
+
+    if (GameObjectSrc.empty() || GameObjectDst.empty())
+        return;
+
+    for (auto& pSrc : GameObjectSrc)
+    {
+        for (auto& pDst : GameObjectDst)
+        {
+            _float3 vMTV = {};
+            if (AABB_Collision(pSrc, pDst, &vMTV))
+            {
+                CTransform* pTransformDst = static_cast<CTransform*>(pDst->Find_Component(TEXT("Com_Transform")));
+                pTransformDst->Add_Pos(vMTV);
+
+                pSrc->OnCollision(pDst, COLLISION::AABB, fTimeDelta);
+                pDst->OnCollision(pSrc, COLLISION::AABB, fTimeDelta);
+            }
+        }
+    }
+}
+
 void CCollision_Manager::Check_SphereCollision(const _wstring& strLayerTagSrc, const _wstring& strLayerTagDst, _uint iLayerLevel, _float fTimeDelta)
 {
     CLayer* pSrcLayer = m_pGameInstance->Find_Layer(iLayerLevel, strLayerTagSrc);
@@ -235,6 +266,47 @@ _bool CCollision_Manager::OBB_Collision(CGameObject* pSrc, CGameObject* pDst, _f
     }
 
     *vMTV = vMTVDir * vMinMTVDist;
+    return true;
+}
+
+_bool CCollision_Manager::AABB_Collision(CGameObject* pSrc, CGameObject* pDst, _float3* vMTV)
+{
+    /*
+    AABB 충돌 구현.
+    */
+    COLLISION_DESC DescSrc = pSrc->Get_CollisionDesc(COLLISION::AABB);
+    COLLISION_DESC DescDst = pDst->Get_CollisionDesc(COLLISION::AABB);
+
+    CTransform* pTransformSrc = DescSrc.pTransform;
+    CBoxCollider* pColliderSrc = static_cast<CBoxCollider*>(DescSrc.pCollider);
+
+    CTransform* pTransformDst = DescDst.pTransform;
+    CBoxCollider* pColliderDst = static_cast<CBoxCollider*>(DescDst.pCollider);
+
+    /*
+    Min Max 꺼내와서 Pos값만 더해줘서, 축 정렬 된 상태로 월드 스페이스까지 끌어올림.
+    회전이나 스케일값은 따로 적용시키지 않는다.
+    */
+    _float3 vMinSrc = pColliderSrc->Get_Min();
+    _float3 vMaxSrc = pColliderSrc->Get_Max();
+
+    _float3 vMinDst = pColliderDst->Get_Min();
+    _float3 vMaxDst = pColliderDst->Get_Max();
+
+    _float3 vPosSrc = pTransformSrc->Get_State(STATE::POSITION);
+    _float3 vPosDst = pTransformDst->Get_State(STATE::POSITION);
+
+    vMinSrc += vPosSrc;
+    vMaxSrc += vPosSrc;
+    
+    vMinDst += vPosDst;
+    vMinDst += vPosDst;
+
+    /*
+    AABB 로직? -> OBB 하위호환. 가장 큰 fMin과 가장 작은 fMax를 비교해서 부등호가 > 라면 충돌.
+    보정값도 fMin - fMax, MTV도 구해낼 수 있다.
+    (fMin과 fMax를 벡터의 형태로 가지고 있다면 보정값의 부호도 알아서 바뀌니까 신경 안써도 됨)
+    */
     return true;
 }
 

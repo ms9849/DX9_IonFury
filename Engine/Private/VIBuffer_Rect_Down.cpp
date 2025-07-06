@@ -90,7 +90,7 @@ _bool CVIBuffer_Rect_Down::Picking(CTransform* pTransform, _float3* pOut, _float
 	}
 
 	if (true == m_pGameInstance->Picking_InLocalSpace(pTransform->Get_WorldMatrixInvPtr(), vPos, vLook, m_pVertexPositions[0], m_pVertexPositions[2], m_pVertexPositions[3], pOut))
-	{
+-=	{
 		D3DXVec3TransformCoord(pOut, pOut, pTransform->Get_WorldMatrixPtr());
 		return true;
 	}

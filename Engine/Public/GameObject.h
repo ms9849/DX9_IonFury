@@ -39,6 +39,9 @@ public:
 		return m_iObjectID;
 	}
 
+	_float Get_CamDistance() const {
+		return m_fCamDistance;
+	}
 	class CComponent* Find_Component(const _wstring& strComponentTag);
 
 protected:
