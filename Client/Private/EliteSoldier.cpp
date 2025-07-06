@@ -2,6 +2,7 @@
 #include "GameInstance.h"
 #include "Bullet.h"
 #include "BehaviorNode.h"
+#include "Particle_Manager.h"
 
 CEliteSoldier::CEliteSoldier(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CMonster{ pGraphic_Device }
@@ -485,13 +486,20 @@ HRESULT CEliteSoldier::Ready_Animations()
 
 void CEliteSoldier::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta)
 {
+	if (m_isDead || m_bDying)
+		return;
+
 	if (eColType == COLLISION::SPHERE)
 	{
 		CBullet* pBullet = dynamic_cast<CBullet*>(pDst);
 		if (pBullet != nullptr)
 		{
-			m_pGameInstance->PlaySoundOnce(TEXT("EliteSoldier_Hit.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
-			m_fHp -= pBullet->Get_Damage();
+			if ((m_fHp -= (pBullet->Get_Damage())) > 0)
+			{
+				m_pGameInstance->PlaySoundOnce(TEXT("EliteSoldier_Hit.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
+			}
+			CParticle_Manager::GetInstance()->Create_Particle(TEXT("Particle_Blood"), ENUM_CLASS(LEVEL::GAMEPLAY),
+				TEXT("Layer_Particle"), m_pTransformCom->Get_State(STATE::POSITION));
 		}
 	}
 

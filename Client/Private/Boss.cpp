@@ -3,6 +3,7 @@
 #include "Bullet.h"
 #include "BossGrenade.h"
 #include "BehaviorNode.h"
+#include "Particle_Manager.h"
 
 CBoss::CBoss(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CMonster{ pGraphic_Device }
@@ -637,11 +638,23 @@ HRESULT CBoss::Ready_Animations()
 
 void CBoss::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta)
 {
+	if (m_isDead || m_bDying)
+		return;
+
 	if (eColType == COLLISION::SPHERE)
 	{
 		CBullet* pBullet = dynamic_cast<CBullet*>(pDst);
 		if (pBullet != nullptr)
-			m_fHp -= pBullet->Get_Damage();
+		{
+			if ((m_fHp -= (pBullet->Get_Damage())) > 0)
+			{
+				// 보스는 피격 사운드 넣는게 애매해서 일단 보류
+				//m_pGameInstance->PlaySoundOnce(TEXT("Spider_Hit.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
+			}
+			// 보스는 추후 적용
+			/*CParticle_Manager::GetInstance()->Create_Particle(TEXT("Particle_Blood"), ENUM_CLASS(LEVEL::GAMEPLAY),
+				TEXT("Layer_Particle"), m_pTransformCom->Get_State(STATE::POSITION));*/
+		}
 	}
 
 	return;
