@@ -20,10 +20,10 @@ public:
 
 	void Calc_CameraInfo();
 
-	/*뷰 행렬 가져오는거라고 생각하면 편해요*/
+	/*뷰 행렬 가져오는 함수*/
 	const _float4x4& Get_CameraWorldInv() { return m_matCameraWorldInv; }
 
-	/*카메라의 위치를 받아올 때 쓰면 좋아요*/
+	/*뷰 행렬의 역행렬 가져오는 함수. 카메라의 월드 행렬을 받아올 때 쓰세요*/
 	const _float4x4& Get_CameraWorld() { return m_matCameraWorld; }
 
 	_float Random_Normal();
