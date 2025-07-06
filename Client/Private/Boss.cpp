@@ -62,6 +62,8 @@ HRESULT CBoss::Initialize(void* pArg)
 	m_strUpFrameKey = TEXT("Boss_Front");
 	m_strDownFrameKey = TEXT("Boss_Front_Leg");
 
+	m_vUpOffset = { 0.f, 4.2f, 0.f };
+
 	//m_pTransformCom->Rotation({0.f, 1.f, 0.f}, m_pGameInstance->Random(0.f, 180.f));
 	//m_pTransformCom->LookAt(m_pPlayerTransform->Get_State(STATE::POSITION));
 
@@ -144,7 +146,7 @@ HRESULT CBoss::Initialize(void* pArg)
 	//	this->Move(fTimeDelta);
 	//	m_fSumMoveCoolTime = 0.f;
 	//	}));
-
+	
 	//CMoveCheckSequence->AddChild(CSightSucessSequence);
 	//CMoveCheckSequence->AddChild(CSightFailSequence);
 
@@ -394,27 +396,35 @@ void CBoss::Late_Update(_float fTimeDelta)
 		}
 	}
 
+	//Compute_CamDistance(m_pTransformCom_Up->Get_State(STATE::POSITION));
+	RotateWithParentTransform();				// 이러면 위 아래가 기본 pos에 고정됨
 	Compute_CamDistance(m_pTransformCom->Get_State(STATE::POSITION));
 	m_pGameInstance->Add_RenderGroup(RENDER::BLEND, this);
+
+	// 컴퓨터 디스턴스를 구한 값이 게임오브젝트에 1개가 저장되고 그것을 비교하여 정렬하는 구조이기 때문에
+	// 현재 위아래로 나눈 구조에서는 맞지않는듯하다
 }
 
 HRESULT CBoss::Render()
 {
-	if (FAILED(Begin_RenderState()))
+	if (FAILED(Begin_RenderTestState()))
 		return E_FAIL;
-
-	RotateWithParentTransform();
 
 	RotateToPlayer(m_pTransformCom_Up);
 	auto iter = m_pTextureComs.find(m_strUpFrameKey);
 	iter->second->Set_Texture(m_pAnimationCom_Up->Get_Frame_Current_Index(m_strUpFrameKey));
-	//_uint num = m_pAnimationCom_Up->Get_Frame_Current_Index(m_strUpFrameKey);
 	m_pVIBufferCom_Up->Render();
+
+	if (FAILED(End_RenderTestState()))
+		return E_FAIL;
+
+	
+	if (FAILED(Begin_RenderState()))
+		return E_FAIL;
 
 	RotateToPlayer(m_pTransformCom_Down);
 	iter = m_pTextureComs.find(m_strDownFrameKey);
 	iter->second->Set_Texture(m_pAnimationCom_Down->Get_Frame_Current_Index(m_strDownFrameKey));
-	//_uint num_2 = m_pAnimationCom_Down->Get_Frame_Current_Index(m_strDownFrameKey);
 	m_pVIBufferCom_Down->Render();
 
 	if (FAILED(End_RenderState()))
@@ -442,7 +452,7 @@ void CBoss::RotateToPlayer(CTransform* pTranform)
 	fLook.y = 0.0f;								// y축 회전용
 	D3DXVec3Normalize(&fLook, &fLook);
 
-	_float3 fUp = { 0.0f, 1.0f, 0.0f };
+	_float3 fUp = { 0.0f, 1.0f, 0.f };
 
 	_float3 fRight;
 	D3DXVec3Cross(&fRight, &fUp, &fLook);
@@ -467,13 +477,8 @@ void CBoss::RotateWithParentTransform()
 {
 	_float3 vRootPos = m_pTransformCom->Get_State(STATE::POSITION);
 
-	//_float3 m_vUpOffset = { 0.f, 4.2f, 0.f };
-	_float3 vDownOffset = { 0.f, 0.f, 0.f };
-
-	D3DXMATRIX matRot;
-
 	m_pTransformCom_Up->Set_State(STATE::POSITION, vRootPos + m_vUpOffset);
-	m_pTransformCom_Down->Set_State(STATE::POSITION, vRootPos + vDownOffset);
+	m_pTransformCom_Down->Set_State(STATE::POSITION, vRootPos);
 
 	m_pTransformCom_Up->Set_State(STATE::RIGHT, m_pTransformCom->Get_State(STATE::RIGHT));
 	m_pTransformCom_Up->Set_State(STATE::UP, m_pTransformCom->Get_State(STATE::UP));
@@ -760,6 +765,35 @@ HRESULT CBoss::Begin_RenderState()
 	return S_OK;
 }
 
+HRESULT CBoss::Begin_RenderTestState()
+{
+	/* 렌더링할 때 알파값을 기준으로 섞어준다.*/
+
+	/*
+	float4		vSourColor, vDestColor;
+	vSourColor.rgb * vSourColor.a + vDestColor.rgb * (1.f - vSourColor.a);
+	*/
+
+
+	/*m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+	m_pGraphic_Device->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
+	m_pGraphic_Device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+	m_pGraphic_Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);*/
+
+	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+
+	//m_pGraphic_Device->SetRenderState(D3DRS_LIGHTING, FALSE);
+
+	/* 알파 테스트 : 픽셀의 알파를 비교해서 그린다 안그린다를 설정. */
+	m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+	m_pGraphic_Device->SetRenderState(D3DRS_ALPHAREF, 0);
+	m_pGraphic_Device->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
+
+
+
+	return S_OK;
+}
+
 HRESULT CBoss::End_RenderState()
 {
 	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
@@ -767,6 +801,17 @@ HRESULT CBoss::End_RenderState()
 
 	m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
 	//m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+
+	return S_OK;
+}
+
+HRESULT CBoss::End_RenderTestState()
+{
+	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+	//m_pGraphic_Device->SetRenderState(D3DRS_LIGHTING, TRUE);
+
+	//m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+	m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
 
 	return S_OK;
 }
@@ -1029,7 +1074,6 @@ void CBoss::Move(_float fTimeDelta)
 
 void CBoss::Move()
 {
-	//m_pTransformCom->R
 	m_pTransformCom->Get_State(STATE::POSITION);
 }
 

@@ -42,7 +42,9 @@ public:
 
 	HRESULT Ready_Components() override;
 	HRESULT Begin_RenderState() override;
+	HRESULT Begin_RenderTestState();
 	HRESULT End_RenderState() override;
+	HRESULT End_RenderTestState();
 
 	void Attack(_float fTimeDelta, BossAttackState eState);
 
