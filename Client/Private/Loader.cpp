@@ -35,6 +35,8 @@
 #include "MapWall.h"
 #include "MapBox.h"
 #include "MapContainerBox.h"
+#include "Snow.h"
+#include "Blood.h"
 
 #include "GameInstance.h"
 
@@ -144,11 +146,6 @@ HRESULT CLoader::Loading_For_GamePlay()
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/UI/Hp/Hp_%d.png"), 6))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_Texture_Effect */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Effect"),
-		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Explosion/Explosion%d.png"), 90))))
-		return E_FAIL;
-
 	/* For.Prototype_Component_Texture_UI_Aim */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_UI_Aim"),
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/UI/Aim/Aim_0.png"), 1))))
@@ -158,6 +155,32 @@ HRESULT CLoader::Loading_For_GamePlay()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_UI_CardKey"),
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/UI/CardKey/CardKey.png"), 1))))
 		return E_FAIL;
+
+#pragma region 이펙트, 파티클
+	/* For. Prototype_Component_Texture_Snow */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Snow"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Snow/Snow.png"), 1))))
+		return E_FAIL;
+
+	/* For. Prototype_Component_Texture_Blood */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Blood"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Particle/Blood.png"), 1))))
+		return E_FAIL;
+
+	/* For. Prototype_GameObject_Snow*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Snow"), CSnow::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	/* For. Prototype_GameObject_Blood */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Blood"), CBlood::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Effect */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Effect"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Explosion/Explosion%d.png"), 90))))
+		return E_FAIL;
+
+#pragma endregion
 	
 #pragma region 아이템
 	/* For.Prototype_Component_Texture_Item_Armor_0 */
@@ -433,8 +456,6 @@ HRESULT CLoader::Loading_For_GamePlay()
 		CMapContainerBox::Create(m_pGraphic_Device))))
 		return E_FAIL;
 #pragma endregion
-
-
 
 	m_strMessage = TEXT("로딩이 완료되었습니다..");
 

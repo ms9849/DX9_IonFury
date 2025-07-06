@@ -109,6 +109,9 @@
     <Filter Include="01.Uitility\05.Component\SphereCollider">
       <UniqueIdentifier>{71f8cbf4-0fe9-4a9d-a167-ff18adbd921a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Uitility\03.GameObject\ParticleSystem">
+      <UniqueIdentifier>{979956db-116c-403e-ad5b-fb6b1bb2be82}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -252,6 +255,9 @@
     <ClInclude Include="..\Public\VIBuffer_Rect_Down.h">
       <Filter>01.Uitility\05.Component\VIBuffer\Rect</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\ParticleSystem.h">
+      <Filter>01.Uitility\03.GameObject\ParticleSystem</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -352,6 +358,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\VIBuffer_Rect_Up.cpp">
       <Filter>01.Uitility\05.Component\VIBuffer\Rect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParticleSystem.cpp">
+      <Filter>01.Uitility\03.GameObject\ParticleSystem</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -3,13 +3,13 @@
 #include "GameInstance.h"
 
 CEffect::CEffect(LPDIRECT3DDEVICE9 pGraphic_Device)
-	: CAlphaObject{ pGraphic_Device }
+	: CGameObject{ pGraphic_Device }
 {
 
 }
 
 CEffect::CEffect(const CEffect& Prototype)
-	: CAlphaObject{ Prototype }
+	: CGameObject{ Prototype }
 {
 
 }
@@ -45,7 +45,7 @@ void CEffect::Late_Update(_float fTimeDelta)
 	}
 	
 	if(!m_isDead)
-		m_pGameInstance->Add_RenderGroup(RENDER::BLEND, this);
+		m_pGameInstance->Add_RenderGroup(RENDER::BLEND_LATE, this);
 }
 
 HRESULT CEffect::Render()

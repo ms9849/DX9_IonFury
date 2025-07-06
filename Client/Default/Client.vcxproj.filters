@@ -157,6 +157,18 @@
     <Filter Include="03.MapObjects\Container">
       <UniqueIdentifier>{c0027bf5-6103-4201-8387-3ea73dc1ab32}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\Particle">
+      <UniqueIdentifier>{5aceb304-8663-4303-b9ce-4b821f11eb75}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Particle\Snow">
+      <UniqueIdentifier>{b81ed9fc-985d-4268-8908-f85306abdf38}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Particle\Blood">
+      <UniqueIdentifier>{0dce053b-43bf-44d5-83d3-2cff1d03f3be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Particle\Manager">
+      <UniqueIdentifier>{9d36ff8e-011f-4588-9b03-9ee6dc16a55e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -330,6 +342,15 @@
     <ClInclude Include="..\Public\EliteSoldier.h">
       <Filter>02.GameObjects\Monster\Range</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Snow.h">
+      <Filter>02.GameObjects\Particle\Snow</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Blood.h">
+      <Filter>02.GameObjects\Particle\Blood</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Particle_Manager.h">
+      <Filter>02.GameObjects\Particle\Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -497,6 +518,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\EliteSoldier.cpp">
       <Filter>02.GameObjects\Monster\Range</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Snow.cpp">
+      <Filter>02.GameObjects\Particle\Snow</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Blood.cpp">
+      <Filter>02.GameObjects\Particle\Blood</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Particle_Manager.cpp">
+      <Filter>02.GameObjects\Particle\Manager</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

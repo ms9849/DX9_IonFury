@@ -10,7 +10,8 @@
 #include "Terrain.h"
 #include "Terrain_Manager.h"
 #include "Effect_Manager.h"
-
+#include "ParticleSystem.h"
+#include "Particle_Manager.h"
 #include "Player.h"
 
 CLevel_GamePlay::CLevel_GamePlay(LPDIRECT3DDEVICE9 pGraphic_Device, LEVEL eLevelID)
@@ -42,6 +43,9 @@ HRESULT CLevel_GamePlay::Initialize()
 		return E_FAIL;
 
 	if (FAILED(Ready_Layer_Effect(TEXT("Layer_Effect"))))
+		return E_FAIL;
+
+	if (FAILED(Ready_Layer_Particle(TEXT("Layer_Particle"))))
 		return E_FAIL;
 
 	if (FAILED(Ready_Layer_Items(TEXT("Layer_Items"))))
@@ -142,9 +146,6 @@ HRESULT CLevel_GamePlay::Render()
 		ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Interaction_Objects"),
 		TEXT("Com_Animation")));
 
-	Safe_AddRef(pPRAnimation);
-	Safe_AddRef(pPLAnimation);
-	Safe_AddRef(pDLAnimation);
 	_tchar strAni[256];
 
 	// 윈도우 타이틀에 FPS 표시
@@ -173,10 +174,6 @@ HRESULT CLevel_GamePlay::Render()
 		);
 		SetWindowText(g_hWnd, strAni);
 	}
-
-	Safe_Release(pPRAnimation);
-	Safe_Release(pPLAnimation);
-	Safe_Release(pDLAnimation);
 
 	return S_OK;
 }
@@ -446,6 +443,13 @@ HRESULT CLevel_GamePlay::Ready_Layer_Cube(const _wstring& strLayerTag)
 	return S_OK;
 }
 
+/* 
+이펙트 매니저 세팅만 게임 플레이에서, 
+
+이펙트들의 생성은 이펙트 매니저의 Initialize 내부에서 동작합니다
+
+추후 이펙트 추가하시려면 참고하세요
+*/
 HRESULT CLevel_GamePlay::Ready_Layer_Effect(const _wstring& strLayerTag)
 {
 	m_pEffect_Manager = CEffect_Manager::GetInstance();
@@ -453,6 +457,29 @@ HRESULT CLevel_GamePlay::Ready_Layer_Effect(const _wstring& strLayerTag)
 	Safe_AddRef(m_pEffect_Manager);
 
 	return S_OK;
+}
+
+/*
+이펙트가 아닌 파티클 시스템입니다.
+건드리시면 안돼요.
+
+추가하시고 싶은 파티클이 있다면 일단 디코 주세요
+*/
+HRESULT CLevel_GamePlay::Ready_Layer_Particle(const _wstring& strLayerTag)
+{
+	m_pParticle_Manager = CParticle_Manager::GetInstance();
+	m_pParticle_Manager->Initialize();
+	Safe_AddRef(m_pParticle_Manager);
+
+	return S_OK;
+
+	//ParticleDesc.iNumParticles = 1000;
+	//ParticleDesc.vBoundaryMin = _float3(-10.f, -5.f, -10.f);
+	//ParticleDesc.vBoundaryMax = _float3(10.f, 10.f, 10.f);
+
+	//if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Snow"),
+	//	ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag, &ParticleDesc)))
+	//	return E_FAIL;
 }
 
 HRESULT CLevel_GamePlay::Ready_Layer_Items(const _wstring& strLayerTag)
@@ -541,6 +568,9 @@ void CLevel_GamePlay::Free()
 
 	m_pEffect_Manager->Release_Effect_Manager();
 	Safe_Release(m_pEffect_Manager);
+
+	m_pParticle_Manager->Release_Particle_Manager();
+	Safe_Release(m_pParticle_Manager);
 
 	for (auto& iter : m_pUIItemQueues)
 	{

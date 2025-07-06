@@ -3,6 +3,7 @@
 #include "Bullet.h"
 #include "MeleeAttack.h"
 #include "BehaviorNode.h"
+#include "Particle_Manager.h"
 
 CZombie::CZombie(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CMonster{ pGraphic_Device }
@@ -448,7 +449,11 @@ void CZombie::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 	{
 		CBullet* pBullet = dynamic_cast<CBullet*>(pDst);
 		if (pBullet != nullptr)
+		{
 			m_fHp -= pBullet->Get_Damage();
+			CParticle_Manager::GetInstance()->Create_Particle(TEXT("Particle_Blood"), ENUM_CLASS(LEVEL::GAMEPLAY),
+				TEXT("Layer_Particle"), m_pTransformCom->Get_State(STATE::POSITION));
+		}
 	}
 
 	return;
