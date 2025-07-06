@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Client_Defines.h"
-#include "AlphaObject.h"
+#include "GameObject.h"
 
 NS_BEGIN(Engine)
 class CTexture;
@@ -11,7 +11,7 @@ NS_END
 
 NS_BEGIN(Client)
 
-class CEffect abstract : public CAlphaObject
+class CEffect abstract : public CGameObject
 {
 public:
 	typedef struct tagEffectDesc{

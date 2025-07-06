@@ -390,18 +390,15 @@ _float3 CPlayer::Calc_BulletDir(_float3* vOffset)
 	_float3 vCollisionPos{0.f, 0.f, 0.f};
 
 	//mat view Inv는 카메라의 월드 행렬.
-	_float4x4 m_matView, m_matViewInv;
-
-	m_pGraphic_Device->GetTransform(D3DTS_VIEW, &m_matView);
-	D3DXMatrixInverse(&m_matViewInv, nullptr, &m_matView);
+	_float4x4 m_matViewInv;
+	m_matViewInv = m_pGameInstance->Get_CameraWorld();
 
 	/*
 	vLook, vRight 가져와서 보정하기
 	*/
-	_float3 vCamPos = m_pTransformCom->Get_State(STATE::POSITION);
 	_float3 vCamRight = *(_float3 *)(&m_matViewInv.m[0][0]);
 	_float3 vCamLook = *(_float3*)(&m_matViewInv.m[2][0]);
-
+	_float3 vCamPos = *(_float3*)(&m_matViewInv.m[3][0]);
 
 	D3DXVec3Normalize(&vCamLook, &vCamLook);
 	m_pGameInstance->Check_RayCollision(vCamPos, vCamLook, TEXT("Layer_Cube"), ENUM_CLASS(LEVEL::GAMEPLAY), &vCollisionPos);

@@ -43,15 +43,18 @@ public:
 
 protected:
 	_uint						m_iObjectID = {};
+	
 	LPDIRECT3DDEVICE9			m_pGraphic_Device = { nullptr };
 	class CGameInstance*		m_pGameInstance = { nullptr };
 	_bool						m_isDead = { false };
-
+	_float						m_fCamDistance = {};
 	map<const _wstring, class CComponent*>		m_Components;
 
 protected:
+	void	Compute_CamDistance(const _float3& vWorldPos);
 	HRESULT Add_Component(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, 
 		const _wstring& strComponentTag, CComponent** ppOut, void* pArg = nullptr);
+
 
 public:
 	virtual CGameObject* Clone(void* pArg) = 0;

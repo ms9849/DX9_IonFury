@@ -14,7 +14,6 @@ class CEffect_Manager final : public CBase
 	DECLARE_SINGLETON(CEffect_Manager);
 private:
 	CEffect_Manager();
-	CEffect_Manager(LPDIRECT3DDEVICE9 pGraphicDev);
 	virtual ~CEffect_Manager() = default;
 
 public:

@@ -19,11 +19,18 @@ public:
 	void Clear_Resources(_uint iLevelIndex);
 
 	void Calc_CameraInfo();
-	const _float4x4* Get_CameraWorldInv() { return m_matCameraWorld; }
-	const _float4x4* Get_CameraWorld() { return m_matCameraWorld; }
+
+	/*뷰 행렬 가져오는거라고 생각하면 편해요*/
+	const _float4x4& Get_CameraWorldInv() { return m_matCameraWorldInv; }
+
+	/*카메라의 위치를 받아올 때 쓰면 좋아요*/
+	const _float4x4& Get_CameraWorld() { return m_matCameraWorld; }
 
 	_float Random_Normal();
 	_float Random(_float fMin, _float fMax);
+	/*랜덤한 벡터를 뽑아오는 함수. 레퍼런스로 써도 되는지 찾아봐야 할듯*/
+	void GetRandomVector(_float3* pOut, _float3* pMin, _float3* pMax);
+
 	_bool CCW(const _float3& vSrc, const _float3& vDst);
 
 #pragma region GRAPHIC_DEVICE
@@ -102,8 +109,8 @@ private:
 	class CPicking* m_pPicking = { nullptr };
 
 	/* 매프레임 계산된다 */
-	_float4x4* m_matCameraWorld = {};
-	_float4x4* m_matCameraWorldInv = {};
+	_float4x4 m_matCameraWorld = {};
+	_float4x4 m_matCameraWorldInv = {};
 	LPDIRECT3DDEVICE9 m_pGraphicDev = {};
 
 public:

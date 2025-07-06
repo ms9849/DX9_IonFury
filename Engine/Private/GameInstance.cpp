@@ -69,8 +69,6 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 {
 	m_pObject_Manager->Priority_Update(fTimeDelta);
 
-	Calc_CameraInfo();
-
 	m_pObject_Manager->Update(fTimeDelta);
 
 	m_pObject_Manager->Late_Update(fTimeDelta);
@@ -105,8 +103,8 @@ void CGameInstance::Clear_Resources(_uint iLevelIndex)
 
 void CGameInstance::Calc_CameraInfo()
 {
-//	m_pGraphicDev->GetTransform(D3DTS_VIEW, m_matCameraWorld);
-//	D3DXMatrixInverse(m_matCameraWorldInv, nullptr, m_matCameraWorld);
+	m_pGraphicDev->GetTransform(D3DTS_VIEW, &m_matCameraWorldInv);
+	D3DXMatrixInverse(&m_matCameraWorld, nullptr, &m_matCameraWorldInv);
 }
 
 _float CGameInstance::Random_Normal()
@@ -121,6 +119,13 @@ _float CGameInstance::Random(_float fMin, _float fMax)
 	//srand((unsigned)time(NULL));
 
 	return fMin + Random_Normal() * (fMax - fMin);	
+}
+
+void CGameInstance::GetRandomVector(_float3* pOut, _float3* pMin, _float3* pMax)
+{
+	pOut->x = Random(pMin->x, pMax->x);
+	pOut->y = Random(pMin->y, pMax->y);
+	pOut->z = Random(pMin->z, pMax->z);
 }
 
 _bool CGameInstance::CCW(const _float3& vSrc, const _float3& vDst)

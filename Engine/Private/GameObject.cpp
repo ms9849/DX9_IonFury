@@ -72,6 +72,30 @@ CComponent* CGameObject::Find_Component(const _wstring& strComponentTag)
 	return iter->second;
 }
 
+void CGameObject::Compute_CamDistance(const _float3& vWorldPos)
+{
+	/*
+	직교 투영 되는 것들은 Compute_CamDistance할 의미가 없나?..
+	*/
+	_float3			vCamPos = {};
+	memcpy(&vCamPos, &m_pGameInstance->Get_CameraWorldInv()[3], sizeof(_float3));
+
+	_float3			vDir = vCamPos - vWorldPos;
+	m_fCamDistance = D3DXVec3Length(&vDir);
+
+	//_float4x4		ViewMatrix = {};
+	//m_pGraphic_Device->GetTransform(D3DTS_VIEW, &ViewMatrix);
+	//D3DXMatrixInverse(&ViewMatrix, nullptr, &ViewMatrix);
+
+	//_float3			vCamPos = {};
+	//memcpy(&vCamPos, &ViewMatrix.m[3], sizeof(_float3));
+
+	//_float3			vDir = vCamPos - vWorldPos;
+	//m_fCamDistance = D3DXVec3Length(&vDir);
+	////////////////////////////////////////////////////
+
+}
+
 HRESULT CGameObject::Add_Component(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, const _wstring& strComponentTag, CComponent** ppOut, void* pArg)
 {
 	if (nullptr != Find_Component(strComponentTag))

@@ -44,7 +44,7 @@ void CEffect_Pistol_Fire::Priority_Update(_float fTimeDelta)
 
 void CEffect_Pistol_Fire::Update(_float fTimeDelta)
 {
-    //__super::Update(fTimeDelta);
+   // Compute_CamDistance(m_pTransformCom->Get_State(STATE::POSITION));
 }
 
 void CEffect_Pistol_Fire::Late_Update(_float fTimeDelta)
