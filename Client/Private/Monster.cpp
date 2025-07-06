@@ -92,7 +92,8 @@ void CMonster::RotateToPlayer(CTransform* pTranform)
 {
 	_float4x4 matWorldTemp = m_pGameInstance->Get_CameraWorld();
 
-	_float3 vLook = { matWorldTemp._31, matWorldTemp._32, matWorldTemp._33 };
+	_float3 vLook;
+	memcpy(&vLook, *(_float3*)&matWorldTemp.m[2][0], sizeof(_float3));
 	vLook *= -1;
 	vLook.y = 0.f;
 	D3DXVec3Normalize(&vLook, &vLook);
