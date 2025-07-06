@@ -99,6 +99,7 @@ private:
 	_float3 m_vScale = {};
 
 	_bool m_bAnimateionOn = false;
+	_bool m_bExplosion = false;
 
 public:
 	static CBossGrenade* Create(LPDIRECT3DDEVICE9 pGraphicDev);

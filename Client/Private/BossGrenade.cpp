@@ -82,7 +82,12 @@ void CBossGrenade::Update(_float fTimeDelta)
 	if (m_pTransformCom->Get_State(STATE::POSITION).y - 0.5f <= m_vPlayerPos.y || m_bAnimateionOn)			// 유탄이 플레이어의 시작 지점보다 낮아지면 폭발 모습 보이게
 	{
 		// 빌보드 효과를 줘서 플레이어가 어디서든 항상 터지는 애니메이션을 볼 수 있도록 하자
-		//m_pGameInstance->PlaySoundOnce(TEXT("Grenade_Explosion.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
+		if (!m_bExplosion)
+		{
+			m_bExplosion = true;
+			m_pGameInstance->PlaySoundOnce(TEXT("Grenade_Explosion.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
+		}
+
 		m_bAnimateionOn = true;
 		m_pAnimationCom->Play_Animation(m_strFrameKey, fTimeDelta);
 		if (m_pAnimationCom->Check_Animation_Finish(m_strFrameKey))
