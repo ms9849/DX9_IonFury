@@ -223,13 +223,18 @@ void CZombie::Update(_float fTimeDelta)
 	if (m_fHp <= 0)
 	{
 		m_strFrameKey = TEXT("Zombie_Die_Default");
-		if (!m_bDying)
-			m_pGameInstance->PlaySoundOnce(TEXT("zombie_dead_1.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
 		m_bAnimationLock = true;
 		m_bDying = true;
+		m_pGameInstance->PlaySoundOnce(TEXT("zombie_dead_1.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
 	}
 	else if (m_pSightCom->Check_Sight(fTimeDelta) && !m_bAnimationLock)
 	{
+		if (!m_bFirstEncounter)
+		{
+			m_bFirstEncounter = true;
+			m_pGameInstance->PlaySoundOnce(TEXT("Zombie_Contact.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
+		}
+
 		if (m_fSumAttackCoolTime >= m_fAttackCoolTime)
 		{
 			_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
@@ -303,6 +308,7 @@ void CZombie::Late_Update(_float fTimeDelta)
 	/*m_pAnimationCom->Set_Animation(&iter->second);
 	m_pAnimationCom->Play_Animation(fTimeDelta);*/
 	//m_pAnimationCom->Play_Animation(fTimeDelta);
+	Compute_CamDistance(m_pTransformCom->Get_State(STATE::POSITION));
 	m_pGameInstance->Add_RenderGroup(RENDER::BLEND, this);
 }
 
@@ -450,6 +456,7 @@ void CZombie::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 		CBullet* pBullet = dynamic_cast<CBullet*>(pDst);
 		if (pBullet != nullptr)
 		{
+			m_pGameInstance->PlaySoundOnce(TEXT("zombie_hit_1.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
 			m_fHp -= pBullet->Get_Damage();
 			CParticle_Manager::GetInstance()->Create_Particle(TEXT("Particle_Blood"), ENUM_CLASS(LEVEL::GAMEPLAY),
 				TEXT("Layer_Particle"), m_pTransformCom->Get_State(STATE::POSITION));

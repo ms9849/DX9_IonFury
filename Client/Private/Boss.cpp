@@ -166,6 +166,11 @@ void CBoss::Update(_float fTimeDelta)
 {
 	//m_fSumAttackCoolTime += fTimeDelta;
 
+	if (m_bDying)
+	{
+		return;
+	}
+
 	__super::Jump(fTimeDelta);
 
 	m_fSumAttackCoolTime += fTimeDelta;
@@ -264,6 +269,7 @@ void CBoss::Update(_float fTimeDelta)
 
 	if (m_fHp <= 0)
 	{
+		m_pGameInstance->PlaySoundOnce(TEXT("Boss1_Die.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
 		m_strUpFrameKey = TEXT("Boss_Die");
 		m_bAnimationLock = true;
 		m_bDying = true;
@@ -388,6 +394,7 @@ void CBoss::Late_Update(_float fTimeDelta)
 		}
 	}
 
+	Compute_CamDistance(m_pTransformCom->Get_State(STATE::POSITION));
 	m_pGameInstance->Add_RenderGroup(RENDER::BLEND, this);
 }
 
@@ -785,6 +792,8 @@ void CBoss::Attack(_float fTimeDelta, BossAttackState state)
 
 		if (m_fLaunchCoolTime <= m_fSumLaunchCoolTime)			// 누적 시간이 정해둔 쿨타임보다 길면 공격
 		{
+			m_pGameInstance->PlaySoundOnce(TEXT("Boss1_SMG.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
+
 			_float3 vMonsterPos = m_pTransformCom->Get_State(STATE::POSITION);
 			vMonsterPos.y += m_vUpOffset.y;
 			/*_float3 vDir = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);*/
@@ -810,7 +819,7 @@ void CBoss::Attack(_float fTimeDelta, BossAttackState state)
 			m_fSumLaunchCoolTime = 0.f;								// 난사 한발 사용했으므로 누적 시간 초기화
 			//m_fSumAttackCoolTime = 0.f;
 			m_uCurBullets++;										// 현재 사용한 총알 수 증가
-			m_pGameInstance->PlaySoundOnce(TEXT("gunfire_distant2.ogg"), CHANNELID::SOUND_EFFECT, 1.0f);
+			//m_pGameInstance->PlaySoundOnce(TEXT("gunfire_distant2.ogg"), CHANNELID::SOUND_EFFECT, 1.0f);
 			OutputDebugStringA("디버그 메시지: 총알 발사 완료\n");
 		}
 
@@ -837,6 +846,8 @@ void CBoss::Attack(_float fTimeDelta, BossAttackState state)
 
 		if (m_fLaunchCoolTime <= m_fSumLaunchCoolTime)			// 누적 시간이 정해둔 쿨타임보다 길면 공격
 		{
+			m_pGameInstance->PlaySoundOnce(TEXT("Boss1_SMG.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
+
 			_float3 vMonsterPos = m_pTransformCom->Get_State(STATE::POSITION);
 			vMonsterPos.y += m_vUpOffset.y;
 
@@ -855,7 +866,7 @@ void CBoss::Attack(_float fTimeDelta, BossAttackState state)
 			m_fSumLaunchCoolTime = 0.f;								// 난사 한발 사용했으므로 누적 시간 초기화
 			//m_fSumAttackCoolTime = 0.f;
 			m_uCurBullets++;										// 현재 사용한 총알 수 증가
-			m_pGameInstance->PlaySoundOnce(TEXT("gunfire_distant2.ogg"), CHANNELID::SOUND_EFFECT, 1.0f);
+			//m_pGameInstance->PlaySoundOnce(TEXT("gunfire_distant2.ogg"), CHANNELID::SOUND_EFFECT, 1.0f);
 			OutputDebugStringA("디버그 메시지: 총알 발사 완료\n");
 		}
 
@@ -883,6 +894,8 @@ void CBoss::Attack(_float fTimeDelta, BossAttackState state)
 
 		if (m_fLaunchCoolTime <= m_fSumLaunchCoolTime)			// 누적 시간이 정해둔 쿨타임보다 길면 공격
 		{
+			m_pGameInstance->PlaySoundOnce(TEXT("Boss1_Grenade.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
+
 			_float3 vMonsterPos = m_pTransformCom->Get_State(STATE::POSITION);
 			vMonsterPos.y += m_vUpOffset.y;
 			/*_float3 vDir = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);*/
