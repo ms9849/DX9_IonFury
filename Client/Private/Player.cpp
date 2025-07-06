@@ -252,6 +252,7 @@ void CPlayer::Update(_float fTimeDelta)
 				Desc.fBulletSpeed = 5.f;
 				Desc.vBulletScale = { 0.02f, 0.02f, 0.1f };
 				Desc.isPlayerBullet = true;
+				Desc.fDuration = 5.f;
 
 				m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Bullet"),
 					ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_PlayerBullet"), &Desc);

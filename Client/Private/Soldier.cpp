@@ -41,7 +41,11 @@ HRESULT CSoldier::Initialize(void* pArg)
 		0.f,
 		m_pGameInstance->Random(0.f, 20.f)));
 
-	m_fAttackRange = 5.f;
+	m_fAttackRange = 4.f;
+	m_fDamage = 30.f;
+	m_fAttackCoolTime = 5.f;
+	m_fChaseRange = 7.f;
+	m_fMaxRange = 10.f;
 	//m_pTransformCom->Rotation({0.f, 1.f, 0.f}, m_pGameInstance->Random(0.f, 180.f));
 	//m_pTransformCom->LookAt(m_pPlayerTransform->Get_State(STATE::POSITION));
 
@@ -144,12 +148,28 @@ void CSoldier::Priority_Update(_float fTimeDelta)
 
 void CSoldier::Update(_float fTimeDelta)
 {
+	_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
+	_float fDist = D3DXVec3Length(&vDiff);
+
+	if (m_bDying && !m_bAnimationLock && fDist >= m_fMaxRange)
+	{
+		m_isDead = true;
+		return;
+	}
+
+	if (m_bDying)
+	{
+		SetUp_OnTerrain(m_pTransformCom, 0.35f, &m_bJump);
+		return;
+	}
+
+
 	__super::Jump(fTimeDelta);
 
 	m_fSumAttackCoolTime += fTimeDelta;
 	m_fSumMoveCoolTime += fTimeDelta;
 
-	_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
+	//_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
 	vDiff.y = 0.f;
 	D3DXVec3Normalize(&vDiff, &vDiff);
 
@@ -164,7 +184,6 @@ void CSoldier::Update(_float fTimeDelta)
 	D3DXVec3Cross(&vCross, &vMonsterLook, &vDiff);
 
 	_float fFov = cosf(D3DXToRadian(45.f));
-
 	_float angle30 = cosf(D3DXToRadian(30.f));
 	_float angle60 = cosf(D3DXToRadian(60.f));
 
@@ -195,6 +214,7 @@ void CSoldier::Update(_float fTimeDelta)
 					m_strFrameKey = TEXT("Soldier_Direction_NE");
 			}
 		}
+		m_isMove = false;
 	}
 
 	if (m_fHp <= 0)
@@ -213,12 +233,14 @@ void CSoldier::Update(_float fTimeDelta)
 				Attack();
 			}
 		}
-		else if (m_fSumMoveCoolTime >= m_fMoveCoolTime)
+
+		if (m_fSumMoveCoolTime >= m_fMoveCoolTime)
 		{
 			_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
 			if (D3DXVec3Length(&vDiff) <= m_fChaseRange && D3DXVec3Length(&vDiff) >= m_fAttackRange - 1.f)
 			{
 				Move(fTimeDelta);
+				m_isMove = true;
 				m_fSumMoveCoolTime = 0.f;
 			}
 		}
@@ -274,36 +296,36 @@ void CSoldier::Update(_float fTimeDelta)
 
 void CSoldier::Late_Update(_float fTimeDelta)
 {
-	m_pAnimationCom->Play_Animation(m_strFrameKey, fTimeDelta);
-	int num = m_pAnimationCom->Get_Frame_Current_Index(m_strFrameKey);
-	/*wchar_t szDebug[256];
-	swprintf(szDebug, 256, L"프레임 키: %s, 현재 인덱스: %d\n", m_strFrameKey.c_str(), num);
-	OutputDebugStringW(szDebug);*/
-	auto iter = m_pAnimationCom->Get_Frame_Desc(m_strFrameKey);
+	if (m_isMove || m_bAnimationLock || m_bDying)
+		m_pAnimationCom->Play_Animation(m_strFrameKey, fTimeDelta);
+	//int num = m_pAnimationCom->Get_Frame_Current_Index(m_strFrameKey);
+
+	/*auto iter = m_pAnimationCom->Get_Frame_Desc(m_strFrameKey);
 	wchar_t szDebug_2[256];
 	swprintf(szDebug_2, 256, L"프레임 키: %s, 현재 인덱스: %d, 마지막 인덱스: %d\n", m_strFrameKey.c_str(), m_pAnimationCom->Get_Frame_Current_Index(m_strFrameKey), iter->iEnd);
-	OutputDebugStringW(szDebug_2);
+	OutputDebugStringW(szDebug_2);*/
 	//Get_Frame_Current_Index(m_strFrameKey) == iter->iEnd - 1
 	if (m_bAnimationLock && m_pAnimationCom->Check_Animation_Finish(m_strFrameKey))
 	{
 		if (m_bDying)
 		{
-			m_isDead = true;
+			//m_isDead = true;
+			m_strFrameKey = TEXT("Soldier_Die_Idle");
 			m_bAnimationLock = false;
 			return;
 		}
 		else
 		{
 			m_bAnimationLock = false;
-			wchar_t szDebug[256];
+			/*wchar_t szDebug[256];
 			swprintf(szDebug, 256, L"종료 프레임 키: %s, 현재 인덱스: %d\n", m_strFrameKey.c_str(), num);
 			OutputDebugStringW(szDebug);
-			m_pAnimationCom->Clear_Animation(m_strFrameKey);
+			m_pAnimationCom->Clear_Animation(m_strFrameKey);*/
 			m_strFrameKey = TEXT("Soldier_Front");
 		}
 	}
 	/*m_pAnimationCom->Play_Animation(m_strFrameKey, fTimeDelta);*/
-	m_pGameInstance->Add_RenderGroup(RENDER::NONBLEND, this);
+	m_pGameInstance->Add_RenderGroup(RENDER::BLEND, this);
 }
 
 HRESULT CSoldier::Render()
@@ -372,6 +394,7 @@ HRESULT CSoldier::Ready_Animations()
 	CAnimation::FRAME_DESC Desc_11{};
 	CAnimation::FRAME_DESC Desc_12{};
 	CAnimation::FRAME_DESC Desc_13{};
+	CAnimation::FRAME_DESC Desc_14{};
 
 	auto iter = m_pTextureComs.find(TEXT("Soldier_Attack_Front"));
 	Desc_0.iFrameSpeed = 15;
@@ -455,6 +478,12 @@ HRESULT CSoldier::Ready_Animations()
 	Desc_13.iFrameSpeed = 7;
 	Desc_13.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom->Set_Animation(TEXT("Soldier_Right"), Desc_13);
+
+	//Soldier_Die_Idle
+	iter = m_pTextureComs.find(TEXT("Soldier_Die_Idle"));
+	Desc_14.iFrameSpeed = 12;
+	Desc_14.iEnd = iter->second->Get_Texture_Length();
+	m_pAnimationCom->Set_Animation(TEXT("Soldier_Die_Idle"), Desc_14);
 
 
 	return S_OK;
@@ -550,19 +579,19 @@ HRESULT CSoldier::Begin_RenderState()
 	*/
 
 	
-	/*m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+	m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
 	m_pGraphic_Device->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
 	m_pGraphic_Device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-	m_pGraphic_Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);*/
+	m_pGraphic_Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 	
 	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 
 	//m_pGraphic_Device->SetRenderState(D3DRS_LIGHTING, FALSE);
 
 	/* 알파 테스트 : 픽셀의 알파를 비교해서 그린다 안그린다를 설정. */
-	m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+	/*m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
 	m_pGraphic_Device->SetRenderState(D3DRS_ALPHAREF, 0);
-	m_pGraphic_Device->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
+	m_pGraphic_Device->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);*/
 
 
 
@@ -574,8 +603,8 @@ HRESULT CSoldier::End_RenderState()
 	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 	//m_pGraphic_Device->SetRenderState(D3DRS_LIGHTING, TRUE);
 
-	//m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-	m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+	m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+	//m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
 
 	return S_OK;
 }
@@ -595,7 +624,7 @@ void CSoldier::Attack()
 	Desc.vPos = vPos;
 	Desc.vBulletScale = {0.2f, 0.2f, 0.01f};
 	Desc.fBulletSpeed = 5.f;
-
+	Desc.fDuration = 5.f;
 	Desc.isPlayerBullet = false;
 
 
@@ -656,7 +685,7 @@ CGameObject* CSoldier::Clone(void* pArg)
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Cloned : CMonster");
+		MSG_BOX("Failed to Cloned : Soldier");
 		Safe_Release(pInstance);
 	}
 

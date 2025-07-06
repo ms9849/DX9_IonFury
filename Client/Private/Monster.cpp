@@ -105,7 +105,7 @@ void CMonster::Free()
 	}
 	m_pTextureComs.clear();
 
-	if (m_pRoot != nullptr)
+	/*if (m_pRoot != nullptr)
 		m_pRoot->Release_Subtree();
-	Safe_Release(m_pRoot);
+	Safe_Release(m_pRoot);*/
 }

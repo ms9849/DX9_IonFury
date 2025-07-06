@@ -22,13 +22,19 @@
 #include "ItemShootGunBullet.h"
 #include "ItemCardKey.h"
 #include "Soldier.h"
+#include "EliteSoldier.h"
 #include "Zombie.h"
+#include "Spider.h"
 #include "Boss.h"
 #include "MeleeAttack.h"
 #include "DoorLock.h"
-#include "Gate.h"
 #include "BossGrenade.h"
 #include "Effect_Pistol_Fire.h"
+#include "MapGate.h"
+#include "MapBuilding.h"
+#include "MapWall.h"
+#include "MapBox.h"
+#include "MapContainerBox.h"
 
 #include "GameInstance.h"
 
@@ -197,15 +203,35 @@ HRESULT CLoader::Loading_For_GamePlay()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Map_Gate"),
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/MapObject/Gate/Gate_0.png"), 1))))
 		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Map_Building */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Map_Building"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::CUBE, TEXT("../Bin/Resources/Textures/MapObject/Building/Building_%d.dds"), 2))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Map_Wall */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Map_Wall"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::CUBE, TEXT("../Bin/Resources/Textures/MapObject/Wall/Wall_%d.dds"), 2))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Map_Box */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Map_Box"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::CUBE, TEXT("../Bin/Resources/Textures/MapObject/Box/Box_%d.dds"), 1))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Map_ContainerBox */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Map_ContainerBox"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::CUBE, TEXT("../Bin/Resources/Textures/MapObject/Box/ContainerBox_%d.dds"), 1))))
+		return E_FAIL;
 #pragma endregion
 
 	m_strMessage = TEXT("모델를(을) 로딩 중 입니다.");
-	/* For.Prototype_Component_VIBuffer_Terrain */
 
+	/* For.Prototype_Component_VIBuffer_Terrain */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_VIBuffer_Terrain"),
 		CVIBuffer_Terrain::Create(m_pGraphic_Device, 128, 128))))
 		return E_FAIL;
-	
+
 	/*if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_VIBuffer_Terrain"),
 		CVIBuffer_Terrain::Create(m_pGraphic_Device, TEXT("../Bin/Resources/Textures/Terrain/Height1.bmp")))))
 		return E_FAIL;*/
@@ -270,9 +296,19 @@ HRESULT CLoader::Loading_For_GamePlay()
 		CSoldier::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
+	/* For.Prototype_GameObject_Monster_EliteSoldier */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Monster_EliteSoldier"),
+		CEliteSoldier::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
 	/* For.Prototype_GameObject_Monster_Zombie */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Monster_Zombie"),
 		CZombie::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Monster_Spider */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Monster_Spider"),
+		CSpider::Create(m_pGraphic_Device))))
 		return E_FAIL;
 #pragma endregion	
 
@@ -374,7 +410,27 @@ HRESULT CLoader::Loading_For_GamePlay()
 #pragma region 맵 오브젝트
 	/* For.Prototype_GameObject_Map_Gate */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Map_Gate"),
-		CGate::Create(m_pGraphic_Device))))
+		CMapGate::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Map_Building */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Map_Building"),
+		CMapBuilding::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Map_Wall */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Map_Wall"),
+		CMapWall::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Map_Box */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Map_Box"),
+		CMapBox::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Map_ContainerBox */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Map_ContainerBox"),
+		CMapContainerBox::Create(m_pGraphic_Device))))
 		return E_FAIL;
 #pragma endregion
 

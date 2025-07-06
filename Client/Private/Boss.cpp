@@ -44,16 +44,6 @@ HRESULT CBoss::Initialize(void* pArg)
 		0.f,
 		m_pGameInstance->Random(30.f, 50.f)));
 
-	/*m_pTransformCom_Up->Set_State(STATE::POSITION, _float3(
-		vPos.x,
-		vPos.y,
-		vPos.z));
-
-	m_pTransformCom_Down->Set_State(STATE::POSITION, _float3(
-		vPos.x,
-		vPos.y,
-		vPos.z));*/
-
 	_float3 vPos = m_pTransformCom->Get_State(STATE::POSITION);
 	m_pTransformCom_Up->Set_State(STATE::POSITION, {vPos.x, vPos.y + 2.0f, vPos.z});
 
@@ -256,6 +246,7 @@ void CBoss::Update(_float fTimeDelta)
 				}
 			}
 		}
+		m_isMove = false;
 	}
 
 	if (m_fAttackFailTime >= 7.f)						// 공격이 호출되고 3초이상 시전했는데 종료가 안됬다면?
@@ -274,7 +265,6 @@ void CBoss::Update(_float fTimeDelta)
 	if (m_fHp <= 0)
 	{
 		m_strUpFrameKey = TEXT("Boss_Die");
-		//m_strDownFrameKey = TEXT("Boss_Front_Leg");
 		m_bAnimationLock = true;
 		m_bDying = true;
 	}
@@ -284,33 +274,17 @@ void CBoss::Update(_float fTimeDelta)
 		{
 			// 현재 엔진에 랜덤값 없으므로 대체
 			//m_eState = BossAttackState::MASS;
-			m_eState = BossAttackState::CHASE_MASS;
-			//m_eState = BossAttackState::BOOM;
+			//m_eState = BossAttackState::CHASE_MASS;
+			m_eState = BossAttackState::BOOM;
 		}
 
+		//m_isMove = false;
 		Attack(fTimeDelta, m_eState);
 	}
 	else if (m_pSightCom->Check_Sight(fTimeDelta))
 	{
-		/*if (m_fSumAttackCoolTime >= m_fAttackfCoolTime)
-		{
-			_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
-			if (D3DXVec3Length(&vDiff) <= m_fAttackRange)
-			{
-				Attack(fTimeDelta);
-			}
-		}
-		else if (m_fSumMoveCoolTime >= m_fMoveCoolTime)
-		{
-			_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
-			if (D3DXVec3Length(&vDiff) <= m_fChaseRange)
-			{
-				Move(fTimeDelta);
-				m_fSumMoveCoolTime = 0.f;
-			}
-		}*/
 		_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
-		//_float tempNum = D3DXVec3Length(&vDiff);
+
 		if ((D3DXVec3Length(&vDiff) <= m_fAttackRange) && (m_fSumAttackCoolTime >= m_fAttackCoolTime))
 		{
 			// 랜덤값으로 공격 종류를 정하게 할까?
@@ -318,8 +292,8 @@ void CBoss::Update(_float fTimeDelta)
 			{
 				// 현재 엔진에 랜덤값 없으므로 대체
 				//m_eState = BossAttackState::MASS;
-				m_eState = BossAttackState::CHASE_MASS;
-				//m_eState = BossAttackState::BOOM;
+				//m_eState = BossAttackState::CHASE_MASS;
+				m_eState = BossAttackState::BOOM;
 			}
 
 			Attack(fTimeDelta, m_eState);
@@ -327,9 +301,11 @@ void CBoss::Update(_float fTimeDelta)
 		else if (D3DXVec3Length(&vDiff) <= m_fChaseRange && m_fSumMoveCoolTime >= m_fMoveCoolTime)
 		{
 			Move(fTimeDelta);
+			m_isMove = true;
 			m_fSumMoveCoolTime = 0.f;
 		}
 	}
+	
 
 	/*if (!m_bAnimationLock)
 	{
@@ -385,7 +361,8 @@ void CBoss::Late_Update(_float fTimeDelta)
 	//m_pAnimationCom_Up->Set_Animation(&iter->second);
 	//m_pAnimationCom_Up->Play_Animation(fTimeDelta);
 	m_pAnimationCom_Up->Play_Animation(m_strUpFrameKey, fTimeDelta);
-	m_pAnimationCom_Down->Play_Animation(m_strDownFrameKey, fTimeDelta);
+	if (m_isMove)
+		m_pAnimationCom_Down->Play_Animation(m_strDownFrameKey, fTimeDelta);
 
 	//auto iter_1 = m_tFrames.find(m_strDownFrameKey);
 
@@ -411,7 +388,7 @@ void CBoss::Late_Update(_float fTimeDelta)
 		}
 	}
 
-	m_pGameInstance->Add_RenderGroup(RENDER::NONBLEND, this);
+	m_pGameInstance->Add_RenderGroup(RENDER::BLEND, this);
 }
 
 HRESULT CBoss::Render()
@@ -424,13 +401,13 @@ HRESULT CBoss::Render()
 	RotateToPlayer(m_pTransformCom_Up);
 	auto iter = m_pTextureComs.find(m_strUpFrameKey);
 	iter->second->Set_Texture(m_pAnimationCom_Up->Get_Frame_Current_Index(m_strUpFrameKey));
-	_uint num = m_pAnimationCom_Up->Get_Frame_Current_Index(m_strUpFrameKey);
+	//_uint num = m_pAnimationCom_Up->Get_Frame_Current_Index(m_strUpFrameKey);
 	m_pVIBufferCom_Up->Render();
 
 	RotateToPlayer(m_pTransformCom_Down);
 	iter = m_pTextureComs.find(m_strDownFrameKey);
 	iter->second->Set_Texture(m_pAnimationCom_Down->Get_Frame_Current_Index(m_strDownFrameKey));
-	_uint num_2 = m_pAnimationCom_Down->Get_Frame_Current_Index(m_strDownFrameKey);
+	//_uint num_2 = m_pAnimationCom_Down->Get_Frame_Current_Index(m_strDownFrameKey);
 	m_pVIBufferCom_Down->Render();
 
 	if (FAILED(End_RenderState()))
@@ -757,19 +734,19 @@ HRESULT CBoss::Begin_RenderState()
 	*/
 
 	
-	/*m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+	m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
 	m_pGraphic_Device->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
 	m_pGraphic_Device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-	m_pGraphic_Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);*/
+	m_pGraphic_Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 	
 	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 
 	//m_pGraphic_Device->SetRenderState(D3DRS_LIGHTING, FALSE);
 
 	/* 알파 테스트 : 픽셀의 알파를 비교해서 그린다 안그린다를 설정. */
-	m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+	/*m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
 	m_pGraphic_Device->SetRenderState(D3DRS_ALPHAREF, 0);
-	m_pGraphic_Device->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
+	m_pGraphic_Device->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);*/
 
 
 
@@ -781,14 +758,15 @@ HRESULT CBoss::End_RenderState()
 	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 	//m_pGraphic_Device->SetRenderState(D3DRS_LIGHTING, TRUE);
 
-	//m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-	m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+	m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+	//m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
 
 	return S_OK;
 }
 
 void CBoss::Attack(_float fTimeDelta, BossAttackState state)
 {
+	//m_bJump = true;
 	if (!m_bAttacking)
 	{
 		m_bAttacking = true;						// 공격중 상태로 전환
@@ -827,6 +805,7 @@ void CBoss::Attack(_float fTimeDelta, BossAttackState state)
 			Desc.fBulletSpeed = 10.f;
 			Desc.vBulletScale = { 0.2f, 0.2f, 0.1f };
 			Desc.isPlayerBullet = false;
+			Desc.fDuration = 7.f;
 			m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Bullet"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Monster_Bullet"), &Desc);
 			m_fSumLaunchCoolTime = 0.f;								// 난사 한발 사용했으므로 누적 시간 초기화
 			//m_fSumAttackCoolTime = 0.f;
@@ -871,6 +850,7 @@ void CBoss::Attack(_float fTimeDelta, BossAttackState state)
 			Desc.fBulletSpeed = 10.f;
 			Desc.vBulletScale = { 0.2f, 0.2f, 0.1f };
 			Desc.isPlayerBullet = false;
+			Desc.fDuration = 7.f;
 			m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Bullet"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Monster_Bullet"), &Desc);
 			m_fSumLaunchCoolTime = 0.f;								// 난사 한발 사용했으므로 누적 시간 초기화
 			//m_fSumAttackCoolTime = 0.f;
@@ -920,6 +900,8 @@ void CBoss::Attack(_float fTimeDelta, BossAttackState state)
 			Desc.isPlayerBullet = false;
 			Desc.fBulletSpeed = 10.f;
 			Desc.vBulletScale = { 2.f, 2.f, 0.1f };
+			Desc.pPlayerTransform = m_pPlayerTransform;
+			Desc.fDuration = 7.f;
 			m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_BossGrenade"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Monster_Bullet"), &Desc);
 			m_fSumLaunchCoolTime = 0.f;								// 유탄 한발 사용했으므로 누적 시간 초기화
 			m_uCurBullets++;										// 현재 사용한 총알 수 증가

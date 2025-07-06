@@ -1,24 +1,24 @@
-#include "Gate.h"
+#include "MapGate.h"
 
 #include "GameInstance.h"
 #include "DoorLock.h"
 
-CGate::CGate(LPDIRECT3DDEVICE9 pGraphic_Device)
-	: CLandObject{ pGraphic_Device }
+CMapGate::CMapGate(LPDIRECT3DDEVICE9 pGraphic_Device)
+	: CGameObject{ pGraphic_Device }
 {
 }
 
-CGate::CGate(const CGate& Prototype)
-	: CLandObject(Prototype)
+CMapGate::CMapGate(const CMapGate& Prototype)
+	: CGameObject(Prototype)
 {
 }
 
-HRESULT CGate::Initialize_Prototype()
+HRESULT CMapGate::Initialize_Prototype()
 {
 	return S_OK;
 }
 
-HRESULT CGate::Initialize(void* pArg)
+HRESULT CMapGate::Initialize(void* pArg)
 {
 	CLandObject::LANDOBJECT_DESC			Desc{};
 	Desc.pLandTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_BackGround"), TEXT("Com_Transform")));
@@ -37,16 +37,14 @@ HRESULT CGate::Initialize(void* pArg)
 	m_pTransformCom->Set_State(STATE::POSITION, _float3{ 5.0f, 0.f, 10.0f });
 	m_pTransformCom->Set_Scale(_float3{ 10.f, 6.0f, 1.0f });
 
-	SetUp_OnTerrain(m_pTransformCom, 3.0f);
-
 	return S_OK;
 }
 
-void CGate::Priority_Update(_float fTimeDelta)
+void CMapGate::Priority_Update(_float fTimeDelta)
 {
 }
 
-void CGate::Update(_float fTimeDelta)
+void CMapGate::Update(_float fTimeDelta)
 {
 	if (!m_bStop)
 	{
@@ -58,12 +56,12 @@ void CGate::Update(_float fTimeDelta)
 	}
 }
 
-void CGate::Late_Update(_float fTimeDelta)
+void CMapGate::Late_Update(_float fTimeDelta)
 {
 	m_pGameInstance->Add_RenderGroup(RENDER::BLEND, this);
 }
 
-HRESULT CGate::Render()
+HRESULT CMapGate::Render()
 {
 	m_pTransformCom->Set_Transform();
 
@@ -73,14 +71,14 @@ HRESULT CGate::Render()
 		return E_FAIL;
 
 	m_pVIBufferCom->Render();
-	
+
 	if (FAILED(End_RenderState()))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-HRESULT CGate::Ready_Components()
+HRESULT CMapGate::Ready_Components()
 {
 	/* Com_Transform */
 	CTransform::TRANSFORM_DESC		TransformDesc{ 5.f, D3DXToRadian(90.0f) };
@@ -100,7 +98,7 @@ HRESULT CGate::Ready_Components()
 
 	return S_OK;
 }
-HRESULT CGate::Begin_RenderState()
+HRESULT CMapGate::Begin_RenderState()
 {
 	/* 알파 테스트 : 픽셀의 알파를 비교해서 그린다 안그린다를 설정. */
 	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
@@ -111,7 +109,7 @@ HRESULT CGate::Begin_RenderState()
 
 	return S_OK;
 }
-HRESULT CGate::End_RenderState()
+HRESULT CMapGate::End_RenderState()
 {
 	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 
@@ -120,7 +118,7 @@ HRESULT CGate::End_RenderState()
 	return S_OK;
 }
 
-void CGate::Gate_Animation(_float fTimeDelta)
+void CMapGate::Gate_Animation(_float fTimeDelta)
 {
 	_float3 vGatePos = m_pTransformCom->Get_State(STATE::POSITION);
 
@@ -135,11 +133,11 @@ void CGate::Gate_Animation(_float fTimeDelta)
 		}
 		vGatePos.y += (fTimeDelta * 5);
 	}
-	
+
 	m_pTransformCom->Set_State(STATE::POSITION, vGatePos);
 }
 
-//const COLLISION_DESC& CGate::Get_CollisionDesc(COLLISION eColType)
+//const COLLISION_DESC& CMapGate::Get_CollisionDesc(COLLISION eColType)
 //{
 //	COLLISION_DESC Desc;
 //	Desc.pCollider = m_pSphereColliderCom;
@@ -148,9 +146,9 @@ void CGate::Gate_Animation(_float fTimeDelta)
 //	return Desc;
 //}
 
-CGate* CGate::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
+CMapGate* CMapGate::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 {
-	CGate* pInstance = new CGate(pGraphic_Device);
+	CMapGate* pInstance = new CMapGate(pGraphic_Device);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
@@ -161,20 +159,20 @@ CGate* CGate::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 	return pInstance;
 }
 
-CGameObject* CGate::Clone(void* pArg)
+CGameObject* CMapGate::Clone(void* pArg)
 {
-	CGate* pInstance = new CGate(*this);
+	CMapGate* pInstance = new CMapGate(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Cloned : CGate");
+		MSG_BOX("Failed to Cloned : CMapGate");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CGate::Free()
+void CMapGate::Free()
 {
 	__super::Free();
 
