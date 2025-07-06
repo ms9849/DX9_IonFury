@@ -239,13 +239,7 @@ void CSpider::Update(_float fTimeDelta)
 			{
 				m_bJump = true;
 				m_fTime = 0.f;
-				wchar_t szBuffer[128];
-				swprintf_s(szBuffer, 128, L"[Transform Pos] X: %.2f, Y: %.2f, Z: %.2f\n", m_pTransformCom->Get_State(STATE::POSITION).x, m_pTransformCom->Get_State(STATE::POSITION).y, m_pTransformCom->Get_State(STATE::POSITION).z);
-				OutputDebugStringW(szBuffer);
-				//__super::Jump(fTimeDelta);
-				/*Jump(fTimeDelta, 4.0f);*/
 				Attack();
-				//m_bJump = false;
 			}
 		}
 
@@ -393,7 +387,7 @@ HRESULT CSpider::Ready_Animations()
 
 	//Spider_Die_Default
 	iter = m_pTextureComs.find(TEXT("Spider_Die_Default"));
-	Desc_1.iFrameSpeed = 12;
+	Desc_1.iFrameSpeed = 7;
 	Desc_1.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom->Set_Animation(TEXT("Spider_Die_Default"), Desc_1);
 
@@ -423,25 +417,25 @@ HRESULT CSpider::Ready_Animations()
 
 	//Spider_Front
 	iter = m_pTextureComs.find(TEXT("Spider_Front"));
-	Desc_6.iFrameSpeed = 10;
+	Desc_6.iFrameSpeed = 5;
 	Desc_6.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom->Set_Animation(TEXT("Spider_Front"), Desc_6);
 
 	//Spider_Back
 	iter = m_pTextureComs.find(TEXT("Spider_Back"));
-	Desc_7.iFrameSpeed = 10;
+	Desc_7.iFrameSpeed = 5;
 	Desc_7.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom->Set_Animation(TEXT("Spider_Back"), Desc_7);
 
 	//Spider_Left
 	iter = m_pTextureComs.find(TEXT("Spider_Left"));
-	Desc_8.iFrameSpeed = 10;
+	Desc_8.iFrameSpeed = 5;
 	Desc_8.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom->Set_Animation(TEXT("Spider_Left"), Desc_8);
 
 	//Spider_Right
 	iter = m_pTextureComs.find(TEXT("Spider_Right"));
-	Desc_9.iFrameSpeed = 10;
+	Desc_9.iFrameSpeed = 5;
 	Desc_9.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom->Set_Animation(TEXT("Spider_Right"), Desc_9);
 
@@ -667,7 +661,13 @@ void CSpider::Jump(_float fTimeDelta, _float fJumpPower)								// 임시 사용 함�
 
 		m_fTime += 0.3f * fTimeDelta;
 		_float3 vPosition = m_pTransformCom->Get_State(STATE::POSITION);
-		vPosition.y = vPosition.y + m_fFallSpeed;
+
+		_float3 vDir = m_pPlayerTransform->Get_State(STATE::POSITION) - vPosition;
+		vDir.y = 0.f;
+		D3DXVec3Normalize(&vDir, &vDir);
+
+		vPosition += vDir * fJumpPower * fTimeDelta;
+		vPosition.y += m_fFallSpeed;
 		m_pTransformCom->Set_State(STATE::POSITION, vPosition);
 	}
 }

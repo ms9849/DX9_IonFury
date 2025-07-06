@@ -515,121 +515,121 @@ HRESULT CBoss::Ready_Animations()
 
 	//Boss_Attack_Front
 	auto iter = m_pTextureComs.find(TEXT("Boss_Attack_Front"));
-	Desc_0.iFrameSpeed = 15;
+	Desc_0.iFrameSpeed = 9;
 	Desc_0.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom_Up->Set_Animation(TEXT("Boss_Attack_Front"), Desc_0);
 
 	//Boss_Attack_SE
 	iter = m_pTextureComs.find(TEXT("Boss_Attack_SE"));
-	Desc_1.iFrameSpeed = 15;
+	Desc_1.iFrameSpeed = 12;
 	Desc_1.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom_Up->Set_Animation(TEXT("Boss_Attack_SE"), Desc_1);
 
 	//Boss_Attack_SW
 	iter = m_pTextureComs.find(TEXT("Boss_Attack_SW"));
-	Desc_2.iFrameSpeed = 15;
+	Desc_2.iFrameSpeed = 12;
 	Desc_2.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom_Up->Set_Animation(TEXT("Boss_Attack_SW"), Desc_2);
 
 	//Boss_Die
 	iter = m_pTextureComs.find(TEXT("Boss_Die"));
-	Desc_3.iFrameSpeed = 12;
+	Desc_3.iFrameSpeed = 5;
 	Desc_3.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom_Up->Set_Animation(TEXT("Boss_Die"), Desc_3);
 
 	//Boss_Direction_NE
 	iter = m_pTextureComs.find(TEXT("Boss_Direction_NE"));
-	Desc_4.iFrameSpeed = 12;
+	Desc_4.iFrameSpeed = 5;
 	Desc_4.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom_Up->Set_Animation(TEXT("Boss_Direction_NE"), Desc_4);
 
 	//Boss_Direction_NW
 	iter = m_pTextureComs.find(TEXT("Boss_Direction_NW"));
-	Desc_5.iFrameSpeed = 12;
+	Desc_5.iFrameSpeed = 5;
 	Desc_5.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom_Up->Set_Animation(TEXT("Boss_Direction_NW"), Desc_5);
 
 	//Boss_Direction_SE
 	iter = m_pTextureComs.find(TEXT("Boss_Direction_SE"));
-	Desc_6.iFrameSpeed = 7;
+	Desc_6.iFrameSpeed = 5;
 	Desc_6.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom_Up->Set_Animation(TEXT("Boss_Direction_SE"), Desc_6);
 
 	//Boss_Direction_SW
 	iter = m_pTextureComs.find(TEXT("Boss_Direction_SW"));
-	Desc_7.iFrameSpeed = 7;
+	Desc_7.iFrameSpeed = 5;
 	Desc_7.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom_Up->Set_Animation(TEXT("Boss_Direction_SW"), Desc_7);
 
 	//Boss_Front
 	iter = m_pTextureComs.find(TEXT("Boss_Front"));
-	Desc_8.iFrameSpeed = 7;
+	Desc_8.iFrameSpeed = 5;
 	Desc_8.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom_Up->Set_Animation(TEXT("Boss_Front"), Desc_8);
 
 	//Boss_Back
 	iter = m_pTextureComs.find(TEXT("Boss_Back"));
-	Desc_9.iFrameSpeed = 7;
+	Desc_9.iFrameSpeed = 5;
 	Desc_9.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom_Up->Set_Animation(TEXT("Boss_Back"), Desc_9);
 
 	//Boss_Left
 	iter = m_pTextureComs.find(TEXT("Boss_Left"));
-	Desc_10.iFrameSpeed = 7;
+	Desc_10.iFrameSpeed = 5;
 	Desc_10.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom_Up->Set_Animation(TEXT("Boss_Left"), Desc_10);
 
 	//Boss_Right
 	iter = m_pTextureComs.find(TEXT("Boss_Right"));
-	Desc_11.iFrameSpeed = 7;
+	Desc_11.iFrameSpeed = 5;
 	Desc_11.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom_Up->Set_Animation(TEXT("Boss_Right"), Desc_11);
 
 	//Boss_Leg_Direction_NE
 	iter = m_pTextureComs.find(TEXT("Boss_Leg_Direction_NE"));
-	Desc_12.iFrameSpeed = 7;
+	Desc_12.iFrameSpeed = 5;
 	Desc_12.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom_Down->Set_Animation(TEXT("Boss_Leg_Direction_NE"), Desc_12);
 
 	//Boss_Leg_Direction_NW
 	iter = m_pTextureComs.find(TEXT("Boss_Leg_Direction_NW"));
-	Desc_13.iFrameSpeed = 7;
+	Desc_13.iFrameSpeed = 5;
 	Desc_13.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom_Down->Set_Animation(TEXT("Boss_Leg_Direction_NW"), Desc_13);
 
 	//Boss_Direction_SE
 	iter = m_pTextureComs.find(TEXT("Boss_Leg_Direction_SE"));
-	Desc_14.iFrameSpeed = 7;
+	Desc_14.iFrameSpeed = 5;
 	Desc_14.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom_Down->Set_Animation(TEXT("Boss_Leg_Direction_SE"), Desc_14);
 
 	//Boss_Direction_SW
 	iter = m_pTextureComs.find(TEXT("Boss_Leg_Direction_SW"));
-	Desc_15.iFrameSpeed = 7;
+	Desc_15.iFrameSpeed = 5;
 	Desc_15.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom_Down->Set_Animation(TEXT("Boss_Leg_Direction_SW"), Desc_15);
 
 	//Boss_Leg_Front
 	iter = m_pTextureComs.find(TEXT("Boss_Front_Leg"));
-	Desc_16.iFrameSpeed = 7;
+	Desc_16.iFrameSpeed = 5;
 	Desc_16.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom_Down->Set_Animation(TEXT("Boss_Front_Leg"), Desc_16);
 
 	//Boss_Leg_Back
 	iter = m_pTextureComs.find(TEXT("Boss_Back_Leg"));
-	Desc_17.iFrameSpeed = 7;
+	Desc_17.iFrameSpeed = 5;
 	Desc_17.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom_Down->Set_Animation(TEXT("Boss_Back_Leg"), Desc_17);
 
 	//Boss_Leg_Left
 	iter = m_pTextureComs.find(TEXT("Boss_Left_Leg"));
-	Desc_18.iFrameSpeed = 7;
+	Desc_18.iFrameSpeed = 5;
 	Desc_18.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom_Down->Set_Animation(TEXT("Boss_Left_Leg"), Desc_18);
 
 	//Boss_Leg_Right
 	iter = m_pTextureComs.find(TEXT("Boss_Right_Leg"));
-	Desc_19.iFrameSpeed = 7;
+	Desc_19.iFrameSpeed = 5;
 	Desc_19.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom_Down->Set_Animation(TEXT("Boss_Right_Leg"), Desc_19);
 
