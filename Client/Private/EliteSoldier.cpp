@@ -36,13 +36,15 @@ HRESULT CEliteSoldier::Initialize(void* pArg)
 	if (FAILED(Ready_Animations()))
 		return E_FAIL;
 
+	m_pTransformCom->Set_Scale({ 1.5f, 1.5f, 1.f });
+
 	m_pTransformCom->Set_State(STATE::POSITION, _float3(
 		m_pGameInstance->Random(0.f, 20.f),
 		0.f,
 		m_pGameInstance->Random(0.f, 20.f)));
 
 	m_fAttackRange = 5.f;
-	m_fChaseRange = 10.f;
+	m_fChaseRange = 15.f;
 	m_fMaxRange = 10.f;
 	//m_pTransformCom->Rotation({0.f, 1.f, 0.f}, m_pGameInstance->Random(0.f, 180.f));
 	//m_pTransformCom->LookAt(m_pPlayerTransform->Get_State(STATE::POSITION));
@@ -219,9 +221,16 @@ void CEliteSoldier::Update(_float fTimeDelta)
 		m_strFrameKey = TEXT("EliteSoldier_Die_Default");
 		m_bAnimationLock = true;
 		m_bDying = true;
+		m_pGameInstance->PlaySoundOnce(TEXT("EliteSoldier_Die.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
 	}
 	else if (m_pSightCom->Check_Sight(fTimeDelta) && !m_bAnimationLock)
 	{
+		if (!m_bFirstEncounter)
+		{
+			m_bFirstEncounter = true;
+			m_pGameInstance->PlaySoundOnce(TEXT("EliteSoldier_Contact.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
+		}
+
 		if (m_fSumAttackCoolTime >= m_fAttackCoolTime)
 		{
 			_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
@@ -329,6 +338,7 @@ void CEliteSoldier::Late_Update(_float fTimeDelta)
 		}
 	}
 	/*m_pAnimationCom->Play_Animation(m_strFrameKey, fTimeDelta);*/
+	Compute_CamDistance(m_pTransformCom->Get_State(STATE::POSITION));
 	m_pGameInstance->Add_RenderGroup(RENDER::BLEND, this);
 }
 
@@ -479,7 +489,10 @@ void CEliteSoldier::OnCollision(CGameObject* pDst, COLLISION eColType, _float fT
 	{
 		CBullet* pBullet = dynamic_cast<CBullet*>(pDst);
 		if (pBullet != nullptr)
+		{
+			m_pGameInstance->PlaySoundOnce(TEXT("EliteSoldier_Hit.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
 			m_fHp -= pBullet->Get_Damage();
+		}
 	}
 
 	return;
@@ -535,7 +548,7 @@ HRESULT CEliteSoldier::Ready_Components()
 		return E_FAIL;
 
 	/* Com_Sight */
-	CSight::SIGHT_DESC		SightDesc{ 5.f, D3DXToRadian(120.0f), m_pPlayerTransform, m_pTransformCom};
+	CSight::SIGHT_DESC		SightDesc{ 15.f, D3DXToRadian(120.0f), m_pPlayerTransform, m_pTransformCom};
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Sight"),
 		TEXT("Com_Sight"), reinterpret_cast<CComponent**>(&m_pSightCom), &SightDesc)))
 		return E_FAIL;
@@ -601,6 +614,8 @@ void CEliteSoldier::Attack(EliteSoldierState eState)
 		m_strFrameKey = TEXT("EliteSoldier_Attack_Seat");
 		m_bAnimationLock = true;
 
+		m_pGameInstance->PlaySoundOnce(TEXT("EliteSoldier_Attack_OneShot.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
+
 		_float3 vDir = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
 		_float3 vPos = m_pTransformCom->Get_State(STATE::POSITION);
 		D3DXVec3Normalize(&vDir, &vDir);
@@ -621,6 +636,8 @@ void CEliteSoldier::Attack(EliteSoldierState eState)
 		m_fSumAttackCoolTime = 0.f;
 		m_strFrameKey = TEXT("EliteSoldier_Attack_Front");
 		m_bAnimationLock = true;
+
+		m_pGameInstance->PlaySoundOnce(TEXT("EliteSoldier_Attack_Mass.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
 
 		_float3 vDir = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
 		_float3 vPos = m_pTransformCom->Get_State(STATE::POSITION);

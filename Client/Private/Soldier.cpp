@@ -222,14 +222,23 @@ void CSoldier::Update(_float fTimeDelta)
 		m_strFrameKey = TEXT("Soldier_Die_Default");
 		m_bAnimationLock = true;
 		m_bDying = true;
+		m_pGameInstance->PlaySoundOnce(TEXT("Soldier_Death01.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
 	}
 	else if (m_pSightCom->Check_Sight(fTimeDelta) && !m_bAnimationLock)
 	{
+		if (!m_bFirstEncounter)
+		{
+			m_bFirstEncounter = true;
+			// 첫 조우 사운드 추가
+			m_pGameInstance->PlaySoundOnce(TEXT("Soldier_Contact.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
+		}
 		if (m_fSumAttackCoolTime >= m_fAttackCoolTime)
 		{
 			_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
 			if (D3DXVec3Length(&vDiff) <= m_fAttackRange)
 			{
+				// 공격 사운드 추가
+				m_pGameInstance->PlaySoundOnce(TEXT("Soldier_Fire.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
 				Attack();
 			}
 		}
@@ -325,6 +334,7 @@ void CSoldier::Late_Update(_float fTimeDelta)
 		}
 	}
 	/*m_pAnimationCom->Play_Animation(m_strFrameKey, fTimeDelta);*/
+	Compute_CamDistance(m_pTransformCom->Get_State(STATE::POSITION));
 	m_pGameInstance->Add_RenderGroup(RENDER::BLEND, this);
 }
 
@@ -495,7 +505,11 @@ void CSoldier::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDe
 	{
 		CBullet* pBullet = dynamic_cast<CBullet*>(pDst);
 		if (pBullet != nullptr)
+		{
+			// 피격 사운드
+			m_pGameInstance->PlaySoundOnce(TEXT("Soldier_Pain01.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
 			m_fHp -= pBullet->Get_Damage();
+		}
 	}
 
 	return;

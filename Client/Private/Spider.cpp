@@ -225,10 +225,9 @@ void CSpider::Update(_float fTimeDelta)
 	if (m_fHp <= 0)
 	{
 		m_strFrameKey = TEXT("Spider_Die_Default");
-		if (!m_bDying)
-			//m_pGameInstance->PlaySoundOnce(TEXT("Spider_dead_1.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
 		m_bAnimationLock = true;
 		m_bDying = true;
+		m_pGameInstance->PlaySoundOnce(TEXT("Spider_Die.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
 	}
 	else if (m_pSightCom->Check_Sight(fTimeDelta) && !m_bAnimationLock)
 	{
@@ -314,6 +313,7 @@ void CSpider::Late_Update(_float fTimeDelta)
 	/*m_pAnimationCom->Set_Animation(&iter->second);
 	m_pAnimationCom->Play_Animation(fTimeDelta);*/
 	//m_pAnimationCom->Play_Animation(fTimeDelta);
+	Compute_CamDistance(m_pTransformCom->Get_State(STATE::POSITION));
 	m_pGameInstance->Add_RenderGroup(RENDER::BLEND, this);
 }
 
@@ -459,7 +459,10 @@ void CSpider::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 	{
 		CBullet* pBullet = dynamic_cast<CBullet*>(pDst);
 		if (pBullet != nullptr)
+		{
+			m_pGameInstance->PlaySoundOnce(TEXT("Spider_Hit.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
 			m_fHp -= pBullet->Get_Damage();
+		}
 	}
 
 	return;

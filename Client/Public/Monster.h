@@ -50,6 +50,7 @@ protected:
 	_float m_fDamage = {};
 	_bool m_bDying = false;
 	_bool m_isMove = false;
+	_bool m_bFirstEncounter = false;
 
 	class CBehaviorNode* m_pRoot = { nullptr };
 
