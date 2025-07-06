@@ -279,7 +279,7 @@ HRESULT CBossGrenade::Ready_Animations()
 
 	//Grenade_Explosion
 	auto iter = m_pTextureComs.find(TEXT("Grenade_Explosion"));
-	Desc_0.iFrameSpeed = 10;
+	Desc_0.iFrameSpeed = 5;
 	Desc_0.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom->Set_Animation(TEXT("Grenade_Explosion"), Desc_0);
 

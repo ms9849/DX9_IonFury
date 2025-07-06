@@ -376,7 +376,7 @@ HRESULT CZombie::Ready_Animations()
 	CAnimation::FRAME_DESC Desc_11{};
 
 	auto iter = m_pTextureComs.find(TEXT("Zombie_Attack"));
-	Desc_0.iFrameSpeed = 15;
+	Desc_0.iFrameSpeed = 12;
 	Desc_0.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom->Set_Animation(TEXT("Zombie_Attack"), Desc_0);
 
@@ -388,49 +388,49 @@ HRESULT CZombie::Ready_Animations()
 
 	//Zombie_Direction_NE
 	iter = m_pTextureComs.find(TEXT("Zombie_Direction_NE"));
-	Desc_2.iFrameSpeed = 7;
+	Desc_2.iFrameSpeed = 6;
 	Desc_2.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom->Set_Animation(TEXT("Zombie_Direction_NE"), Desc_2);
 
 	//Zombie_Direction_NW
 	iter = m_pTextureComs.find(TEXT("Zombie_Direction_NW"));
-	Desc_3.iFrameSpeed = 7;
+	Desc_3.iFrameSpeed = 6;
 	Desc_3.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom->Set_Animation(TEXT("Zombie_Direction_NW"), Desc_3);
 
 	//Zombie_Direction_SE
 	iter = m_pTextureComs.find(TEXT("Zombie_Direction_SE"));
-	Desc_4.iFrameSpeed = 7;
+	Desc_4.iFrameSpeed = 6;
 	Desc_4.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom->Set_Animation(TEXT("Zombie_Direction_SE"), Desc_4);
 
 	//Zombie_Direction_SW
 	iter = m_pTextureComs.find(TEXT("Zombie_Direction_SW"));
-	Desc_5.iFrameSpeed = 7;
+	Desc_5.iFrameSpeed = 6;
 	Desc_5.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom->Set_Animation(TEXT("Zombie_Direction_SW"), Desc_5);
 
 	//Zombie_Front
 	iter = m_pTextureComs.find(TEXT("Zombie_Front"));
-	Desc_6.iFrameSpeed = 7;
+	Desc_6.iFrameSpeed = 6;
 	Desc_6.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom->Set_Animation(TEXT("Zombie_Front"), Desc_6);
 
 	//Zombie_Back
 	iter = m_pTextureComs.find(TEXT("Zombie_Back"));
-	Desc_7.iFrameSpeed = 7;
+	Desc_7.iFrameSpeed = 6;
 	Desc_7.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom->Set_Animation(TEXT("Zombie_Back"), Desc_7);
 
 	//Zombie_Left
 	iter = m_pTextureComs.find(TEXT("Zombie_Left"));
-	Desc_8.iFrameSpeed = 7;
+	Desc_8.iFrameSpeed = 6;
 	Desc_8.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom->Set_Animation(TEXT("Zombie_Left"), Desc_8);
 
 	//Zombie_Right
 	iter = m_pTextureComs.find(TEXT("Zombie_Right"));
-	Desc_9.iFrameSpeed = 7;
+	Desc_9.iFrameSpeed = 6;
 	Desc_9.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom->Set_Animation(TEXT("Zombie_Right"), Desc_9);
 

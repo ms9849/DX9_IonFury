@@ -407,79 +407,79 @@ HRESULT CEliteSoldier::Ready_Animations()
 	CAnimation::FRAME_DESC Desc_9{};
 	CAnimation::FRAME_DESC Desc_10{};
 	CAnimation::FRAME_DESC Desc_11{};
+	CAnimation::FRAME_DESC Desc_12{};
 
 	//EliteSoldier_Attack
 	auto iter = m_pTextureComs.find(TEXT("EliteSoldier_Attack_Front"));
-	Desc_0.iFrameSpeed = 15;
+	Desc_0.iFrameSpeed = 5;
 	Desc_0.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom->Set_Animation(TEXT("EliteSoldier_Attack_Front"), Desc_0);
 
 	//EliteSoldier_Attack_Seat
 	iter = m_pTextureComs.find(TEXT("EliteSoldier_Attack_Seat"));
-	Desc_1.iFrameSpeed = 15;
+	Desc_1.iFrameSpeed = 7;
 	Desc_1.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom->Set_Animation(TEXT("EliteSoldier_Attack_Seat"), Desc_1);
 
 	//EliteSoldier_Die_Default
 	iter = m_pTextureComs.find(TEXT("EliteSoldier_Die_Default"));
-	Desc_2.iFrameSpeed = 12;
+	Desc_2.iFrameSpeed = 10;
 	Desc_2.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom->Set_Animation(TEXT("EliteSoldier_Die_Default"), Desc_2);
 
 	//EliteSoldier_Direction_NE
 	iter = m_pTextureComs.find(TEXT("EliteSoldier_Direction_NE"));
-	Desc_3.iFrameSpeed = 7;
+	Desc_3.iFrameSpeed = 4;
 	Desc_3.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom->Set_Animation(TEXT("EliteSoldier_Direction_NE"), Desc_3);
 
 	//EliteSoldier_Direction_NW
 	iter = m_pTextureComs.find(TEXT("EliteSoldier_Direction_NW"));
-	Desc_4.iFrameSpeed = 7;
+	Desc_4.iFrameSpeed = 4;
 	Desc_4.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom->Set_Animation(TEXT("EliteSoldier_Direction_NW"), Desc_4);
 
 	//EliteSoldier_Direction_SE
 	iter = m_pTextureComs.find(TEXT("EliteSoldier_Direction_SE"));
-	Desc_5.iFrameSpeed = 7;
+	Desc_5.iFrameSpeed = 4;
 	Desc_5.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom->Set_Animation(TEXT("EliteSoldier_Direction_SE"), Desc_5);
 
 	//EliteSoldier_Direction_SW
 	iter = m_pTextureComs.find(TEXT("EliteSoldier_Direction_SW"));
-	Desc_6.iFrameSpeed = 7;
+	Desc_6.iFrameSpeed = 4;
 	Desc_6.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom->Set_Animation(TEXT("EliteSoldier_Direction_SW"), Desc_6);
 
 	//EliteSoldier_Front
 	iter = m_pTextureComs.find(TEXT("EliteSoldier_Front"));
-	Desc_7.iFrameSpeed = 7;
+	Desc_7.iFrameSpeed = 4;
 	Desc_7.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom->Set_Animation(TEXT("EliteSoldier_Front"), Desc_7);
 
 	//EliteSoldier_Back
 	iter = m_pTextureComs.find(TEXT("EliteSoldier_Back"));
-	Desc_8.iFrameSpeed = 7;
+	Desc_8.iFrameSpeed = 4;
 	Desc_8.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom->Set_Animation(TEXT("EliteSoldier_Back"), Desc_8);
 
 	//EliteSoldier_Left
 	iter = m_pTextureComs.find(TEXT("EliteSoldier_Left"));
-	Desc_9.iFrameSpeed = 7;
+	Desc_9.iFrameSpeed = 4;
 	Desc_9.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom->Set_Animation(TEXT("EliteSoldier_Left"), Desc_9);
 
 	//EliteSoldier_Right
 	iter = m_pTextureComs.find(TEXT("EliteSoldier_Right"));
-	Desc_10.iFrameSpeed = 7;
+	Desc_10.iFrameSpeed = 4;
 	Desc_10.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom->Set_Animation(TEXT("EliteSoldier_Right"), Desc_10);
 
 	//EliteSoldier_Right
 	iter = m_pTextureComs.find(TEXT("EliteSoldier_Die_Idle"));
-	Desc_11.iFrameSpeed = 7;
+	Desc_11.iFrameSpeed = 4;
 	Desc_11.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom->Set_Animation(TEXT("EliteSoldier_Die_Idle"), Desc_11);
-
 
 	return S_OK;
 }
