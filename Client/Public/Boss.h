@@ -53,7 +53,7 @@ public:
 	virtual void Move() override;
 
 private:
-	void RotateToPlayer(CTransform* pTranform);
+	//void RotateToPlayer(CTransform* pTranform);
 	void RotateWithParentTransform();
 
 private:
@@ -69,6 +69,7 @@ private:
 	_bool m_bAttacking = false;
 	_uint m_uMaxBullets = {};
 	_uint m_uCurBullets = {};
+	_uint m_uTempNum = 0;
 	_float m_fAttackFailTime = 0.f;
 	_float m_fLaunchCoolTime = 0.2f;
 	_float m_fSumLaunchCoolTime = 0.f;

@@ -67,7 +67,7 @@ HRESULT CMeleeAttack::Render()
 
 void CMeleeAttack::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta)
 {
-	//m_isDead = true;
+	m_isDead = true;
 }
 
 const COLLISION_DESC& CMeleeAttack::Get_CollisionDesc(COLLISION eColType)
