@@ -52,8 +52,6 @@ protected:
 	_bool m_isMove = false;
 	_bool m_bFirstEncounter = false;
 
-	class CBehaviorNode* m_pRoot = { nullptr };
-
 	_wstring m_strFrameKey;
 	map<const _wstring, CTexture*> m_pTextureComs;
 
@@ -64,21 +62,9 @@ protected:
 	virtual HRESULT End_RenderState();
 	virtual void Attack();
 	virtual void Move() = 0;
+	virtual void RotateToPlayer(CTransform* pTranform);
 
 	virtual void Free();
-
-private:
-	//_wstring m_strFrameKey{TEXT("Soldier_Front")};
-	//m_strFrameKey = TEXT("Soldier_Front");
-	// 이니셜라이즈에서 초기화해주는게 좋을듯 최초 값
-
-	/*const _wstring m_strFrameKeys[14] = {
-		TEXT("Soldier_Attack_Front"), TEXT("Soldier_Attack_SE"), TEXT("Soldier_Attack_SW"),
-		TEXT("Soldier_Die_Default"), TEXT("Soldier_Die_Explosion"), TEXT("Soldier_Die_HeadShot"),
-		TEXT("Soldier_Direction_NE"), TEXT("Soldier_Direction_NW"), TEXT("Soldier_Direction_SE"),
-		TEXT("Soldier_Direction_SW"), TEXT("Soldier_Front"), TEXT("Soldier_Back"),
-		TEXT("Soldier_Left"), TEXT("Soldier_Right")
-	};*/
 };
 
 NS_END

@@ -98,23 +98,9 @@ void CBossGrenade::Update(_float fTimeDelta)
 		return;
 	}
 
-	//OutputDebugStringA("디버그 메시지: 유탄 업데이트 진입 완료\n");
-	//m_pTransformCom->Go_Direction(m_vDir, fTimeDelta);
-	//m_fElapsedTime += fTimeDelta;  // 경과 시간
-
-	/*m_pTransformCom->Set_State(STATE::POSITION, { (m_vStartPos.x + m_vOffSet.x + m_vVelocity.x) * m_fElapsedTime * 0.001f,
-		(m_vStartPos.y + m_vOffSet.y + m_vVelocity.y) * m_fElapsedTime - 0.5f * m_fGravity * m_fElapsedTime * m_fElapsedTime * 0.001f,
-		(m_vStartPos.z + m_vOffSet.z + m_vVelocity.z) * m_fElapsedTime * 0.001f });*/
-
 	m_pTransformCom->Set_State(STATE::POSITION, { m_vStartPos.x + (m_vVelocity.x * m_fSumTime),
 		m_vStartPos.y + (m_vVelocity.y * m_fSumTime) + ( - 0.5f * m_fGravity * m_fSumTime * m_fSumTime),
 		m_vStartPos.z + (m_vVelocity.z * m_fSumTime) });
-
-	//wchar_t szBuffer[128];
-	//swprintf_s(szBuffer, 128, L"StartPos: X=%.2f Y=%.2f Z=%.2f\n", m_vStartPos.x, m_vStartPos.y, m_vStartPos.z);
-	/*m_pTransformCom->Set_State(STATE::POSITION, { (m_vStartPos.x + m_vVelocity.x),
-		(m_vStartPos.y + m_vVelocity.y),
-		(m_vStartPos.z + m_vVelocity.z)});*/
 }
 
 void CBossGrenade::Late_Update(_float fTimeDelta)
@@ -166,42 +152,34 @@ HRESULT CBossGrenade::Render()
 
 void CBossGrenade::RotateToPlayer(CTransform* pTranform)
 {
-	_float4x4 matWorldTemp = *pTranform->Get_WorldMatrixPtr();
+	_float4x4 matWorldTemp = m_pGameInstance->Get_CameraWorld();
 
-	/*
-	matWorldTemp? ->현재 트랜스폼의 위치와 회전값을 그대로 가져옴.
+	_float3 vLook = { matWorldTemp._31, matWorldTemp._32, matWorldTemp._33 };
+	vLook *= -1;
+	vLook.y = 0.f;
+	D3DXVec3Normalize(&vLook, &vLook);
 
-	지금 이 상태에서 플레이어를 바라보게끔 회전만 시키면 되는 상황
+	_float3 vUp = { 0.f, 1.f, 0.f };
 
-	실제 회전값과는 무관하게 플레이어를 바라보게만 만든 행렬
-	*/
-
-	_float3 fMonsterPos = pTranform->Get_State(STATE::POSITION);
-	_float3 fPlayerPos = m_pPlayerTransform->Get_State(STATE::POSITION);
-
-	_float3 fLook = fPlayerPos - fMonsterPos;
-	fLook.y = 0.0f;								// y축 회전용
-	D3DXVec3Normalize(&fLook, &fLook);
-
-	_float3 fUp = { 0.0f, 1.0f, 0.0f };
-
-	_float3 fRight;
-	D3DXVec3Cross(&fRight, &fUp, &fLook);
-	D3DXVec3Normalize(&fRight, &fRight);
+	_float3 vRight;
+	D3DXVec3Cross(&vRight, &vUp, &vLook);
+	D3DXVec3Normalize(&vRight, &vRight);
 
 	_float3 scale = pTranform->Get_Scaled();
 
-	fRight *= scale.x;
-	fUp *= scale.y;
-	fLook *= scale.z;
+	vRight *= scale.x;
+	vUp *= scale.y;
+	vLook *= scale.z;
 
-	memcpy(&matWorldTemp.m[0][0], &fRight, sizeof(_float3));
-	memcpy(&matWorldTemp.m[1][0], &fUp, sizeof(_float3));
-	memcpy(&matWorldTemp.m[2][0], &fLook, sizeof(_float3));
+	_float4x4 matWorld = *pTranform->Get_WorldMatrixPtr();
+	_float3 vPos = pTranform->Get_State(STATE::POSITION);
 
-	pTranform->Set_Transform(matWorldTemp);
+	memcpy(&matWorld.m[0][0], &vRight, sizeof(_float3));
+	memcpy(&matWorld.m[1][0], &vUp, sizeof(_float3));
+	memcpy(&matWorld.m[2][0], &vLook, sizeof(_float3));
+	memcpy(&matWorld.m[3][0], &vPos, sizeof(_float3));
 
-	//return matWorldTemp;
+	pTranform->Set_Transform(matWorld);
 }
 
 void CBossGrenade::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta)
@@ -219,6 +197,7 @@ const COLLISION_DESC& CBossGrenade::Get_CollisionDesc(COLLISION eColType)
 
 	return Desc;
 }
+
 
 HRESULT CBossGrenade::Ready_Components()
 {

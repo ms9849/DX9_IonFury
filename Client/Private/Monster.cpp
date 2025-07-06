@@ -88,6 +88,38 @@ void CMonster::Move()
 {
 }
 
+void CMonster::RotateToPlayer(CTransform* pTranform)
+{
+	_float4x4 matWorldTemp = m_pGameInstance->Get_CameraWorld();
+
+	_float3 vLook = { matWorldTemp._31, matWorldTemp._32, matWorldTemp._33 };
+	vLook *= -1;
+	vLook.y = 0.f;
+	D3DXVec3Normalize(&vLook, &vLook);
+
+	_float3 vUp = { 0.f, 1.f, 0.f };
+
+	_float3 vRight;
+	D3DXVec3Cross(&vRight, &vUp, &vLook);
+	D3DXVec3Normalize(&vRight, &vRight);
+
+	_float3 scale = pTranform->Get_Scaled();
+
+	vRight *= scale.x;
+	vUp *= scale.y;
+	vLook *= scale.z;
+
+	_float4x4 matWorld = *pTranform->Get_WorldMatrixPtr();
+	_float3 vPos = pTranform->Get_State(STATE::POSITION);
+
+	memcpy(&matWorld.m[0][0], &vRight, sizeof(_float3));
+	memcpy(&matWorld.m[1][0], &vUp, sizeof(_float3));
+	memcpy(&matWorld.m[2][0], &vLook, sizeof(_float3));
+	memcpy(&matWorld.m[3][0], &vPos, sizeof(_float3));
+
+	pTranform->Set_Transform(matWorld);
+}
+
 void CMonster::Free()
 {
 	__super::Free();
@@ -104,8 +136,4 @@ void CMonster::Free()
 		Safe_Release(iter.second);
 	}
 	m_pTextureComs.clear();
-
-	/*if (m_pRoot != nullptr)
-		m_pRoot->Release_Subtree();
-	Safe_Release(m_pRoot);*/
 }

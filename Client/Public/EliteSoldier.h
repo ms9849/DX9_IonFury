@@ -56,6 +56,7 @@ public:
 
 private:
 	_bool m_bAnimationLock = false;
+	_uint m_uTempNum = 0;
 	EliteSoldierState m_eState = EliteSoldierState::END;
 
 public:
