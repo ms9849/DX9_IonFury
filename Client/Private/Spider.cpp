@@ -3,6 +3,7 @@
 #include "Bullet.h"
 #include "MeleeAttack.h"
 #include "BehaviorNode.h"
+#include "Particle_Manager.h"
 
 CSpider::CSpider(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CMonster{ pGraphic_Device }
@@ -52,98 +53,6 @@ HRESULT CSpider::Initialize(void* pArg)
 	m_fMaxRange = 10.f;
 	//m_AttackfCoolTime = 1.f;
 
-	//m_pTransformCom->Rotation({0.f, 1.f, 0.f}, m_pGameInstance->Random(0.f, 180.f));
-	//m_pTransformCom->LookAt(m_pPlayerTransform->Get_State(STATE::POSITION));
-
-
-	// 구조 변경
-
-	//CSelectorNode* root = new CSelectorNode();
-
-	//CSequenceNode* CCheckHpSequence = new CSequenceNode();
-	//CCheckHpSequence->AddChild(new CConditionNode([this]() {
-	//	return this->m_fHp <= 0;
-	//	}));
-
-	//CCheckHpSequence->AddChild(new CActionNode([this]() {
-	//	m_strFrameKey = TEXT("Spider_Die_Default");		// 나중엔 함수만들어서 조절하는게 좋을거 같음
-	//	m_bAnimationLock = true;
-	//	m_bDying = true;
-	//	}));
-
-	//CSequenceNode* CAttackSequence = new CSequenceNode();
-	//CAttackSequence->AddChild(new CConditionNode([this](_float fTimeDelta) {
-	//	//OutputDebugStringA(("Spider Update m_fSumAttackCoolTime: " + std::to_string(m_fSumAttackCoolTime) + "\n").c_str());
-	//	return this->m_pSightCom->Check_Sight(fTimeDelta);
-	//	}));
-
-	//CAttackSequence->AddChild(new CConditionNode([this](_float fTimeDelta) {
-	//	return m_fSumAttackCoolTime >= m_fAttackfCoolTime;
-	//	}));
-
-	//CAttackSequence->AddChild(new CConditionNode([this]() {
-	//	//OutputDebugStringA(("Spider Update m_fSumAttackCoolTime: " + std::to_string(m_fSumAttackCoolTime) + "\n").c_str());
-	//	_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
-
-	//	return D3DXVec3Length(&vDiff) <= m_fAttackRange;
-	//	}));
-
-	//CAttackSequence->AddChild(new CActionNode([this]() {
-	//	OutputDebugStringW((L"Spider FrameKey: " + m_strFrameKey + L"\n").c_str());
-	//	if (m_strFrameKey == TEXT("Spider_Attack"))
-	//		return false;
-
-	//	this->Attack();
-
-	//	}));
-	//
-	//CSelectorNode* CMoveCheckSequence = new CSelectorNode();
-	//CSequenceNode* CSightSucessSequence = new CSequenceNode();
-	//CSequenceNode* CSightFailSequence = new CSequenceNode();
-	//CSightFailSequence->AddChild(new CConditionNode([this](_float fTimeDelta) {
-	//	//OutputDebugStringA(("Spider Update TimeDelta: " + std::to_string(fTimeDelta) + "\n").c_str());
-	//	return !this->m_pSightCom->Check_Sight(fTimeDelta);
-	//	}));
-
-	//CSightFailSequence->AddChild(new CConditionNode([this]() {
-	//	_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
-	//	return this->m_fChaseRange >= D3DXVec3Length(&vDiff);
-	//	}));
-
-	//CSightFailSequence->AddChild(new CConditionNode([this](_float fTimeDelta) {
-	//	return m_fSumMoveCoolTime >= m_fMoveCoolTime;
-	//	}));
-
-	//CSightFailSequence->AddChild(new CActionNode([this](_float fTimeDelta) {
-	//	this->Move(fTimeDelta);
-	//	}));
-
-	//CSightSucessSequence->AddChild(new CConditionNode([this](_float fTimeDelta) {
-	//	return this->m_pSightCom->Check_Sight(fTimeDelta);
-	//	}));
-
-	//CSightSucessSequence->AddChild(new CConditionNode([this]() {
-	//	_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
-	//	return this->m_fChaseRange >= D3DXVec3Length(&vDiff) && m_fAttackRange <= D3DXVec3Length(&vDiff);
-	//	}));
-
-	//CSightSucessSequence->AddChild(new CConditionNode([this](_float fTimeDelta) {
-	//	return m_fSumMoveCoolTime >= m_fMoveCoolTime;
-	//	}));
-
-	//CSightSucessSequence->AddChild(new CActionNode([this](_float fTimeDelta) {
-	//	this->Move(fTimeDelta);
-	//	}));
-
-	//CMoveCheckSequence->AddChild(CSightSucessSequence);
-	//CMoveCheckSequence->AddChild(CSightFailSequence);
-
-	//root->AddChild(CCheckHpSequence);
-	//root->AddChild(CAttackSequence);
-	//root->AddChild(CMoveCheckSequence);
-
-	//m_pRoot = root;
-
 	return S_OK;
 }
 
@@ -172,8 +81,6 @@ void CSpider::Update(_float fTimeDelta)
 	m_fSumAttackCoolTime += fTimeDelta;
 	m_fSumMoveCoolTime += fTimeDelta;
 
-	//OutputDebugStringA(("Spider Update m_fSumAttackCoolTime: " + std::to_string(m_fSumAttackCoolTime) + "\n").c_str());
-	//_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
 	vDiff.y = 0.f;
 	D3DXVec3Normalize(&vDiff, &vDiff);
 
@@ -238,13 +145,7 @@ void CSpider::Update(_float fTimeDelta)
 			{
 				m_bJump = true;
 				m_fTime = 0.f;
-				wchar_t szBuffer[128];
-				swprintf_s(szBuffer, 128, L"[Transform Pos] X: %.2f, Y: %.2f, Z: %.2f\n", m_pTransformCom->Get_State(STATE::POSITION).x, m_pTransformCom->Get_State(STATE::POSITION).y, m_pTransformCom->Get_State(STATE::POSITION).z);
-				OutputDebugStringW(szBuffer);
-				//__super::Jump(fTimeDelta);
-				/*Jump(fTimeDelta, 4.0f);*/
 				Attack();
-				//m_bJump = false;
 			}
 		}
 
@@ -260,29 +161,6 @@ void CSpider::Update(_float fTimeDelta)
 		}
 	}
 
-	/*m_pRoot->Run(fTimeDelta);*/
-
-	/*if (!m_bAnimationLock)
-		m_pRoot->Run(fTimeDelta);*/
-	//m_pRoot->Run(fTimeDelta);
-
-	/*auto iter = m_Frames.find(m_strFrameKey);
-	m_pAnimationCom->Set_Animation(&iter->second);*/
-
-
-		//auto iter = m_Frames.find(m_strFrameKey);
-	/*auto iter = m_Frames.find(m_strFrameKey);
-	m_pAnimationCom->Set_Animation(&iter->second);*/
-
-	/*if (m_bAnimationLock)
-	{
-		if (m_pAnimationCom->Check_Animation_Finish())
-			m_bAnimationLock = false;
-	}*/
-	//auto iter = m_Frames.find(m_strFrameKey);
-	//m_pAnimationCom->Set_Animation(&iter->second);
-
-	//__super::Jump(fTimeDelta);
 	Jump(fTimeDelta, m_fJumpPower);
 	SetUp_OnTerrain(m_pTransformCom, 0.25f, &m_bJump);
 }
@@ -310,52 +188,14 @@ void CSpider::Late_Update(_float fTimeDelta)
 			m_strFrameKey = TEXT("Spider_Front");
 		}
 	}
-	/*m_pAnimationCom->Set_Animation(&iter->second);
-	m_pAnimationCom->Play_Animation(fTimeDelta);*/
-	//m_pAnimationCom->Play_Animation(fTimeDelta);
+
 	Compute_CamDistance(m_pTransformCom->Get_State(STATE::POSITION));
 	m_pGameInstance->Add_RenderGroup(RENDER::BLEND, this);
 }
 
 HRESULT CSpider::Render()
 {
-	_float4x4 matWorldTemp = *m_pTransformCom->Get_WorldMatrixPtr();
-
-	/*
-	matWorldTemp? ->현재 트랜스폼의 위치와 회전값을 그대로 가져옴.
-
-	지금 이 상태에서 플레이어를 바라보게끔 회전만 시키면 되는 상황
-
-	실제 회전값과는 무관하게 플레이어를 바라보게만 만든 행렬
-	*/
-
-	_float3 fMonsterPos = m_pTransformCom->Get_State(STATE::POSITION);
-	_float3 fPlayerPos = m_pPlayerTransform->Get_State(STATE::POSITION);
-	//m_pTransformCom->Set_Scale({ 0.1f, 0.1f, 0.1f });
-
-	_float3 fLook = fPlayerPos - fMonsterPos;
-	fLook.y = 0.0f;								// y축 회전용
-	D3DXVec3Normalize(&fLook, &fLook);
-
-	_float3 fUp = { 0.0f, 1.0f, 0.0f };
-
-	_float3 fRight;
-	D3DXVec3Cross(&fRight, &fUp, &fLook);
-	D3DXVec3Normalize(&fRight, &fRight);
-
-	_float3 scale = m_pTransformCom->Get_Scaled();
-
-	fRight *= scale.x;
-	fUp *= scale.y;
-	fLook *= scale.z;
-
-	memcpy(&matWorldTemp.m[0][0], &fRight, sizeof(_float3));
-	memcpy(&matWorldTemp.m[1][0], &fUp, sizeof(_float3));
-	memcpy(&matWorldTemp.m[2][0], &fLook, sizeof(_float3));
-
-	//m_pTransformCom->Set_Scale({ 10.f, 10.f, 10.f });
-
-	m_pTransformCom->Set_Transform(matWorldTemp);
+	RotateToPlayer(m_pTransformCom);
 
 	auto iter = m_pTextureComs.find(m_strFrameKey);
 	iter->second->Set_Texture(m_pAnimationCom->Get_Frame_Current_Index(m_strFrameKey));
@@ -392,7 +232,7 @@ HRESULT CSpider::Ready_Animations()
 
 	//Spider_Die_Default
 	iter = m_pTextureComs.find(TEXT("Spider_Die_Default"));
-	Desc_1.iFrameSpeed = 12;
+	Desc_1.iFrameSpeed = 7;
 	Desc_1.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom->Set_Animation(TEXT("Spider_Die_Default"), Desc_1);
 
@@ -422,25 +262,25 @@ HRESULT CSpider::Ready_Animations()
 
 	//Spider_Front
 	iter = m_pTextureComs.find(TEXT("Spider_Front"));
-	Desc_6.iFrameSpeed = 10;
+	Desc_6.iFrameSpeed = 5;
 	Desc_6.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom->Set_Animation(TEXT("Spider_Front"), Desc_6);
 
 	//Spider_Back
 	iter = m_pTextureComs.find(TEXT("Spider_Back"));
-	Desc_7.iFrameSpeed = 10;
+	Desc_7.iFrameSpeed = 5;
 	Desc_7.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom->Set_Animation(TEXT("Spider_Back"), Desc_7);
 
 	//Spider_Left
 	iter = m_pTextureComs.find(TEXT("Spider_Left"));
-	Desc_8.iFrameSpeed = 10;
+	Desc_8.iFrameSpeed = 5;
 	Desc_8.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom->Set_Animation(TEXT("Spider_Left"), Desc_8);
 
 	//Spider_Right
 	iter = m_pTextureComs.find(TEXT("Spider_Right"));
-	Desc_9.iFrameSpeed = 10;
+	Desc_9.iFrameSpeed = 5;
 	Desc_9.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom->Set_Animation(TEXT("Spider_Right"), Desc_9);
 
@@ -455,13 +295,20 @@ HRESULT CSpider::Ready_Animations()
 
 void CSpider::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta)
 {
+	if (m_isDead || m_bDying)
+		return;
+
 	if (eColType == COLLISION::SPHERE)
 	{
 		CBullet* pBullet = dynamic_cast<CBullet*>(pDst);
 		if (pBullet != nullptr)
 		{
-			m_pGameInstance->PlaySoundOnce(TEXT("Spider_Hit.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
-			m_fHp -= pBullet->Get_Damage();
+			if ((m_fHp -= (pBullet->Get_Damage())) > 0)
+			{
+				m_pGameInstance->PlaySoundOnce(TEXT("Spider_Hit.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
+			}
+			CParticle_Manager::GetInstance()->Create_Particle(TEXT("Particle_Blood"), ENUM_CLASS(LEVEL::GAMEPLAY),
+				TEXT("Layer_Particle"), m_pTransformCom->Get_State(STATE::POSITION));
 		}
 	}
 
@@ -570,6 +417,7 @@ HRESULT CSpider::End_RenderState()
 
 void CSpider::Attack()
 {
+	m_pGameInstance->PlaySoundOnce(TEXT("Spider_Attack.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
 	//m_bAttackStarted = true;
 	//m_bAttackStarted = true;
 	//m_strFrameKey = TEXT("Spider_Die_Explosion");
@@ -659,7 +507,13 @@ void CSpider::Jump(_float fTimeDelta, _float fJumpPower)								// 임시 사용 함�
 
 		m_fTime += 0.3f * fTimeDelta;
 		_float3 vPosition = m_pTransformCom->Get_State(STATE::POSITION);
-		vPosition.y = vPosition.y + m_fFallSpeed;
+
+		_float3 vDir = m_pPlayerTransform->Get_State(STATE::POSITION) - vPosition;
+		vDir.y = 0.f;
+		D3DXVec3Normalize(&vDir, &vDir);
+
+		vPosition += vDir * fJumpPower * fTimeDelta;
+		vPosition.y += m_fFallSpeed;
 		m_pTransformCom->Set_State(STATE::POSITION, vPosition);
 	}
 }

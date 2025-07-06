@@ -24,7 +24,7 @@ private:
 		TEXT("EliteSoldier_Attack_Front"), TEXT("EliteSoldier_Attack_Seat"), TEXT("EliteSoldier_Die_Default"),
 		TEXT("EliteSoldier_Direction_NE"), TEXT("EliteSoldier_Direction_NW"), TEXT("EliteSoldier_Direction_SE"),
 		TEXT("EliteSoldier_Direction_SW"), TEXT("EliteSoldier_Front"), TEXT("EliteSoldier_Back"),
-		TEXT("EliteSoldier_Left"), TEXT("EliteSoldier_Right"), TEXT("EliteSoldier_Die_Idle")
+		TEXT("EliteSoldier_Left"), TEXT("EliteSoldier_Right"), TEXT("EliteSoldier_Die_Idle"),
 	};
 
 	const _float3 m_vShootPosOffset[5] = {
@@ -56,6 +56,7 @@ public:
 
 private:
 	_bool m_bAnimationLock = false;
+	_uint m_uTempNum = 0;
 	EliteSoldierState m_eState = EliteSoldierState::END;
 
 public:

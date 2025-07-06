@@ -50,98 +50,6 @@ HRESULT CZombie::Initialize(void* pArg)
 	m_fMaxRange = 10.f;
 	//m_AttackfCoolTime = 1.f;
 
-	//m_pTransformCom->Rotation({0.f, 1.f, 0.f}, m_pGameInstance->Random(0.f, 180.f));
-	//m_pTransformCom->LookAt(m_pPlayerTransform->Get_State(STATE::POSITION));
-
-
-	// 구조 변경
-
-	//CSelectorNode* root = new CSelectorNode();
-
-	//CSequenceNode* CCheckHpSequence = new CSequenceNode();
-	//CCheckHpSequence->AddChild(new CConditionNode([this]() {
-	//	return this->m_fHp <= 0;
-	//	}));
-
-	//CCheckHpSequence->AddChild(new CActionNode([this]() {
-	//	m_strFrameKey = TEXT("Zombie_Die_Default");		// 나중엔 함수만들어서 조절하는게 좋을거 같음
-	//	m_bAnimationLock = true;
-	//	m_bDying = true;
-	//	}));
-
-	//CSequenceNode* CAttackSequence = new CSequenceNode();
-	//CAttackSequence->AddChild(new CConditionNode([this](_float fTimeDelta) {
-	//	//OutputDebugStringA(("Zombie Update m_fSumAttackCoolTime: " + std::to_string(m_fSumAttackCoolTime) + "\n").c_str());
-	//	return this->m_pSightCom->Check_Sight(fTimeDelta);
-	//	}));
-
-	//CAttackSequence->AddChild(new CConditionNode([this](_float fTimeDelta) {
-	//	return m_fSumAttackCoolTime >= m_fAttackfCoolTime;
-	//	}));
-
-	//CAttackSequence->AddChild(new CConditionNode([this]() {
-	//	//OutputDebugStringA(("Zombie Update m_fSumAttackCoolTime: " + std::to_string(m_fSumAttackCoolTime) + "\n").c_str());
-	//	_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
-
-	//	return D3DXVec3Length(&vDiff) <= m_fAttackRange;
-	//	}));
-
-	//CAttackSequence->AddChild(new CActionNode([this]() {
-	//	OutputDebugStringW((L"Zombie FrameKey: " + m_strFrameKey + L"\n").c_str());
-	//	if (m_strFrameKey == TEXT("Zombie_Attack"))
-	//		return false;
-
-	//	this->Attack();
-
-	//	}));
-	//
-	//CSelectorNode* CMoveCheckSequence = new CSelectorNode();
-	//CSequenceNode* CSightSucessSequence = new CSequenceNode();
-	//CSequenceNode* CSightFailSequence = new CSequenceNode();
-	//CSightFailSequence->AddChild(new CConditionNode([this](_float fTimeDelta) {
-	//	//OutputDebugStringA(("Zombie Update TimeDelta: " + std::to_string(fTimeDelta) + "\n").c_str());
-	//	return !this->m_pSightCom->Check_Sight(fTimeDelta);
-	//	}));
-
-	//CSightFailSequence->AddChild(new CConditionNode([this]() {
-	//	_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
-	//	return this->m_fChaseRange >= D3DXVec3Length(&vDiff);
-	//	}));
-
-	//CSightFailSequence->AddChild(new CConditionNode([this](_float fTimeDelta) {
-	//	return m_fSumMoveCoolTime >= m_fMoveCoolTime;
-	//	}));
-
-	//CSightFailSequence->AddChild(new CActionNode([this](_float fTimeDelta) {
-	//	this->Move(fTimeDelta);
-	//	}));
-
-	//CSightSucessSequence->AddChild(new CConditionNode([this](_float fTimeDelta) {
-	//	return this->m_pSightCom->Check_Sight(fTimeDelta);
-	//	}));
-
-	//CSightSucessSequence->AddChild(new CConditionNode([this]() {
-	//	_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
-	//	return this->m_fChaseRange >= D3DXVec3Length(&vDiff) && m_fAttackRange <= D3DXVec3Length(&vDiff);
-	//	}));
-
-	//CSightSucessSequence->AddChild(new CConditionNode([this](_float fTimeDelta) {
-	//	return m_fSumMoveCoolTime >= m_fMoveCoolTime;
-	//	}));
-
-	//CSightSucessSequence->AddChild(new CActionNode([this](_float fTimeDelta) {
-	//	this->Move(fTimeDelta);
-	//	}));
-
-	//CMoveCheckSequence->AddChild(CSightSucessSequence);
-	//CMoveCheckSequence->AddChild(CSightFailSequence);
-
-	//root->AddChild(CCheckHpSequence);
-	//root->AddChild(CAttackSequence);
-	//root->AddChild(CMoveCheckSequence);
-
-	//m_pRoot = root;
-
 	return S_OK;
 }
 
@@ -170,8 +78,6 @@ void CZombie::Update(_float fTimeDelta)
 	m_fSumAttackCoolTime += fTimeDelta;
 	m_fSumMoveCoolTime += fTimeDelta;
 
-	//OutputDebugStringA(("Zombie Update m_fSumAttackCoolTime: " + std::to_string(m_fSumAttackCoolTime) + "\n").c_str());
-	//_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
 	vDiff.y = 0.f;
 	D3DXVec3Normalize(&vDiff, &vDiff);
 
@@ -256,28 +162,6 @@ void CZombie::Update(_float fTimeDelta)
 		}
 	}
 
-	/*m_pRoot->Run(fTimeDelta);*/
-
-	/*if (!m_bAnimationLock)
-		m_pRoot->Run(fTimeDelta);*/
-	//m_pRoot->Run(fTimeDelta);
-
-	/*auto iter = m_Frames.find(m_strFrameKey);
-	m_pAnimationCom->Set_Animation(&iter->second);*/
-
-
-		//auto iter = m_Frames.find(m_strFrameKey);
-	/*auto iter = m_Frames.find(m_strFrameKey);
-	m_pAnimationCom->Set_Animation(&iter->second);*/
-
-	/*if (m_bAnimationLock)
-	{
-		if (m_pAnimationCom->Check_Animation_Finish())
-			m_bAnimationLock = false;
-	}*/
-	//auto iter = m_Frames.find(m_strFrameKey);
-	//m_pAnimationCom->Set_Animation(&iter->second);
-
 	__super::Jump(fTimeDelta);
 	SetUp_OnTerrain(m_pTransformCom, 0.5f, &m_bJump);
 }
@@ -289,9 +173,6 @@ void CZombie::Late_Update(_float fTimeDelta)
 
 	if (m_bAnimationLock && m_pAnimationCom->Check_Animation_Finish(m_strFrameKey))
 	{
-		//m_pAnimationCom->Set_Animation(&iter->second);
-		//m_Cnt++;
-
 		if (m_bDying)
 		{
 			//m_isDead = true;
@@ -305,46 +186,14 @@ void CZombie::Late_Update(_float fTimeDelta)
 			m_strFrameKey = TEXT("Zombie_Front");
 		}
 	}
-	/*m_pAnimationCom->Set_Animation(&iter->second);
-	m_pAnimationCom->Play_Animation(fTimeDelta);*/
-	//m_pAnimationCom->Play_Animation(fTimeDelta);
+
 	Compute_CamDistance(m_pTransformCom->Get_State(STATE::POSITION));
 	m_pGameInstance->Add_RenderGroup(RENDER::BLEND, this);
 }
 
 HRESULT CZombie::Render()
 {
-	_float4x4 matWorldTemp = *m_pTransformCom->Get_WorldMatrixPtr();
-
-	/*
-	matWorldTemp? ->현재 트랜스폼의 위치와 회전값을 그대로 가져옴.
-
-	지금 이 상태에서 플레이어를 바라보게끔 회전만 시키면 되는 상황
-
-	실제 회전값과는 무관하게 플레이어를 바라보게만 만든 행렬
-	*/
-
-	_float3 fMonsterPos = m_pTransformCom->Get_State(STATE::POSITION);
-	_float3 fPlayerPos = m_pPlayerTransform->Get_State(STATE::POSITION);
-	//m_pTransformCom->Set_Scale({ 10.f, 10.f, 10.f });
-
-	_float3 fLook = fPlayerPos - fMonsterPos;
-	fLook.y = 0.0f;								// y축 회전용
-	D3DXVec3Normalize(&fLook, &fLook);
-
-	_float3 fUp = { 0.0f, 1.0f, 0.0f };
-
-	_float3 fRight;
-	D3DXVec3Cross(&fRight, &fUp, &fLook);
-	D3DXVec3Normalize(&fRight, &fRight);
-
-	memcpy(&matWorldTemp.m[0][0], &fRight, sizeof(_float3));
-	memcpy(&matWorldTemp.m[1][0], &fUp, sizeof(_float3));
-	memcpy(&matWorldTemp.m[2][0], &fLook, sizeof(_float3));
-
-	//m_pTransformCom->Set_Scale({ 10.f, 10.f, 10.f });
-
-	m_pTransformCom->Set_Transform(matWorldTemp);
+	RotateToPlayer(m_pTransformCom);
 
 	auto iter = m_pTextureComs.find(m_strFrameKey);
 	iter->second->Set_Texture(m_pAnimationCom->Get_Frame_Current_Index(m_strFrameKey));
@@ -376,7 +225,7 @@ HRESULT CZombie::Ready_Animations()
 	CAnimation::FRAME_DESC Desc_11{};
 
 	auto iter = m_pTextureComs.find(TEXT("Zombie_Attack"));
-	Desc_0.iFrameSpeed = 15;
+	Desc_0.iFrameSpeed = 12;
 	Desc_0.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom->Set_Animation(TEXT("Zombie_Attack"), Desc_0);
 
@@ -388,49 +237,49 @@ HRESULT CZombie::Ready_Animations()
 
 	//Zombie_Direction_NE
 	iter = m_pTextureComs.find(TEXT("Zombie_Direction_NE"));
-	Desc_2.iFrameSpeed = 7;
+	Desc_2.iFrameSpeed = 6;
 	Desc_2.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom->Set_Animation(TEXT("Zombie_Direction_NE"), Desc_2);
 
 	//Zombie_Direction_NW
 	iter = m_pTextureComs.find(TEXT("Zombie_Direction_NW"));
-	Desc_3.iFrameSpeed = 7;
+	Desc_3.iFrameSpeed = 6;
 	Desc_3.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom->Set_Animation(TEXT("Zombie_Direction_NW"), Desc_3);
 
 	//Zombie_Direction_SE
 	iter = m_pTextureComs.find(TEXT("Zombie_Direction_SE"));
-	Desc_4.iFrameSpeed = 7;
+	Desc_4.iFrameSpeed = 6;
 	Desc_4.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom->Set_Animation(TEXT("Zombie_Direction_SE"), Desc_4);
 
 	//Zombie_Direction_SW
 	iter = m_pTextureComs.find(TEXT("Zombie_Direction_SW"));
-	Desc_5.iFrameSpeed = 7;
+	Desc_5.iFrameSpeed = 6;
 	Desc_5.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom->Set_Animation(TEXT("Zombie_Direction_SW"), Desc_5);
 
 	//Zombie_Front
 	iter = m_pTextureComs.find(TEXT("Zombie_Front"));
-	Desc_6.iFrameSpeed = 7;
+	Desc_6.iFrameSpeed = 6;
 	Desc_6.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom->Set_Animation(TEXT("Zombie_Front"), Desc_6);
 
 	//Zombie_Back
 	iter = m_pTextureComs.find(TEXT("Zombie_Back"));
-	Desc_7.iFrameSpeed = 7;
+	Desc_7.iFrameSpeed = 6;
 	Desc_7.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom->Set_Animation(TEXT("Zombie_Back"), Desc_7);
 
 	//Zombie_Left
 	iter = m_pTextureComs.find(TEXT("Zombie_Left"));
-	Desc_8.iFrameSpeed = 7;
+	Desc_8.iFrameSpeed = 6;
 	Desc_8.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom->Set_Animation(TEXT("Zombie_Left"), Desc_8);
 
 	//Zombie_Right
 	iter = m_pTextureComs.find(TEXT("Zombie_Right"));
-	Desc_9.iFrameSpeed = 7;
+	Desc_9.iFrameSpeed = 6;
 	Desc_9.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom->Set_Animation(TEXT("Zombie_Right"), Desc_9);
 
@@ -451,13 +300,18 @@ HRESULT CZombie::Ready_Animations()
 
 void CZombie::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta)
 {
+	if (m_isDead || m_bDying)
+		return;
+
 	if (eColType == COLLISION::SPHERE)
 	{
 		CBullet* pBullet = dynamic_cast<CBullet*>(pDst);
 		if (pBullet != nullptr)
 		{
-			m_pGameInstance->PlaySoundOnce(TEXT("zombie_hit_1.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
-			m_fHp -= pBullet->Get_Damage();
+			if ((m_fHp -= (pBullet->Get_Damage())) > 0)
+			{
+				m_pGameInstance->PlaySoundOnce(TEXT("zombie_hit_1.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
+			}
 			CParticle_Manager::GetInstance()->Create_Particle(TEXT("Particle_Blood"), ENUM_CLASS(LEVEL::GAMEPLAY),
 				TEXT("Layer_Particle"), m_pTransformCom->Get_State(STATE::POSITION));
 		}
