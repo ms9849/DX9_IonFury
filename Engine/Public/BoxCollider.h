@@ -26,17 +26,28 @@ public:
 		return m_vLocalPos[iIdx];
 	}
 
-	const _float Get_Scale(_uint iIdx) const {
-		return *(_float *)&m_fScale[iIdx];
+	const _float& Get_Scale(_uint iIdx) const {
+		return *(_float *)&m_vScale[iIdx];
 	}
 
+	void Set_Scale(const _float3& vScale) {
+		memcpy(m_vScale, vScale, sizeof(_float3));
+	}
+
+	const _float3& Get_Min() const {
+		return m_vLocalPos[3];
+	}
+
+	const _float3& Get_Max() const {
+		return m_vLocalPos[5];
+	}
 public:
 	virtual HRESULT Initialize_Prototype();
 	virtual HRESULT Initialize(void* pArg);
 
 private:
 	_float3 m_vLocalPos[8] = {};
-	_float3 m_fScale = {};
+	_float3 m_vScale = {};
 	_float3 m_vAxis[3] = {};
 public:
 	static CBoxCollider* Create(LPDIRECT3DDEVICE9 pGraphicDev);

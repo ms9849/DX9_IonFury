@@ -56,6 +56,7 @@ void CDoorLock::Late_Update(_float fTimeDelta)
 		m_strFrameKey = TEXT("DoorLock_Open");
 	}
 
+	Compute_CamDistance(m_pTransformCom->Get_State(STATE::POSITION));
 	m_pGameInstance->Add_RenderGroup(RENDER::BLEND, this);
 }
 

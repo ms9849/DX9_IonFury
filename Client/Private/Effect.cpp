@@ -44,8 +44,11 @@ void CEffect::Late_Update(_float fTimeDelta)
 		m_isDead = true;
 	}
 	
-	if(!m_isDead)
-		m_pGameInstance->Add_RenderGroup(RENDER::BLEND_LATE, this);
+	if (!m_isDead)
+	{
+		Compute_CamDistance(m_pTransformCom->Get_State(STATE::POSITION));
+		m_pGameInstance->Add_RenderGroup(RENDER::BLEND, this);
+	}
 }
 
 HRESULT CEffect::Render()

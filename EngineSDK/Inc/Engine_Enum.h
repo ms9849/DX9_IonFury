@@ -10,6 +10,6 @@ namespace Engine
 	enum class TEXTURE { PLANE, CUBE, END };
 	enum class RAY { LOCAL, WORLD, END };
 	enum class CHANNELID { SOUND_EFFECT, SOUND_BGM, SOUND_END };
-	enum class COLLISION { OBB, SPHERE, RAY, END };
+	enum class COLLISION { OBB, AABB, SPHERE, RAY, END };
 }
 #endif // Engine_Enum_h__

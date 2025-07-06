@@ -63,7 +63,7 @@ void CRenderer::Render_NonBlend()
 
 _bool Compare(CGameObject* pSour, CGameObject* pDest)
 {
-	return static_cast<CAlphaObject*>(pSour)->Get_CamDistance() > static_cast<CAlphaObject*>(pDest)->Get_CamDistance();
+	return static_cast<CGameObject*>(pSour)->Get_CamDistance() > static_cast<CGameObject*>(pDest)->Get_CamDistance();
 }
 
 
@@ -73,7 +73,7 @@ void CRenderer::Render_Blend()
 
 	m_RenderObjects[ENUM_CLASS(RENDER::BLEND)].sort([](CGameObject* pSour, CGameObject* pDest)->_bool 		
 	{
-			return static_cast<CAlphaObject*>(pSour)->Get_CamDistance() > static_cast<CAlphaObject*>(pDest)->Get_CamDistance();
+			return static_cast<CGameObject*>(pSour)->Get_CamDistance() > static_cast<CGameObject*>(pDest)->Get_CamDistance();
 	});
 
 

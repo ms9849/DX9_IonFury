@@ -1,12 +1,12 @@
 #include "ParticleSystem.h"
 
 CParticleSystem::CParticleSystem(LPDIRECT3DDEVICE9 pGraphic_Device) :
-    CAlphaObject { pGraphic_Device }
+    CGameObject { pGraphic_Device }
 {
 }
 
 CParticleSystem::CParticleSystem(const CParticleSystem& Prototype) :
-    CAlphaObject { Prototype }
+    CGameObject{ Prototype }
     , m_pVertexBuffer{ Prototype.m_pVertexBuffer }
 {
 }
