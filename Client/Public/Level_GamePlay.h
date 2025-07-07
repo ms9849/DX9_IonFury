@@ -29,6 +29,7 @@ private:
 	HRESULT Ready_Layer_Cube(const _wstring& strLayerTag);
 	HRESULT Ready_Layer_Items(const _wstring& strLayerTag);
 	HRESULT Ready_Layer_Map_Objects(const _wstring& strLayerTag);
+	HRESULT Ready_Layer_Map_Slope(const _wstring& strLayerTag);
 	HRESULT Ready_Layer_Interaction_Objects(const _wstring& strLayerTag);
 	HRESULT Ready_Layer_Bullet(const _wstring& strLayerTag);
 

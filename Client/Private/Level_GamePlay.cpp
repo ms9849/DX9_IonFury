@@ -55,6 +55,9 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(Ready_Layer_Map_Objects(TEXT("Layer_Map_Objects"))))
 		return E_FAIL;
 
+	if (FAILED(Ready_Layer_Map_Slope(TEXT("Layer_Map_Slope"))))
+		return E_FAIL;
+
 	if (FAILED(Ready_Layer_Interaction_Objects(TEXT("Layer_Interaction_Objects"))))
 		return E_FAIL;
 
@@ -548,6 +551,15 @@ HRESULT CLevel_GamePlay::Ready_Layer_Map_Objects(const _wstring& strLayerTag)
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Map_Fan"),
+		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLevel_GamePlay::Ready_Layer_Map_Slope(const _wstring& strLayerTag)
+{
+	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Map_Slope"),
 		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag)))
 		return E_FAIL;
 

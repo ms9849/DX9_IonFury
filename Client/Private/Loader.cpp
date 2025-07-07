@@ -39,6 +39,7 @@
 #include "MapDeco.h"
 #include "MapGrinder.h"
 #include "MapFan.h"
+#include "MapSlope.h"
 #include "Snow.h"
 #include "Blood.h"
 
@@ -295,6 +296,11 @@ HRESULT CLoader::Loading_For_GamePlay()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Map_Blood_Fan_Active"),
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/MapObject/Fan/Blood_Active_%d.png"), 8))))
 		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Map_Slope */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Map_Slope"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/MapObject/Slope/Slope_%d.dds"), 1))))
+		return E_FAIL;
 #pragma endregion
 
 	m_strMessage = TEXT("모델를(을) 로딩 중 입니다.");
@@ -524,6 +530,11 @@ HRESULT CLoader::Loading_For_GamePlay()
 	/* For.Prototype_GameObject_Map_Fan */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Map_Fan"),
 		CMapFan::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Map_Slope */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Map_Slope"),
+		CMapSlope::Create(m_pGraphic_Device))))
 		return E_FAIL;
 #pragma endregion
 
