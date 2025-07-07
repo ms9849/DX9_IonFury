@@ -257,6 +257,8 @@ void CBoss::Late_Update(_float fTimeDelta)
 
 HRESULT CBoss::Render()
 {
+	m_pBoxColliderCom->Render(m_pTransformCom->Get_State(STATE::POSITION));
+
 	if (FAILED(Begin_RenderTestState()))
 		return E_FAIL;
 
@@ -546,8 +548,13 @@ HRESULT CBoss::Ready_Components()
 		return E_FAIL;
 
 	/* Com_BoxCollider */
+	CBoxCollider::BOXCOLLIDER_DESC Desc;
+	Desc.vPosition = { 0.f, 0.35f, 0.f };
+	Desc.fScaleX = 1.5f;
+	Desc.fScaleZ = 1.5f;
+	Desc.fScaleY = 3.8f;
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_BoxCollider"),
-		TEXT("Com_BoxCollider"), reinterpret_cast<CComponent**>(&m_pBoxColliderCom))))
+		TEXT("Com_BoxCollider"), reinterpret_cast<CComponent**>(&m_pBoxColliderCom), &Desc)))
 		return E_FAIL;
 
 	/* Com_SphereCollider */

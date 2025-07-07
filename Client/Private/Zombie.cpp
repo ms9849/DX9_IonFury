@@ -194,6 +194,7 @@ void CZombie::Late_Update(_float fTimeDelta)
 HRESULT CZombie::Render()
 {
 	m_pBoxColliderCom->Render(m_pTransformCom->Get_State(STATE::POSITION));
+	m_pBoxColliderHead->Render(m_pTransformCom->Get_State(STATE::POSITION));
 
 	RotateToPlayer(m_pTransformCom);
 
@@ -379,12 +380,20 @@ HRESULT CZombie::Ready_Components()
 
 	/* Com_BoxCollider */
 	CBoxCollider::BOXCOLLIDER_DESC Desc;
-	Desc.vPosition = { 0.f, 0.5f, 0.f };
+	Desc.vPosition = { 0.f, -0.1f, 0.f };
 	Desc.fScaleX = 0.2f;
 	Desc.fScaleZ = 0.2f;
-	Desc.fScaleY = 0.8f;
+	Desc.fScaleY = 0.5f;
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_BoxCollider"),
 		TEXT("Com_BoxCollider"), reinterpret_cast<CComponent**>(&m_pBoxColliderCom), &Desc)))
+		return E_FAIL;
+
+	Desc.vPosition = { 0.f, 4.f, 0.f };
+	Desc.fScaleX = 0.07f;
+	Desc.fScaleZ = 0.07f;
+	Desc.fScaleY = 0.06f;
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_BoxCollider"),
+		TEXT("Com_BoxCollider_Head"), reinterpret_cast<CComponent**>(&m_pBoxColliderHead), &Desc)))
 		return E_FAIL;
 
 	/* Com_SphereCollider */
