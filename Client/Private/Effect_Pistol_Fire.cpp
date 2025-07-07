@@ -44,7 +44,6 @@ void CEffect_Pistol_Fire::Priority_Update(_float fTimeDelta)
 
 void CEffect_Pistol_Fire::Update(_float fTimeDelta)
 {
-   // Compute_CamDistance(m_pTransformCom->Get_State(STATE::POSITION));
 }
 
 void CEffect_Pistol_Fire::Late_Update(_float fTimeDelta)
@@ -116,6 +115,12 @@ HRESULT CEffect_Pistol_Fire::End_RenderState()
     m_pGraphic_Device->SetTransform(D3DTS_PROJECTION, &m_OldProjMatrix);
 
     return S_OK;
+}
+
+void CEffect_Pistol_Fire::Set_Pos(const _float3& vPos)
+{
+    //직교 이펙트니까 그냥 넘어가게
+    return;
 }
 
 

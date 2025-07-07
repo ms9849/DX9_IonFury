@@ -78,8 +78,8 @@ public:
 #pragma endregion
 
 #pragma region SOUND_MANAGER
-	void PlaySoundOnce(const TCHAR* pSoundKey, CHANNELID eID, float fVolume);
-	void PlayBGM(const TCHAR* pSoundKey, float fVolume);
+	void PlaySoundOnce(const _wstring& pSoundKey, CHANNELID eID, float fVolume);
+	void PlayBGM(const _wstring& pSoundKey, float fVolume);
 	void StopSound(CHANNELID eID);
 	void StopAll();
 	void SetChannelVolume(CHANNELID eID, float fVolume);

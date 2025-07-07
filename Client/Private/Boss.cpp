@@ -4,6 +4,7 @@
 #include "BossGrenade.h"
 #include "BehaviorNode.h"
 #include "Particle_Manager.h"
+#include "Bullet_Manager.h"
 
 CBoss::CBoss(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CMonster{ pGraphic_Device }
@@ -775,7 +776,7 @@ void CBoss::Attack(_float fTimeDelta, BossAttackState state)
 			Desc.vBulletScale = { 0.1f, 0.1f, 0.1f };
 			Desc.pPlayerTransform = m_pPlayerTransform;
 			Desc.fDuration = 7.f;
-			m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_BossGrenade"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Monster_Bullet"), &Desc);
+			m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_BossGrenade"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Monster_Bullet"), &Desc);	
 			m_fSumLaunchCoolTime = 0.f;								// 유탄 한발 사용했으므로 누적 시간 초기화
 			m_uCurExplosionBullets++;										// 현재 사용한 총알 수 증가
 

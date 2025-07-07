@@ -18,7 +18,7 @@ HRESULT CBossGrenade::Initialize_Prototype()
 }
 
 HRESULT CBossGrenade::Initialize(void* pArg)
-{
+{	
 	CBossGrenade::BULLET_DESC* pDesc = static_cast<CBossGrenade::BULLET_DESC*>(pArg);
 	m_fBulletSpeed = pDesc->fBulletSpeed;
 

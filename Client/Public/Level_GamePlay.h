@@ -30,8 +30,10 @@ private:
 	HRESULT Ready_Layer_Items(const _wstring& strLayerTag);
 	HRESULT Ready_Layer_Map_Objects(const _wstring& strLayerTag);
 	HRESULT Ready_Layer_Interaction_Objects(const _wstring& strLayerTag);
+	HRESULT Ready_Layer_Bullet(const _wstring& strLayerTag);
 
 private:
+	class CBullet_Manager* m_pBullet_Manager = {};
 	class CParticle_Manager* m_pParticle_Manager = {};
 	class CEffect_Manager* m_pEffect_Manager = {};
 	class CTerrain_Manager* m_pTerrain_Manager = {};

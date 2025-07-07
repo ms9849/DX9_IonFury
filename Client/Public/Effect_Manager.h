@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Client_Defines.h"
-#include "Base.h"
+#include "Effect.h"
 
 NS_BEGIN(Engine)
 class CGameInstance;
@@ -18,7 +18,11 @@ private:
 
 public:
 	HRESULT Initialize();
-	void Create_Effect(const _wstring& strEffectTag, _uint iLayerLevelIndex, const _wstring& strLayerTag);
+	HRESULT Ready_Pistol_Fire();
+	HRESULT Ready_Boss_Die();
+	HRESULT Ready_Grenade_Explosion();
+
+	void Create_Effect(const _wstring& strEffectTag, _uint iLayerLevelIndex, const _wstring& strLayerTag, const _float3& vPos);
 
 	void Release_Effect_Manager();
 private:

@@ -11,6 +11,7 @@
 #include "Player_RightHand.h"
 #include "Player_LeftHand.h"
 #include "Effect_Manager.h"
+#include "Bullet_Manager.h"
 
 CPlayer::CPlayer(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CLandObject{ pGraphic_Device }
@@ -233,7 +234,7 @@ void CPlayer::Update(_float fTimeDelta)
 				if (m_tInfo.strWeapon.compare(TEXT("Pistol")) == 0)
 				{
 					m_pGameInstance->PlaySoundOnce(TEXT("Pistol_Shoot.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
-					m_pEffect_Manager->Create_Effect(TEXT("Effect_Pistol_Fire"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Effect"));
+					m_pEffect_Manager->Create_Effect(TEXT("Effect_Pistol_Fire"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Effect"), {0.f, 0.f, 0.f});
 				}
 				else if (m_tInfo.strWeapon.compare(TEXT("ShootGun")) == 0)
 				{
@@ -254,8 +255,10 @@ void CPlayer::Update(_float fTimeDelta)
 				Desc.isPlayerBullet = true;
 				Desc.fDuration = 5.f;
 
-				m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Bullet"),
-					ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_PlayerBullet"), &Desc);
+				CBullet_Manager::GetInstance()->Create_Bullet(TEXT("Bullet"), Desc, ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_PlayerBullet"));
+			
+				//m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Bullet"),
+					//ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_PlayerBullet"), &Desc);
 			}
 		}
 	}

@@ -8,11 +8,12 @@
 #include "UIItemQueue.h"
 #include "UICardKey.h"
 #include "Terrain.h"
+#include "ParticleSystem.h"
+#include "Player.h"
+#include "Particle_Manager.h"
+#include "Bullet_Manager.h"
 #include "Terrain_Manager.h"
 #include "Effect_Manager.h"
-#include "ParticleSystem.h"
-#include "Particle_Manager.h"
-#include "Player.h"
 
 CLevel_GamePlay::CLevel_GamePlay(LPDIRECT3DDEVICE9 pGraphic_Device, LEVEL eLevelID)
 	: CLevel { pGraphic_Device, ENUM_CLASS(eLevelID)}	
@@ -55,6 +56,9 @@ HRESULT CLevel_GamePlay::Initialize()
 		return E_FAIL;
 
 	if (FAILED(Ready_Layer_Interaction_Objects(TEXT("Layer_Interaction_Objects"))))
+		return E_FAIL;
+
+	if (FAILED(Ready_Layer_Bullet(TEXT("Layer_Bullet"))))
 		return E_FAIL;
 
 	return S_OK;
@@ -559,6 +563,15 @@ HRESULT CLevel_GamePlay::Ready_Layer_Interaction_Objects(const _wstring& strLaye
 	return S_OK;
 }
 
+HRESULT CLevel_GamePlay::Ready_Layer_Bullet(const _wstring& strLayerTag)
+{
+	m_pBullet_Manager = CBullet_Manager::GetInstance();
+	m_pBullet_Manager->Initialize();
+	Safe_AddRef(m_pBullet_Manager);
+
+	return S_OK;
+}
+
 CLevel_GamePlay* CLevel_GamePlay::Create(LPDIRECT3DDEVICE9 pGraphic_Device, LEVEL eLevelID)
 {
 	CLevel_GamePlay* pInstance = new CLevel_GamePlay(pGraphic_Device, eLevelID);
@@ -589,6 +602,9 @@ void CLevel_GamePlay::Free()
 
 	m_pParticle_Manager->Release_Particle_Manager();
 	Safe_Release(m_pParticle_Manager);
+
+	m_pBullet_Manager->Release_Bullet_Manager();
+	Safe_Release(m_pBullet_Manager);
 
 	for (auto& iter : m_pUIItemQueues)
 	{
