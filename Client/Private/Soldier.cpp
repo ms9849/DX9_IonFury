@@ -195,6 +195,8 @@ void CSoldier::Late_Update(_float fTimeDelta)
 
 HRESULT CSoldier::Render()
 {
+	m_pBoxColliderCom->Render(m_pTransformCom->Get_State(STATE::POSITION));
+	m_pBoxColliderHead->Render(m_pTransformCom->Get_State(STATE::POSITION));
 	RotateToPlayer(m_pTransformCom);
 
 	auto iter = m_pTextureComs.find(m_strFrameKey);
@@ -401,8 +403,21 @@ HRESULT CSoldier::Ready_Components()
 		return E_FAIL;
 
 	/* Com_BoxCollider */
+	CBoxCollider::BOXCOLLIDER_DESC Desc;
+	Desc.vPosition = { 0.f, -0.1f, 0.f };
+	Desc.fScaleX = 0.2f;
+	Desc.fScaleZ = 0.2f;
+	Desc.fScaleY = 0.5f;
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_BoxCollider"),
-		TEXT("Com_BoxCollider"), reinterpret_cast<CComponent**>(&m_pBoxColliderCom))))
+		TEXT("Com_BoxCollider"), reinterpret_cast<CComponent**>(&m_pBoxColliderCom), &Desc)))
+		return E_FAIL;
+
+	Desc.vPosition = { 0.f, 3.2f, 0.f };
+	Desc.fScaleX = 0.1f;
+	Desc.fScaleZ = 0.1f;
+	Desc.fScaleY = 0.08f;
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_BoxCollider"),
+		TEXT("Com_BoxCollider_Head"), reinterpret_cast<CComponent**>(&m_pBoxColliderHead), &Desc)))
 		return E_FAIL;
 
 	/* Com_SphereCollider */
@@ -540,4 +555,5 @@ void CSoldier::Free()
 {
 	//m_pRoot->ReleaseSubtree();
 	__super::Free();
+	//Safe_Release(m_pBoxColliderHead);
 }

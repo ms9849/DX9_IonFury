@@ -130,6 +130,7 @@ void CMonster::Free()
 	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pSightCom);
 	Safe_Release(m_pBoxColliderCom);
+	Safe_Release(m_pBoxColliderHead);
 	Safe_Release(m_pSphereColliderCom);
 
 	for (auto& iter : m_pTextureComs)

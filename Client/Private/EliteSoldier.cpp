@@ -201,6 +201,8 @@ void CEliteSoldier::Late_Update(_float fTimeDelta)
 
 HRESULT CEliteSoldier::Render()
 {
+	m_pBoxColliderCom->Render(m_pTransformCom->Get_State(STATE::POSITION));
+	m_pBoxColliderHead->Render(m_pTransformCom->Get_State(STATE::POSITION));
 	RotateToPlayer(m_pTransformCom);
 
 	auto iter = m_pTextureComs.find(m_strFrameKey);
@@ -386,8 +388,21 @@ HRESULT CEliteSoldier::Ready_Components()
 		return E_FAIL;
 
 	/* Com_BoxCollider */
+	CBoxCollider::BOXCOLLIDER_DESC Desc;
+	Desc.vPosition = { -0.1f, -0.07f, -0.1f };
+	Desc.fScaleX = 0.4f;
+	Desc.fScaleZ = 0.4f;
+	Desc.fScaleY = 0.8f;
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_BoxCollider"),
-		TEXT("Com_BoxCollider"), reinterpret_cast<CComponent**>(&m_pBoxColliderCom))))
+		TEXT("Com_BoxCollider"), reinterpret_cast<CComponent**>(&m_pBoxColliderCom), &Desc)))
+		return E_FAIL;
+
+	Desc.vPosition = { -0.3f, 3.25f, -0.3f };
+	Desc.fScaleX = 0.15f;
+	Desc.fScaleZ = 0.15f;
+	Desc.fScaleY = 0.13f;
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_BoxCollider"),
+		TEXT("Com_BoxCollider_Head"), reinterpret_cast<CComponent**>(&m_pBoxColliderHead), &Desc)))
 		return E_FAIL;
 
 	/* Com_SphereCollider */
