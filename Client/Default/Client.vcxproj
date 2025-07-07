@@ -225,7 +225,6 @@
     <ClCompile Include="..\private\MapFan.cpp" />
     <ClCompile Include="..\private\MapGate.cpp" />
     <ClCompile Include="..\Private\Effect_Manager.cpp" />
-    <ClCompile Include="..\Private\Effect_Pistol_Fire.cpp" />
     <ClCompile Include="..\private\MapGrinder.cpp" />
     <ClCompile Include="..\Private\Spider.cpp" />
     <ClCompile Include="..\Private\Particle_Manager.cpp" />
