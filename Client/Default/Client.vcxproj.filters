@@ -169,6 +169,18 @@
     <Filter Include="02.GameObjects\Particle\Manager">
       <UniqueIdentifier>{9d36ff8e-011f-4588-9b03-9ee6dc16a55e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03.MapObjects\Desk">
+      <UniqueIdentifier>{a29e7e24-0b16-4f88-b217-d4529a9a17b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.MapObjects\Deco">
+      <UniqueIdentifier>{c3324fcf-ea37-4e00-955d-ee720e4786bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.MapObjects\Grinder">
+      <UniqueIdentifier>{9d8537da-c683-4836-b0af-2c92aa3569a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.MapObjects\Fan">
+      <UniqueIdentifier>{eb9c2bcb-63f7-4e30-907c-97c7ed58c5fa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -351,6 +363,18 @@
     <ClInclude Include="..\Public\Particle_Manager.h">
       <Filter>02.GameObjects\Particle\Manager</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\MapDesk.h">
+      <Filter>03.MapObjects\Desk</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\MapDeco.h">
+      <Filter>03.MapObjects\Deco</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\MapGrinder.h">
+      <Filter>03.MapObjects\Grinder</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\MapFan.h">
+      <Filter>03.MapObjects\Fan</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -527,6 +551,18 @@
     </ClCompile>
     <ClCompile Include="..\Private\Particle_Manager.cpp">
       <Filter>02.GameObjects\Particle\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\MapDesk.cpp">
+      <Filter>03.MapObjects\Desk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\MapDeco.cpp">
+      <Filter>03.MapObjects\Deco</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\MapGrinder.cpp">
+      <Filter>03.MapObjects\Grinder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\MapFan.cpp">
+      <Filter>03.MapObjects\Fan</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
