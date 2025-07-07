@@ -100,6 +100,9 @@ private:
 
 	_bool m_bAnimateionOn = false;
 	_bool m_bExplosion = false;
+	_bool m_bScaleChange = false;
+
+	CBossGrenade::BULLET_DESC* m_pDesc;
 
 public:
 	static CBossGrenade* Create(LPDIRECT3DDEVICE9 pGraphicDev);
