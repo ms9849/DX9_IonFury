@@ -28,7 +28,7 @@ HRESULT CBossGrenade::Initialize(void* pArg)
 	if (FAILED(Ready_Animations()))
 		return E_FAIL;
 
-	if (pDesc == nullptr)
+	if (m_pDesc == nullptr)
 		return S_OK;
 	
 	m_vDir = pDesc->vDir;							// 몬스터 + 오프셋 to Player 방향벡터
@@ -82,6 +82,12 @@ void CBossGrenade::Update(_float fTimeDelta)
 	if (m_pTransformCom->Get_State(STATE::POSITION).y - 0.5f <= m_vPlayerPos.y || m_bAnimateionOn)			// 유탄이 플레이어의 시작 지점보다 낮아지면 폭발 모습 보이게
 	{
 		// 빌보드 효과를 줘서 플레이어가 어디서든 항상 터지는 애니메이션을 볼 수 있도록 하자
+		if (!m_bScaleChange)
+		{
+			m_bScaleChange = true;
+			m_pTransformCom->Set_Scale({ 7.f, 7.f, 7.f });			// 임시 적용 나중에 파티클로 변경할것
+		}
+
 		if (!m_bExplosion)
 		{
 			m_bExplosion = true;
@@ -135,7 +141,9 @@ HRESULT CBossGrenade::Render()
 		m_pVIBufferCom_Rect->Render();
 	}
 	else
-		m_pVIBufferCom->Render();
+		m_pVIBufferCom_Rect->Render();
+	/*else
+		m_pVIBufferCom->Render();*/
 
 	/*auto iter = m_pTextureComs.find(m_strFrameKey);
 	iter->second->Set_Texture(m_pAnimationCom->Get_Frame_Current_Index(m_strFrameKey));
@@ -208,7 +216,7 @@ HRESULT CBossGrenade::Ready_Components()
 		return E_FAIL;
 
 	/* Com_Texture */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Bullet"),
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Grenade"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
@@ -236,9 +244,9 @@ HRESULT CBossGrenade::Ready_Components()
 		return E_FAIL;
 
 	/* Com_VIBuffer */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_VIBuffer_Cube"),
+	/*if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_VIBuffer_Cube"),
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
-		return E_FAIL;
+		return E_FAIL;*/
 
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_Rect"),
 		TEXT("Com_VIBuffer_Rect"), reinterpret_cast<CComponent**>(&m_pVIBufferCom_Rect))))

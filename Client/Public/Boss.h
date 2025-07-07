@@ -68,11 +68,14 @@ private:
 	_bool m_bAnimationLock = false;
 	_bool m_bAttacking = false;
 	_uint m_uMaxBullets = {};
+	_uint m_uMaxExplosionBullets = {};
 	_uint m_uCurBullets = {};
+	_uint m_uCurExplosionBullets = {};
 	_uint m_uTempNum = 0;
 	_float m_fAttackFailTime = 0.f;
 	_float m_fLaunchCoolTime = 0.2f;
 	_float m_fSumLaunchCoolTime = 0.f;
+	_float m_fSafeDistance = {};
 	_float3 m_vUpOffset = { 0.f, 4.2f, 0.f };
 	_float3 m_vAttackPos = {};
 	BossAttackState m_eState = BossAttackState::END;
