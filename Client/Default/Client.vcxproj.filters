@@ -184,6 +184,9 @@
     <Filter Include="02.GameObjects\Bullet\Manager">
       <UniqueIdentifier>{77ae257b-8ce3-43a6-bd52-377e5abf2b10}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03.MapObjects\Slope">
+      <UniqueIdentifier>{db4d4ba6-f9cb-4290-a8ae-e51032a19c36}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -381,6 +384,9 @@
     <ClInclude Include="..\Public\Effect_Pistol_Fire.h">
       <Filter>02.GameObjects\Effect\Pistol_Fire</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\MapSlope.h">
+      <Filter>03.MapObjects\Slope</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -572,6 +578,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Effect_Pistol_Fire.cpp">
       <Filter>02.GameObjects\Effect\Pistol_Fire</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\MapSlope.cpp">
+      <Filter>03.MapObjects\Slope</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
