@@ -60,9 +60,11 @@ HRESULT CBoss::Initialize(void* pArg)
 	m_uMaxExplosionBullets = 3;
 	m_uCurBullets = 0;
 	m_uCurExplosionBullets = 0;
-	//m_fMoveCoolTime = 0.2f;
+	// 기존 0.05
+	m_fMoveCoolTime = 0.2f;
 	m_strUpFrameKey = TEXT("Boss_Front");
 	m_strDownFrameKey = TEXT("Boss_Front_Leg");
+	m_strLegFrameKey = TEXT("Boss_LeftLeg");
 
 	//m_vUpOffset = { 0.f, 4.2f, 0.f };
 	m_vUpOffset = { 0.f, 2.9f, 0.f };
@@ -113,7 +115,7 @@ void CBoss::Update(_float fTimeDelta)
 	_float angle30 = cosf(D3DXToRadian(30.f));
 	_float angle60 = cosf(D3DXToRadian(60.f));
 
-	if (!m_bAnimationLock)
+	if (!m_bAnimationLock && !m_isMove)
 	{
 		if (dot >= fFov)
 		{
@@ -164,7 +166,7 @@ void CBoss::Update(_float fTimeDelta)
 				}
 			}
 		}
-		m_isMove = false;
+		//m_isMove = false;
 	}
 
 	if (m_fAttackFailTime >= 7.f)						// 공격이 호출되고 3초이상 시전했는데 종료가 안됬다면?
@@ -215,7 +217,7 @@ void CBoss::Update(_float fTimeDelta)
 		else if (D3DXVec3Length(&vDiff) <= m_fChaseRange && D3DXVec3Length(&vDiff) >= m_fSafeDistance && m_fSumMoveCoolTime >= m_fMoveCoolTime)
 		{
 			Move(fTimeDelta);
-			m_isMove = true;
+			//m_isMove = true;
 			m_fSumMoveCoolTime = 0.f;
 		}
 	}
@@ -227,7 +229,21 @@ void CBoss::Late_Update(_float fTimeDelta)
 {
 	m_pAnimationCom_Up->Play_Animation(m_strUpFrameKey, fTimeDelta);
 	if (m_isMove)
+	{
 		m_pAnimationCom_Down->Play_Animation(m_strDownFrameKey, fTimeDelta);
+		if (m_pAnimationCom_Down->Check_Animation_Finish(m_strDownFrameKey))
+		{
+			if (m_strLegFrameKey == TEXT("Boss_LeftLeg"))
+			{
+				m_strLegFrameKey = TEXT("Boss_RightLeg");
+			}
+			else
+			{
+				m_strLegFrameKey = TEXT("Boss_LeftLeg");
+			}
+			m_isMove = false;
+		}
+	}
 
 	if (m_bAnimationLock && m_pAnimationCom_Up->Check_Animation_Finish(m_strUpFrameKey))
 	{
@@ -270,7 +286,7 @@ HRESULT CBoss::Render()
 
 	if (FAILED(End_RenderTestState()))
 		return E_FAIL;
-
+	
 	
 	if (FAILED(Begin_RenderState()))
 		return E_FAIL;
@@ -324,6 +340,8 @@ HRESULT CBoss::Ready_Animations()
 	CAnimation::FRAME_DESC Desc_17{};
 	CAnimation::FRAME_DESC Desc_18{};
 	CAnimation::FRAME_DESC Desc_19{};
+	CAnimation::FRAME_DESC Desc_20{};
+	CAnimation::FRAME_DESC Desc_21{};
 
 	//Boss_Attack_Front
 	auto iter = m_pTextureComs.find(TEXT("Boss_Attack_Front"));
@@ -444,6 +462,18 @@ HRESULT CBoss::Ready_Animations()
 	Desc_19.iFrameSpeed = 5;
 	Desc_19.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom_Down->Set_Animation(TEXT("Boss_Right_Leg"), Desc_19);
+
+	//Boss_Leg_Left
+	iter = m_pTextureComs.find(TEXT("Boss_LeftLeg"));
+	Desc_20.iFrameSpeed = 20;
+	Desc_20.iEnd = iter->second->Get_Texture_Length();
+	m_pAnimationCom_Down->Set_Animation(TEXT("Boss_LeftLeg"), Desc_20);
+
+	//Boss_Leg_Right
+	iter = m_pTextureComs.find(TEXT("Boss_RightLeg"));
+	Desc_21.iFrameSpeed = 20;
+	Desc_21.iEnd = iter->second->Get_Texture_Length();
+	m_pAnimationCom_Down->Set_Animation(TEXT("Boss_RightLeg"), Desc_21);
 
 	return S_OK;
 }
@@ -803,6 +833,19 @@ void CBoss::Attack()
 
 void CBoss::Move(_float fTimeDelta)
 {
+	if (!m_isMove && m_strLegFrameKey == TEXT("Boss_LeftLeg"))
+	{
+		m_isMove = true;
+		m_pGameInstance->PlaySoundOnce(TEXT("Boss1_Move_0.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
+		m_strDownFrameKey = TEXT("Boss_LeftLeg");
+	}
+	else if (!m_isMove && m_strLegFrameKey == TEXT("Boss_RightLeg"))
+	{
+		m_isMove = true;
+		m_pGameInstance->PlaySoundOnce(TEXT("Boss1_Move_1.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
+		m_strDownFrameKey = TEXT("Boss_RightLeg");
+	}
+	//m_pGameInstance->PlaySoundOnce(TEXT("Boss1_Move_0.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
 	_float3 fPlayerLook = m_pPlayerTransform->Get_State(STATE::LOOK);
 	_float3 fMonsterLook = m_pTransformCom->Get_State(STATE::LOOK);
 	D3DXVec3Normalize(&fPlayerLook, &fPlayerLook);
