@@ -379,6 +379,7 @@ HRESULT CZombie::Ready_Components()
 
 	/* Com_BoxCollider */
 	CBoxCollider::BOXCOLLIDER_DESC Desc;
+	Desc.vPosition = { 0.f, 0.5f, 0.f };
 	Desc.fScaleX = 0.2f;
 	Desc.fScaleZ = 0.2f;
 	Desc.fScaleY = 0.8f;

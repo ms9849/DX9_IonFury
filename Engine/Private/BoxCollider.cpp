@@ -67,6 +67,14 @@ HRESULT CBoxCollider::Initialize(void* pArg)
 
 	if (pDesc != nullptr)
 	{
+		m_vPos = pDesc->vPosition;
+		for (_uint i = 0; i < 8; ++i)
+		{
+			m_vLocalPos[i].x += m_vPos.x;
+			m_vLocalPos[i].y += m_vPos.y;
+			m_vLocalPos[i].z += m_vPos.z;
+		}
+
 		m_vScale.x = pDesc->fScaleX;
 		m_vScale.y = pDesc->fScaleY;
 		m_vScale.z = pDesc->fScaleZ;
@@ -75,7 +83,7 @@ HRESULT CBoxCollider::Initialize(void* pArg)
 		D3DXVec3Scale(&m_vAxis[1], &m_vAxis[1], m_vScale.y);
 		D3DXVec3Scale(&m_vAxis[2], &m_vAxis[2], m_vScale.z);
 
-		for (int i = 0; i < 8; ++i)
+		for (_uint i = 0; i < 8; ++i)
 		{
 			m_vLocalPos[i].x *= m_vScale.x;
 			m_vLocalPos[i].y *= m_vScale.y;

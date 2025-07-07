@@ -7,12 +7,13 @@ NS_BEGIN(Engine)
 class ENGINE_DLL CBoxCollider final : public CComponent
 {
 public:
+	/* 크기 설정 + 위치 설정 */
 	typedef struct tagBoxColliderDesc {
 
 		_float fScaleX;
 		_float fScaleY;
 		_float fScaleZ;
-
+		_float3 vPosition = { 0.f, 0.f, 0.f };
 	} BOXCOLLIDER_DESC;
 
 private:
@@ -69,6 +70,7 @@ private:
 
 
 	_float3 m_vLocalPos[8] = {};
+	_float3 m_vPos = {};
 	_float3 m_vScale = {};
 	_float3 m_vAxis[3] = {};
 public:
