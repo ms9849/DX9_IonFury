@@ -12,6 +12,19 @@ CBullet::CBullet(const CBullet& Prototype )
 {
 }
 
+void CBullet::Set_Desc(const BULLET_DESC& Desc)
+{
+	m_fSumTime = 0.f;
+	m_fBulletSpeed = Desc.fBulletSpeed;
+	m_vDir = Desc.vDir;
+	m_fDuration = Desc.fDuration;
+	m_pTransformCom->Set_State(STATE::POSITION, Desc.vPos);
+
+	m_pTransformCom->LookAt(m_pTransformCom->Get_State(STATE::POSITION) + m_vDir);
+	m_pTransformCom->Set_Scale(Desc.vBulletScale);
+	m_bPlayerBullet = Desc.isPlayerBullet;
+}
+
 HRESULT CBullet::Initialize_Prototype()
 {
 	return S_OK;
@@ -19,26 +32,20 @@ HRESULT CBullet::Initialize_Prototype()
 
 HRESULT CBullet::Initialize(void* pArg)
 {
-	BULLET_DESC* pDesc = static_cast<BULLET_DESC*>(pArg);
-	m_fBulletSpeed = pDesc->fBulletSpeed;
-
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-	//BULLET_DESC* pDesc = static_cast<BULLET_DESC*>(pArg);
-
-	if (pDesc == nullptr)
+	if (pArg == nullptr)
 		return S_OK;
-	
+
+	BULLET_DESC* pDesc = static_cast<BULLET_DESC*>(pArg);
+	m_fBulletSpeed = pDesc->fBulletSpeed;
+
 	m_vDir = pDesc->vDir;
 	m_fDuration = pDesc->fDuration;
 	m_pTransformCom->Set_State(STATE::POSITION, pDesc->vPos);
 
 	m_pTransformCom->LookAt(m_pTransformCom->Get_State(STATE::POSITION) + m_vDir);
-	
-	
-	//m_pTransformCom->Set_Scale(_float3(0.02f, 0.02f, 0.1f));
-	//m_pTransformCom->Set_Scale(_float3(0.2f, 0.2f, 0.1f));
 	m_pTransformCom->Set_Scale(pDesc->vBulletScale);
 	m_bPlayerBullet = pDesc->isPlayerBullet;
 

@@ -18,15 +18,28 @@ HRESULT CEffect_Manager::Initialize()
 	
 	수업 코드의 GameInstance에 존재하던 Clone Prototype을 통해 이펙트를 받아온다. 
 	*/
+	if(FAILED(Ready_Pistol_Fire()))
+		return E_FAIL;
 
+	if (FAILED(Ready_Boss_Die()))
+		return E_FAIL;
+
+	if (FAILED(Ready_Grenade_Explosion()))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CEffect_Manager::Ready_Pistol_Fire()
+{
 	list<class CEffect*> Effects = {};
 
 	for (int i = 0; i < 20; ++i)
 	{
 		Effects.push_back(
-			static_cast<CEffect*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::GAMEPLAY), 
-			TEXT("Prototype_GameObject_Effect_Pistol_Fire"), 
-			nullptr))
+			static_cast<CEffect*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::GAMEPLAY),
+				TEXT("Prototype_GameObject_Effect_Pistol_Fire"),
+				nullptr))
 		);
 	}
 
@@ -35,7 +48,53 @@ HRESULT CEffect_Manager::Initialize()
 	return S_OK;
 }
 
-void CEffect_Manager::Create_Effect(const _wstring& strEffectTag, _uint iLayerLevelIndex, const _wstring& strLayerTag)
+HRESULT CEffect_Manager::Ready_Boss_Die()
+{
+	list<class CEffect*> Effects = {};
+
+	CEffect::EFFECT_DESC  Desc;
+	Desc.vPosition = { 0.f, 0.f, 0.f };
+	Desc.eType = CEffect::EFFECT_TYPE::BOSS_DIE;
+	Desc.fNumFrame = 32;
+	Desc.fFrame = 0.f;
+
+	for (int i = 0; i < 5; ++i)
+	{
+		Effects.push_back(
+			static_cast<CEffect*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::GAMEPLAY),
+				TEXT("Prototype_GameObject_Effect"),&Desc))
+		);
+	}
+
+	m_Effects.emplace(TEXT("Effect_Boss_Die"), Effects);
+
+	return S_OK;
+}
+
+HRESULT CEffect_Manager::Ready_Grenade_Explosion()
+{
+	list<class CEffect*> Effects = {};
+
+	CEffect::EFFECT_DESC  Desc;
+	Desc.vPosition = { 0.f, 0.f, 0.f };
+	Desc.eType = CEffect::EFFECT_TYPE::GRENADE_EXPLOSION;
+	Desc.fNumFrame = 31;
+	Desc.fFrame = 0.f;
+
+	for (int i = 0; i < 10; ++i)
+	{
+		Effects.push_back(
+			static_cast<CEffect*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::GAMEPLAY),
+				TEXT("Prototype_GameObject_Effect"), &Desc))
+		);
+	}
+
+	m_Effects.emplace(TEXT("Effect_Grenade_Explosion"), Effects);
+
+	return S_OK;
+}
+
+void CEffect_Manager::Create_Effect(const _wstring& strBulletTag, _uint iLayerLevelIndex, const _wstring& strLayerTag, const _float3& vPos)
 {
 	/*
 	Object_Manager와 GameInstance에 Add_Clone_Prototype 메서드를 추가하여, 
@@ -66,7 +125,7 @@ void CEffect_Manager::Create_Effect(const _wstring& strEffectTag, _uint iLayerLe
 	
 	-> 오브젝트 매니저의 Clear_DeadObj를 보면 Safe_Release 후 Erase 해주기 때문에 레퍼런스 카운트가 멀쩡히 돌아간다.
 	*/
-	auto Effects = m_Effects.find(strEffectTag);
+	auto Effects = m_Effects.find(strBulletTag);
 	
 	if (Effects == m_Effects.end())
 		return;
@@ -75,6 +134,7 @@ void CEffect_Manager::Create_Effect(const _wstring& strEffectTag, _uint iLayerLe
 	{
 		if (pEffect->Get_Frame() == 0.f && pEffect->isDead() == false)
 		{
+			pEffect->Set_Pos(vPos);
 			Safe_AddRef(pEffect);
 			m_pGameInstance->Add_Clone_ToLayer(pEffect, iLayerLevelIndex, strLayerTag);
 			break;

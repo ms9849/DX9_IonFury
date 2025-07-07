@@ -44,6 +44,10 @@ public:
 		return m_bPlayerBullet;
 	}
 
+	void Set_Desc(const BULLET_DESC& Desc);
+	void Set_Fired(_bool bFlag) { m_bisFire = bFlag; }
+	_bool Get_Fired() { return m_bisFire; }
+
 public:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
@@ -57,9 +61,10 @@ public:
 	virtual const COLLISION_DESC& Get_CollisionDesc(COLLISION eColType);
 
 protected:
+	_bool m_bisFire = { false };
 	_bool m_bPlayerBullet = { false };
 	_float m_fDamage = { 10.f };
-	_float m_fBulletSpeed = {};
+	_float m_fBulletSpeed = { 3.f };
 	_float m_fDuration = 5.f;
 	_float m_fSumTime = 0.f;
 	_float3 m_vDir = {};

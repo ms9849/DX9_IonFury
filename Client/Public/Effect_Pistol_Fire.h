@@ -11,10 +11,12 @@ NS_END
 
 NS_BEGIN(Client)
 
+/*
+직교 투영을 위한 특수한 이펙트들은 구현받아 따로 사용하도록 한다.
+*/
+
 class CEffect_Pistol_Fire final : public CEffect
 {
-public:
-
 private:
 	CEffect_Pistol_Fire(LPDIRECT3DDEVICE9 pGraphic_Device);
 	CEffect_Pistol_Fire(const CEffect_Pistol_Fire& Prototype);
@@ -32,6 +34,9 @@ private:
 	virtual HRESULT Ready_Components() override;
 	virtual HRESULT Begin_RenderState() override;
 	virtual HRESULT End_RenderState() override;
+
+public:
+	virtual void Set_Pos(const _float3& vPos) override;
 
 private:
 	_float4x4	m_OldViewMatrix{}, m_OldProjMatrix{};

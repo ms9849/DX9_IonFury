@@ -4,6 +4,7 @@
 #include "MeleeAttack.h"
 #include "BehaviorNode.h"
 #include "Particle_Manager.h"
+#include "Effect_Manager.h"
 
 CZombie::CZombie(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CMonster{ pGraphic_Device }
@@ -317,6 +318,10 @@ void CZombie::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 			}
 			CParticle_Manager::GetInstance()->Create_Particle(TEXT("Particle_Blood"), ENUM_CLASS(LEVEL::GAMEPLAY),
 				TEXT("Layer_Particle"), m_pTransformCom->Get_State(STATE::POSITION));
+
+
+			CEffect_Manager::GetInstance()->Create_Effect(TEXT("Effect_Boss_Die"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Effect"),
+				m_pTransformCom->Get_State(STATE::POSITION));
 		}
 	}
 

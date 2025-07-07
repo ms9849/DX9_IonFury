@@ -257,12 +257,12 @@ bool CGameInstance::Key_Down(_uint _iKey)
 #pragma endregion
 
 #pragma region SOUND_MANAGER
-void CGameInstance::PlaySoundOnce(const TCHAR* pSoundKey, CHANNELID eID, float fVolume)
+void CGameInstance::PlaySoundOnce(const _wstring& pSoundKey, CHANNELID eID, float fVolume)
 {
 	m_pSound_Manager->PlaySoundOnce(pSoundKey, eID, fVolume);
 }
 
-void CGameInstance::PlayBGM(const TCHAR* pSoundKey, float fVolume)
+void CGameInstance::PlayBGM(const _wstring& pSoundKey, float fVolume)
 {
 	m_pSound_Manager->PlayBGM(pSoundKey, fVolume);
 }

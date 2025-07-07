@@ -150,6 +150,8 @@
     <ClInclude Include="..\Public\BossGrenade.h" />
     <ClInclude Include="..\public\MapDeco.h" />
     <ClInclude Include="..\public\MapDesk.h" />
+    <ClInclude Include="..\Public\Bullet_Manager.h" />
+    <ClInclude Include="..\Public\Effect_Pistol_Fire.h" />
     <ClInclude Include="..\Public\EliteSoldier.h" />
     <ClInclude Include="..\public\MapContainerBox.h" />
     <ClInclude Include="..\public\MapBox.h" />
@@ -162,7 +164,6 @@
     <ClInclude Include="..\public\MapFan.h" />
     <ClInclude Include="..\public\MapGate.h" />
     <ClInclude Include="..\Public\Effect_Manager.h" />
-    <ClInclude Include="..\Public\Effect_Pistol_Fire.h" />
     <ClInclude Include="..\public\ItemCardKey.h" />
     <ClInclude Include="..\public\MapGrinder.h" />
     <ClInclude Include="..\Public\Spider.h" />
@@ -212,6 +213,8 @@
     <ClCompile Include="..\Private\BossGrenade.cpp" />
     <ClCompile Include="..\private\MapDeco.cpp" />
     <ClCompile Include="..\private\MapDesk.cpp" />
+    <ClCompile Include="..\Private\Bullet_Manager.cpp" />
+    <ClCompile Include="..\Private\Effect_Pistol_Fire.cpp" />
     <ClCompile Include="..\Private\EliteSoldier.cpp" />
     <ClCompile Include="..\private\MapContainerBox.cpp" />
     <ClCompile Include="..\private\MapBox.cpp" />
@@ -222,7 +225,6 @@
     <ClCompile Include="..\private\MapFan.cpp" />
     <ClCompile Include="..\private\MapGate.cpp" />
     <ClCompile Include="..\Private\Effect_Manager.cpp" />
-    <ClCompile Include="..\Private\Effect_Pistol_Fire.cpp" />
     <ClCompile Include="..\private\MapGrinder.cpp" />
     <ClCompile Include="..\Private\Spider.cpp" />
     <ClCompile Include="..\Private\Particle_Manager.cpp" />

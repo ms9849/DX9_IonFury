@@ -181,6 +181,9 @@
     <Filter Include="03.MapObjects\Fan">
       <UniqueIdentifier>{eb9c2bcb-63f7-4e30-907c-97c7ed58c5fa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\Bullet\Manager">
+      <UniqueIdentifier>{77ae257b-8ce3-43a6-bd52-377e5abf2b10}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -327,9 +330,6 @@
     <ClInclude Include="..\Public\Effect_Manager.h">
       <Filter>02.GameObjects\Effect\Manager</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Effect_Pistol_Fire.h">
-      <Filter>02.GameObjects\Effect\Pistol_Fire</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\MapBuilding.h">
       <Filter>03.MapObjects\Building</Filter>
     </ClInclude>
@@ -374,6 +374,12 @@
     </ClInclude>
     <ClInclude Include="..\public\MapFan.h">
       <Filter>03.MapObjects\Fan</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Bullet_Manager.h">
+      <Filter>02.GameObjects\Bullet\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Effect_Pistol_Fire.h">
+      <Filter>02.GameObjects\Effect\Pistol_Fire</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -516,9 +522,6 @@
     <ClCompile Include="..\Private\Effect_Manager.cpp">
       <Filter>02.GameObjects\Effect\Manager</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Effect_Pistol_Fire.cpp">
-      <Filter>02.GameObjects\Effect\Pistol_Fire</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\MapBuilding.cpp">
       <Filter>03.MapObjects\Building</Filter>
     </ClCompile>
@@ -563,6 +566,12 @@
     </ClCompile>
     <ClCompile Include="..\private\MapFan.cpp">
       <Filter>03.MapObjects\Fan</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Bullet_Manager.cpp">
+      <Filter>02.GameObjects\Bullet\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect_Pistol_Fire.cpp">
+      <Filter>02.GameObjects\Effect\Pistol_Fire</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
