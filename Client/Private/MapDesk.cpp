@@ -1,13 +1,13 @@
-#include "MapBox.h"
+#include "MapDesk.h"
 
 #include "GameInstance.h"
 
-CMapBox::CMapBox(LPDIRECT3DDEVICE9 pGraphic_Device)
+CMapDesk::CMapDesk(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CGameObject{ pGraphic_Device }
 {
 }
 
-CMapBox::CMapBox(const CMapBox& Prototype)
+CMapDesk::CMapDesk(const CMapDesk& Prototype)
 	: CGameObject(Prototype)
 {
 }
@@ -16,12 +16,12 @@ CMapBox::CMapBox(const CMapBox& Prototype)
 오브젝트 아이디 추가해야됨
 */
 
-HRESULT CMapBox::Initialize_Prototype()
+HRESULT CMapDesk::Initialize_Prototype()
 {
 	return S_OK;
 }
 
-HRESULT CMapBox::Initialize(void* pArg)
+HRESULT CMapDesk::Initialize(void* pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -29,25 +29,25 @@ HRESULT CMapBox::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-	m_pTransformCom->Set_State(STATE::POSITION, { 2.f, 0.f, 2.f });
+	m_pTransformCom->Set_State(STATE::POSITION, { 3.f, 0.f, 3.f });
 
 	return S_OK;
 }
 
-void CMapBox::Priority_Update(_float fTimeDelta)
+void CMapDesk::Priority_Update(_float fTimeDelta)
 {
 }
 
-void CMapBox::Update(_float fTimeDelta)
+void CMapDesk::Update(_float fTimeDelta)
 {
 }
 
-void CMapBox::Late_Update(_float fTimeDelta)
+void CMapDesk::Late_Update(_float fTimeDelta)
 {
 	m_pGameInstance->Add_RenderGroup(RENDER::NONBLEND, this);
 }
 
-HRESULT CMapBox::Render()
+HRESULT CMapDesk::Render()
 {
 	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 
@@ -62,7 +62,7 @@ HRESULT CMapBox::Render()
 	return S_OK;
 }
 
-HRESULT CMapBox::Ready_Components()
+HRESULT CMapDesk::Ready_Components()
 {
 	/* Com_Transform */
 	CTransform::TRANSFORM_DESC		TransformDesc{ 5.f, D3DXToRadian(90.0f) };
@@ -71,7 +71,7 @@ HRESULT CMapBox::Ready_Components()
 		return E_FAIL;
 
 	/* Com_Texture */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Map_Box"),
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Map_Desk"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
@@ -88,11 +88,11 @@ HRESULT CMapBox::Ready_Components()
 	return S_OK;
 }
 
-void CMapBox::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta)
+void CMapDesk::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta)
 {
 }
 
-const COLLISION_DESC& CMapBox::Get_CollisionDesc(COLLISION eColType)
+const COLLISION_DESC& CMapDesk::Get_CollisionDesc(COLLISION eColType)
 {
 	COLLISION_DESC Desc;
 	Desc.pTransform = m_pTransformCom;
@@ -101,9 +101,9 @@ const COLLISION_DESC& CMapBox::Get_CollisionDesc(COLLISION eColType)
 	return Desc;
 }
 
-CMapBox* CMapBox::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
+CMapDesk* CMapDesk::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 {
-	CMapBox* pInstance = new CMapBox(pGraphic_Device);
+	CMapDesk* pInstance = new CMapDesk(pGraphic_Device);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
@@ -114,20 +114,20 @@ CMapBox* CMapBox::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 	return pInstance;
 }
 
-CGameObject* CMapBox::Clone(void* pArg)
+CGameObject* CMapDesk::Clone(void* pArg)
 {
-	CMapBox* pInstance = new CMapBox(*this);
+	CMapDesk* pInstance = new CMapDesk(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Cloned : CMapBox");
+		MSG_BOX("Failed to Cloned : CMapDesk");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CMapBox::Free()
+void CMapDesk::Free()
 {
 	__super::Free();
 
