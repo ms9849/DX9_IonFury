@@ -19,14 +19,15 @@ private:
 	CBoss(const CBoss& Prototype);
 	virtual ~CBoss() = default;
 
-	const _wstring m_strFrameKeys[20] = {
+	const _wstring m_strFrameKeys[22] = {
 		TEXT("Boss_Attack_Front"), TEXT("Boss_Attack_SE"),TEXT("Boss_Attack_SW"),
 		TEXT("Boss_Die"), TEXT("Boss_Direction_NE"), TEXT("Boss_Direction_NW"), 
 		TEXT("Boss_Direction_SE"), TEXT("Boss_Direction_SW"), TEXT("Boss_Front"),
 		TEXT("Boss_Back"), TEXT("Boss_Left"), TEXT("Boss_Right"),
 		TEXT("Boss_Leg_Direction_NE"), TEXT("Boss_Leg_Direction_NW"), TEXT("Boss_Leg_Direction_SE"),
 		TEXT("Boss_Leg_Direction_SW"), TEXT("Boss_Front_Leg"), TEXT("Boss_Back_Leg"),
-		TEXT("Boss_Left_Leg"), TEXT("Boss_Right_Leg")
+		TEXT("Boss_Left_Leg"), TEXT("Boss_Right_Leg"),
+		TEXT("Boss_LeftLeg"), TEXT("Boss_RightLeg")
 	};
 
 public:
@@ -65,6 +66,7 @@ private:
 	CAnimation* m_pAnimationCom_Down = { nullptr };
 	_wstring m_strUpFrameKey = {};
 	_wstring m_strDownFrameKey = {};
+	_wstring m_strLegFrameKey = {};
 	_bool m_bAnimationLock = false;
 	_bool m_bAttacking = false;
 	_uint m_uMaxBullets = {};
