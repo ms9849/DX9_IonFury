@@ -53,9 +53,12 @@ HRESULT CBoss::Initialize(void* pArg)
 	m_fAttackRange = 15.f;
 	m_fAttackCoolTime = 5.f;
 	m_fSumAttackCoolTime = 5.f;
-	m_fChaseRange = 25.f;
+	m_fChaseRange = 20.f;
+	m_fSafeDistance = 5.f;
 	m_uMaxBullets = 10;
-	m_uCurBullets = 10;
+	m_uMaxExplosionBullets = 3;
+	m_uCurBullets = 0;
+	m_uCurExplosionBullets = 0;
 	//m_fMoveCoolTime = 0.2f;
 	m_strUpFrameKey = TEXT("Boss_Front");
 	m_strDownFrameKey = TEXT("Boss_Front_Leg");
@@ -82,7 +85,7 @@ void CBoss::Update(_float fTimeDelta)
 
 	__super::Jump(fTimeDelta);
 
-	m_fSumAttackCoolTime += fTimeDelta;
+	//m_fSumAttackCoolTime += fTimeDelta;
 	m_fSumMoveCoolTime += fTimeDelta;
 
 	if (!m_bAttacking)
@@ -185,16 +188,6 @@ void CBoss::Update(_float fTimeDelta)
 	}
 	else if (m_bAttacking)							// 어택중이면 계속 어택
 	{
-		//m_uTempNum = rand() % 3;
-		//if (m_eState == BossAttackState::END)
-		//{
-		//	// 현재 엔진에 랜덤값 없으므로 대체
-		//	//m_eState = BossAttackState::MASS;
-		//	//m_eState = BossAttackState::CHASE_MASS;
-		//	m_eState = BossAttackState::BOOM;
-		//}
-
-		//m_isMove = false;
 		Attack(fTimeDelta, m_eState);
 	}
 	else if (m_pSightCom->Check_Sight(fTimeDelta))
@@ -204,20 +197,21 @@ void CBoss::Update(_float fTimeDelta)
 		if ((D3DXVec3Length(&vDiff) <= m_fAttackRange) && (m_fSumAttackCoolTime >= m_fAttackCoolTime))
 		{
 			// 랜덤값으로 공격 종류를 정하게 할까?
-			m_uTempNum = rand() % static_cast<int>(BossAttackState::END);
-			m_eState = static_cast<BossAttackState>(m_uTempNum);
+			m_uTempNum = rand() % 2;
 
-			//if (m_eState == BossAttackState::END)
-			//{
-			//	// 현재 엔진에 랜덤값 없으므로 대체
-			//	//m_eState = BossAttackState::MASS;
-			//	//m_eState = BossAttackState::CHASE_MASS;
-			//	m_eState = BossAttackState::BOOM;
-			//}
+			if (m_uTempNum == 0)
+			{
+				m_uTempNum = rand() % 2;
+				m_eState = static_cast<BossAttackState>(m_uTempNum);
+			}
+			else
+			{
+				m_eState = BossAttackState::BOOM;
+			}
 
 			Attack(fTimeDelta, m_eState);
 		}
-		else if (D3DXVec3Length(&vDiff) <= m_fChaseRange && m_fSumMoveCoolTime >= m_fMoveCoolTime)
+		else if (D3DXVec3Length(&vDiff) <= m_fChaseRange && D3DXVec3Length(&vDiff) >= m_fSafeDistance && m_fSumMoveCoolTime >= m_fMoveCoolTime)
 		{
 			Move(fTimeDelta);
 			m_isMove = true;
@@ -263,6 +257,8 @@ void CBoss::Late_Update(_float fTimeDelta)
 
 HRESULT CBoss::Render()
 {
+	m_pBoxColliderCom->Render(m_pTransformCom->Get_State(STATE::POSITION));
+
 	if (FAILED(Begin_RenderTestState()))
 		return E_FAIL;
 
@@ -552,8 +548,13 @@ HRESULT CBoss::Ready_Components()
 		return E_FAIL;
 
 	/* Com_BoxCollider */
+	CBoxCollider::BOXCOLLIDER_DESC Desc;
+	Desc.vPosition = { 0.f, 0.35f, 0.f };
+	Desc.fScaleX = 1.5f;
+	Desc.fScaleZ = 1.5f;
+	Desc.fScaleY = 3.8f;
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_BoxCollider"),
-		TEXT("Com_BoxCollider"), reinterpret_cast<CComponent**>(&m_pBoxColliderCom))))
+		TEXT("Com_BoxCollider"), reinterpret_cast<CComponent**>(&m_pBoxColliderCom), &Desc)))
 		return E_FAIL;
 
 	/* Com_SphereCollider */
@@ -771,17 +772,17 @@ void CBoss::Attack(_float fTimeDelta, BossAttackState state)
 			Desc.vPlayerPos = m_pPlayerTransform->Get_State(STATE::POSITION);
 			Desc.isPlayerBullet = false;
 			Desc.fBulletSpeed = 10.f;
-			Desc.vBulletScale = { 2.f, 2.f, 0.1f };
+			Desc.vBulletScale = { 0.1f, 0.1f, 0.1f };
 			Desc.pPlayerTransform = m_pPlayerTransform;
 			Desc.fDuration = 7.f;
 			m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_BossGrenade"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Monster_Bullet"), &Desc);
 			m_fSumLaunchCoolTime = 0.f;								// 유탄 한발 사용했으므로 누적 시간 초기화
-			m_uCurBullets++;										// 현재 사용한 총알 수 증가
+			m_uCurExplosionBullets++;										// 현재 사용한 총알 수 증가
 
 			//OutputDebugStringA("디버그 메시지: 유탄 발사 완료\n");
 		}
 
-		if (m_uCurBullets >= m_uMaxBullets)					// 정해둔 총알을 다 사용했으면
+		if (m_uCurBullets >= m_uMaxBullets || m_uCurExplosionBullets >= m_uMaxExplosionBullets)					// 정해둔 총알을 다 사용했으면
 		{
 			m_uCurBullets = 0;								// 총알 수 0으로 초기화
 			m_bAnimationLock = false;						// 애니메이션 락 해제

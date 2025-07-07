@@ -107,6 +107,7 @@ CMapBox* CMapBox::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
+		MSG_BOX("Failed to Created : pGraphic_Device");
 		Safe_Release(pInstance);
 	}
 
@@ -119,6 +120,7 @@ CGameObject* CMapBox::Clone(void* pArg)
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
+		MSG_BOX("Failed to Cloned : CMapBox");
 		Safe_Release(pInstance);
 	}
 

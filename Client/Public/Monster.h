@@ -37,6 +37,7 @@ protected:
 	CSight* m_pSightCom = { nullptr };
 	CTransform* m_pPlayerTransform = { nullptr };
 	CBoxCollider* m_pBoxColliderCom = { nullptr };
+	CBoxCollider* m_pBoxColliderHead = { nullptr };
 	CSphereCollider* m_pSphereColliderCom = { nullptr };
 
 	_float m_fAttackCoolTime = 3.f;
