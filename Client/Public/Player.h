@@ -77,7 +77,6 @@ private:
 
 
 private:
-	class CEffect_Manager* m_pEffect_Manager = { nullptr };
 	PLAYER_INFO		m_tInfo{};
 	class CPlayer_RightHand*	m_pRightHand{ nullptr };
 	class CPlayer_LeftHand*		m_pLeftHand{ nullptr };
@@ -100,6 +99,7 @@ private:
 
 public:
 	virtual void OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta) override;
+	virtual void OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta, CComponent* pCollider) override;
 	virtual const COLLISION_DESC& Get_CollisionDesc(COLLISION eColType);
 	_wstring Get_ItemText(size_t iIndex);
 	size_t Get_ItemQueue_Length();

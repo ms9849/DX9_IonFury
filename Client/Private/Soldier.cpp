@@ -456,10 +456,11 @@ HRESULT CSoldier::Ready_Components()
 		TEXT("Com_BoxCollider"), reinterpret_cast<CComponent**>(&m_pBoxColliderCom), &Desc)))
 		return E_FAIL;
 
-	Desc.vPosition = { 0.f, 3.2f, 0.f };
-	Desc.fScaleX = 0.1f;
-	Desc.fScaleZ = 0.1f;
-	Desc.fScaleY = 0.08f;
+
+	Desc.vPosition = { 0.f, 2.3f, 0.f };
+	Desc.fScaleX = 0.12f;
+	Desc.fScaleZ = 0.12f;
+	Desc.fScaleY = 0.12f;
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_BoxCollider"),
 		TEXT("Com_BoxCollider_Head"), reinterpret_cast<CComponent**>(&m_pBoxColliderHead), &Desc)))
 		return E_FAIL;

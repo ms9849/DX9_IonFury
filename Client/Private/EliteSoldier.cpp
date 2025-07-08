@@ -448,10 +448,10 @@ HRESULT CEliteSoldier::Ready_Components()
 		TEXT("Com_BoxCollider"), reinterpret_cast<CComponent**>(&m_pBoxColliderCom), &Desc)))
 		return E_FAIL;
 
-	Desc.vPosition = { -0.3f, 3.25f, -0.3f };
-	Desc.fScaleX = 0.15f;
-	Desc.fScaleZ = 0.15f;
-	Desc.fScaleY = 0.13f;
+	Desc.vPosition = { -0.3f, 2.35f, -0.3f };
+	Desc.fScaleX = 0.2f;
+	Desc.fScaleZ = 0.2f;
+	Desc.fScaleY = 0.2f;
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_BoxCollider"),
 		TEXT("Com_BoxCollider_Head"), reinterpret_cast<CComponent**>(&m_pBoxColliderHead), &Desc)))
 		return E_FAIL;

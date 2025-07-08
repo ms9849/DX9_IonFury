@@ -123,7 +123,11 @@ HRESULT CItemHealpack::End_RenderState()
 void CItemHealpack::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta)
 {
 	if (eColType == COLLISION::SPHERE)
+	{
 		m_isDead = true;
+		m_pGameInstance->PlaySoundOnce(TEXT("Get_Healpack.ogg"), CHANNELID::SOUND_EFFECT, 0.5f);
+		m_pGameInstance->PlaySoundOnce(TEXT("I_Really_Need_That.ogg"), CHANNELID::SOUND_EFFECT, 0.5f);
+	}
 }
 
 CItemHealpack* CItemHealpack::Create(LPDIRECT3DDEVICE9 pGraphic_Device)

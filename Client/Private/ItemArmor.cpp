@@ -118,7 +118,10 @@ HRESULT CItemArmor::End_RenderState()
 void CItemArmor::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta)
 {
 	if (eColType == COLLISION::SPHERE)
+	{
 		m_isDead = true;
+		m_pGameInstance->PlaySoundOnce(TEXT("Get_Armor.ogg"), CHANNELID::SOUND_EFFECT, 0.5f);
+	}
 }
 
 CItemArmor* CItemArmor::Create(LPDIRECT3DDEVICE9 pGraphic_Device)

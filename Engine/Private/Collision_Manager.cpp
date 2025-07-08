@@ -427,28 +427,13 @@ _bool CCollision_Manager::RayToAABB_Collision(CGameObject* pRay, CGameObject* pA
         /* 가장 큰 min 값을 구해낸다. */
         _float fMin = fmaxf(fmaxf(fmin(t1, t2), fmin(t3, t4)), fminf(t5, t6));
 
-        /* 가장 큰 max 값을 구해낸다. */
+        /* 가장 작은 max 값을 구해낸다. */
         _float fMax = fminf(fminf(fmax(t1, t2), fmax(t3, t4)), fmaxf(t5, t6));
 
-        /* POINT in AABB까지 체크해서, 레이가 AABB를 통과할때만 Point 검사를 수행하여 충돌을 판정한다*/
-        if (fMin < 0.f)
-        {
-            if ((vRayPos.x >= vColliderMin.x && vRayPos.x <= vColliderMax.x) &&
-                (vRayPos.y >= vColliderMin.y && vRayPos.y <= vColliderMax.y) &&
-                (vRayPos.z >= vColliderMin.z && vRayPos.z <= vColliderMax.z))
-            {
-                *pCollider = pColliderBox;
-                return true;
-            }
-        }
-
-        if ((vRayPos.x >= vColliderMin.x && vRayPos.x <= vColliderMax.x) &&
-            (vRayPos.y >= vColliderMin.y && vRayPos.y <= vColliderMax.y) &&
-            (vRayPos.z >= vColliderMin.z && vRayPos.z <= vColliderMax.z))
-        {
-            *pCollider = pColliderBox;
+        /* 머리 우선 판정 해줘서 조금 널널하게 .*/
+        _float fDistance = fMin < 0.f ? fMax : fMin;
+        if (!(fMax < 0.f || fMin > fMax) && fDistance <= 3.f)
             return true;
-        }
     }
 
     /* 첫 콜라이더에 대한 검사 수행 */
@@ -484,28 +469,12 @@ _bool CCollision_Manager::RayToAABB_Collision(CGameObject* pRay, CGameObject* pA
     if (fMax < 0.f || fMin > fMax)
         return false;
 
-    /* POINT in AABB까지 체크해서, 레이가 AABB를 통과할때만 Point 검사를 수행하여 충돌을 판정한다*/
-    if (fMin < 0.f)
-    {
-        if ((vRayPos.x >= vColliderMin.x && vRayPos.x <= vColliderMax.x) &&
-            (vRayPos.y >= vColliderMin.y && vRayPos.y <= vColliderMax.y) &&
-            (vRayPos.z >= vColliderMin.z && vRayPos.z <= vColliderMax.z))
-        {
-            *pCollider = pColliderBox;
-            return true;
-        }
-    }
-
-    if ((vRayPos.x >= vColliderMin.x && vRayPos.x <= vColliderMax.x) &&
-        (vRayPos.y >= vColliderMin.y && vRayPos.y <= vColliderMax.y) &&
-        (vRayPos.z >= vColliderMin.z && vRayPos.z <= vColliderMax.z))
-    {
-        *pCollider = pColliderBox;
+    _float fDistance = fMin < 0.f ? fMax : fMin;
+    
+    if(fDistance <= 3.f)
         return true;
-    }
 
-    else
-        return false;
+    return false;
 }
 
 CCollision_Manager* CCollision_Manager::Create()

@@ -22,10 +22,8 @@ CPlayer::CPlayer(LPDIRECT3DDEVICE9 pGraphic_Device)
 }
 
 CPlayer::CPlayer(const CPlayer& Prototype)
-	: CLandObject(Prototype),
-	m_pEffect_Manager { CEffect_Manager::GetInstance() }
+	: CLandObject(Prototype)
 {
-	Safe_AddRef(m_pEffect_Manager);
 }
 
 HRESULT CPlayer::Initialize_Prototype()
@@ -189,7 +187,16 @@ void CPlayer::Update(_float fTimeDelta)
 	if (m_pRightHandAnimationCom->Check_Animation_Finish())
 	{
 		if (!m_bWeaponChange && !m_bUseCardKey)
+		{
+			/* 장전이 끝났을 때 철컥 소리 나게 */
+			if (m_tInfo.strWeapon.compare(TEXT("Pistol")) == 0 && m_tInfo.strAction.compare(TEXT("Reload")) == 0)
+			{
+				m_pGameInstance->PlaySoundOnce(TEXT("Pistol_Reload_3.ogg"), CHANNELID::SOUND_EFFECT, 0.2f);
+			}
+
+		
 			m_tInfo.strAction = TEXT("Idle");
+		}
 	}
 	else
 	{
@@ -225,11 +232,17 @@ void CPlayer::Update(_float fTimeDelta)
 				m_tInfo.strAction = TEXT("Walk");
 		}
 		// 장전
-		if (m_pGameInstance->Key_Down('R') && !m_bWeaponChange && !m_bUseCardKey)
+		if (m_pGameInstance->Key_Down('R') && !m_bWeaponChange && !m_bUseCardKey && m_tInfo.strAction.compare(TEXT("Reload")) != 0)
 		{
 			m_tInfo.strAction = TEXT("Reload");
 			iter->second.iShootBullets = iter->second.iCanShootBullets;
 			m_tInfo.iShootBullets = iter->second.iShootBullets;
+
+			if (m_tInfo.strWeapon.compare(TEXT("Pistol")) == 0)
+			{
+				m_pGameInstance->PlaySoundOnce(TEXT("Pistol_Reload_1.ogg"), CHANNELID::SOUND_EFFECT, 0.5f);
+				m_pGameInstance->PlaySoundOnce(TEXT("Pistol_Reload_2.ogg"), CHANNELID::SOUND_EFFECT, 0.5f);
+			}
 		}
 		// 총알 발사
 		if (m_tInfo.strAction.compare(TEXT("Reload")) != 0)
@@ -248,28 +261,28 @@ void CPlayer::Update(_float fTimeDelta)
 				if (m_tInfo.strWeapon.compare(TEXT("Pistol")) == 0)
 				{
 					m_pGameInstance->PlaySoundOnce(TEXT("Pistol_Shoot.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
-					m_pEffect_Manager->Create_Effect(TEXT("Effect_Pistol_Fire"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Effect"), {0.f, 0.f, 0.f});
+					CEffect_Manager::GetInstance()->Create_Effect(TEXT("Effect_Pistol_Fire"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Effect"), {0.f, 0.f, 0.f});
+					
+					_float3 vOffset = _float3{ 0.f, 0.f, 0.f };
+					_float3 vDir = Calc_BulletDir(&vOffset);
+					_float3 vPos = m_pTransformCom->Get_State(STATE::POSITION);
+
+					D3DXVec3Normalize(&vDir, &vDir);
+
+					CBullet::BULLET_DESC Desc;
+					Desc.vDir = vDir;
+					Desc.vPos = vPos + vOffset;
+					Desc.vBulletScale = { 0.005f, 0.005f, 0.2f };
+					Desc.isPlayerBullet = true;
+					Desc.fDuration = 5.f;
+
+					CBullet_Manager::GetInstance()->Create_Bullet(TEXT("Bullet"), Desc, ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_PlayerBullet"));
+				
 				}
 				else if (m_tInfo.strWeapon.compare(TEXT("ShootGun")) == 0)
 				{
 
 				}
-
-				_float3 vOffset = _float3{ 0.f, 0.f, 0.f };
-				_float3 vDir = Calc_BulletDir(&vOffset);
-				_float3 vPos = m_pTransformCom->Get_State(STATE::POSITION);
-
-				D3DXVec3Normalize(&vDir, &vDir);
-
-				CBullet::BULLET_DESC Desc;
-				Desc.vDir = vDir;
-				Desc.vPos = vPos + vOffset;
-				Desc.fBulletSpeed = 5.f;
-				Desc.vBulletScale = { 0.02f, 0.02f, 0.1f };
-				Desc.isPlayerBullet = true;
-				Desc.fDuration = 5.f;
-
-				CBullet_Manager::GetInstance()->Create_Bullet(TEXT("Bullet"), Desc, ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_PlayerBullet"));
 			
 				//m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Bullet"),
 					//ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_PlayerBullet"), &Desc);
@@ -430,7 +443,7 @@ _float3 CPlayer::Calc_BulletDir(_float3* vOffset)
 	D3DXVec3Normalize(&vCamLook, &vCamLook);
 	m_pGameInstance->Check_RayCollision(vCamPos, vCamLook, TEXT("Layer_Cube"), ENUM_CLASS(LEVEL::GAMEPLAY), &vCollisionPos);
 
-	*vOffset = (*D3DXVec3Normalize(&vCamLook, &vCamLook) / 10.f + (*D3DXVec3Normalize(&vCamRight, &vCamRight) / 10.f));
+	*vOffset = (*D3DXVec3Normalize(&vCamLook, &vCamLook) / 5.f + (*D3DXVec3Normalize(&vCamRight, &vCamRight) / 17.f));
 
 	if (vCollisionPos == _float3{ 0.f, 0.f, 0.f })
 		return m_pTransformCom->Get_State(STATE::LOOK);
@@ -551,6 +564,18 @@ void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 	}
 }
 
+void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta, CComponent* pCollider)
+{
+	if (eColType == COLLISION::RAY)
+	{
+		if (m_tInfo.iHp >= 3)
+		{
+			m_tInfo.iHp -= 2;
+			m_pGameInstance->PlaySoundOnce(TEXT("hurt02.ogg"), CHANNELID::SOUND_EFFECT, 0.4f);
+		}
+	}
+}
+
 const COLLISION_DESC& CPlayer::Get_CollisionDesc(COLLISION eColType)
 {
 	COLLISION_DESC Desc;
@@ -558,6 +583,7 @@ const COLLISION_DESC& CPlayer::Get_CollisionDesc(COLLISION eColType)
 
 	if (eColType == COLLISION::SPHERE)
 		Desc.pCollider = m_pSphereColliderCom;
+	/* 플레이어는 헤드샷 판정 X */
 	else if (eColType == COLLISION::BOX)
 		Desc.pCollider = m_pBoxColliderCom;
 
@@ -612,5 +638,4 @@ void CPlayer::Free()
 	Safe_Release(m_pRightHand);
 	Safe_Release(m_pRightHandAnimationCom);
 	Safe_Release(m_pSphereColliderCom);
-	Safe_Release(m_pEffect_Manager);
 }

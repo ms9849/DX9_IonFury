@@ -915,4 +915,5 @@ void CBoss::Free()
 	Safe_Release(m_pAnimationCom_Down);
 	Safe_Release(m_pTransformCom_Up);
 	Safe_Release(m_pTransformCom_Down);
+	Safe_Release(m_pSphereColliderCom);
 }
