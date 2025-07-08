@@ -18,7 +18,6 @@ private:
 
 public:
     HRESULT Initialize();
-    //HRESULT Save_Layers(LEVEL iLevel);
     HRESULT Load_Layers(LEVEL iLevel);
     map<_wstring, vector<CGameObject::GAMEOBJECT_DESC>>* Get_ObjectDescs();
 
