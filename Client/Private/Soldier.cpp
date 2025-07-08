@@ -1,7 +1,6 @@
 #include "Soldier.h"
 #include "GameInstance.h"
 #include "Bullet.h"
-#include "BehaviorNode.h"
 #include "Particle_Manager.h"
 
 CSoldier::CSoldier(LPDIRECT3DDEVICE9 pGraphic_Device)
@@ -129,7 +128,10 @@ void CSoldier::Update(_float fTimeDelta)
 
 	if (m_fHp <= 0)
 	{
-		m_strFrameKey = TEXT("Soldier_Die_Default");
+		if (m_isHead)
+			m_strFrameKey = TEXT("Soldier_Die_HeadShot");
+		else
+			m_strFrameKey = TEXT("Soldier_Die_Default");
 		m_bAnimationLock = true;
 		m_bDying = true;
 		m_pGameInstance->PlaySoundOnce(TEXT("Soldier_Death01.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
@@ -178,7 +180,11 @@ void CSoldier::Late_Update(_float fTimeDelta)
 		if (m_bDying)
 		{
 			//m_isDead = true;
-			m_strFrameKey = TEXT("Soldier_Die_Idle");
+			if (m_isHead)
+				m_strFrameKey = TEXT("Soldier_Die_HeadShot_Idle");
+			else
+				m_strFrameKey = TEXT("Soldier_Die_Idle");
+
 			m_bAnimationLock = false;
 			return;
 		}
@@ -230,6 +236,7 @@ HRESULT CSoldier::Ready_Animations()
 	CAnimation::FRAME_DESC Desc_12{};
 	CAnimation::FRAME_DESC Desc_13{};
 	CAnimation::FRAME_DESC Desc_14{};
+	CAnimation::FRAME_DESC Desc_15{};
 
 	auto iter = m_pTextureComs.find(TEXT("Soldier_Attack_Front"));
 	Desc_0.iFrameSpeed = 6;
@@ -320,6 +327,12 @@ HRESULT CSoldier::Ready_Animations()
 	Desc_14.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom->Set_Animation(TEXT("Soldier_Die_Idle"), Desc_14);
 
+	//Soldier_Die_Idle
+	iter = m_pTextureComs.find(TEXT("Soldier_Die_HeadShot_Idle"));
+	Desc_15.iFrameSpeed = 20;
+	Desc_15.iEnd = iter->second->Get_Texture_Length();
+	m_pAnimationCom->Set_Animation(TEXT("Soldier_Die_HeadShot_Idle"), Desc_15);
+
 	return S_OK;
 }
 
@@ -347,6 +360,34 @@ void CSoldier::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDe
 	return;
 }
 
+void CSoldier::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta, CComponent* pCollider)
+{
+	if (m_isDead || m_bDying)
+		return;
+
+	if (eColType == COLLISION::RAY)
+	{
+		CBullet* pBullet = dynamic_cast<CBullet*>(pDst);
+		if (pBullet != nullptr)
+		{
+			if ((m_fHp -= (pBullet->Get_Damage())) > 0)
+			{
+				m_pGameInstance->PlaySoundOnce(TEXT("Soldier_Pain01.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
+
+				CParticle_Manager::GetInstance()->Create_Particle(TEXT("Particle_Blood"), ENUM_CLASS(LEVEL::GAMEPLAY),
+					TEXT("Layer_Particle"), m_pTransformCom->Get_State(STATE::POSITION));
+			}
+			else
+			{
+				if (pCollider == m_pBoxColliderHead)
+				{
+					m_isHead = true;
+				}
+			}
+		}
+	}
+}
+
 const COLLISION_DESC& CSoldier::Get_CollisionDesc(COLLISION eColType)
 {
 	COLLISION_DESC Desc;
@@ -355,7 +396,10 @@ const COLLISION_DESC& CSoldier::Get_CollisionDesc(COLLISION eColType)
 	if (eColType == COLLISION::SPHERE)
 		Desc.pCollider = m_pSphereColliderCom;
 	else if (eColType == COLLISION::BOX)
+	{
 		Desc.pCollider = m_pBoxColliderCom;
+		Desc.pColliderSecond = m_pBoxColliderHead;
+	}
 
 	return Desc;
 }

@@ -2,7 +2,6 @@
 #include "GameInstance.h"
 #include "Bullet.h"
 #include "MeleeAttack.h"
-#include "BehaviorNode.h"
 #include "Particle_Manager.h"
 #include "Effect_Manager.h"
 
@@ -129,7 +128,10 @@ void CZombie::Update(_float fTimeDelta)
 
 	if (m_fHp <= 0)
 	{
-		m_strFrameKey = TEXT("Zombie_Die_Default");
+		if (m_isHead)
+			m_strFrameKey = TEXT("Zombie_Die_HeadShot");
+		else
+			m_strFrameKey = TEXT("Zombie_Die_Default");
 		m_bAnimationLock = true;
 		m_bDying = true;
 		m_pGameInstance->PlaySoundOnce(TEXT("zombie_dead_1.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
@@ -177,7 +179,10 @@ void CZombie::Late_Update(_float fTimeDelta)
 		if (m_bDying)
 		{
 			//m_isDead = true;
-			m_strFrameKey = TEXT("Zombie_Die_Idle");
+			if (m_isHead)
+				m_strFrameKey = TEXT("Zombie_Die_HeadShot_Idle");
+			else
+				m_strFrameKey = TEXT("Zombie_Die_Idle");
 			m_bAnimationLock = false;
 			return;
 		}
@@ -227,6 +232,8 @@ HRESULT CZombie::Ready_Animations()
 	CAnimation::FRAME_DESC Desc_9{};
 	CAnimation::FRAME_DESC Desc_10{};
 	CAnimation::FRAME_DESC Desc_11{};
+	CAnimation::FRAME_DESC Desc_12{};
+	CAnimation::FRAME_DESC Desc_13{};
 
 	auto iter = m_pTextureComs.find(TEXT("Zombie_Attack"));
 	Desc_0.iFrameSpeed = 12;
@@ -299,6 +306,18 @@ HRESULT CZombie::Ready_Animations()
 	Desc_11.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom->Set_Animation(TEXT("Zombie_Die_Idle"), Desc_11);
 
+	//Zombie_Die_HeadShot
+	iter = m_pTextureComs.find(TEXT("Zombie_Die_HeadShot"));
+	Desc_12.iFrameSpeed = 12;
+	Desc_12.iEnd = iter->second->Get_Texture_Length();
+	m_pAnimationCom->Set_Animation(TEXT("Zombie_Die_HeadShot"), Desc_12);
+
+	//Zombie_Die_HeadShot_Idle
+	iter = m_pTextureComs.find(TEXT("Zombie_Die_HeadShot_Idle"));
+	Desc_13.iFrameSpeed = 20;
+	Desc_13.iEnd = iter->second->Get_Texture_Length();
+	m_pAnimationCom->Set_Animation(TEXT("Zombie_Die_HeadShot_Idle"), Desc_13);
+
 	return S_OK;
 }
 
@@ -318,28 +337,20 @@ void CZombie::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 		CBullet* pBullet = dynamic_cast<CBullet*>(pDst);
 		if (pBullet != nullptr)
 		{
-
-			if (pCollider == m_pBoxColliderCom)
+			if ((m_fHp -= (pBullet->Get_Damage())) > 0)
 			{
-				if ((m_fHp -= (pBullet->Get_Damage())) > 0)
-				{
-					m_pGameInstance->PlaySoundOnce(TEXT("zombie_hit_1.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
-				}
+				m_pGameInstance->PlaySoundOnce(TEXT("zombie_hit_1.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
+
 				CParticle_Manager::GetInstance()->Create_Particle(TEXT("Particle_Blood"), ENUM_CLASS(LEVEL::GAMEPLAY),
 					TEXT("Layer_Particle"), m_pTransformCom->Get_State(STATE::POSITION));
 			}
-
-			else if (pCollider == m_pBoxColliderHead)
+			else
 			{
-				if ((m_fHp -= (pBullet->Get_Damage())) > 0)
+				if (pCollider == m_pBoxColliderHead)
 				{
-					m_pGameInstance->PlaySoundOnce(TEXT("zombie_hit_1.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
+					m_isHead = true;
 				}
-				CParticle_Manager::GetInstance()->Create_Particle(TEXT("Particle_Blood"), ENUM_CLASS(LEVEL::GAMEPLAY),
-					TEXT("Layer_Particle"), m_pTransformCom->Get_State(STATE::POSITION));
 			}
-			//CEffect_Manager::GetInstance()->Create_Effect(TEXT("Effect_Boss_Die"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Effect"),
-			//	m_pTransformCom->Get_State(STATE::POSITION));
 		}
 	}
 }
