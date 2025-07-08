@@ -424,10 +424,10 @@ HRESULT CZombie::Ready_Components()
 		TEXT("Com_BoxCollider"), reinterpret_cast<CComponent**>(&m_pBoxColliderCom), &Desc)))
 		return E_FAIL;
 
-	Desc.vPosition = { 0.f, 4.f, 0.f };
-	Desc.fScaleX = 0.07f;
-	Desc.fScaleZ = 0.07f;
-	Desc.fScaleY = 0.06f;
+	Desc.vPosition = { 0.f, 2.5f, 0.f };
+	Desc.fScaleX = 0.1f;
+	Desc.fScaleZ = 0.1f;
+	Desc.fScaleY = 0.1f;
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_BoxCollider"),
 		TEXT("Com_BoxCollider_Head"), reinterpret_cast<CComponent**>(&m_pBoxColliderHead), &Desc)))
 		return E_FAIL;
