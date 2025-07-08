@@ -192,18 +192,14 @@ HRESULT CLevel_GamePlay::Render()
 HRESULT CLevel_GamePlay::Ready_Objects_By_JSON()
 {
 	// json 파일 로드
-	CFile_Manager* pFileMgr = CFile_Manager::Create();
-	if (pFileMgr == nullptr)
+	m_pFileMgr = CFile_Manager::Create();
+	if (m_pFileMgr == nullptr)
 		return E_FAIL;
 
-	Safe_AddRef(pFileMgr);
-
-	if (FAILED(pFileMgr->Load_Layers(LEVEL::GAMEPLAY)))
+	if (FAILED(m_pFileMgr->Load_Layers(LEVEL::GAMEPLAY)))
 		return E_FAIL;
 
-	m_ObjectDescs = pFileMgr->Get_ObjectDescs();
-
-	Safe_Release(pFileMgr);
+	m_ObjectDescs = m_pFileMgr->Get_ObjectDescs();
 
 	return S_OK;
 }
@@ -817,6 +813,7 @@ void CLevel_GamePlay::Free()
 	Safe_Release(m_pUIAim);
 	Safe_Release(m_pUICardKey);
 	Safe_Release(m_pTerrain_Manager);
+	Safe_Release(m_pFileMgr);
 
 	m_pEffect_Manager->Release_Effect_Manager();
 	Safe_Release(m_pEffect_Manager);
