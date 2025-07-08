@@ -2,9 +2,9 @@
 #include "GameInstance.h"
 #include "Bullet.h"
 #include "BossGrenade.h"
-#include "BehaviorNode.h"
 #include "Particle_Manager.h"
 #include "Bullet_Manager.h"
+#include "Effect_Manager.h"
 
 CBoss::CBoss(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CMonster{ pGraphic_Device }
@@ -60,6 +60,7 @@ HRESULT CBoss::Initialize(void* pArg)
 	m_uMaxExplosionBullets = 3;
 	m_uCurBullets = 0;
 	m_uCurExplosionBullets = 0;
+	m_fStopMoveTime = 2.f;
 	// 기존 0.05
 	m_fMoveCoolTime = 0.2f;
 	m_strUpFrameKey = TEXT("Boss_Front");
@@ -81,10 +82,13 @@ void CBoss::Update(_float fTimeDelta)
 {
 	//m_fSumAttackCoolTime += fTimeDelta;
 
-	if (m_bDying)
+	if (m_isDead)
 	{
 		return;
 	}
+
+	if (!m_isMove)
+		m_fSumStopMoveTime += fTimeDelta;
 
 	__super::Jump(fTimeDelta);
 
@@ -169,7 +173,7 @@ void CBoss::Update(_float fTimeDelta)
 		//m_isMove = false;
 	}
 
-	if (m_fAttackFailTime >= 7.f)						// 공격이 호출되고 3초이상 시전했는데 종료가 안됬다면?
+	if (m_fAttackFailTime >= 7.f)						// 공격이 호출되고 7초이상 시전했는데 종료가 안됬다면?
 	{													// 비정상 상태로 판단하고 초기화 작업
 		m_uCurBullets = 0;
 		m_bAnimationLock = false;
@@ -187,7 +191,10 @@ void CBoss::Update(_float fTimeDelta)
 		m_pGameInstance->PlaySoundOnce(TEXT("Boss1_Die.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
 		m_strUpFrameKey = TEXT("Boss_Die");
 		m_bAnimationLock = true;
-		m_bDying = true;
+		//m_bDying = true;
+		m_isDead = true;
+		CEffect_Manager::GetInstance()->Create_Effect(TEXT("Effect_Boss_Die"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Effect"),
+			m_pTransformCom->Get_State(STATE::POSITION));
 	}
 	else if (m_bAttacking)							// 어택중이면 계속 어택
 	{
@@ -214,11 +221,14 @@ void CBoss::Update(_float fTimeDelta)
 
 			Attack(fTimeDelta, m_eState);
 		}
-		else if (D3DXVec3Length(&vDiff) <= m_fChaseRange && D3DXVec3Length(&vDiff) >= m_fSafeDistance && m_fSumMoveCoolTime >= m_fMoveCoolTime)
+		else if ((D3DXVec3Length(&vDiff) <= m_fChaseRange) && (D3DXVec3Length(&vDiff) >= m_fSafeDistance) && (m_fSumMoveCoolTime >= m_fMoveCoolTime))
 		{
-			Move(fTimeDelta);
-			//m_isMove = true;
-			m_fSumMoveCoolTime = 0.f;
+			if (m_fSumStopMoveTime >= m_fStopMoveTime)
+			{
+				Move(fTimeDelta);
+				//m_isMove = true;
+				m_fSumMoveCoolTime = 0.f;
+			}
 		}
 	}
 
@@ -242,18 +252,13 @@ void CBoss::Late_Update(_float fTimeDelta)
 				m_strLegFrameKey = TEXT("Boss_LeftLeg");
 			}
 			m_isMove = false;
+			m_fSumStopMoveTime = 0.f;
 		}
 	}
 
 	if (m_bAnimationLock && m_pAnimationCom_Up->Check_Animation_Finish(m_strUpFrameKey))
 	{
-		if (m_bDying)
-		{
-			m_isDead = true;
-			m_bAnimationLock = false;
-			return;
-		}
-		else if (m_bAttacking)
+		if (m_bAttacking)
 		{
 			m_strUpFrameKey = TEXT("Boss_Attack_Front");
 		}
@@ -493,9 +498,14 @@ void CBoss::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta
 				// 보스는 피격 사운드 넣는게 애매해서 일단 보류
 				//m_pGameInstance->PlaySoundOnce(TEXT("Spider_Hit.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
 			}
-			// 보스는 추후 적용
-			/*CParticle_Manager::GetInstance()->Create_Particle(TEXT("Particle_Blood"), ENUM_CLASS(LEVEL::GAMEPLAY),
-				TEXT("Layer_Particle"), m_pTransformCom->Get_State(STATE::POSITION));*/
+			else
+			{
+				// 보스는 추후 적용
+				/*CParticle_Manager::GetInstance()->Create_Particle(TEXT("Particle_Blood"), ENUM_CLASS(LEVEL::GAMEPLAY),
+					TEXT("Layer_Particle"), m_pTransformCom->Get_State(STATE::POSITION));*/
+				/*CEffect_Manager::GetInstance()->Create_Effect(TEXT("Effect_Boss_Die"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Effect"),
+					m_pTransformCom->Get_State(STATE::POSITION));*/
+			}
 		}
 	}
 
@@ -832,7 +842,15 @@ void CBoss::Attack()
 }
 
 void CBoss::Move(_float fTimeDelta)
-{
+{	
+	if (m_isMove)
+	{
+		_wstring tag = m_pAnimationCom_Down->Get_FrameKey();
+		m_pAnimationCom_Down->Get_Frame_Desc(tag)->iEnd;
+		if (m_pAnimationCom_Down->Get_Frame_Current_Index(tag) == m_pAnimationCom_Down->Get_Frame_Desc(tag)->iEnd)
+			return;
+	}
+
 	if (!m_isMove && m_strLegFrameKey == TEXT("Boss_LeftLeg"))
 	{
 		m_isMove = true;
@@ -853,6 +871,7 @@ void CBoss::Move(_float fTimeDelta)
 
 	_float dot = D3DXVec3Dot(&fPlayerLook, &fMonsterLook);
 	float fRadian = acosf(dot);
+
 	m_pTransformCom->Chase(m_pPlayerTransform->Get_State(STATE::POSITION), fTimeDelta);
 }
 
