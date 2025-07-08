@@ -69,7 +69,7 @@ void CEliteSoldier::Update(_float fTimeDelta)
 
 	if (m_bDying)
 	{
-		SetUp_OnTerrain(m_pTransformCom, 0.35f, &m_bJump);
+		SetUp_OnTerrain(m_pTransformCom, 0.4f, &m_bJump);
 		return;
 	}
 
@@ -128,7 +128,10 @@ void CEliteSoldier::Update(_float fTimeDelta)
 
 	if (m_fHp <= 0)
 	{
-		m_strFrameKey = TEXT("EliteSoldier_Die_Default");
+		if (m_isHead)
+			m_strFrameKey = TEXT("EliteSoldier_Die_HeadShot");
+		else
+			m_strFrameKey = TEXT("EliteSoldier_Die_Default");
 		m_bAnimationLock = true;
 		m_bDying = true;
 		m_pGameInstance->PlaySoundOnce(TEXT("EliteSoldier_Die.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
@@ -184,7 +187,10 @@ void CEliteSoldier::Late_Update(_float fTimeDelta)
 	{
 		if (m_bDying)
 		{
-			m_strFrameKey = TEXT("EliteSoldier_Die_Idle");
+			if (m_isHead)
+				m_strFrameKey = TEXT("EliteSoldier_Die_HeadShot_Idle");
+			else
+				m_strFrameKey = TEXT("EliteSoldier_Die_Idle");
 			m_bAnimationLock = false;
 			return;
 		}
@@ -234,6 +240,8 @@ HRESULT CEliteSoldier::Ready_Animations()
 	CAnimation::FRAME_DESC Desc_10{};
 	CAnimation::FRAME_DESC Desc_11{};
 	CAnimation::FRAME_DESC Desc_12{};
+	CAnimation::FRAME_DESC Desc_13{};
+	CAnimation::FRAME_DESC Desc_14{};
 
 	//EliteSoldier_Attack
 	auto iter = m_pTextureComs.find(TEXT("EliteSoldier_Attack_Front"));
@@ -307,6 +315,18 @@ HRESULT CEliteSoldier::Ready_Animations()
 	Desc_11.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom->Set_Animation(TEXT("EliteSoldier_Die_Idle"), Desc_11);
 
+	//EliteSoldier_Right
+	iter = m_pTextureComs.find(TEXT("EliteSoldier_Die_HeadShot"));
+	Desc_12.iFrameSpeed = 10;
+	Desc_12.iEnd = iter->second->Get_Texture_Length();
+	m_pAnimationCom->Set_Animation(TEXT("EliteSoldier_Die_HeadShot"), Desc_12);
+
+	//EliteSoldier_Right
+	iter = m_pTextureComs.find(TEXT("EliteSoldier_Die_HeadShot_Idle"));
+	Desc_13.iFrameSpeed = 4;
+	Desc_13.iEnd = iter->second->Get_Texture_Length();
+	m_pAnimationCom->Set_Animation(TEXT("EliteSoldier_Die_HeadShot_Idle"), Desc_13);
+
 	return S_OK;
 }
 
@@ -332,6 +352,34 @@ void CEliteSoldier::OnCollision(CGameObject* pDst, COLLISION eColType, _float fT
 	return;
 }
 
+void CEliteSoldier::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta, CComponent* pCollider)
+{
+	if (m_isDead || m_bDying)
+		return;
+
+	if (eColType == COLLISION::RAY)
+	{
+		CBullet* pBullet = dynamic_cast<CBullet*>(pDst);
+		if (pBullet != nullptr)
+		{
+			if ((m_fHp -= (pBullet->Get_Damage())) > 0)
+			{
+				m_pGameInstance->PlaySoundOnce(TEXT("Soldier_Pain01.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
+
+				CParticle_Manager::GetInstance()->Create_Particle(TEXT("Particle_Blood"), ENUM_CLASS(LEVEL::GAMEPLAY),
+					TEXT("Layer_Particle"), m_pTransformCom->Get_State(STATE::POSITION));
+			}
+			else
+			{
+				if (pCollider == m_pBoxColliderHead)
+				{
+					m_isHead = true;
+				}
+			}
+		}
+	}
+}
+
 const COLLISION_DESC& CEliteSoldier::Get_CollisionDesc(COLLISION eColType)
 {
 	COLLISION_DESC Desc;
@@ -340,7 +388,10 @@ const COLLISION_DESC& CEliteSoldier::Get_CollisionDesc(COLLISION eColType)
 	if (eColType == COLLISION::SPHERE)
 		Desc.pCollider = m_pSphereColliderCom;
 	else if (eColType == COLLISION::BOX)
+	{
 		Desc.pCollider = m_pBoxColliderCom;
+		Desc.pColliderSecond = m_pBoxColliderHead;
+	}
 
 	return Desc;
 }
