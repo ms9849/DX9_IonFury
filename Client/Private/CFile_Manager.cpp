@@ -14,74 +14,6 @@ HRESULT CFile_Manager::Initialize()
     return S_OK;
 }
 
-//HRESULT CFile_Manager::Save_Layers(LEVEL iLevel)
-//{
-//    JSON jLayers = JSON::array();
-//
-//    for (const auto& pair : m_pGameInstance->Get_Layers_InLevel(ENUM_CLASS(iLevel))) {
-//        const _wstring& layerTag = pair.first;
-//
-//        auto pLayer = pair.second;
-//        if (!pLayer
-//            && layerTag != TEXT("Prototype_GameObject_Player_RightHand")
-//            && layerTag != TEXT("Prototype_GameObject_Player_LeftHand")) continue;
-//
-//        JSON jLayer;
-//        jLayer["Level"] = static_cast<_uint>(iLevel); // <-- Level 저장
-//        jLayer["Layer"] = WStringToUTF8(layerTag);
-//        jLayer["Objects"] = JSON::array();
-//
-//        for (const auto& pObject : pLayer->Get_GameObjects()) {
-//            CTransform* pTransform = dynamic_cast<CTransform*>(
-//                m_pGameInstance->Get_Component(ENUM_CLASS(iLevel), layerTag, TEXT("Com_Transform"), pObject->Get_ID())
-//                );
-//            if (!pTransform) continue;
-//
-//            _float4x4 matWorld;
-//            memcpy(&matWorld, pTransform->Get_WorldMatrixPtr(), sizeof(_float4x4));
-//
-//            JSON jObj;
-//            jObj["ID"] = pObject->Get_ID();
-//            jObj["LayerLevel"] = pObject->Get_Desc().iLayerLevel;
-//            jObj["Proto"] = WStringToUTF8(pObject->Get_Desc().strProto);
-//            jObj["ProtoLevel"] = pObject->Get_Desc().iProtoLevel;
-//            if (layerTag == TEXT("Layer_Map_Objects") || layerTag == TEXT("Layer_BackGround") || layerTag == TEXT("Layer_Map_Slope"))
-//                jObj["TextureIndex"] = pObject->Get_Desc().iTextureIndex;
-//            if (pObject->Get_Desc().strProto == TEXT("Prototype_GameObject_Terrain"))
-//                jObj["TerrainSize"] = WStringToUTF8(pObject->Get_Desc().strTerrainSize);
-//            jObj["Matrix"] = {
-//                { matWorld._11, matWorld._12, matWorld._13, matWorld._14 },
-//                { matWorld._21, matWorld._22, matWorld._23, matWorld._24 },
-//                { matWorld._31, matWorld._32, matWorld._33, matWorld._34 },
-//                { matWorld._41, matWorld._42, matWorld._43, matWorld._44 },
-//            };
-//            jLayer["Objects"].push_back(jObj);
-//        }
-//
-//        jLayers.push_back(jLayer);
-//    }
-//
-//    /*jObj["Right"] = { matWorld._11, matWorld._12, matWorld._13, matWorld._14 },
-//                jObj["Up"] = { matWorld._21, matWorld._22, matWorld._23, matWorld._24 },
-//                jObj["Look"] = { matWorld._31, matWorld._32, matWorld._33, matWorld._34 },
-//                jObj["Position"] = { matWorld._41, matWorld._42, matWorld._43, matWorld._44 },*/
-//
-//    // 저장
-//    string jsonStr = jLayers.dump(4);
-//
-//    HANDLE hFile = CreateFileW(TEXT("../../Data/LevelGamePlay.json"),
-//        GENERIC_WRITE, 0, nullptr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
-//
-//    if (hFile == INVALID_HANDLE_VALUE)
-//        return E_FAIL;
-//
-//    DWORD written = 0;
-//    WriteFile(hFile, jsonStr.c_str(), (DWORD)jsonStr.size(), &written, nullptr);
-//    CloseHandle(hFile);
-//
-//    return S_OK;
-//}
-
 HRESULT CFile_Manager::Load_Layers(LEVEL iLevel)
 {
     HANDLE hFile = CreateFileW(TEXT("../../Data/LevelGamePlay.json"),
@@ -186,9 +118,14 @@ void CFile_Manager::Free()
     __super::Free();
 
     Safe_Release(m_pGameInstance);
-  /*  if (m_ObjectDescs)
+    if (m_ObjectDescs)
     {
+        for (auto& pair : *m_ObjectDescs)
+            pair.second.clear();
+
+        m_ObjectDescs->clear();
+
         delete m_ObjectDescs;
         m_ObjectDescs = nullptr;
-    }*/
+    }
 }

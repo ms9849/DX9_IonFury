@@ -35,6 +35,7 @@ private:
 	HRESULT Ready_Layer_Bullet(const _wstring& strLayerTag);
 
 private:
+	class CFile_Manager* m_pFileMgr;
 	class CBullet_Manager* m_pBullet_Manager = {};
 	class CParticle_Manager* m_pParticle_Manager = {};
 	class CEffect_Manager* m_pEffect_Manager = {};
@@ -48,6 +49,7 @@ private:
 
 	CCamera::CAMERA_CONFIG m_CameraSettings;
 	vector<class CUIItemQueue*> m_pUIItemQueues{};
+
 
 	// FPS 계산 변수
 	_float m_fFPSTimer{ 0.f }, m_fTimeDelta{ 0.f };
