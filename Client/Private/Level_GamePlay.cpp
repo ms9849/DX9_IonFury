@@ -129,7 +129,9 @@ void CLevel_GamePlay::Update(_float fTimeDelta)
 	//m_pGameInstance->Check_SphereCollision(TEXT("Layer_Player"), TEXT("Layer_Monster"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta);
 	
 	//m_pGameInstance->Check_AABBCollision(TEXT("Layer_Player"), TEXT("Layer_Monster"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta);
-	m_pGameInstance->Check_SphereCollision(TEXT("Layer_Monster"), TEXT("Layer_PlayerBullet"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta);
+	//m_pGameInstance->Check_SphereCollision(TEXT("Layer_Monster"), TEXT("Layer_PlayerBullet"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta);
+	
+	m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_PlayerBullet"), TEXT("Layer_Monster"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta, nullptr);
 	m_pTerrain_Manager->Check_Landing();
 
 	m_fTimeDelta = fTimeDelta;

@@ -12,11 +12,15 @@ protected:
 	virtual ~CGameObject() = default;
 
 public:
-	/*
-	충돌한 상대 객체와, 충돌 타입을 리턴
-	*/
-	virtual void OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta);
+	/* 충돌한 상대 객체와, 충돌 타입을 리턴 */
+	//virtual void OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta);
+
+	/* 충돌한 상대 객체, 충돌이 발생한 내 자신의 콜라이더, 충돌 타입을 리턴 */
+	virtual void OnCollision(CGameObject* pDst, COLLISION eColType,_float fTimeDelta);
+	virtual void OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta, CComponent* pCollider);
+
 	virtual const COLLISION_DESC& Get_CollisionDesc(COLLISION eColType);
+	virtual const RAY_DESC& Get_RayDesc();
 
 public:
 	virtual HRESULT Initialize_Prototype();

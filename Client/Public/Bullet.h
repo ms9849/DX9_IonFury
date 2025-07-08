@@ -34,16 +34,9 @@ protected:
 	virtual ~CBullet() = default;
 
 public:
-	_float Get_Damage()
-	{
-		return m_fDamage;
-	}
-
-	_bool Get_PlayerBullet()
-	{
-		return m_bPlayerBullet;
-	}
-
+	_float Get_Damage() { return m_fDamage; }
+	_bool Get_PlayerBullet() { return m_bPlayerBullet; }
+	const RAY_DESC& Get_RayDesc();
 	void Set_Desc(const BULLET_DESC& Desc);
 	void Set_Fired(_bool bFlag) { m_bisFire = bFlag; }
 	_bool Get_Fired() { return m_bisFire; }
@@ -58,6 +51,8 @@ public:
 
 public:
 	virtual void OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta) override;
+	virtual void OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta, CComponent* pCollider) override;
+
 	virtual const COLLISION_DESC& Get_CollisionDesc(COLLISION eColType);
 
 protected:
