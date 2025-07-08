@@ -63,6 +63,7 @@ public:
 	map<const _wstring, class CLayer*> Get_Layers_InLevel(_uint iLayerLevelIndex);
 	list<class CGameObject*> Get_GameObjects_inLayer(_uint iLayerLevelIndex, const _wstring& strLayerTag);
 	HRESULT Add_Clone_ToLayer(class CGameObject* pClone, _uint iLayerLevelIndex, const _wstring& strLayerTag);
+	class CGameObject* Get_GameObject_By_ID(_uint iLevelIndex, const _wstring& strLayerTag, _uint iObjectID);
 #pragma endregion
 
 #pragma region RENDERER

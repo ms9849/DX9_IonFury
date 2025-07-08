@@ -29,9 +29,9 @@ HRESULT CMapSlope::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-	m_pTransformCom->Set_State(STATE::POSITION, { 3.f, 2.f, 15.f });
-	m_pTransformCom->Set_Scale(_float3{ 1.f, 1.f, 5.f });
-	m_pTransformCom->Rotation(m_pTransformCom->Get_State(STATE::RIGHT), -70.f);
+	//m_pTransformCom->Set_State(STATE::POSITION, { 3.f, 2.f, 15.f });
+	//m_pTransformCom->Set_Scale(_float3{ 1.f, 1.f, 5.f });
+	//m_pTransformCom->Rotation(m_pTransformCom->Get_State(STATE::RIGHT), -70.f);
 
 	return S_OK;
 }
@@ -55,7 +55,7 @@ HRESULT CMapSlope::Render()
 
 	m_pTransformCom->Set_Transform();
 
-	m_pTextureCom->Set_Texture(0);
+	m_pTextureCom->Set_Texture(m_pObjectDesc.iTextureIndex);
 
 	m_pVIBufferCom->Render();
 

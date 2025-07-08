@@ -193,6 +193,9 @@
     <Filter Include="04.InteractionObjects\Lever">
       <UniqueIdentifier>{468d84a8-ef7a-48b1-9e2c-98cbe02ced61}</UniqueIdentifier>
     </Filter>
+    <Filter Include="05.FileMgr">
+      <UniqueIdentifier>{33fb8857-bc71-4a1b-b379-08ac4004da97}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -399,6 +402,9 @@
     <ClInclude Include="..\public\Lever.h">
       <Filter>04.InteractionObjects\Lever</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\CFile_Manager.h">
+      <Filter>05.FileMgr</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -599,6 +605,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Lever.cpp">
       <Filter>04.InteractionObjects\Lever</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CFile_Manager.cpp">
+      <Filter>05.FileMgr</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

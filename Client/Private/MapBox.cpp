@@ -29,7 +29,7 @@ HRESULT CMapBox::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-	m_pTransformCom->Set_State(STATE::POSITION, { 2.f, 0.f, 2.f });
+	//m_pTransformCom->Set_State(STATE::POSITION, { 2.f, 0.f, 2.f });
 
 	return S_OK;
 }
@@ -53,7 +53,7 @@ HRESULT CMapBox::Render()
 
 	m_pTransformCom->Set_Transform();
 
-	m_pTextureCom->Set_Texture(0);
+	m_pTextureCom->Set_Texture(m_pObjectDesc.iTextureIndex);
 
 	m_pVIBufferCom->Render();
 

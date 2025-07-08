@@ -28,7 +28,7 @@ HRESULT CItemHealpack::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-	m_pTransformCom->Set_State(STATE::POSITION, _float3(20.f, 0.f, 3.f));
+	//m_pTransformCom->Set_State(STATE::POSITION, _float3(20.f, 0.f, 3.f));
 
 	SetUp_OnTerrain(m_pTransformCom, 0.5f);
 

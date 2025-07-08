@@ -1,7 +1,7 @@
 #include "Lever.h"
 
 #include "GameInstance.h"
-#include "Player.h"
+#include "MapElevator.h"
 
 CLever::CLever(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CGameObject{ pGraphic_Device }
@@ -26,12 +26,8 @@ HRESULT CLever::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-	m_pTransformCom->Set_State(STATE::POSITION, _float3(13.f, 0.5f, 15.f));
-	m_pTransformCom->Set_Scale(_float3{ 1.f, 1.f, 1.f });
-
-	m_pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY),
-		TEXT("Layer_Player")));
-	Safe_AddRef(m_pPlayer);
+	//m_pTransformCom->Set_State(STATE::POSITION, _float3(13.f, 0.5f, 15.f));
+	//m_pTransformCom->Set_Scale(_float3{ 1.f, 1.f, 1.f });
 
 	return S_OK;
 }
@@ -42,13 +38,19 @@ void CLever::Priority_Update(_float fTimeDelta)
 
 void CLever::Update(_float fTimeDelta)
 {
-	/*if (m_pPlayer->Get_Use_CardKey() && !m_bOpen)
-		m_strFrameKey = TEXT("DoorLock_Unlock");*/
-
-	//m_pAnimationCom->Play_Animation(TEXT("Default_Lever"), fTimeDelta);
-
-	if (m_pPlayer->Get_Active_Elevator())
-		Move_Elevator(fTimeDelta);
+	if (m_bActive &&
+		dynamic_cast<CMapElevator*>(
+			m_pGameInstance->Get_GameObject_By_ID(
+				ENUM_CLASS(LEVEL::GAMEPLAY),
+				TEXT("Layer_Map_Objects"),
+				m_iTargetID))->Get_Elevator_End())
+	{
+		Lever_Control(fTimeDelta);
+	}
+	else
+	{
+		m_bActive = false;
+	}
 }
 
 void CLever::Late_Update(_float fTimeDelta)
@@ -61,13 +63,13 @@ HRESULT CLever::Render()
 {
 	m_pTransformCom->Set_Transform();
 
-	if (m_pPlayer->Get_Active_Elevator() && m_bUp)
+	if (m_bActive && m_bUp)
 		m_pTextureCom->Set_Texture((m_pTextureCom->Get_Texture_Length() - 1) - m_pAnimationCom->Get_Frame_Current_Index(TEXT("Default_Lever")));
-	else if (m_pPlayer->Get_Active_Elevator() && !m_bUp)
+	else if (m_bActive && !m_bUp)
 		m_pTextureCom->Set_Texture(m_pAnimationCom->Get_Frame_Current_Index(TEXT("Default_Lever")));
-	else if (!m_pPlayer->Get_Active_Elevator() && m_bUp)
+	else if (!m_bActive && m_bUp)
 		m_pTextureCom->Set_Texture(m_pTextureCom->Get_Texture_Length() - 1);
-	else if (!m_pPlayer->Get_Active_Elevator() && !m_bUp)
+	else if (!m_bActive && !m_bUp)
 		m_pTextureCom->Set_Texture(0);
 
 	if (FAILED(Begin_RenderState()))
@@ -81,27 +83,30 @@ HRESULT CLever::Render()
 	return S_OK;
 }
 
-void CLever::Move_Elevator(_float fTimeDelta)
+void CLever::Lever_Control(_float fTimeDelta)
 {
-	if (m_bUp)
+	m_pAnimationCom->Play_Animation(TEXT("Default_Lever"), fTimeDelta);
+
+	if (m_pAnimationCom->Check_Animation_Finish(TEXT("Default_Lever")))
 	{
-		m_pAnimationCom->Play_Animation(TEXT("Default_Lever"), fTimeDelta);
-		if (m_pAnimationCom->Check_Animation_Finish(TEXT("Default_Lever")))
-		{
-			m_pPlayer->Set_Active_Elevator(false);
-			m_bUp = false;
-		}
+		m_bActive = false;
+		m_bUp = !m_bUp;
+		dynamic_cast<CMapElevator*>(
+			m_pGameInstance->Get_GameObject_By_ID(
+				ENUM_CLASS(LEVEL::GAMEPLAY),
+				TEXT("Layer_Map_Objects"),
+				m_iTargetID))->Set_Elevator_Active(true);
 	}
-	else
-	{
-		m_pAnimationCom->Play_Animation(TEXT("Default_Lever"), fTimeDelta);
-		if (m_pAnimationCom->Check_Animation_Finish(TEXT("Default_Lever")))
-		{
-			m_pPlayer->Set_Active_Elevator(false);
-			m_bUp = true;
-		}
-	}
-	
+}
+
+void CLever::Set_Active(_bool bActive)
+{
+	m_bActive = bActive;
+}
+
+void CLever::Set_TargetID(_uint iTargetID)
+{
+	m_iTargetID = iTargetID;
 }
 
 _bool CLever::Get_Lever_State()
@@ -218,5 +223,4 @@ void CLever::Free()
 	Safe_Release(m_pAnimationCom);
 	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pSphereColliderCom);
-	Safe_Release(m_pPlayer);
 }

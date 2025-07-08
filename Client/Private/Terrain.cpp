@@ -21,6 +21,10 @@ HRESULT CTerrain::Initialize_Prototype()
 
 HRESULT CTerrain::Initialize(void* pArg)
 {
+	CGameObject::GAMEOBJECT_DESC* Desc = static_cast<CGameObject::GAMEOBJECT_DESC*>(pArg);
+
+	m_pObjectDesc.strTerrainSize = Desc->strTerrainSize;
+
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
@@ -46,9 +50,12 @@ HRESULT CTerrain::Render()
 {
 	//m_pGraphic_Device->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
 
+	m_pGraphic_Device->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP);
+	m_pGraphic_Device->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);
+
 	m_pTransformCom->Set_Transform();
 
-	m_pTextureCom->Set_Texture(0);
+	m_pTextureCom->Set_Texture(m_pObjectDesc.iTextureIndex);
 
 	m_pVIBufferCom->Render();
 
@@ -68,10 +75,13 @@ HRESULT CTerrain::Ready_Components()
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
+	_tchar strPrototypeTag[256];
+	wsprintf(strPrototypeTag, TEXT("Prototype_Component_VIBuffer_Terrain_%s"), m_pObjectDesc.strTerrainSize.c_str());
+
 	/* Com_VIBuffer */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_VIBuffer_Terrain"),
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), strPrototypeTag,
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
-		return E_FAIL;	
+		return E_FAIL;
 
 	return S_OK;
 }

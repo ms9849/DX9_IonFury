@@ -227,6 +227,10 @@ HRESULT CGameInstance::Add_Clone_ToLayer(CGameObject* pClone, _uint iLayerLevelI
 {
 	return m_pObject_Manager->Add_Clone_ToLayer(pClone, iLayerLevelIndex, strLayerTag);
 }
+CGameObject* CGameInstance::Get_GameObject_By_ID(_uint iLevelIndex, const _wstring& strLayerTag, _uint iObjectID)
+{
+	return m_pObject_Manager->Get_GameObject_By_ID(iLevelIndex, strLayerTag, iObjectID);
+}
 #pragma endregion
 
 #pragma region RENDERER

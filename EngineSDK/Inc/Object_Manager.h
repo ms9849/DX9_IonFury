@@ -25,6 +25,9 @@ public:
 
 	/* 객체 가져오기 */
 	class CGameObject* Find_GameObject_ToLayer(_uint iLayerLevelIndex, const _wstring& strLayerTag, void* pArg);
+	/* 객체 아이디로 가져오기 */
+	class CGameObject* Get_GameObject_By_ID(_uint iLevelIndex, const _wstring& strLayerTag, _uint iObjectID);
+
 	/* 레이어 가져오기 */
 	class CLayer* Find_Layer(_uint iLayerLevelIndex, const _wstring& strLayerTag);
 	map<const _wstring, class CLayer*> Get_Layers_InLevel(_uint iLayerLevelIndex);

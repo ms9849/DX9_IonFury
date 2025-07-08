@@ -28,7 +28,7 @@ HRESULT CItemPistolBullet::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-	m_pTransformCom->Set_State(STATE::POSITION, _float3(15.f, 0.f, 7.f));
+	//m_pTransformCom->Set_State(STATE::POSITION, _float3(15.f, 0.f, 7.f));
 
 	SetUp_OnTerrain(m_pTransformCom, 0.5f);
 

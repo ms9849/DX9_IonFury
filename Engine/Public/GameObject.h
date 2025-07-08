@@ -6,6 +6,18 @@ NS_BEGIN(Engine)
 
 class ENGINE_DLL CGameObject abstract : public CBase
 {
+public:
+	typedef struct tagGameObjectDesc {
+		_uint iObjectID{};
+		_float4x4 matWorld{};
+		_uint iProtoLevel{};
+		_uint iLayerLevel{};
+		_uint iTextureIndex{0};
+		_wstring strLayer{};
+		_wstring strProto{};
+		_wstring strTerrainSize{};
+	}GAMEOBJECT_DESC;
+
 protected:
 	CGameObject(LPDIRECT3DDEVICE9 pGraphic_Device);
 	CGameObject(const CGameObject& Prototype);
@@ -31,16 +43,50 @@ public:
 	virtual HRESULT Render();
 
 public:
-	void  Set_Dead(_bool bDead) {
-		m_isDead = bDead;
-	}
-
 	_bool isDead() const {
 		return m_isDead;
 	}
 
 	_uint Get_ID() const {
-		return m_iObjectID;
+		return m_pObjectDesc.iObjectID;
+	}
+
+	GAMEOBJECT_DESC Get_Desc() {
+		return m_pObjectDesc;
+	}
+
+	void Set_ID(_uint iId) {
+		m_pObjectDesc.iObjectID = iId;
+	}
+
+	void Set_Proto(_wstring strProto, _uint iProtoLevel)
+	{
+		m_pObjectDesc.strProto = strProto;
+		m_pObjectDesc.iProtoLevel = iProtoLevel;
+	}
+
+	void Set_Leyer(_wstring strLayer, _uint iLayerLevel)
+	{
+		m_pObjectDesc.strLayer = strLayer;
+		m_pObjectDesc.iLayerLevel = iLayerLevel;
+	}
+
+	void Set_Texture_Index(_uint iIndex)
+	{
+		m_pObjectDesc.iTextureIndex = iIndex;
+	}
+
+	void Set_Terrain_Size(_wstring strTerrainSize)
+	{
+		m_pObjectDesc.strTerrainSize = strTerrainSize;
+	}
+
+	void Set_Desc(GAMEOBJECT_DESC pObjectDesc) {
+		m_pObjectDesc = pObjectDesc;
+	}
+
+	void  Set_Dead(_bool bDead) {
+		m_isDead = bDead;
 	}
 
 	_float Get_CamDistance() const {
@@ -49,8 +95,7 @@ public:
 	class CComponent* Find_Component(const _wstring& strComponentTag);
 
 protected:
-	_uint						m_iObjectID = {};
-	
+	GAMEOBJECT_DESC				m_pObjectDesc;
 	LPDIRECT3DDEVICE9			m_pGraphic_Device = { nullptr };
 	class CGameInstance*		m_pGameInstance = { nullptr };
 	_bool						m_isDead = { false };

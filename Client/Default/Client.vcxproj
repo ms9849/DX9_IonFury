@@ -148,6 +148,7 @@
     <ClInclude Include="..\Public\Blood.h" />
     <ClInclude Include="..\Public\Boss.h" />
     <ClInclude Include="..\Public\BossGrenade.h" />
+    <ClInclude Include="..\Public\CFile_Manager.h" />
     <ClInclude Include="..\public\Lever.h" />
     <ClInclude Include="..\public\MapDeco.h" />
     <ClInclude Include="..\public\MapDesk.h" />
@@ -214,6 +215,7 @@
     <ClCompile Include="..\Private\Blood.cpp" />
     <ClCompile Include="..\Private\Boss.cpp" />
     <ClCompile Include="..\Private\BossGrenade.cpp" />
+    <ClCompile Include="..\Private\CFile_Manager.cpp" />
     <ClCompile Include="..\private\Lever.cpp" />
     <ClCompile Include="..\private\MapDeco.cpp" />
     <ClCompile Include="..\private\MapDesk.cpp" />

@@ -1,7 +1,6 @@
 #include "MapGate.h"
 
 #include "GameInstance.h"
-#include "DoorLock.h"
 
 CMapGate::CMapGate(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CGameObject{ pGraphic_Device }
@@ -34,8 +33,8 @@ HRESULT CMapGate::Initialize(void* pArg)
 	/*if (FAILED(Ready_Collider()))
 		return E_FAIL;*/
 
-	m_pTransformCom->Set_State(STATE::POSITION, _float3{ 5.0f, 0.f, 10.0f });
-	m_pTransformCom->Set_Scale(_float3{ 10.f, 6.0f, 1.0f });
+	//m_pTransformCom->Set_State(STATE::POSITION, _float3{ 5.0f, 0.f, 10.0f });
+	//m_pTransformCom->Set_Scale(_float3{ 10.f, 6.0f, 1.0f });
 
 	return S_OK;
 }
@@ -46,14 +45,8 @@ void CMapGate::Priority_Update(_float fTimeDelta)
 
 void CMapGate::Update(_float fTimeDelta)
 {
-	/*if (!m_bStop)
-	{
-		m_bOpen = dynamic_cast<CDoorLock*>(
-			m_pGameInstance->Find_GameObject_ToLayer(
-				ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Interaction_Objects")))->Get_Open();
-
+	if(!m_bStop)
 		Gate_Animation(fTimeDelta);
-	}*/
 }
 
 void CMapGate::Late_Update(_float fTimeDelta)
@@ -66,7 +59,7 @@ HRESULT CMapGate::Render()
 {
 	m_pTransformCom->Set_Transform();
 
-	m_pTextureCom->Set_Texture(0);
+	m_pTextureCom->Set_Texture(m_pObjectDesc.iTextureIndex);
 
 	if (FAILED(Begin_RenderState()))
 		return E_FAIL;
@@ -77,6 +70,11 @@ HRESULT CMapGate::Render()
 		return E_FAIL;
 
 	return S_OK;
+}
+
+void CMapGate::Set_Open(_bool bOpen)
+{
+	m_bOpen = bOpen;
 }
 
 HRESULT CMapGate::Ready_Components()

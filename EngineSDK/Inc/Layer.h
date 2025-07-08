@@ -14,6 +14,7 @@ public:
 	list<class CGameObject*> Get_GameObjects();
 	class CComponent* Get_Component(const _wstring& strComponentTag, _uint iIndex = 0);
 	class CGameObject* Find_GameObject();
+	class CGameObject* Find_GameObject_By_ID(_uint iObjectID);
 
 public:
 	HRESULT Add_GameObject(class CGameObject* pGameObject);

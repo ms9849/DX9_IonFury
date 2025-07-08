@@ -26,8 +26,8 @@ HRESULT CMapGrinder::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-	m_pTransformCom->Set_State(STATE::POSITION, _float3(0.f, 0.5f, 3.f));
-	m_pTransformCom->Set_Scale(_float3{ 1.f, 0.6f, 1.f });
+	//m_pTransformCom->Set_State(STATE::POSITION, _float3(0.f, 0.5f, 3.f));
+	//m_pTransformCom->Set_Scale(_float3{ 1.f, 0.6f, 1.f });
 
 	return S_OK;
 }
