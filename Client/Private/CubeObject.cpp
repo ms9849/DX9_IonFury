@@ -18,8 +18,6 @@ CCubeObject::CCubeObject(const CCubeObject& Prototype)
 
 HRESULT CCubeObject::Initialize_Prototype()
 {
-	m_iObjectID = ENUM_CLASS(OBJECTID::CUBEOBJECT);
-
 	return S_OK;
 }
 

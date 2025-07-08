@@ -18,6 +18,7 @@ public:
 	virtual HRESULT Render() override;
 
 private:
+	HRESULT Ready_Objects_By_JSON();
 	HRESULT Ready_Lights();
 	HRESULT Ready_Layer_BackGround(const _wstring& strLayerTag);
 	HRESULT Ready_Layer_Camera(const _wstring& strLayerTag);
@@ -51,6 +52,9 @@ private:
 	// FPS 계산 변수
 	_float m_fFPSTimer{ 0.f }, m_fTimeDelta{ 0.f };
 	_uint m_iFPSCount{ 0 }, m_iCurrentFPS{ 0 };
+
+	// json
+	map<_wstring, vector<CGameObject::GAMEOBJECT_DESC>>* m_ObjectDescs{};
 
 public:
 	static CLevel_GamePlay* Create(LPDIRECT3DDEVICE9 pGraphic_Device, LEVEL eLevelID);

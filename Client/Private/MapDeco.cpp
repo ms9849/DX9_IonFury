@@ -25,7 +25,7 @@ HRESULT CMapDeco::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-	m_pTransformCom->Set_State(STATE::POSITION, _float3(2.f, 0.5f, 5.f));
+	//m_pTransformCom->Set_State(STATE::POSITION, _float3(2.f, 0.5f, 5.f));
 
 	return S_OK;
 }
@@ -48,7 +48,7 @@ HRESULT CMapDeco::Render()
 {
 	m_pTransformCom->Set_Transform();
 	
-	m_pTextureCom->Set_Texture(0);
+	m_pTextureCom->Set_Texture(m_pObjectDesc.iTextureIndex);
 
 	if (FAILED(Begin_RenderState()))
 		return E_FAIL;

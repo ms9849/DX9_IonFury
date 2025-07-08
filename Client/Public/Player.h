@@ -95,6 +95,9 @@ private:
 	_bool			m_bActiveElevator{ false };
 	_bool			m_bCanActiveElevator{ false };
 
+	class CDoorLock* m_pDoorLock{nullptr};
+	class CLever* m_pLever{nullptr};
+
 public:
 	virtual void OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta) override;
 	virtual const COLLISION_DESC& Get_CollisionDesc(COLLISION eColType);

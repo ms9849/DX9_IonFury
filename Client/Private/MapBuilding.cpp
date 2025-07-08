@@ -29,8 +29,8 @@ HRESULT CMapBuilding::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-	m_pTransformCom->Set_Scale(_float3{ 10.f, 20.f, 10.f });
-	m_pTransformCom->Set_State(STATE::POSITION, { -10.f, 5.f, 5.f });
+	//m_pTransformCom->Set_Scale(_float3{ 10.f, 20.f, 10.f });
+	//m_pTransformCom->Set_State(STATE::POSITION, { -10.f, 5.f, 5.f });
 
 	return S_OK;
 }
@@ -54,7 +54,7 @@ HRESULT CMapBuilding::Render()
 
 	m_pTransformCom->Set_Transform();
 
-	m_pTextureCom->Set_Texture(1);
+	m_pTextureCom->Set_Texture(m_pObjectDesc.iTextureIndex);
 
 	m_pVIBufferCom->Render();
 

@@ -17,6 +17,54 @@ CMapElevator::CMapElevator(const CMapElevator& Prototype)
 오브젝트 아이디 추가해야됨
 */
 
+void CMapElevator::Set_Elevator_Active(_bool bActive)
+{
+	m_bActive = bActive;
+}
+
+_bool CMapElevator::Get_Elevator_End()
+{
+	return m_bEnd;
+}
+
+void CMapElevator::Elevator_Animation(_float fTimeDelta)
+{
+	_float3 vPos = m_pTransformCom->Get_State(STATE::POSITION);
+
+	if (m_bUp)
+	{
+		m_fTimeStack += fTimeDelta;
+		m_bEnd = false;
+		
+		if (vPos.y > 25.f)
+		{
+			m_fTimeStack = 0.f;
+			m_bActive = false;
+			m_bUp = false;
+			m_bEnd = true;
+		}
+
+		if(m_fTimeStack >= 1.f)
+			vPos.y += (fTimeDelta * 5);
+	}
+	else
+	{
+		m_fTimeStack += fTimeDelta;
+		m_bEnd = false;
+		if (vPos.y <= 0.5f)
+		{
+			m_fTimeStack = 0.f;
+			m_bActive = false;
+			m_bUp = true;
+			m_bEnd = true;
+		}
+		if (m_fTimeStack >= 1.f)
+			vPos.y -= (fTimeDelta * 5);
+	}
+
+	m_pTransformCom->Set_State(STATE::POSITION, vPos);
+}
+
 HRESULT CMapElevator::Initialize_Prototype()
 {
 	return S_OK;
@@ -30,8 +78,8 @@ HRESULT CMapElevator::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-	m_pTransformCom->Set_State(STATE::POSITION, { 15.f, 0.125f, 15.f });
-	m_pTransformCom->Set_Scale(_float3{ 3.f, 0.5f, 3.f });
+	//m_pTransformCom->Set_State(STATE::POSITION, { 15.f, 0.125f, 15.f });
+	//m_pTransformCom->Set_Scale(_float3{ 3.f, 0.5f, 3.f });
 
 	return S_OK;
 }
@@ -42,9 +90,10 @@ void CMapElevator::Priority_Update(_float fTimeDelta)
 
 void CMapElevator::Update(_float fTimeDelta)
 {
-	/*m_bUp = dynamic_cast<CLever*>(
-		m_pGameInstance->Find_GameObject_ToLayer(
-			ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Interaction_Objects")))->Get_Lever_State();*/
+	if (m_bActive)
+	{
+		Elevator_Animation(fTimeDelta);
+	}
 }
 
 void CMapElevator::Late_Update(_float fTimeDelta)
@@ -58,7 +107,7 @@ HRESULT CMapElevator::Render()
 
 	m_pTransformCom->Set_Transform();
 
-	m_pTextureCom->Set_Texture(0);
+	m_pTextureCom->Set_Texture(m_pObjectDesc.iTextureIndex);
 
 	m_pVIBufferCom->Render();
 

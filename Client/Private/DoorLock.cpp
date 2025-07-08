@@ -1,7 +1,8 @@
 #include "DoorLock.h"
 
 #include "GameInstance.h"
-#include "Player.h"
+#include "MapGate.h"
+#include "Lever.h"
 
 CDoorLock::CDoorLock(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CGameObject{ pGraphic_Device }
@@ -26,12 +27,8 @@ HRESULT CDoorLock::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-	m_pTransformCom->Set_State(STATE::POSITION, _float3(0.f, 0.5f, 10.f));
-	m_pTransformCom->Set_Scale(_float3{ 1.f, 0.6f, 1.f });
-
-	m_pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY),
-		TEXT("Layer_Player")));
-	Safe_AddRef(m_pPlayer);
+	//m_pTransformCom->Set_State(STATE::POSITION, _float3(0.f, 0.5f, 10.f));
+	//m_pTransformCom->Set_Scale(_float3{ 1.f, 0.6f, 1.f });
 
 	return S_OK;
 }
@@ -42,7 +39,7 @@ void CDoorLock::Priority_Update(_float fTimeDelta)
 
 void CDoorLock::Update(_float fTimeDelta)
 {
-	if (m_pPlayer->Get_Use_CardKey() && !m_bOpen)
+	if (m_bCanOpen && !m_bOpen)
 		m_strFrameKey = TEXT("DoorLock_Unlock");
 }
 
@@ -53,6 +50,11 @@ void CDoorLock::Late_Update(_float fTimeDelta)
 	if (m_pAnimationCom->Check_Animation_Finish(TEXT("DoorLock_Unlock")))
 	{
 		m_bOpen = true;
+		dynamic_cast<CMapGate*>(
+			m_pGameInstance->Get_GameObject_By_ID(
+				ENUM_CLASS(LEVEL::GAMEPLAY),
+				TEXT("Layer_Map_Objects"),
+				m_iTargetID))->Set_Open(true);
 		m_strFrameKey = TEXT("DoorLock_Open");
 	}
 
@@ -82,9 +84,14 @@ HRESULT CDoorLock::Render()
 	return S_OK;
 }
 
-_bool CDoorLock::Get_Open()
+void CDoorLock::Set_TargetID(_uint iTargetID)
 {
-	return m_bOpen;
+	m_iTargetID = iTargetID;
+}
+
+void CDoorLock::Set_Can_Open(_bool bCanOpen)
+{
+	m_bCanOpen = bCanOpen;
 }
 
 HRESULT CDoorLock::Ready_Components()
@@ -222,7 +229,6 @@ void CDoorLock::Free()
 	Safe_Release(m_pAnimationCom);
 	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pSphereColliderCom);
-	Safe_Release(m_pPlayer);
 
 	for (auto& iter : m_pTextureComs)
 	{

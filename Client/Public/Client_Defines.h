@@ -2,10 +2,13 @@
 
 #include <process.h>
 #include "../Default/framework.h"
+#include "../Json/json.hpp"
+
+#define JSON nlohmann::json
 
 namespace Client
 {
-	enum class OBJECTID { BACKGROUND, CAMERA, TERRAIN, SKY, CUBEOBJECT, END };
+	//enum class OBJECTID { BACKGROUND, CAMERA, TERRAIN, SKY, CUBEOBJECT, END };
 
 	const unsigned int			g_iWinSizeX = 1280;
 	const unsigned int			g_iWinSizeY = 720;

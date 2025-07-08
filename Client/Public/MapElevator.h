@@ -30,6 +30,10 @@ public:
 		return CUBE_DESC{ m_pTransformCom, m_pVIBufferCom };
 	}
 
+	void Set_Elevator_Active(_bool bActive);
+	_bool Get_Elevator_End();
+	void Elevator_Animation(_float fTimeDelta);
+
 public:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
@@ -49,7 +53,10 @@ private:
 	CBoxCollider* m_BoxColliderCom = { nullptr };
 
 private:
-	_bool m_bUp{ false };
+	_bool m_bUp{ true };
+	_bool m_bActive{ false };
+	_bool m_bEnd{ true };
+	_float m_fTimeStack{ 0.f };
 
 private:
 	HRESULT Ready_Components();

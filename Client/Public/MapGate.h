@@ -26,6 +26,9 @@ private:
     virtual void Late_Update(_float fTimeDelta) override;
     virtual HRESULT Render() override;
 
+public:
+    void Set_Open(_bool bOpen);
+
 private:
     virtual HRESULT Ready_Components();
     virtual HRESULT Begin_RenderState();

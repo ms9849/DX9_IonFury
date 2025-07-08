@@ -26,6 +26,15 @@ CGameObject* CLayer::Find_GameObject()
 	return m_GameObjects.back();
 }
 
+CGameObject* CLayer::Find_GameObject_By_ID(_uint iObjectID)
+{
+	for (auto iter : m_GameObjects)
+	{
+		if (iter->Get_Desc().iObjectID == iObjectID)
+			return iter;
+	}
+}
+
 HRESULT CLayer::Add_GameObject(CGameObject* pGameObject)
 {
 	if (nullptr == pGameObject)

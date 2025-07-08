@@ -29,7 +29,7 @@ HRESULT CMapDesk::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-	m_pTransformCom->Set_State(STATE::POSITION, { 3.f, 0.f, 3.f });
+	//m_pTransformCom->Set_State(STATE::POSITION, { 3.f, 0.f, 3.f });
 
 	return S_OK;
 }
@@ -53,7 +53,7 @@ HRESULT CMapDesk::Render()
 
 	m_pTransformCom->Set_Transform();
 
-	m_pTextureCom->Set_Texture(0);
+	m_pTextureCom->Set_Texture(m_pObjectDesc.iTextureIndex);
 
 	m_pVIBufferCom->Render();
 

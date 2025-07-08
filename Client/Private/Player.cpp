@@ -9,6 +9,7 @@
 #include "ItemCardKey.h"
 #include "DoorLock.h"
 #include "Lever.h"
+#include "MapElevator.h"
 #include "Player_RightHand.h"
 #include "Player_LeftHand.h"
 #include "Effect_Manager.h"
@@ -50,13 +51,13 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 	m_tInfo.iHp = 70;
 	m_tInfo.iArmor = 70;
-	
+
 	auto iter = m_Weapons.find(m_tInfo.strWeapon);
 
 	m_tInfo.iBullets = iter->second.iCurrentBullets;
 	m_tInfo.iShootBullets = iter->second.iShootBullets;
 
-	m_pTransformCom->Set_State(STATE::POSITION, _float3(0.f, 0.f, 0.f));
+	//m_pTransformCom->Set_State(STATE::POSITION, _float3(18.5f, 0.f, 95.f));
 
 	// ¿À¸¥¼Õ
 	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Player_RightHand"),
@@ -132,10 +133,13 @@ void CPlayer::Update(_float fTimeDelta)
 				m_tInfo.strAction = TEXT("Down");
 				m_bUseCardKey = true;
 				m_bCanUseCardKey = false;
+				m_pDoorLock->Set_Can_Open(m_bUseCardKey);
+				Safe_Release(m_pDoorLock);
 			}
 			
 			if (m_bCanActiveElevator)
 			{
+				m_pLever->Set_Active(true);
 				m_bActiveElevator = true;
 				m_bCanActiveElevator = false;
 			}
@@ -517,11 +521,31 @@ void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 		}
 		if (dynamic_cast<CDoorLock*>(pDst) && m_bCanUseCardKey)
 		{
+			if (pDst->Get_Desc().iObjectID == 0)
+			{
+				m_pDoorLock = dynamic_cast<CDoorLock*>(pDst);
+				m_pDoorLock->Set_TargetID(7);
+				Safe_AddRef(m_pDoorLock);
+			}
+			if (pDst->Get_Desc().iObjectID == 1)
+			{
+				m_pDoorLock = dynamic_cast<CDoorLock*>(pDst);
+				m_pDoorLock->Set_TargetID(12);
+				Safe_AddRef(m_pDoorLock);
+			}
+
 			m_bCanOpenDoor = true;
 			m_fColTimeStack = 0.f;
 		}
 		if (dynamic_cast<CLever*>(pDst))
 		{
+			if (pDst->Get_Desc().iObjectID == 2)
+			{
+				m_pLever = dynamic_cast<CLever*>(pDst);
+				m_pLever->Set_TargetID(47);
+				Safe_AddRef(m_pLever);
+			}
+
 			m_bCanActiveElevator = true;
 		}
 	}

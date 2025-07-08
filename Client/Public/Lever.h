@@ -29,7 +29,10 @@ private:
     virtual HRESULT Render();
 
 public:
-    void Move_Elevator(_float fTimeDelta);
+    void Lever_Control(_float fTimeDelta);
+    
+    void Set_Active(_bool bActive);
+    void Set_TargetID(_uint iTargetID);
 
     _bool Get_Lever_State();
 
@@ -45,8 +48,8 @@ private:
     virtual HRESULT Begin_RenderState();
     virtual HRESULT End_RenderState();
 
-    class CPlayer* m_pPlayer{ nullptr };
-
+    _uint   m_iTargetID = { 0 };
+    _bool   m_bActive = { false };
     _bool   m_bUp = { false };
 
 private:

@@ -52,7 +52,7 @@ HRESULT CSky::Render()
 {
 	m_pTransformCom->Set_Transform();
 
-	m_pTextureCom->Set_Texture(4);
+	m_pTextureCom->Set_Texture(m_pObjectDesc.iTextureIndex);
 
 	if (FAILED(Begin_RenderState()))
 		return E_FAIL;

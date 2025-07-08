@@ -84,6 +84,22 @@ CGameObject* CObject_Manager::Find_GameObject_ToLayer(_uint iLayerLevelIndex, co
 	}
 }
 
+CGameObject* CObject_Manager::Get_GameObject_By_ID(_uint iLevelIndex, const _wstring& strLayerTag, _uint iObjectID)
+{
+	CGameObject* pGameObject{ nullptr };
+	CLayer* pLayer = Find_Layer(iLevelIndex, strLayerTag);
+
+	if (nullptr == pLayer)
+	{
+		return pGameObject;
+	}
+	else
+	{
+		pGameObject = pLayer->Find_GameObject_By_ID(iObjectID);
+		return pGameObject;
+	}
+}
+
 void CObject_Manager::Priority_Update(_float fTimeDelta)
 {
 	for (size_t i = 0; i < m_iNumLevels; i++)

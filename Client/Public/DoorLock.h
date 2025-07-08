@@ -29,7 +29,8 @@ private:
     virtual HRESULT Render();
 
 public:
-    _bool Get_Open();
+    void Set_TargetID(_uint iTargetID);
+    void Set_Can_Open(_bool bCanOpen);
 
 private:
     CTransform* m_pTransformCom = { nullptr };
@@ -44,8 +45,9 @@ private:
         TEXT("DoorLock_Idle"), TEXT("DoorLock_Unlock"), TEXT("DoorLock_Open")
     };
 
-    class CPlayer*    m_pPlayer{ nullptr };
     _bool       m_bOpen{ false };
+    _bool       m_bCanOpen{ false };
+    _uint       m_iTargetID{ 0 };
 
 private:
     virtual HRESULT Ready_Components();
