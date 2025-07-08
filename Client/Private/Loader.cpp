@@ -28,6 +28,7 @@
 #include "Boss.h"
 #include "MeleeAttack.h"
 #include "DoorLock.h"
+#include "Lever.h"
 #include "BossGrenade.h"
 #include "Effect_Pistol_Fire.h"
 #include "MapGate.h"
@@ -40,6 +41,7 @@
 #include "MapGrinder.h"
 #include "MapFan.h"
 #include "MapSlope.h"
+#include "MapElevator.h"
 #include "Snow.h"
 #include "Blood.h"
 
@@ -234,6 +236,12 @@ HRESULT CLoader::Loading_For_GamePlay()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Interaction_DoorLock_Open"),
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/InteractionObject/DoorLock/DoorLock_6.png"), 1))))
 		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Interaction_Lever */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Interaction_Default_Lever"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/InteractionObject/Lever/Default_Lever_%d.png"), 5))))
+		return E_FAIL;
+
 #pragma endregion
 
 #pragma region ¸Ê ¿ÀºêÁ§Æ®
@@ -299,7 +307,12 @@ HRESULT CLoader::Loading_For_GamePlay()
 
 	/* For.Prototype_Component_Texture_Map_Slope */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Map_Slope"),
-		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/MapObject/Slope/Slope_%d.dds"), 1))))
+		CTexture::Create(m_pGraphic_Device, TEXTURE::CUBE, TEXT("../Bin/Resources/Textures/MapObject/Slope/Slope_%d.dds"), 1))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Map_Elevator */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Map_Elevator"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::CUBE, TEXT("../Bin/Resources/Textures/MapObject/Elevator/Elevator_%d.dds"), 1))))
 		return E_FAIL;
 #pragma endregion
 
@@ -484,6 +497,11 @@ HRESULT CLoader::Loading_For_GamePlay()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Interaction_DoorLock"),
 		CDoorLock::Create(m_pGraphic_Device))))
 		return E_FAIL;
+
+	/* For.Prototype_GameObject_Interaction_Lever */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Interaction_Lever"),
+		CLever::Create(m_pGraphic_Device))))
+		return E_FAIL;
 #pragma endregion
 
 #pragma region ¸Ê ¿ÀºêÁ§Æ®
@@ -535,6 +553,11 @@ HRESULT CLoader::Loading_For_GamePlay()
 	/* For.Prototype_GameObject_Map_Slope */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Map_Slope"),
 		CMapSlope::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Map_Elevator */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Map_Elevator"),
+		CMapElevator::Create(m_pGraphic_Device))))
 		return E_FAIL;
 #pragma endregion
 
