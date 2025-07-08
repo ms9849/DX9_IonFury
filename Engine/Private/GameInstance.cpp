@@ -302,6 +302,10 @@ void CGameInstance::Check_AABBCollision(const _wstring& strLayerTagSrc, const _w
 {
 	m_pCollision_Manager->Check_AABBCollision(strLayerTagSrc, strLayerTagDst, iLayerLevel, fTimeDelta);
 }
+void CGameInstance::Check_RayToAABBCollision(const _wstring& strLayerTagRay, const _wstring& strLayerTagAABB, _uint iLayerLevel, _float fTimeDelta, _float3* vCollisionPos)
+{
+	m_pCollision_Manager->Check_RayToAABBCollision(strLayerTagRay, strLayerTagAABB, iLayerLevel, fTimeDelta, vCollisionPos);
+}
 #pragma endregion 
 
 #pragma region PICKING

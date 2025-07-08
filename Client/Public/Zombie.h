@@ -28,6 +28,7 @@ public:
 	virtual HRESULT Render() override;
 	virtual HRESULT Ready_Animations() override;
 	virtual void OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta) override;
+	virtual void OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta, CComponent* pCollider);
 	virtual const COLLISION_DESC& Get_CollisionDesc(COLLISION eColType);
 
 	HRESULT Ready_Components() override;

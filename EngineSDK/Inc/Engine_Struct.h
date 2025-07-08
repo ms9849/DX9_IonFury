@@ -10,15 +10,22 @@ namespace Engine
 		unsigned int		iWinSizeX, iWinSizeY;
 		WINMODE				eWindowMode;
 
-	}ENGINE_DESC;
+	} ENGINE_DESC;
 
 	typedef struct tagCollisionDesc
 	{
 		class CTransform* pTransform;
-		class CComponent* pCollider;
-
-	}COLLISION_DESC;
+		class CComponent* pCollider = { nullptr };
+		class CComponent* pColliderSecond = { nullptr };
+	} COLLISION_DESC;
 	
+	typedef struct tagRayDesc
+	{
+		D3DXVECTOR3 vPos;
+		D3DXVECTOR3 vDir;
+		float		fSpeed;
+	} RAY_DESC;
+
 	/*D3DDECLUSAGE*/
 	typedef struct tagVertexPositionTexcoord
 	{

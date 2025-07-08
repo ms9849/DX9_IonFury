@@ -306,26 +306,42 @@ void CZombie::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 {
 	if (m_isDead || m_bDying)
 		return;
+}
 
-	if (eColType == COLLISION::SPHERE)
+void CZombie::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta, CComponent* pCollider)
+{
+	if (m_isDead || m_bDying)
+		return;
+
+	if (eColType == COLLISION::RAY)
 	{
 		CBullet* pBullet = dynamic_cast<CBullet*>(pDst);
 		if (pBullet != nullptr)
 		{
-			if ((m_fHp -= (pBullet->Get_Damage())) > 0)
+
+			if (pCollider == m_pBoxColliderCom)
 			{
-				m_pGameInstance->PlaySoundOnce(TEXT("zombie_hit_1.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
+				if ((m_fHp -= (pBullet->Get_Damage())) > 0)
+				{
+					m_pGameInstance->PlaySoundOnce(TEXT("zombie_hit_1.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
+				}
+				CParticle_Manager::GetInstance()->Create_Particle(TEXT("Particle_Blood"), ENUM_CLASS(LEVEL::GAMEPLAY),
+					TEXT("Layer_Particle"), m_pTransformCom->Get_State(STATE::POSITION));
 			}
-			CParticle_Manager::GetInstance()->Create_Particle(TEXT("Particle_Blood"), ENUM_CLASS(LEVEL::GAMEPLAY),
-				TEXT("Layer_Particle"), m_pTransformCom->Get_State(STATE::POSITION));
 
-
-			CEffect_Manager::GetInstance()->Create_Effect(TEXT("Effect_Boss_Die"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Effect"),
-				m_pTransformCom->Get_State(STATE::POSITION));
+			else if (pCollider == m_pBoxColliderHead)
+			{
+				if ((m_fHp -= (pBullet->Get_Damage())) > 0)
+				{
+					m_pGameInstance->PlaySoundOnce(TEXT("zombie_hit_1.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
+				}
+				CParticle_Manager::GetInstance()->Create_Particle(TEXT("Particle_Blood"), ENUM_CLASS(LEVEL::GAMEPLAY),
+					TEXT("Layer_Particle"), m_pTransformCom->Get_State(STATE::POSITION));
+			}
+			//CEffect_Manager::GetInstance()->Create_Effect(TEXT("Effect_Boss_Die"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Effect"),
+			//	m_pTransformCom->Get_State(STATE::POSITION));
 		}
 	}
-
-	return;
 }
 
 const COLLISION_DESC& CZombie::Get_CollisionDesc(COLLISION eColType)
@@ -335,8 +351,12 @@ const COLLISION_DESC& CZombie::Get_CollisionDesc(COLLISION eColType)
 
 	if (eColType == COLLISION::SPHERE)
 		Desc.pCollider = m_pSphereColliderCom;
+
 	else if (eColType == COLLISION::BOX)
+	{
 		Desc.pCollider = m_pBoxColliderCom;
+		Desc.pColliderSecond = m_pBoxColliderHead;
+	}
 
 	return Desc;
 }
@@ -491,7 +511,6 @@ void CZombie::Move(_float fTimeDelta)
 
 	m_pTransformCom->LookAt(m_pPlayerTransform->Get_State(STATE::POSITION));
 
-	
 
 	//m_pTransformCom->Chase(m_pPlayerTransform->Get_State(STATE::POSITION), fMoveTime);
 	//m_pTransformCom->Go_Straight(fTimeDelta);

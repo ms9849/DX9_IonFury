@@ -18,12 +18,28 @@ CGameObject::CGameObject(const CGameObject& Prototype)
 	Safe_AddRef(m_pGraphic_Device);
 }
 
+//void CGameObject::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta)
+//{
+//	// 이 주석을 보고 있다면
+//	// 하위 클래스에서 OnCollision 구현 안한거니까
+//	// 다들 조심
+//	int a = 10;
+//}
+
 void CGameObject::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta)
 {
 	// 이 주석을 보고 있다면
 	// 하위 클래스에서 OnCollision 구현 안한거니까
 	// 다들 조심
-	int a = 10;
+}
+
+void CGameObject::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta, CComponent* pCollider)
+{
+	/* 콜라이더의 정보가 필요하다면 이 메소드를 구현하면 됩니다. */
+
+	// 이 주석을 보고 있다면
+	// 하위 클래스에서 OnCollision 구현 안한거니까
+	// 다들 조심
 }
 
 const COLLISION_DESC& CGameObject::Get_CollisionDesc(COLLISION eColType)
@@ -32,6 +48,12 @@ const COLLISION_DESC& CGameObject::Get_CollisionDesc(COLLISION eColType)
 	// 하위 클래스에서 Get_CollisionDesc 구현 안한거니까
 	// 다들 조심
 	COLLISION_DESC desc;
+	return desc;
+}
+
+const RAY_DESC& CGameObject::Get_RayDesc()
+{
+	RAY_DESC desc;
 	return desc;
 }
 

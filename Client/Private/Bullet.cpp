@@ -12,6 +12,16 @@ CBullet::CBullet(const CBullet& Prototype )
 {
 }
 
+const RAY_DESC& CBullet::Get_RayDesc()
+{
+	RAY_DESC Desc;
+	Desc.fSpeed = m_fBulletSpeed;
+	Desc.vDir = m_vDir;
+	Desc.vPos = m_pTransformCom->Get_State(STATE::POSITION);
+
+	return Desc;
+}
+
 void CBullet::Set_Desc(const BULLET_DESC& Desc)
 {
 	m_fSumTime = 0.f;
@@ -89,6 +99,11 @@ HRESULT CBullet::Render()
 }
 
 void CBullet::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta)
+{
+	m_isDead = true;
+}
+
+void CBullet::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta, CComponent* pCollider)
 {
 	m_isDead = true;
 }

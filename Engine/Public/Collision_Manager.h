@@ -18,6 +18,7 @@ public:
 	void	Check_AABBCollision(const _wstring& strLayerTagSrc, const _wstring& strLayerTagDst, _uint iLayerLevel, _float fTimeDelta);
 	void	Check_SphereCollision(const _wstring& strLayerTagSrc, const _wstring& strLayerTagDst, _uint iLayerLevel, _float fTimeDelta);
 	void	Check_RayCollision(const _float3& vPos, const _float3& vLook, const _wstring& strLayerTagDst, _uint iLayerLevel, _float3* vColisionPos);
+	void	Check_RayToAABBCollision(const _wstring& strLayerTagRay, const _wstring& strLayerTagAABB, _uint iLayerLevel, _float fTimeDelta, _float3* vColisionPos);
 
 private:
 	class CGameInstance* m_pGameInstance = { nullptr };
@@ -27,6 +28,7 @@ private:
 	_bool	OBB_Collision(class CGameObject* pSrc, class CGameObject* pDst, _float3* vMTV);
 	_bool	AABB_Collision(class CGameObject* pSrc, class CGameObject* pDst, _float3* vMTV);
 	_bool	Look_Collision(class CGameObject* pDst, _float3* vCollisionPos, _float3 vPos, _float3 vLook);
+	_bool	RayToAABB_Collision(class CGameObject* pRay, class CGameObject* pAABB, _float3* vPos, CComponent** pCollider);
 
 public:
 	static CCollision_Manager* Create();
