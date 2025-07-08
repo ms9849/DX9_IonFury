@@ -107,7 +107,7 @@ HRESULT CEffect::Ready_Components()
 			TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 			return E_FAIL;
 
-		m_pTransformCom->Set_Scale({ 2.f, 2.f, 2.f });
+		m_pTransformCom->Set_Scale({ 20.f, 20.f, 20.f });
 		break;
 
 	case EFFECT_TYPE::GRENADE_EXPLOSION:

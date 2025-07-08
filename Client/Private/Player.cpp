@@ -8,6 +8,7 @@
 #include "ItemShootGunBullet.h"
 #include "ItemCardKey.h"
 #include "DoorLock.h"
+#include "Lever.h"
 #include "Player_RightHand.h"
 #include "Player_LeftHand.h"
 #include "Effect_Manager.h"
@@ -122,13 +123,22 @@ void CPlayer::Update(_float fTimeDelta)
 				m_bWeaponChange = true;
 			}
 		}
-		if (m_bCanUseCardKey && m_bCanOpenDoor && m_pGameInstance->Key_Down('E'))
+		if (m_pGameInstance->Key_Down('E'))
 		{
-			m_tInfo.strItem = TEXT("CardKey");
-			m_tInfo.strItemAction = TEXT("Up");
-			m_tInfo.strAction = TEXT("Down");
-			m_bUseCardKey = true;
-			m_bCanUseCardKey = false;
+			if (m_bCanUseCardKey && m_bCanOpenDoor)
+			{
+				m_tInfo.strItem = TEXT("CardKey");
+				m_tInfo.strItemAction = TEXT("Up");
+				m_tInfo.strAction = TEXT("Down");
+				m_bUseCardKey = true;
+				m_bCanUseCardKey = false;
+			}
+			
+			if (m_bCanActiveElevator)
+			{
+				m_bActiveElevator = true;
+				m_bCanActiveElevator = false;
+			}
 		}
 	}
 
@@ -322,6 +332,16 @@ _bool CPlayer::Get_Use_CardKey()
 	return m_bUseCardKey;
 }
 
+_bool CPlayer::Get_Active_Elevator()
+{
+	return m_bActiveElevator;
+}
+
+void CPlayer::Set_Active_Elevator(_bool bActive)
+{
+	m_bActiveElevator = bActive;
+}
+
 HRESULT CPlayer::Ready_Components()
 {
 	/* Com_Transform */
@@ -499,6 +519,10 @@ void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 		{
 			m_bCanOpenDoor = true;
 			m_fColTimeStack = 0.f;
+		}
+		if (dynamic_cast<CLever*>(pDst))
+		{
+			m_bCanActiveElevator = true;
 		}
 	}
 }

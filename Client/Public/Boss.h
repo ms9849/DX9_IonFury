@@ -78,6 +78,8 @@ private:
 	_float m_fLaunchCoolTime = 0.2f;
 	_float m_fSumLaunchCoolTime = 0.f;
 	_float m_fSafeDistance = {};
+	_float m_fStopMoveTime = {};
+	_float m_fSumStopMoveTime = 0.f;
 	_float3 m_vUpOffset = { 0.f, 4.2f, 0.f };
 	_float3 m_vAttackPos = {};
 	BossAttackState m_eState = BossAttackState::END;
