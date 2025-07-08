@@ -187,6 +187,12 @@
     <Filter Include="03.MapObjects\Slope">
       <UniqueIdentifier>{db4d4ba6-f9cb-4290-a8ae-e51032a19c36}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03.MapObjects\Elevator">
+      <UniqueIdentifier>{a8d1231f-a482-41cb-8344-42036615863e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04.InteractionObjects\Lever">
+      <UniqueIdentifier>{468d84a8-ef7a-48b1-9e2c-98cbe02ced61}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -387,6 +393,12 @@
     <ClInclude Include="..\public\MapSlope.h">
       <Filter>03.MapObjects\Slope</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\MapElevator.h">
+      <Filter>03.MapObjects\Elevator</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Lever.h">
+      <Filter>04.InteractionObjects\Lever</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -581,6 +593,12 @@
     </ClCompile>
     <ClCompile Include="..\private\MapSlope.cpp">
       <Filter>03.MapObjects\Slope</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\MapElevator.cpp">
+      <Filter>03.MapObjects\Elevator</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Lever.cpp">
+      <Filter>04.InteractionObjects\Lever</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

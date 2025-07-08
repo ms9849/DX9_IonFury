@@ -46,14 +46,14 @@ void CMapGate::Priority_Update(_float fTimeDelta)
 
 void CMapGate::Update(_float fTimeDelta)
 {
-	if (!m_bStop)
+	/*if (!m_bStop)
 	{
 		m_bOpen = dynamic_cast<CDoorLock*>(
 			m_pGameInstance->Find_GameObject_ToLayer(
 				ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Interaction_Objects")))->Get_Open();
 
 		Gate_Animation(fTimeDelta);
-	}
+	}*/
 }
 
 void CMapGate::Late_Update(_float fTimeDelta)

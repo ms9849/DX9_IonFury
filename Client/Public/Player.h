@@ -55,6 +55,9 @@ public:
 	_bool Get_Can_Open_Door();
 	_bool Get_Use_CardKey();
 
+	_bool Get_Active_Elevator();
+	void Set_Active_Elevator(_bool bActive);
+
 private:
 	CAnimation*				m_pRightHandAnimationCom = { nullptr };
 	CAnimation*				m_pLeftHandAnimationCom = { nullptr };	
@@ -88,6 +91,9 @@ private:
 	_bool			m_bUseCardKey{ false };
 	_bool			m_bCanOpenDoor{ false };
 	_bool			m_bCanUseCardKey{ false };
+
+	_bool			m_bActiveElevator{ false };
+	_bool			m_bCanActiveElevator{ false };
 
 public:
 	virtual void OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta) override;
