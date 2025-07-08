@@ -20,11 +20,12 @@ private:
 	CEliteSoldier(const CEliteSoldier& Prototype);
 	virtual ~CEliteSoldier() = default;
 
-	const _wstring m_strFrameKeys[12] = {
+	const _wstring m_strFrameKeys[14] = {
 		TEXT("EliteSoldier_Attack_Front"), TEXT("EliteSoldier_Attack_Seat"), TEXT("EliteSoldier_Die_Default"),
 		TEXT("EliteSoldier_Direction_NE"), TEXT("EliteSoldier_Direction_NW"), TEXT("EliteSoldier_Direction_SE"),
 		TEXT("EliteSoldier_Direction_SW"), TEXT("EliteSoldier_Front"), TEXT("EliteSoldier_Back"),
 		TEXT("EliteSoldier_Left"), TEXT("EliteSoldier_Right"), TEXT("EliteSoldier_Die_Idle"),
+		TEXT("EliteSoldier_Die_HeadShot"), TEXT("EliteSoldier_Die_HeadShot_Idle"),
 	};
 
 	const _float3 m_vShootPosOffset[5] = {
@@ -44,6 +45,7 @@ public:
 	virtual HRESULT Render() override;
 	virtual HRESULT Ready_Animations() override;
 	virtual void OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta) override;
+	virtual void OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta, CComponent* pCollider);
 	virtual const COLLISION_DESC& Get_CollisionDesc(COLLISION eColType);
 
 	HRESULT Ready_Components() override;

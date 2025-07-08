@@ -12,12 +12,13 @@ private:
 	CSoldier(const CSoldier& Prototype);
 	virtual ~CSoldier() = default;
 
-	const _wstring m_strFrameKeys[15] = {
+	const _wstring m_strFrameKeys[16] = {
 		TEXT("Soldier_Attack_Front"), TEXT("Soldier_Attack_SE"), TEXT("Soldier_Attack_SW"),
 		TEXT("Soldier_Die_Default"), TEXT("Soldier_Die_Explosion"), TEXT("Soldier_Die_HeadShot"),
 		TEXT("Soldier_Direction_NE"), TEXT("Soldier_Direction_NW"), TEXT("Soldier_Direction_SE"),
 		TEXT("Soldier_Direction_SW"), TEXT("Soldier_Front"), TEXT("Soldier_Back"),
-		TEXT("Soldier_Left"), TEXT("Soldier_Right"), TEXT("Soldier_Die_Idle")
+		TEXT("Soldier_Left"), TEXT("Soldier_Right"), TEXT("Soldier_Die_Idle"),
+		TEXT("Soldier_Die_HeadShot_Idle")
 	};
 
 public:
@@ -29,6 +30,7 @@ public:
 	virtual HRESULT Render() override;
 	virtual HRESULT Ready_Animations() override;
 	virtual void OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta) override;
+	virtual void OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta, CComponent* pCollider);
 	virtual const COLLISION_DESC& Get_CollisionDesc(COLLISION eColType);
 
 	HRESULT Ready_Components() override;

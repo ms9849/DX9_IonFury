@@ -52,6 +52,7 @@ protected:
 	_bool m_bDying = false;
 	_bool m_isMove = false;
 	_bool m_bFirstEncounter = false;
+	_bool m_isHead = false;
 
 	_wstring m_strFrameKey;
 	map<const _wstring, CTexture*> m_pTextureComs;
