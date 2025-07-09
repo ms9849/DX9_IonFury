@@ -284,7 +284,32 @@ void CPlayer::Update(_float fTimeDelta)
 				}
 				else if (m_tInfo.strWeapon.compare(TEXT("ShootGun")) == 0)
 				{
+					m_pGameInstance->PlaySoundOnce(TEXT("ShotGun_Fire.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
 
+					for (_uint i = 0; i < 7; ++i)
+					{
+						_float3 vOffset = _float3{ 0.f, 0.f, 0.f };
+						vOffset += (m_pTransformCom->Get_State(STATE::RIGHT)) / 15.f;
+						vOffset += (m_pTransformCom->Get_State(STATE::LOOK)) / 5.f;
+						vOffset.y -= 0.05f;
+
+						_float3 vDir = m_pTransformCom->Get_State(STATE::LOOK);
+						vDir.x += m_pGameInstance->Random(-0.05f, 0.05f);
+						vDir.y += m_pGameInstance->Random(-0.05f, 0.05f);
+						vDir.z += m_pGameInstance->Random(-0.05f, 0.05f);
+						_float3 vPos = m_pTransformCom->Get_State(STATE::POSITION);
+
+						D3DXVec3Normalize(&vDir, &vDir);
+
+						CBullet::BULLET_DESC Desc;
+						Desc.vDir = vDir;
+						Desc.vPos = vPos + vOffset;
+						Desc.vBulletScale = { 0.005f, 0.005f, 0.2f };
+						Desc.isPlayerBullet = true;
+						Desc.fDuration = 5.f;
+
+						CBullet_Manager::GetInstance()->Create_Bullet(TEXT("Bullet"), Desc, ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_PlayerBullet"));
+					}
 				}
 			
 				//m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Bullet"),
@@ -432,31 +457,56 @@ _float3 CPlayer::Calc_BulletDir(_float3* vOffset)
 {
 	_float3 vCollisionPos{0.f, 0.f, 0.f};
 
-	//mat view Inv는 카메라의 월드 행렬.
-	_float4x4 m_matViewInv;
-	m_matViewInv = m_pGameInstance->Get_CameraWorld();
-
 	/*
 	vLook, vRight 가져와서 보정하기
 	*/
-	_float3 vCamRight = *(_float3 *)(&m_matViewInv.m[0][0]);
-	_float3 vCamLook = *(_float3*)(&m_matViewInv.m[2][0]);
-	_float3 vCamPos = *(_float3*)(&m_matViewInv.m[3][0]);
+	_float3 vPlayerRight = m_pTransformCom->Get_State(STATE::RIGHT);
+	_float3 vPlayerLook = m_pTransformCom->Get_State(STATE::LOOK);
+	_float3 vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
 
-	D3DXVec3Normalize(&vCamLook, &vCamLook);
-	m_pGameInstance->Check_RayCollision(vCamPos, vCamLook, TEXT("Layer_Cube"), ENUM_CLASS(LEVEL::GAMEPLAY), &vCollisionPos);
+	D3DXVec3Normalize(&vPlayerLook, &vPlayerLook);
+	m_pGameInstance->Check_RayCollision(vPlayerPos, vPlayerLook, TEXT("Layer_Monster"), ENUM_CLASS(LEVEL::GAMEPLAY), &vCollisionPos);
 
-	*vOffset = (*D3DXVec3Normalize(&vCamLook, &vCamLook) / 5.f + (*D3DXVec3Normalize(&vCamRight, &vCamRight) / 17.f));
+	*vOffset = (*D3DXVec3Normalize(&vPlayerRight, &vPlayerRight) / 10.f) + (vPlayerLook) / 5.f;
+	vOffset->y -= 0.02f;
 
 	if (vCollisionPos == _float3{ 0.f, 0.f, 0.f })
 		return m_pTransformCom->Get_State(STATE::LOOK);
 	else
 	{
-		_float3 vDir = vCollisionPos - (vCamPos + *vOffset);
+		_float3 vDir = vCollisionPos - (vPlayerPos + *vOffset);
 		D3DXVec3Normalize(&vDir, &vDir);
 		return vDir;
 	}
 }
+
+//_float3 vCollisionPos{ 0.f, 0.f, 0.f };
+//
+////mat view Inv는 카메라의 월드 행렬.
+//_float4x4 m_matViewInv;
+//m_matViewInv = m_pGameInstance->Get_CameraWorld();
+//
+///*
+//vLook, vRight 가져와서 보정하기
+//*/
+//_float3 vCamRight = *(_float3*)(&m_matViewInv.m[0][0]);
+//_float3 vCamLook = *(_float3*)(&m_matViewInv.m[2][0]);
+//_float3 vCamPos = *(_float3*)(&m_matViewInv.m[3][0]);
+//
+//D3DXVec3Normalize(&vCamLook, &vCamLook);
+//m_pGameInstance->Check_RayCollision(vCamPos, vCamLook, TEXT("Layer_Monster"), ENUM_CLASS(LEVEL::GAMEPLAY), &vCollisionPos);
+//
+//*vOffset = (*D3DXVec3Normalize(&vCamRight, &vCamRight) / 10.f) + (vCamLook) / 5.f;
+//vOffset->y -= 0.02f;
+//
+//if (vCollisionPos == _float3{ 0.f, 0.f, 0.f })
+//return m_pTransformCom->Get_State(STATE::LOOK);
+//else
+//{
+//	_float3 vDir = vCollisionPos - (vCamPos + *vOffset);
+//	D3DXVec3Normalize(&vDir, &vDir);
+//	return vDir;
+//}
 
 void CPlayer::Insert_ItemDesc(const _wstring strItemText)
 {

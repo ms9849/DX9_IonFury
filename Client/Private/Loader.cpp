@@ -44,6 +44,7 @@
 #include "MapElevator.h"
 #include "Snow.h"
 #include "Blood.h"
+#include "TrashBox.h"
 
 #include "GameInstance.h"
 
@@ -573,6 +574,11 @@ HRESULT CLoader::Loading_For_GamePlay()
 	/* For.Prototype_GameObject_Map_Elevator */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Map_Elevator"),
 		CMapElevator::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_TrashBox */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_TrashBox"),
+		CTrashBox::Create(m_pGraphic_Device))))
 		return E_FAIL;
 #pragma endregion
 

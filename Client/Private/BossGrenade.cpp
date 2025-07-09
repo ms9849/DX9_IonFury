@@ -40,7 +40,7 @@ HRESULT CBossGrenade::Initialize(void* pArg)
 	m_pPlayerTransform = pDesc->pPlayerTransform;
 	m_fDuration = pDesc->fDuration;
 
-	Safe_AddRef(m_pPlayerTransform);
+	//Safe_AddRef(m_pPlayerTransform);
 
 	_float fAngle = D3DXToRadian(m_fAngle);
 
@@ -352,5 +352,5 @@ void CBossGrenade::Free()
 	
 	Safe_Release(m_pVIBufferCom_Rect);
 	Safe_Release(m_pAnimationCom);
-	Safe_Release(m_pPlayerTransform);
+	//Safe_Release(m_pPlayerTransform);
 }

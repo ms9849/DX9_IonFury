@@ -12,6 +12,8 @@
 #include "Terrain.h"
 #include "ParticleSystem.h"
 #include "Player.h"
+#include "TrashBox.h"
+
 #include "Particle_Manager.h"
 #include "Bullet_Manager.h"
 #include "Terrain_Manager.h"
@@ -32,9 +34,6 @@ HRESULT CLevel_GamePlay::Initialize()
 
 	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
 		return E_FAIL;
-
-	//if (FAILED(Ready_Layer_Cube(TEXT("Layer_Cube"))))
-	//	return E_FAIL;
 
 	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
 		return E_FAIL;
@@ -63,6 +62,10 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(Ready_Layer_Map_Objects_AABB_Ride(TEXT("Layer_Map_Objects_AABB_Ride")))) // 회전 안한 탈 수 있는 큐브
 		return E_FAIL;
 
+	if (FAILED(Ready_Layer_Map_Objects_Ray(TEXT("Layer_Map_Objects_Ray"))))
+		return E_FAIL;
+
+
 	//if (FAILED(Ready_Layer_Map_Objects_OBB(TEXT("Layer_Map_Objects_OBB")))) // 회전 한 큐브
 	//	return E_FAIL;
 
@@ -86,6 +89,8 @@ HRESULT CLevel_GamePlay::Initialize()
 
 	if (FAILED(Ready_Layer_Bullet(TEXT("Layer_Bullet"))))
 		return E_FAIL;
+
+	m_pTerrain_Manager->Add_Terrian(LEVEL::GAMEPLAY);
 
 	return S_OK;
 }
@@ -149,7 +154,7 @@ void CLevel_GamePlay::Update(_float fTimeDelta)
 	m_pGameInstance->Check_SphereCollision(TEXT("Layer_Player"), TEXT("Layer_Melee_Attack"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta);
 	m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_PlayerBullet"), TEXT("Layer_Monster"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta, nullptr);
 	m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_Monster_Bullet"), TEXT("Layer_Player"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta, nullptr);
-	
+
 	//m_pGameInstance->Check_SphereCollision(TEXT("Layer_Player"), TEXT("Layer_Monster"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta);
 //m_pGameInstance->Check_SphereCollision(TEXT("Layer_Player"), TEXT("Layer_Monster_Bullet"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta);
 //m_pGameInstance->Check_AABBCollision(TEXT("Layer_Player"), TEXT("Layer_Monster"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta);
@@ -267,7 +272,6 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const _wstring& strLayerTag)
 	}
 
 	m_pTerrain_Manager = CTerrain_Manager::Create();
-	m_pTerrain_Manager->Add_Terrian(LEVEL::GAMEPLAY);
 
 	//if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Terrain"),
 	//	ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag)))
@@ -356,6 +360,13 @@ HRESULT CLevel_GamePlay::Ready_Layer_Player(const _wstring& strLayerTag)
 	//	ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag)))
 	//	return E_FAIL;
 
+	//for (int i = 0; i < 100; ++i)
+	//{
+	//	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Player"),
+	//	ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag)))
+	//		return E_FAIL;
+	//}
+
 	m_pTerrain_Manager->Add_LandObject(LEVEL::GAMEPLAY, TEXT("Layer_Player"));
 
 	return S_OK;
@@ -391,7 +402,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const _wstring& strLayerTag)
 	//		return E_FAIL;
 	//}
 
-	for (size_t i = 0; i < 2; i++)
+	for (size_t i = 0; i < 100; i++)
 	{
 		if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Monster_Soldier"),
 			ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag)))
@@ -541,17 +552,6 @@ HRESULT CLevel_GamePlay::Ready_Layer_UI(const _wstring& strLayerTag)
 		return E_FAIL;
 
 	m_pUICardKey = dynamic_cast<CUICardKey*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag));
-
-	return S_OK;
-}
-
-HRESULT CLevel_GamePlay::Ready_Layer_Cube(const _wstring& strLayerTag)
-{
-	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_CubeObject"),
-		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag)))
-		return E_FAIL;
-
-	m_pTerrain_Manager->Add_Cube(LEVEL::GAMEPLAY);
 
 	return S_OK;
 }
@@ -846,6 +846,16 @@ HRESULT CLevel_GamePlay::Ready_Layer_Map_Objects_Ride(const _wstring& strLayerTa
 	return S_OK;
 }
 
+HRESULT CLevel_GamePlay::Ready_Layer_Map_Objects_Ray(const _wstring& strLayerTag)
+{
+	_float3 vPos = { 3.f, 0.5f, 3.f };
+	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_TrashBox"),
+		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag, &vPos)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 HRESULT CLevel_GamePlay::Ready_Layer_Map_Objects_Gate(const _wstring& strLayerTag)
 {
 	for (auto& iter : m_ObjectDescs->find(strLayerTag)->second)
@@ -922,7 +932,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Interaction_Objects(const _wstring& strLaye
 
 		dynamic_cast<CGameObject*>(
 			m_pGameInstance->Find_GameObject_ToLayer(
-				ENUM_CLASS(ENUM_CLASS(iter.iLayerLevel)), iter.strLayer, &iter.iObjectID))->Set_Desc(iter);
+				ENUM_CLASS(iter.iLayerLevel), iter.strLayer, &iter.iObjectID))->Set_Desc(iter);
 
 		dynamic_cast<CTransform*>(
 			m_pGameInstance->Get_Component(
@@ -949,6 +959,8 @@ HRESULT CLevel_GamePlay::Ready_Layer_Interaction_Objects(const _wstring& strLaye
 	//if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Interaction_Lever"),
 	//	ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag)))
 	//	return E_FAIL;
+
+	m_pTerrain_Manager->Add_Cube(LEVEL::GAMEPLAY);
 
 	return S_OK;
 }

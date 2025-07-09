@@ -5,7 +5,7 @@
 #include "Terrain.h"
 #include "CubeObject.h"
 #include "LandObject.h"
-
+#include "MapSlope.h"
 
 /*
 매니저에 접근할 수 있게 해야 하나?
@@ -54,7 +54,6 @@ void CTerrain_Manager::Add_LandObject(LEVEL eLevelID, const _wstring& strLayerTa
 {
     list<CGameObject*> GameObjects = m_pGameInstance->Get_GameObjects_inLayer(ENUM_CLASS(eLevelID), strLayerTag);
 
-
     for (auto& iter : GameObjects)
     {
         m_LandObjects.push_back(dynamic_cast<CLandObject*>(iter));
@@ -74,12 +73,13 @@ void CTerrain_Manager::Add_Terrian(LEVEL eLevelID)
 
 void CTerrain_Manager::Add_Cube(LEVEL eLevelID)
 {
-    list<CGameObject*> GameObjects = m_pGameInstance->Get_GameObjects_inLayer(ENUM_CLASS(eLevelID), TEXT("Layer_Cube"));
+    list<CGameObject*> GameObjects = m_pGameInstance->Get_GameObjects_inLayer(ENUM_CLASS(eLevelID), TEXT("Layer_Map_Slope"));
 
     /* Cube 담기 */
     for (auto& iter : GameObjects)
     {
-        m_CubeObjects.push_back(reinterpret_cast<CCubeObject*>(iter));
+
+        m_CubeObjects.push_back(reinterpret_cast<CMapSlope*>(iter));
     }
 }
 
@@ -112,11 +112,12 @@ void CTerrain_Manager::Check_Landing()
         _float3 vPos = pTransform->Get_State(STATE::POSITION);
 
         /*Cube 체크, Cube Ride가 가능한 녀석들만 큐브에 탄다*/
+        /* 7월 9일자 임시로 Cube로 변경한다 */
         if ((*iter)->Get_RideCube())
         {
             for (auto& pCube : m_CubeObjects)
             {
-                CCubeObject::CUBE_DESC CubeDesc = pCube->Get_CubeDesc();
+                CMapSlope::CUBE_DESC CubeDesc = pCube->Get_CubeDesc();
 
                 if (CubeDesc.pBuffer->Picking(CubeDesc.pTransform, &vDist, vPos, vRayDir))
                 {
@@ -163,9 +164,10 @@ void CTerrain_Manager::Check_Landing()
                     (*iter)->Set_Time(0.133334f);
                 }
             }
-            else if (dynamic_cast<CCubeObject*>(pNearestLand) != nullptr)
+            /* CMapSlope로 임시 변경 */
+            else if (dynamic_cast<CMapSlope*>(pNearestLand) != nullptr)
             {
-                Desc = { dynamic_cast<CCubeObject*>(pNearestLand)->Get_CubeDesc().pBuffer, dynamic_cast<CCubeObject*>(pNearestLand)->Get_CubeDesc().pTransform };
+                Desc = { dynamic_cast<CMapSlope*>(pNearestLand)->Get_CubeDesc().pBuffer, dynamic_cast<CMapSlope*>(pNearestLand)->Get_CubeDesc().pTransform };
 
                 if (fMin > 0.6f && (*iter)->Get_Jump() == false)
                 {

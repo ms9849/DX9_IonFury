@@ -176,6 +176,7 @@
     <ClInclude Include="..\Public\Terrain_Manager.h" />
     <ClInclude Include="..\Public\MeleeAttack.h" />
     <ClInclude Include="..\public\Player_LeftHand.h" />
+    <ClInclude Include="..\Public\TrashBox.h" />
     <ClInclude Include="..\public\UICardKey.h" />
     <ClInclude Include="..\public\UIItemQueue.h" />
     <ClInclude Include="..\public\Item.h" />
@@ -237,6 +238,7 @@
     <ClCompile Include="..\Private\Spider.cpp" />
     <ClCompile Include="..\Private\Particle_Manager.cpp" />
     <ClCompile Include="..\Private\Snow.cpp" />
+    <ClCompile Include="..\Private\TrashBox.cpp" />
     <ClCompile Include="..\private\UICardKey.cpp" />
     <ClCompile Include="..\private\ItemArmor.cpp" />
     <ClCompile Include="..\Private\CubeObject.cpp" />

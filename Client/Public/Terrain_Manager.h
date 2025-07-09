@@ -31,8 +31,11 @@ private:
 	class CGameInstance* m_pGameInstance = {};
 
 	list<class CTerrain*> m_Terrains = {};
+	list<class CMapSlope*> m_CubeObjects = {};
+	
+	/* LandObject는 아직 수정 X */
 	list<class CLandObject*> m_LandObjects = {};
-	list<class CCubeObject*> m_CubeObjects = {};
+
 public:
 	//디바이스 장치 필요 없지.
 	static CTerrain_Manager* Create();
