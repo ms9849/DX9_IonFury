@@ -3,12 +3,12 @@
 #include "GameInstance.h"
 
 CMapSlope::CMapSlope(LPDIRECT3DDEVICE9 pGraphic_Device)
-	: CGameObject{ pGraphic_Device }
+	: CCubeObject{ pGraphic_Device }
 {
 }
 
 CMapSlope::CMapSlope(const CMapSlope& Prototype)
-	: CGameObject(Prototype)
+	: CCubeObject(Prototype)
 {
 }
 
@@ -23,15 +23,15 @@ HRESULT CMapSlope::Initialize_Prototype()
 
 HRESULT CMapSlope::Initialize(void* pArg)
 {
-	if (FAILED(__super::Initialize(pArg)))
+	CLandObject::LANDOBJECT_DESC			Desc{};
+	Desc.pLandTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_BackGround"), TEXT("Com_Transform")));
+	Desc.pLandVIBuffer = static_cast<CVIBuffer*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_BackGround"), TEXT("Com_VIBuffer")));
+
+	if (FAILED(__super::Initialize(&Desc)))
 		return E_FAIL;
 
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
-
-	//m_pTransformCom->Set_State(STATE::POSITION, { 3.f, 2.f, 15.f });
-	//m_pTransformCom->Set_Scale(_float3{ 1.f, 1.f, 5.f });
-	//m_pTransformCom->Rotation(m_pTransformCom->Get_State(STATE::RIGHT), -70.f);
 
 	return S_OK;
 }
@@ -132,9 +132,4 @@ CGameObject* CMapSlope::Clone(void* pArg)
 void CMapSlope::Free()
 {
 	__super::Free();
-
-	Safe_Release(m_pTextureCom);
-	Safe_Release(m_pVIBufferCom);
-	Safe_Release(m_pTransformCom);
-	Safe_Release(m_BoxColliderCom);
 }

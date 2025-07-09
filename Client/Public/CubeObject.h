@@ -12,51 +12,50 @@ NS_END
 
 NS_BEGIN(Client)
 
-class CCubeObject final : public CLandObject
+class CCubeObject : public CLandObject
 {
 public:
-	typedef struct tagCubeDesc {
-		CTransform* pTransform;
-		CVIBuffer_Cube* pBuffer;
-	} CUBE_DESC;
+    typedef struct tagCubeDesc {
+        CTransform* pTransform;
+        CVIBuffer_Cube* pBuffer;
+    } CUBE_DESC;
 
-private:
-	CCubeObject(LPDIRECT3DDEVICE9 pGraphic_Device);
-	CCubeObject(const CCubeObject& Prototype);
-	virtual ~CCubeObject() = default;
-
-public:
-	const CUBE_DESC& Get_CubeDesc() {
-		return CUBE_DESC{ m_pTransformCom, m_pVIBufferCom };
-	}
+protected:
+    CCubeObject(LPDIRECT3DDEVICE9 pGraphic_Device);
+    CCubeObject(const CCubeObject& Prototype);
+    virtual ~CCubeObject() = default;
 
 public:
-	virtual HRESULT Initialize_Prototype() override;
-	virtual HRESULT Initialize(void* pArg) override;
-	virtual void Priority_Update(_float fTimeDelta) override;
-	virtual void Update(_float fTimeDelta) override;
-	virtual void Late_Update(_float fTimeDelta) override;
-	virtual HRESULT Render() override;
+    const CUBE_DESC& Get_CubeDesc() {
+        return CUBE_DESC{ m_pTransformCom, m_pVIBufferCom };
+    }
 
 public:
-	virtual void OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta) override;
-	virtual const COLLISION_DESC& Get_CollisionDesc(COLLISION eColType);
+    virtual HRESULT Initialize_Prototype() override;
+    virtual HRESULT Initialize(void* pArg) override;
+    virtual void Priority_Update(_float fTimeDelta) override;
+    virtual void Update(_float fTimeDelta) override;
+    virtual void Late_Update(_float fTimeDelta) override;
+    virtual HRESULT Render() override;
 
-private:
-	CTexture* m_pTextureCom = { nullptr };
-	CVIBuffer_Cube* m_pVIBufferCom = { nullptr };
-	CBoxCollider* m_BoxColliderCom = { nullptr };
+protected:
+    virtual void OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta) override;
+    virtual const COLLISION_DESC& Get_CollisionDesc(COLLISION eColType);
 
-private:
-	HRESULT Ready_Components();
-	HRESULT Begin_RenderState();
-	HRESULT End_RenderState();
+protected:
+    CTexture* m_pTextureCom = { nullptr };
+    CVIBuffer_Cube* m_pVIBufferCom = { nullptr };
+    CBoxCollider* m_BoxColliderCom = { nullptr };
 
+protected:
+    virtual HRESULT Ready_Components();
+    virtual HRESULT Begin_RenderState();
+    virtual HRESULT End_RenderState();
 
-public:
-	static CCubeObject* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
-	virtual CGameObject* Clone(void* pArg) override;
-	virtual void Free() override;
+protected:
+    static CCubeObject* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
+    virtual CGameObject* Clone(void* pArg) override;
+    virtual void Free() override;
 };
 
 NS_END

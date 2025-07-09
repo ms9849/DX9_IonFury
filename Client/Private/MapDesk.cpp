@@ -3,12 +3,12 @@
 #include "GameInstance.h"
 
 CMapDesk::CMapDesk(LPDIRECT3DDEVICE9 pGraphic_Device)
-	: CGameObject{ pGraphic_Device }
+	: CCubeObject{ pGraphic_Device }
 {
 }
 
 CMapDesk::CMapDesk(const CMapDesk& Prototype)
-	: CGameObject(Prototype)
+	: CCubeObject(Prototype)
 {
 }
 
@@ -28,8 +28,6 @@ HRESULT CMapDesk::Initialize(void* pArg)
 
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
-
-	//m_pTransformCom->Set_State(STATE::POSITION, { 3.f, 0.f, 3.f });
 
 	return S_OK;
 }
@@ -53,7 +51,7 @@ HRESULT CMapDesk::Render()
 
 	m_pTransformCom->Set_Transform();
 
-	m_pTextureCom->Set_Texture(m_pObjectDesc.iTextureIndex);
+	m_pTextureCom->Set_Texture(0);
 
 	m_pVIBufferCom->Render();
 
@@ -130,9 +128,4 @@ CGameObject* CMapDesk::Clone(void* pArg)
 void CMapDesk::Free()
 {
 	__super::Free();
-
-	Safe_Release(m_pTextureCom);
-	Safe_Release(m_pVIBufferCom);
-	Safe_Release(m_pTransformCom);
-	Safe_Release(m_BoxColliderCom);
 }

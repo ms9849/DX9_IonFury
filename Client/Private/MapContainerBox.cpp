@@ -3,12 +3,12 @@
 #include "GameInstance.h"
 
 CMapContainerBox::CMapContainerBox(LPDIRECT3DDEVICE9 pGraphic_Device)
-	: CGameObject{ pGraphic_Device }
+	: CCubeObject{ pGraphic_Device }
 {
 }
 
 CMapContainerBox::CMapContainerBox(const CMapContainerBox& Prototype)
-	: CGameObject(Prototype)
+	: CCubeObject(Prototype)
 {
 }
 
@@ -29,9 +29,6 @@ HRESULT CMapContainerBox::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-	//m_pTransformCom->Set_Scale(_float3{ 1.5f, 1.5f, 3.f });
-	//m_pTransformCom->Set_State(STATE::POSITION, { 5.f, 0.f, 5.f });
-
 	return S_OK;
 }
 
@@ -45,7 +42,6 @@ void CMapContainerBox::Update(_float fTimeDelta)
 
 void CMapContainerBox::Late_Update(_float fTimeDelta)
 {
-	Compute_CamDistance(m_pTransformCom->Get_State(STATE::POSITION));
 	m_pGameInstance->Add_RenderGroup(RENDER::BLEND, this);
 }
 
@@ -60,7 +56,7 @@ HRESULT CMapContainerBox::Render()
 	m_pGraphic_Device->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
 
 
-	m_pTextureCom->Set_Texture(m_pObjectDesc.iTextureIndex);
+	m_pTextureCom->Set_Texture(0);
 
 	m_pVIBufferCom->Render();
 
@@ -137,9 +133,4 @@ CGameObject* CMapContainerBox::Clone(void* pArg)
 void CMapContainerBox::Free()
 {
 	__super::Free();
-
-	Safe_Release(m_pTextureCom);
-	Safe_Release(m_pVIBufferCom);
-	Safe_Release(m_pTransformCom);
-	Safe_Release(m_BoxColliderCom);
 }

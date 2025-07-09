@@ -33,9 +33,6 @@ HRESULT CMapGate::Initialize(void* pArg)
 	/*if (FAILED(Ready_Collider()))
 		return E_FAIL;*/
 
-	//m_pTransformCom->Set_State(STATE::POSITION, _float3{ 5.0f, 0.f, 10.0f });
-	//m_pTransformCom->Set_Scale(_float3{ 10.f, 6.0f, 1.0f });
-
 	return S_OK;
 }
 
