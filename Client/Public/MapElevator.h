@@ -1,35 +1,18 @@
 #pragma once
 
 #include "Client_Defines.h"
-#include "GameObject.h"
-
-NS_BEGIN(Engine)
-class CTexture;
-class CTransform;
-class CVIBuffer_Cube;
-class CBoxCollider;
-NS_END
+#include "CubeObject.h"
 
 NS_BEGIN(Client)
 
-class CMapElevator final : public CGameObject
+class CMapElevator final : public CCubeObject
 {
-public:
-	typedef struct tagCubeDesc {
-		CTransform* pTransform;
-		CVIBuffer_Cube* pBuffer;
-	} CUBE_DESC;
-
 private:
 	CMapElevator(LPDIRECT3DDEVICE9 pGraphic_Device);
 	CMapElevator(const CMapElevator& Prototype);
 	virtual ~CMapElevator() = default;
 
 public:
-	const CUBE_DESC& Get_CubeDesc() {
-		return CUBE_DESC{ m_pTransformCom, m_pVIBufferCom };
-	}
-
 	void Set_Elevator_Active(_bool bActive);
 	_bool Get_Elevator_End();
 	void Elevator_Animation(_float fTimeDelta);
@@ -47,19 +30,13 @@ public:
 	virtual const COLLISION_DESC& Get_CollisionDesc(COLLISION eColType);
 
 private:
-	CTexture* m_pTextureCom = { nullptr };
-	CTransform* m_pTransformCom = { nullptr };
-	CVIBuffer_Cube* m_pVIBufferCom = { nullptr };
-	CBoxCollider* m_BoxColliderCom = { nullptr };
-
-private:
 	_bool m_bUp{ true };
 	_bool m_bActive{ false };
 	_bool m_bEnd{ true };
 	_float m_fTimeStack{ 0.f };
 
 private:
-	HRESULT Ready_Components();
+	virtual HRESULT Ready_Components() override;
 
 
 public:

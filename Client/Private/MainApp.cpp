@@ -115,9 +115,9 @@ HRESULT CMainApp::Ready_Prototypes()
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_CubeObject */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_CubeObject"),
-		CCubeObject::Create(m_pGraphic_Device))))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_CubeObject"),
+	//	CCubeObject::Create(m_pGraphic_Device))))
+	//	return E_FAIL;
 
 	/* For.Prototype_Component_Animation */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Animation"),

@@ -1,34 +1,16 @@
 #pragma once
 
 #include "Client_Defines.h"
-#include "GameObject.h"
-
-NS_BEGIN(Engine)
-class CTexture;
-class CTransform;
-class CVIBuffer_Cube;
-class CBoxCollider;
-NS_END
+#include "CubeObject.h"
 
 NS_BEGIN(Client)
 
-class CMapWall final : public CGameObject
+class CMapWall final : public CCubeObject
 {
-public:
-	typedef struct tagCubeDesc {
-		CTransform* pTransform;
-		CVIBuffer_Cube* pBuffer;
-	} CUBE_DESC;
-
 private:
 	CMapWall(LPDIRECT3DDEVICE9 pGraphic_Device);
 	CMapWall(const CMapWall& Prototype);
 	virtual ~CMapWall() = default;
-
-public:
-	const CUBE_DESC& Get_CubeDesc() {
-		return CUBE_DESC{ m_pTransformCom, m_pVIBufferCom };
-	}
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -43,13 +25,7 @@ public:
 	virtual const COLLISION_DESC& Get_CollisionDesc(COLLISION eColType);
 
 private:
-	CTexture* m_pTextureCom = { nullptr };
-	CTransform* m_pTransformCom = { nullptr };
-	CVIBuffer_Cube* m_pVIBufferCom = { nullptr };
-	CBoxCollider* m_BoxColliderCom = { nullptr };
-
-private:
-	HRESULT Ready_Components();
+	virtual HRESULT Ready_Components() override;
 
 
 public:

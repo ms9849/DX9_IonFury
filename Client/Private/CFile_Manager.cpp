@@ -50,10 +50,17 @@ HRESULT CFile_Manager::Load_Layers(LEVEL iLevel)
                 desc.iProtoLevel = jObj["ProtoLevel"].get<_uint>();
                 desc.strLayer = layerName;
                 desc.iLayerLevel = jObj["LayerLevel"].get<_uint>();
-                if (UTF8ToWString(jLayer["Layer"].get<string>()) == TEXT("Layer_Map_Objects")
-                    || UTF8ToWString(jLayer["Layer"].get<string>()) == TEXT("Layer_BackGround")
-                    || UTF8ToWString(jLayer["Layer"].get<string>()) == TEXT("Layer_Slope"))
+                if (UTF8ToWString(jLayer["Layer"].get<string>()) == TEXT("Layer_Map_Objects_Deco")
+                    || UTF8ToWString(jLayer["Layer"].get<string>()) == TEXT("Layer_Map_Objects_AABB")
+                    || UTF8ToWString(jLayer["Layer"].get<string>()) == TEXT("Layer_Map_Objects_AABB_Ride")
+                    || UTF8ToWString(jLayer["Layer"].get<string>()) == TEXT("Layer_Map_Objects_OBB")
+                    || UTF8ToWString(jLayer["Layer"].get<string>()) == TEXT("Layer_Map_Objects_OBB_Ride")
+                    || UTF8ToWString(jLayer["Layer"].get<string>()) == TEXT("Layer_Map_Objects_Ride")
+                    || UTF8ToWString(jLayer["Layer"].get<string>()) == TEXT("Layer_Map_Objects_Gate")
+                    || UTF8ToWString(jLayer["Layer"].get<string>()) == TEXT("Layer_Map_Objects_Deco")
+                    || UTF8ToWString(jLayer["Layer"].get<string>()) == TEXT("Layer_BackGround"))
                     desc.iTextureIndex = jObj["TextureIndex"].get<_uint>();
+
                 if (UTF8ToWString(jObj["Proto"].get<string>()) == TEXT("Prototype_GameObject_Terrain"))
                     desc.strTerrainSize = UTF8ToWString(jObj["TerrainSize"].get<string>());
 

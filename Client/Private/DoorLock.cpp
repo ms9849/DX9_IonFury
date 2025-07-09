@@ -53,7 +53,7 @@ void CDoorLock::Late_Update(_float fTimeDelta)
 		dynamic_cast<CMapGate*>(
 			m_pGameInstance->Get_GameObject_By_ID(
 				ENUM_CLASS(LEVEL::GAMEPLAY),
-				TEXT("Layer_Map_Objects"),
+				TEXT("Layer_Map_Objects_Gate"),
 				m_iTargetID))->Set_Open(true);
 		m_strFrameKey = TEXT("DoorLock_Open");
 	}

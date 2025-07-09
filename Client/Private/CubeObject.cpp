@@ -8,7 +8,7 @@ CCubeObject::CCubeObject(LPDIRECT3DDEVICE9 pGraphic_Device)
 }
 
 CCubeObject::CCubeObject(const CCubeObject& Prototype)
-	: CLandObject ( Prototype )
+	: CLandObject(Prototype)
 {
 }
 
@@ -30,14 +30,6 @@ HRESULT CCubeObject::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(&Desc)))
 		return E_FAIL;
 
-	if (FAILED(Ready_Components()))
-		return E_FAIL;
-
-	m_pTransformCom->Set_Scale(_float3{15.f, 15.f, 15.f});
-	m_pTransformCom->Rotation(m_pTransformCom->Get_State(STATE::LOOK), D3DXToRadian(45.f));
-
-	m_pTransformCom->Set_State(STATE::POSITION, { 15.f, -2.f, 15.f });
-
 	return S_OK;
 }
 
@@ -53,10 +45,10 @@ void CCubeObject::Update(_float fTimeDelta)
 void CCubeObject::Late_Update(_float fTimeDelta)
 {
 	// 정점의 정보를 가져왔으니까
-	 
+
 	// 1. 월드행렬이랑 곱해줘서 실제 월드 좌표 구해주기
 	// 2. OBB 로직 적용해서 충돌처리
-	
+
 	// 고민거리 
 	// 1. 어디서부터 어디까지 매니저로 처리?
 	// 2. 1,2번 다 매니저로 처리한다면 트랜스폼과 정점의 정보를 받아와야 하나?
@@ -93,27 +85,6 @@ const COLLISION_DESC& CCubeObject::Get_CollisionDesc(COLLISION eColType)
 
 HRESULT CCubeObject::Ready_Components()
 {
-	/* Com_Transform */
-	CTransform::TRANSFORM_DESC		TransformDesc{ 5.f, D3DXToRadian(90.0f) };
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Transform"),
-		TEXT("Com_Transform"), reinterpret_cast<CComponent**>(&m_pTransformCom), &TransformDesc)))
-		return E_FAIL;
-
-	/* Com_Collider */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_BoxCollider"),
-		TEXT("Com_BoxCollider"), reinterpret_cast<CComponent**>(&m_BoxColliderCom), nullptr)))
-		return E_FAIL;
-
-	/* Com_Texture */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Sky"),
-		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
-		return E_FAIL;
-
-	/* Com_VIBuffer */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_VIBuffer_Cube"),
-		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
-		return E_FAIL;
-
 	return S_OK;
 }
 
