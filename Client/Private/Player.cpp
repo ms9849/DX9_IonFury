@@ -130,16 +130,19 @@ void CPlayer::Update(_float fTimeDelta)
 				m_tInfo.strItemAction = TEXT("Up");
 				m_tInfo.strAction = TEXT("Down");
 				m_bUseCardKey = true;
-				m_bCanUseCardKey = false;
 				m_pDoorLock->Set_Can_Open(m_bUseCardKey);
+				Safe_AddRef(m_pDoorLock);
+				m_bCanUseCardKey = false;
 				Safe_Release(m_pDoorLock);
 			}
 			
 			if (m_bCanActiveElevator)
 			{
 				m_pLever->Set_Active(true);
+				Safe_AddRef(m_pLever);
 				m_bActiveElevator = true;
 				m_bCanActiveElevator = false;
+				Safe_Release(m_pLever);
 			}
 		}
 	}
@@ -537,14 +540,12 @@ void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 			if (pDst->Get_Desc().iObjectID == 0)
 			{
 				m_pDoorLock = dynamic_cast<CDoorLock*>(pDst);
-				m_pDoorLock->Set_TargetID(7);
-				Safe_AddRef(m_pDoorLock);
+				m_pDoorLock->Set_TargetID(0);
 			}
 			if (pDst->Get_Desc().iObjectID == 1)
 			{
 				m_pDoorLock = dynamic_cast<CDoorLock*>(pDst);
-				m_pDoorLock->Set_TargetID(12);
-				Safe_AddRef(m_pDoorLock);
+				m_pDoorLock->Set_TargetID(1);
 			}
 
 			m_bCanOpenDoor = true;
@@ -555,7 +556,7 @@ void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 			if (pDst->Get_Desc().iObjectID == 2)
 			{
 				m_pLever = dynamic_cast<CLever*>(pDst);
-				m_pLever->Set_TargetID(47);
+				m_pLever->Set_TargetID(0);
 				Safe_AddRef(m_pLever);
 			}
 

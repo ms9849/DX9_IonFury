@@ -4,12 +4,12 @@
 #include "Lever.h"
 
 CMapElevator::CMapElevator(LPDIRECT3DDEVICE9 pGraphic_Device)
-	: CGameObject{ pGraphic_Device }
+	: CCubeObject{ pGraphic_Device }
 {
 }
 
 CMapElevator::CMapElevator(const CMapElevator& Prototype)
-	: CGameObject(Prototype)
+	: CCubeObject(Prototype)
 {
 }
 
@@ -77,9 +77,6 @@ HRESULT CMapElevator::Initialize(void* pArg)
 
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
-
-	//m_pTransformCom->Set_State(STATE::POSITION, { 15.f, 0.125f, 15.f });
-	//m_pTransformCom->Set_Scale(_float3{ 3.f, 0.5f, 3.f });
 
 	return S_OK;
 }
@@ -184,9 +181,4 @@ CGameObject* CMapElevator::Clone(void* pArg)
 void CMapElevator::Free()
 {
 	__super::Free();
-
-	Safe_Release(m_pTextureCom);
-	Safe_Release(m_pVIBufferCom);
-	Safe_Release(m_pTransformCom);
-	Safe_Release(m_BoxColliderCom);
 }

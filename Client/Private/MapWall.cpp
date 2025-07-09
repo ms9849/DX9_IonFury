@@ -3,12 +3,12 @@
 #include "GameInstance.h"
 
 CMapWall::CMapWall(LPDIRECT3DDEVICE9 pGraphic_Device)
-	: CGameObject{ pGraphic_Device }
+	: CCubeObject{ pGraphic_Device }
 {
 }
 
 CMapWall::CMapWall(const CMapWall& Prototype)
-	: CGameObject(Prototype)
+	: CCubeObject(Prototype)
 {
 }
 
@@ -23,14 +23,15 @@ HRESULT CMapWall::Initialize_Prototype()
 
 HRESULT CMapWall::Initialize(void* pArg)
 {
-	if (FAILED(__super::Initialize(pArg)))
+	CLandObject::LANDOBJECT_DESC			Desc{};
+	Desc.pLandTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_BackGround"), TEXT("Com_Transform")));
+	Desc.pLandVIBuffer = static_cast<CVIBuffer*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_BackGround"), TEXT("Com_VIBuffer")));
+
+	if (FAILED(__super::Initialize(&Desc)))
 		return E_FAIL;
 
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
-
-	//m_pTransformCom->Set_Scale(_float3{ 50.f, 5.f, 0.5f });
-	//m_pTransformCom->Set_State(STATE::POSITION, { 27.5f, 2.5f, 30.f });
 
 	return S_OK;
 }
@@ -51,6 +52,9 @@ void CMapWall::Late_Update(_float fTimeDelta)
 HRESULT CMapWall::Render()
 {
 	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+
+	m_pGraphic_Device->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP);
+	m_pGraphic_Device->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);
 
 	m_pTransformCom->Set_Transform();
 
@@ -129,9 +133,4 @@ CGameObject* CMapWall::Clone(void* pArg)
 void CMapWall::Free()
 {
 	__super::Free();
-
-	Safe_Release(m_pTextureCom);
-	Safe_Release(m_pVIBufferCom);
-	Safe_Release(m_pTransformCom);
-	Safe_Release(m_BoxColliderCom);
 }

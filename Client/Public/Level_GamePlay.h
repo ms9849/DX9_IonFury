@@ -29,8 +29,14 @@ private:
 	HRESULT Ready_Layer_UI(const _wstring& strLayerTag);
 	HRESULT Ready_Layer_Cube(const _wstring& strLayerTag);
 	HRESULT Ready_Layer_Items(const _wstring& strLayerTag);
-	HRESULT Ready_Layer_Map_Objects(const _wstring& strLayerTag);
-	HRESULT Ready_Layer_Map_Slope(const _wstring& strLayerTag);
+	HRESULT Ready_Layer_Map_Objects_AABB(const _wstring& strLayerTag);
+	HRESULT Ready_Layer_Map_Objects_AABB_Ride(const _wstring& strLayerTag);
+	HRESULT Ready_Layer_Map_Objects_OBB(const _wstring& strLayerTag);
+	HRESULT Ready_Layer_Map_Objects_OBB_Ride(const _wstring& strLayerTag);
+	HRESULT Ready_Layer_Map_Objects_Deco(const _wstring& strLayerTag);
+	HRESULT Ready_Layer_Map_Objects_Ray(const _wstring& strLayerTag);
+	HRESULT Ready_Layer_Map_Objects_Ride(const _wstring& strLayerTag);
+	HRESULT Ready_Layer_Map_Objects_Gate(const _wstring& strLayerTag);
 	HRESULT Ready_Layer_Interaction_Objects(const _wstring& strLayerTag);
 	HRESULT Ready_Layer_Bullet(const _wstring& strLayerTag);
 

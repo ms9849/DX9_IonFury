@@ -3,12 +3,12 @@
 #include "GameInstance.h"
 
 CMapBox::CMapBox(LPDIRECT3DDEVICE9 pGraphic_Device)
-	: CGameObject{ pGraphic_Device }
+	: CCubeObject{ pGraphic_Device }
 {
 }
 
 CMapBox::CMapBox(const CMapBox& Prototype)
-	: CGameObject(Prototype)
+	: CCubeObject(Prototype)
 {
 }
 
@@ -28,8 +28,6 @@ HRESULT CMapBox::Initialize(void* pArg)
 
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
-
-	//m_pTransformCom->Set_State(STATE::POSITION, { 2.f, 0.f, 2.f });
 
 	return S_OK;
 }
@@ -107,7 +105,6 @@ CMapBox* CMapBox::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed to Created : pGraphic_Device");
 		Safe_Release(pInstance);
 	}
 
@@ -120,7 +117,6 @@ CGameObject* CMapBox::Clone(void* pArg)
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Cloned : CMapBox");
 		Safe_Release(pInstance);
 	}
 
@@ -130,9 +126,4 @@ CGameObject* CMapBox::Clone(void* pArg)
 void CMapBox::Free()
 {
 	__super::Free();
-
-	Safe_Release(m_pTextureCom);
-	Safe_Release(m_pVIBufferCom);
-	Safe_Release(m_pTransformCom);
-	Safe_Release(m_BoxColliderCom);
 }
