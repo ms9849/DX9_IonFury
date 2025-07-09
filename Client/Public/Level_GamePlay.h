@@ -27,7 +27,6 @@ private:
 	HRESULT Ready_Layer_Effect(const _wstring& strLayerTag);
 	HRESULT Ready_Layer_Particle(const _wstring& strLayerTag);
 	HRESULT Ready_Layer_UI(const _wstring& strLayerTag);
-	HRESULT Ready_Layer_Cube(const _wstring& strLayerTag);
 	HRESULT Ready_Layer_Items(const _wstring& strLayerTag);
 	HRESULT Ready_Layer_Map_Objects_AABB(const _wstring& strLayerTag);
 	HRESULT Ready_Layer_Map_Objects_AABB_Ride(const _wstring& strLayerTag);
