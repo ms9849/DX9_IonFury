@@ -417,6 +417,7 @@
     <ClInclude Include="..\Public\TrashBox.h">
       <Filter>03.MapObjects\TrashBox</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Spawner.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -630,5 +631,6 @@
     <ClCompile Include="..\Private\TrashBox.cpp">
       <Filter>03.MapObjects\TrashBox</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\Spawner.cpp" />
   </ItemGroup>
 </Project>

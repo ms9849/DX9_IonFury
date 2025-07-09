@@ -59,6 +59,7 @@ public:
 private:
 	_bool m_bAnimationLock = false;
 	_uint m_uTempNum = 0;
+	_float3* m_vPos = {};
 	EliteSoldierState m_eState = EliteSoldierState::END;
 
 public:

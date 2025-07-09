@@ -44,6 +44,7 @@ private:
 	_bool m_bAnimationLock = false;
 	_bool m_bFrameBlock = false;
 	_float m_fJumpPower = 0.f;
+	_float3* m_vPos = {};
 
 public:
 	static	CSpider* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
