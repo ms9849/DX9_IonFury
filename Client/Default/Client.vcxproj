@@ -172,6 +172,7 @@
     <ClInclude Include="..\public\ItemCardKey.h" />
     <ClInclude Include="..\public\MapGrinder.h" />
     <ClInclude Include="..\public\MapSlope.h" />
+    <ClInclude Include="..\public\Spawner.h" />
     <ClInclude Include="..\Public\Spider.h" />
     <ClInclude Include="..\Public\Particle_Manager.h" />
     <ClInclude Include="..\Public\Snow.h" />
@@ -239,6 +240,7 @@
     <ClCompile Include="..\Private\Effect_Manager.cpp" />
     <ClCompile Include="..\private\MapGrinder.cpp" />
     <ClCompile Include="..\private\MapSlope.cpp" />
+    <ClCompile Include="..\private\Spawner.cpp" />
     <ClCompile Include="..\Private\Spider.cpp" />
     <ClCompile Include="..\Private\Particle_Manager.cpp" />
     <ClCompile Include="..\Private\Snow.cpp" />

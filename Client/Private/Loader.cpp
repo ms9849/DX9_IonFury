@@ -21,6 +21,7 @@
 #include "ItemPistolBullet.h"
 #include "ItemShootGunBullet.h"
 #include "ItemCardKey.h"
+#include "Spawner.h"
 #include "Soldier.h"
 #include "EliteSoldier.h"
 #include "Zombie.h"
@@ -405,6 +406,11 @@ HRESULT CLoader::Loading_For_GamePlay()
 #pragma endregion	
 
 #pragma region ¸ó½ºÅÍ
+	/* For.Prototype_GameObject_Monster_Spawner */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Spawner"),
+		CSpawner::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
 	/* For.Prototype_GameObject_Monster_Soldier */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Monster_Soldier"),
 		CSoldier::Create(m_pGraphic_Device))))

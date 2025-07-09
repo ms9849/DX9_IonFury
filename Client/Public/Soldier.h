@@ -43,6 +43,7 @@ public:
 
 private:
 	_bool m_bAnimationLock = false;
+	_float3* m_vPos = {};
 
 public:
 	static CSoldier* Create(LPDIRECT3DDEVICE9 pGraphic_Device);

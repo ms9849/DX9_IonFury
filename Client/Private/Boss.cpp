@@ -39,6 +39,19 @@ HRESULT CBoss::Initialize(void* pArg)
 		0.f,
 		m_pGameInstance->Random(30.f, 50.f)));
 
+	m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Monster_Boss_Upper"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Boss1_Upper"), m_pTransformCom);
+	m_pBossUpperBody = dynamic_cast<CBossUpperBody*>(m_pGameInstance->Find_GameObject_ToLayer(
+		ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Boss1_Upper")));
+	Safe_AddRef(m_pBossUpperBody);
+
+	m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Monster_Boss_Lower"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Boss1_Lower"), m_pTransformCom);
+	m_pBossLowerBody = dynamic_cast<CBossLowerBody*>(m_pGameInstance->Find_GameObject_ToLayer(
+		ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Boss1_Lower")));
+	Safe_AddRef(m_pBossLowerBody);
+
+	m_pTerrain_Manager = CTerrain_Manager::Create();
+	m_pTerrain_Manager->Add_LandObject_One(m_pBossLowerBody);
+
 	return S_OK;
 }
 
@@ -131,7 +144,7 @@ CGameObject* CBoss::Clone(void* pArg)
 		Safe_Release(pInstance);
 	}
 	
-	m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Monster_Boss_Upper"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Boss1_Upper"), pInstance->m_pTransformCom);
+	/*m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Monster_Boss_Upper"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Boss1_Upper"), pInstance->m_pTransformCom);
 	pInstance->m_pBossUpperBody = dynamic_cast<CBossUpperBody*>(m_pGameInstance->Find_GameObject_ToLayer(
 		ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Boss1_Upper")));
 	Safe_AddRef(m_pBossUpperBody);
@@ -142,7 +155,7 @@ CGameObject* CBoss::Clone(void* pArg)
 	Safe_AddRef(m_pBossLowerBody);
 
 	m_pTerrain_Manager = CTerrain_Manager::Create();
-	m_pTerrain_Manager->Add_LandObject_One(pInstance->m_pBossLowerBody);
+	m_pTerrain_Manager->Add_LandObject_One(pInstance->m_pBossLowerBody);*/
 
 	return pInstance;
 }
