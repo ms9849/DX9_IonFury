@@ -62,10 +62,6 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(Ready_Layer_Map_Objects_AABB_Ride(TEXT("Layer_Map_Objects_AABB_Ride")))) // 회전 안한 탈 수 있는 큐브
 		return E_FAIL;
 
-	if (FAILED(Ready_Layer_Map_Objects_Ray(TEXT("Layer_Map_Objects_Ray"))))
-		return E_FAIL;
-
-
 	//if (FAILED(Ready_Layer_Map_Objects_OBB(TEXT("Layer_Map_Objects_OBB")))) // 회전 한 큐브
 	//	return E_FAIL;
 
@@ -78,8 +74,8 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(Ready_Layer_Map_Objects_Gate(TEXT("Layer_Map_Objects_Gate")))) // 문
 		return E_FAIL;
 
-	//if (FAILED(Ready_Layer_Map_Objects_Ray(TEXT("Layer_Map_Objects_Ray"))))
-	//	return E_FAIL;
+	if (FAILED(Ready_Layer_Map_Objects_Ray(TEXT("Layer_Map_Objects_Ray"))))
+		return E_FAIL;
 
 	if (FAILED(Ready_Layer_Map_Objects_Deco(TEXT("Layer_Map_Objects_Deco")))) // 데코레이션
 		return E_FAIL;
@@ -782,7 +778,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Map_Objects_OBB_Ride(const _wstring& strLay
 
 HRESULT CLevel_GamePlay::Ready_Layer_Map_Objects_Ray(const _wstring& strLayerTag)
 {
-	for (auto& iter : m_ObjectDescs->find(strLayerTag)->second)
+	/*for (auto& iter : m_ObjectDescs->find(strLayerTag)->second)
 	{
 		if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(iter.iProtoLevel), iter.strProto,
 			ENUM_CLASS(iter.iLayerLevel), iter.strLayer, &iter.iObjectID)))
@@ -808,7 +804,12 @@ HRESULT CLevel_GamePlay::Ready_Layer_Map_Objects_Ray(const _wstring& strLayerTag
 			m_pGameInstance->Get_Component(
 				ENUM_CLASS(iter.iLayerLevel), iter.strLayer, TEXT("Com_Transform"), iter.iObjectID)
 			)->Set_State(STATE::POSITION, iter.matWorld.m[3]);
-	}
+	}*/
+
+	_float3 vPos = { 3.f, 0.5f, 3.f };
+	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_TrashBox"),
+		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag, &vPos)))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -842,16 +843,6 @@ HRESULT CLevel_GamePlay::Ready_Layer_Map_Objects_Ride(const _wstring& strLayerTa
 				ENUM_CLASS(iter.iLayerLevel), iter.strLayer, TEXT("Com_Transform"), iter.iObjectID)
 			)->Set_State(STATE::POSITION, iter.matWorld.m[3]);
 	}
-
-	return S_OK;
-}
-
-HRESULT CLevel_GamePlay::Ready_Layer_Map_Objects_Ray(const _wstring& strLayerTag)
-{
-	_float3 vPos = { 3.f, 0.5f, 3.f };
-	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_TrashBox"),
-		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag, &vPos)))
-		return E_FAIL;
 
 	return S_OK;
 }
