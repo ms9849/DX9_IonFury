@@ -203,6 +203,36 @@ HRESULT CMainApp::Ready_Prototypes()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Player_ShootGun_Shoot"),
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Player/ShootGun/Shoot_%d.png"), 11))))
 		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Player_MachineGun_Idle */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Player_MachineGun_Idle"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Player/MachineGun/Idle_%d.png"), 1))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Player_MachineGun_Walk */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Player_MachineGun_Walk"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Player/MachineGun/Idle_%d.png"), 1))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Player_MachineGun_Down */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Player_MachineGun_Down"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Player/MachineGun/Idle_%d.png"), 1))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Player_MachineGun_Up */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Player_MachineGun_Up"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Player/MachineGun/Idle_%d.png"), 1))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Player_MachineGun_Shoot */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Player_MachineGun_Shoot"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Player/MachineGun/Shoot_%d.png"), 7))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Player_MachineGun_Spin */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Player_MachineGun_Spin"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Player/MachineGun/Spin_%d.png"), 12))))
+		return E_FAIL;
 #pragma endregion
 
 #pragma region 플레이어 아이템 사용 텍스처
@@ -548,8 +578,6 @@ HRESULT CMainApp::Ready_Prototypes()
 #pragma endregion
 
 #pragma region 총알 등 기타 텍스쳐
-	/* For.Prototype_Component_Texture_Bullet */
-
 	/* For.Prototype_Component_Texture_Bullet */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Bullet"),
 		CTexture::Create(m_pGraphic_Device, TEXTURE::CUBE, TEXT("../Bin/Resources/Textures/Bullet/Bullet%d.dds"), 1))))
