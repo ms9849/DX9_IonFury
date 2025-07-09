@@ -405,6 +405,12 @@
     <ClInclude Include="..\public\Lever.h">
       <Filter>04.InteractionObjects\Lever</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\BossLowerBody.h">
+      <Filter>02.GameObjects\Monster\Boss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\BossUpperBody.h">
+      <Filter>02.GameObjects\Monster\Boss</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\CFile_Manager.h">
       <Filter>05.FileMgr</Filter>
     </ClInclude>
@@ -611,6 +617,12 @@
     </ClCompile>
     <ClCompile Include="..\private\Lever.cpp">
       <Filter>04.InteractionObjects\Lever</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BossLowerBody.cpp">
+      <Filter>02.GameObjects\Monster\Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BossUpperBody.cpp">
+      <Filter>02.GameObjects\Monster\Boss</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CFile_Manager.cpp">
       <Filter>05.FileMgr</Filter>

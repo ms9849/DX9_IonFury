@@ -26,6 +26,8 @@
 #include "Zombie.h"
 #include "Spider.h"
 #include "Boss.h"
+#include "BossUpperBody.h"
+#include "BossLowerBody.h"
 #include "MeleeAttack.h"
 #include "DoorLock.h"
 #include "Lever.h"
@@ -415,6 +417,14 @@ HRESULT CLoader::Loading_For_GamePlay()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Monster_Boss"),
 		CBoss::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Monster_Boss_Upper"),
+		CBossUpperBody::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Monster_Boss_Lower"),
+		CBossLowerBody::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
 #pragma endregion	
