@@ -433,7 +433,10 @@ _bool CCollision_Manager::RayToAABB_Collision(CGameObject* pRay, CGameObject* pA
         /* 머리 우선 판정 해줘서 조금 널널하게 .*/
         _float fDistance = fMin < 0.f ? fMax : fMin;
         if (!(fMax < 0.f || fMin > fMax) && fDistance <= 3.f)
+        {
+            *pCollider = CollisionDesc.pColliderSecond;
             return true;
+        }
     }
 
     /* 첫 콜라이더에 대한 검사 수행 */
@@ -471,8 +474,11 @@ _bool CCollision_Manager::RayToAABB_Collision(CGameObject* pRay, CGameObject* pA
 
     _float fDistance = fMin < 0.f ? fMax : fMin;
     
-    if(fDistance <= 3.f)
+    if (fDistance <= 3.f)
+    {
+        *pCollider = CollisionDesc.pCollider;
         return true;
+    }
 
     return false;
 }
