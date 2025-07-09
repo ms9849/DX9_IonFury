@@ -448,8 +448,8 @@ HRESULT CLevel_GamePlay::Ready_Layer_UI(const _wstring& strLayerTag)
 
 	// UI전체 크기 및 위치
 	Desc_Hp.iTextLength = 3;
-	Desc_Hp.fSizeX = 50.f + (50.f * Desc_Hp.iTextLength);
-	Desc_Hp.fSizeY = 50.f;
+	Desc_Hp.fSizeX = 70.f + (70.f * 2);
+	Desc_Hp.fSizeY = 70.f;
 	Desc_Hp.fX = 10.f;
 	Desc_Hp.fY = g_iWinSizeY - (Desc_Hp.fSizeY * 0.5f) - 10.f;
 	Desc_Hp.iLayerLevelIndex = ENUM_CLASS(LEVEL::GAMEPLAY);
@@ -469,9 +469,9 @@ HRESULT CLevel_GamePlay::Ready_Layer_UI(const _wstring& strLayerTag)
 
 	// UI전체 크기 및 위치
 	Desc_Armor.iTextLength = 3;
-	Desc_Armor.fSizeX = 50.f + (50.f * Desc_Hp.iTextLength);
-	Desc_Armor.fSizeY = 50.f;
-	Desc_Armor.fX = Desc_Hp.fX + Desc_Hp.fSizeX + 50.f;
+	Desc_Armor.fSizeX = 70.f + (70.f * 2);
+	Desc_Armor.fSizeY = 70.f;
+	Desc_Armor.fX = Desc_Hp.fX + Desc_Hp.fSizeX;
 	Desc_Armor.fY = g_iWinSizeY - (Desc_Hp.fSizeY * 0.5f) - 10.f;
 	Desc_Armor.iLayerLevelIndex = ENUM_CLASS(LEVEL::GAMEPLAY);
 	Desc_Armor.strLayerTag = strLayerTag;
@@ -489,8 +489,8 @@ HRESULT CLevel_GamePlay::Ready_Layer_UI(const _wstring& strLayerTag)
 	ws = to_wstring(pPlayer->Get_Player_Info().iBullets);
 
 	Desc_Bullets.iTextLength = 6;
-	Desc_Bullets.fSizeX = 50.f + (50.f * Desc_Bullets.iTextLength);
-	Desc_Bullets.fSizeY = 50.f;
+	Desc_Bullets.fSizeX = 70.f + (70.f * Desc_Bullets.iTextLength);
+	Desc_Bullets.fSizeY = 70.f;
 	Desc_Bullets.fX = g_iWinSizeX - 10.f;
 	Desc_Bullets.fY = g_iWinSizeY - (Desc_Bullets.fSizeY * 0.5f) - 10.f;
 	Desc_Bullets.iLayerLevelIndex = ENUM_CLASS(LEVEL::GAMEPLAY);

@@ -57,6 +57,13 @@ void CPlayer_RightHand::Priority_Update(_float fTimeDelta)
 		else
 			vHandPos = { 0.5f, -0.6f, 1.5f };
 	}
+	else if (strWeapon.compare(TEXT("MachineGun")) == 0)
+	{
+		if (strAction.compare(TEXT("Up")) == 0)
+			vHandPos = { 0.3f, -1.4f, 1.5f };
+		else
+			vHandPos = { 0.3f, -0.5f, 1.5f };
+	}
 
 	if (m_pAnimationCom->Get_Frame_Desc(m_strFrameKey)->Poses.size() > 1)
 	{
@@ -84,6 +91,11 @@ void CPlayer_RightHand::Priority_Update(_float fTimeDelta)
 	{
 		m_pTransformCom->Set_Scale(_float3{ 1.5f, 1.f, 1.f });
 	}
+	else if (strWeapon.compare(TEXT("MachineGun")) == 0)
+	{
+		m_pTransformCom->Set_Scale(_float3{ 2.f, 1.f, 1.f });
+	}
+
 	m_pAnimationCom->Play_Animation(m_strFrameKey, m_fPlayerTimeDelta);
 }
 
@@ -185,7 +197,6 @@ HRESULT CPlayer_RightHand::Ready_Animations()
 	
 	//Pistol_Walk
 	CAnimation::FRAME_DESC PistolWalkDesc{};
-	iter = m_pTextureComs.find(TEXT("Pistol_Walk"));
 	PistolWalkDesc.iEnd = 9;
 	PistolWalkDesc.Poses.reserve(PistolWalkDesc.iEnd);
 
@@ -296,7 +307,6 @@ HRESULT CPlayer_RightHand::Ready_Animations()
 
 	//ShootGun_Walk
 	CAnimation::FRAME_DESC ShootGunWalkDesc{};
-	iter = m_pTextureComs.find(TEXT("ShootGun_Walk"));
 	ShootGunWalkDesc.iEnd = 9;
 	ShootGunWalkDesc.Poses.reserve(ShootGunWalkDesc.iEnd);
 
@@ -383,6 +393,84 @@ HRESULT CPlayer_RightHand::Ready_Animations()
 	m_pAnimationCom->Set_Animation(TEXT("ShootGun_Shoot"), ShootGunShootDesc);
 #pragma endregion
 
+#pragma region ¸Ó½Å°Ç
+	//MachineGun_Idle
+	iter = m_pTextureComs.find(TEXT("MachineGun_Idle"));
+	CAnimation::FRAME_DESC MachineGunIdleDesc{};
+	MachineGunIdleDesc.iEnd = 0;
+	m_pAnimationCom->Set_Animation(TEXT("MachineGun_Idle"), MachineGunIdleDesc);
+
+	//MachineGun_Walk
+	CAnimation::FRAME_DESC MachineGunWalkDesc{};
+	MachineGunWalkDesc.iEnd = 9;
+	MachineGunWalkDesc.Poses.reserve(MachineGunWalkDesc.iEnd);
+
+	MachineGunWalkDesc.Poses.push_back(_float3{ -0.05f, 0.05f, 0.f });
+	MachineGunWalkDesc.Poses.push_back(_float3{ -0.1f, 0.075f, 0.f });
+	MachineGunWalkDesc.Poses.push_back(_float3{ -0.15f, 0.1f, 0.f });
+	MachineGunWalkDesc.Poses.push_back(_float3{ -0.2f, 0.075f, 0.f });
+	MachineGunWalkDesc.Poses.push_back(_float3{ -0.25f, 0.05f, 0.f });
+	MachineGunWalkDesc.Poses.push_back(_float3{ -0.2f, 0.075f, 0.f });
+	MachineGunWalkDesc.Poses.push_back(_float3{ -0.15f, 0.1f, 0.f });
+	MachineGunWalkDesc.Poses.push_back(_float3{ -0.1f, 0.075f, 0.f });
+	MachineGunWalkDesc.Poses.push_back(_float3{ -0.05f, 0.05f, 0.f });
+
+	m_pAnimationCom->Set_Animation(TEXT("MachineGun_Walk"), MachineGunWalkDesc);
+
+	//MachineGun_Down
+	CAnimation::FRAME_DESC MachineGunDownDesc{};
+	iter = m_pTextureComs.find(TEXT("MachineGun_Down"));
+	MachineGunDownDesc.iEnd = 10;
+	MachineGunDownDesc.iFrameSpeed = 2;
+	MachineGunDownDesc.Poses.reserve(MachineGunDownDesc.iEnd);
+
+	MachineGunDownDesc.Poses.push_back(_float3{ 0.f, 0.f, 0.f });
+	MachineGunDownDesc.Poses.push_back(_float3{ 0.f, -0.1f, 0.f });
+	MachineGunDownDesc.Poses.push_back(_float3{ 0.f, -0.2f, 0.f });
+	MachineGunDownDesc.Poses.push_back(_float3{ 0.f, -0.3f, 0.f });
+	MachineGunDownDesc.Poses.push_back(_float3{ 0.f, -0.4f, 0.f });
+	MachineGunDownDesc.Poses.push_back(_float3{ 0.f, -0.5f, 0.f });
+	MachineGunDownDesc.Poses.push_back(_float3{ 0.f, -0.6f, 0.f });
+	MachineGunDownDesc.Poses.push_back(_float3{ 0.f, -0.7f, 0.f });
+	MachineGunDownDesc.Poses.push_back(_float3{ 0.f, -0.8f, 0.f });
+	MachineGunDownDesc.Poses.push_back(_float3{ 0.f, -0.9f, 0.f });
+
+	m_pAnimationCom->Set_Animation(TEXT("MachineGun_Down"), MachineGunDownDesc);
+
+	//MachineGun_Up
+	CAnimation::FRAME_DESC MachineGunUpDesc{};
+	iter = m_pTextureComs.find(TEXT("MachineGun_Up"));
+	MachineGunUpDesc.iEnd = 10;
+	MachineGunUpDesc.iFrameSpeed = 2;
+	MachineGunUpDesc.Poses.reserve(MachineGunUpDesc.iEnd);
+
+	MachineGunUpDesc.Poses.push_back(_float3{ 0.f, 0.f, 0.f });
+	MachineGunUpDesc.Poses.push_back(_float3{ 0.f, 0.1f, 0.f });
+	MachineGunUpDesc.Poses.push_back(_float3{ 0.f, 0.2f, 0.f });
+	MachineGunUpDesc.Poses.push_back(_float3{ 0.f, 0.3f, 0.f });
+	MachineGunUpDesc.Poses.push_back(_float3{ 0.f, 0.4f, 0.f });
+	MachineGunUpDesc.Poses.push_back(_float3{ 0.f, 0.5f, 0.f });
+	MachineGunUpDesc.Poses.push_back(_float3{ 0.f, 0.6f, 0.f });
+	MachineGunUpDesc.Poses.push_back(_float3{ 0.f, 0.7f, 0.f });
+	MachineGunUpDesc.Poses.push_back(_float3{ 0.f, 0.8f, 0.f });
+	MachineGunUpDesc.Poses.push_back(_float3{ 0.f, 0.9f, 0.f });
+
+	m_pAnimationCom->Set_Animation(TEXT("MachineGun_Up"), MachineGunUpDesc);
+
+	//MachineGun_Shoot
+	iter = m_pTextureComs.find(TEXT("MachineGun_Shoot"));
+	CAnimation::FRAME_DESC MachineGunShootDesc{};
+	MachineGunShootDesc.iEnd = iter->second->Get_Texture_Length();
+	m_pAnimationCom->Set_Animation(TEXT("MachineGun_Shoot"), MachineGunShootDesc);
+
+	//MachineGun_Spin
+	iter = m_pTextureComs.find(TEXT("MachineGun_Spin"));
+	CAnimation::FRAME_DESC MachineGunSpinDesc{};
+	MachineGunSpinDesc.iEnd = iter->second->Get_Texture_Length();
+
+	m_pAnimationCom->Set_Animation(TEXT("MachineGun_Spin"), MachineGunSpinDesc);
+
+#pragma endregion
 
 	return S_OK;
 }

@@ -43,11 +43,13 @@ private:
 
     _wstring m_strFrameKey{ TEXT("Pistol_Idle") };
 
-    const _wstring m_strFrameKeys[12] = {
+    const _wstring m_strFrameKeys[18] = {
         TEXT("Pistol_Idle"), TEXT("Pistol_Walk"), TEXT("Pistol_Reload"),
         TEXT("Pistol_Shoot"), TEXT("Pistol_Down"), TEXT("Pistol_Up"),
         TEXT("ShootGun_Idle"), TEXT("ShootGun_Walk"), TEXT("ShootGun_Reload"),
         TEXT("ShootGun_Shoot"), TEXT("ShootGun_Down"), TEXT("ShootGun_Up"),
+        TEXT("MachineGun_Idle"), TEXT("MachineGun_Walk"), TEXT("MachineGun_Shoot"),
+        TEXT("MachineGun_Spin"), TEXT("MachineGun_Up"), TEXT("MachineGun_Down")
     };
 
     _float m_fPlayerTimeDelta{ 0.f };
