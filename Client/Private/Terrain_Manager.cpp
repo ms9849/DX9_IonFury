@@ -60,6 +60,11 @@ void CTerrain_Manager::Add_LandObject(LEVEL eLevelID, const _wstring& strLayerTa
     }
 }
 
+void CTerrain_Manager::Add_LandObject_One(CGameObject* pClone)
+{
+    m_LandObjects.push_back(dynamic_cast<CLandObject*>(pClone));
+}
+
 void CTerrain_Manager::Add_Terrian(LEVEL eLevelID)
 {
     list<CGameObject*> GameObjects = m_pGameInstance->Get_GameObjects_inLayer(ENUM_CLASS(eLevelID), TEXT("Layer_BackGround"));

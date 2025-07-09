@@ -7,6 +7,7 @@ NS_BEGIN(Engine)
 class CLayer;
 class CGameInstance;
 class CLandObject;
+class CGameObject;
 NS_END
 
 NS_BEGIN(Client)
@@ -19,6 +20,7 @@ private:
 
 public:
 	void Add_LandObject(LEVEL eLevelID, const _wstring& strLayerTag);
+	void Add_LandObject_One(class CGameObject* pClone);
 	void Add_Terrian(LEVEL eLevelID);
 	//큐브 형태 오브젝트들을 담는 메서드. 추후 로직의 분리를 위해 리스트도 따로 관리한다.
 	void Add_Cube(LEVEL eLevelID);
