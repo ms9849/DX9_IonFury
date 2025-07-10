@@ -41,7 +41,6 @@ private:
 	CTransform* m_pTransformCom = { nullptr };
 	CBossUpperBody* m_pBossUpperBody = { nullptr };
 	CBossLowerBody* m_pBossLowerBody = { nullptr };
-	class CTerrain_Manager* m_pTerrain_Manager = {nullptr};
 
 	_bool isUpperLive = true;
 	_float m_fResurrectionTime = 10.f;

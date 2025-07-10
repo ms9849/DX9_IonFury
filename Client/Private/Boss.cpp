@@ -96,8 +96,8 @@ void CBoss::Update(_float fTimeDelta)
 		m_isDead = true;
 
 		m_pGameInstance->PlaySoundOnce(TEXT("Boss1_Die.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
-		CEffect_Manager::GetInstance()->Create_Effect(TEXT("Effect_Boss_Die"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Effect"),
-			m_pTransformCom->Get_State(STATE::POSITION));
+		/*CEffect_Manager::GetInstance()->Create_Effect(TEXT("Effect_Boss_Die"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Effect"),
+			m_pTransformCom->Get_State(STATE::POSITION));*/
 
 		return;
 	}
@@ -116,8 +116,10 @@ HRESULT CBoss::Render()
 void CBoss::Resurrection()
 {
 	m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Monster_Boss_Upper"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Boss1_Upper"), m_pTransformCom);
+	Safe_Release(m_pBossUpperBody);
 	m_pBossUpperBody = dynamic_cast<CBossUpperBody*>(m_pGameInstance->Find_GameObject_ToLayer(
 		ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Boss1_Upper")));
+
 	Safe_AddRef(m_pBossUpperBody);
 }
 
@@ -166,5 +168,5 @@ void CBoss::Free()
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pBossUpperBody);
 	Safe_Release(m_pBossLowerBody);
-	Safe_Release(m_pTerrain_Manager);
+	//Safe_Release(m_pTerrain_Manager);
 }

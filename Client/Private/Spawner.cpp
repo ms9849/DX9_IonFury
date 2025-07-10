@@ -108,7 +108,7 @@ void CSpawner::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDe
 
 		m_pGameInstance->Add_Clone_ToLayer(pClone, ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Monster"));
 
-		m_pTerrain_Manager->Add_LandObject_One(pClone);
+		CTerrain_Manager::GetInstance()->Add_LandObject_One(pClone);
 	}
 
 	m_isDead = true;
@@ -169,7 +169,6 @@ CGameObject* CSpawner::Clone(void* pArg)
 void CSpawner::Free()
 {
 	__super::Free();
-	Safe_Release(m_pTerrain_Manager);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pBoxColliderCom);
 }
