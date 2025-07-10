@@ -5,10 +5,14 @@
 
 NS_BEGIN(Client)
 
+class CSpawner;
+class CTerrain_Manager;
+
 enum class BossAttackState {
 	MASS,
 	CHASE_MASS,
 	BOOM,
+	SUMMON,
 	END
 };
 
@@ -44,6 +48,7 @@ public:
 	HRESULT End_RenderTestState();
 
 	void Attack(_float fTimeDelta, BossAttackState eState);
+	void SummonMonster();
 
 private:
 	//void RotateToPlayer(CTransform* pTranform);
@@ -64,11 +69,18 @@ private:
 	_float3 m_vUpOffset = { 0.f, 4.2f, 0.f };
 	_float3 m_vAttackPos = {};
 	BossAttackState m_eState = BossAttackState::END;
+	CTerrain_Manager* m_pTerrain_Manager = { nullptr };
 
 public:
 	static CBossUpperBody* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
+
+private:
+	const _wstring m_MonsterKeys[4] = {
+		TEXT("Prototype_GameObject_Monster_Zombie"), TEXT("Prototype_GameObject_Monster_Spider"),
+		TEXT("Prototype_GameObject_Monster_Soldier"), TEXT("Prototype_GameObject_Monster_EliteSoldier")
+	};
 };
 
 NS_END

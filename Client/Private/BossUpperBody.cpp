@@ -2,9 +2,11 @@
 #include "GameInstance.h"
 #include "Bullet.h"
 #include "BossGrenade.h"
+#include "Spawner.h"
 #include "Particle_Manager.h"
 #include "Bullet_Manager.h"
 #include "Effect_Manager.h"
+#include "Terrain_Manager.h"
 
 CBossUpperBody::CBossUpperBody(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CMonster{ pGraphic_Device }
@@ -44,7 +46,7 @@ HRESULT CBossUpperBody::Initialize(void* pArg)
 	if (FAILED(Ready_Animations()))
 		return E_FAIL;
 
-
+	m_pTerrain_Manager = CTerrain_Manager::Create();
 	// 최초 코어가 생성된다음 그 위치값을 토대로 생성을 해야하는데 지금은 보장이 안된다
 	// 순서를 보장하기 위해 코어가 클론이 될때  상,하체를 클론 되게 만들었음
 	m_pTransformCom->Set_Scale({ 7.f, 7.f, 1.f });
@@ -213,16 +215,20 @@ void CBossUpperBody::Update(_float fTimeDelta)
 		if ((D3DXVec3Length(&vDiff) <= m_fAttackRange) && (m_fSumAttackCoolTime >= m_fAttackCoolTime))
 		{
 			// 랜덤값으로 공격 종류를 정하게 할까?
-			m_uTempNum = rand() % 2;
+			m_uTempNum = rand() % 3;
 
 			if (m_uTempNum == 0)
 			{
 				m_uTempNum = rand() % 2;
 				m_eState = static_cast<BossAttackState>(m_uTempNum);
 			}
-			else
+			else if (m_uTempNum == 1)
 			{
 				m_eState = BossAttackState::BOOM;
+			}
+			else
+			{
+				m_eState = BossAttackState::SUMMON;
 			}
 
 			Attack(fTimeDelta, m_eState);
@@ -663,6 +669,34 @@ void CBossUpperBody::Attack(_float fTimeDelta, BossAttackState state)
 			m_fAttackFailTime = 0.f;						// 비정상 상태 종료를 위한 누적시간
 		}
 	}
+	else if (m_eState == BossAttackState::SUMMON)
+	{
+		SummonMonster();
+
+		m_uCurBullets = 0;								// 총알 수 0으로 초기화
+		m_uCurExplosionBullets = 0;						// 유탄 수 0으로 초기화
+		m_bAnimationLock = false;						// 애니메이션 락 해제
+		m_pAnimationCom->Clear_Animation();			// 진행중 애니메이션 정지
+		m_strFrameKey = TEXT("Boss_Front");			// idle 키로 전환
+		m_eState = BossAttackState::END;				// 공격 상태 종료로 변환
+		m_bAttacking = false;							// 공격 진행중 상태 바꿈
+		m_fSumAttackCoolTime = 0.f;						// 다음 공격 시간을 위한 누적시간 초기화
+		m_fAttackFailTime = 0.f;						// 비정상 상태 종료를 위한 누적시간
+	}
+}
+
+void CBossUpperBody::SummonMonster()				// 추후 필요하면 인덱스 받을 수 있도록 변경하기
+{
+	for (size_t i = 0; i < 5; i++)
+	{
+		CGameObject* pClone = nullptr;
+		pClone = static_cast<CGameObject*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::GAMEPLAY),
+			m_MonsterKeys[0], m_pTransformCom->Get_State(STATE::POSITION)));
+
+		m_pGameInstance->Add_Clone_ToLayer(pClone, ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Monster"));
+
+		m_pTerrain_Manager->Add_LandObject_One(pClone);
+	}
 }
 
 CBossUpperBody* CBossUpperBody::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
@@ -694,6 +728,6 @@ CGameObject* CBossUpperBody::Clone(void* pArg)
 void CBossUpperBody::Free()
 {
 	__super::Free();
-
+	Safe_Release(m_pTerrain_Manager);
 	Safe_Release(m_pCoreTranform);
 }
