@@ -7,17 +7,23 @@ NS_BEGIN(Client)
 
 class CZombie final : public CMonster
 {
+public:
+	typedef struct tagZombieDesc {
+		_float3 vPos;
+		_bool isAwake = false;
+	}ZOMBIE_DESC;
+
 private:
 	CZombie(LPDIRECT3DDEVICE9 pGraphic_Device);
 	CZombie(const CZombie& Prototype);
 	virtual ~CZombie() = default;
 
-	const _wstring m_strFrameKeys[14] = {
+	const _wstring m_strFrameKeys[15] = {
 		TEXT("Zombie_Attack"), TEXT("Zombie_Die_Default"), TEXT("Zombie_Direction_NE"),
 		TEXT("Zombie_Direction_NW"), TEXT("Zombie_Direction_SE"), TEXT("Zombie_Direction_SW"),
 		TEXT("Zombie_Front"), TEXT("Zombie_Back"), TEXT("Zombie_Left"),
 		TEXT("Zombie_Right"), TEXT("Zombie_Die_Explosion"), TEXT("Zombie_Die_Idle"),
-		TEXT("Zombie_Die_HeadShot"), TEXT("Zombie_Die_HeadShot_Idle")
+		TEXT("Zombie_Die_HeadShot"), TEXT("Zombie_Die_HeadShot_Idle"), TEXT("Zombie_Awake")
 	};
 
 public:
@@ -43,7 +49,9 @@ public:
 private:
 	_bool m_bAnimationLock = false;
 	_bool m_bFrameBlock = false;
-	_float3* m_vPos = {};
+	_bool m_isAwake = false;
+	_float3 m_vPos = {};
+	ZOMBIE_DESC* m_Desc = {};
 
 public:
 	static CZombie* Create(LPDIRECT3DDEVICE9 pGraphic_Device);

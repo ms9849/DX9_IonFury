@@ -28,7 +28,9 @@ HRESULT CZombie::Initialize(void* pArg)
 
 	if (pArg != nullptr)				// 스포너의 위치를 받아온다
 	{
-		m_vPos = static_cast<_float3*>(pArg);
+		m_Desc = static_cast<CZombie::ZOMBIE_DESC*>(pArg);
+		m_vPos = m_Desc->vPos;
+		m_isAwake = m_Desc->isAwake;
 	}
 
 	if (m_pPlayerTransform == nullptr)
@@ -46,9 +48,9 @@ HRESULT CZombie::Initialize(void* pArg)
 	if (m_vPos != nullptr)
 	{
 		m_pTransformCom->Set_State(STATE::POSITION, _float3(
-			m_vPos->x + m_pGameInstance->Random(0.f, 2.f),
+			m_vPos.x + m_pGameInstance->Random(0.f, 2.f),
 			0.f,
-			m_vPos->z + m_pGameInstance->Random(0.f, 2.f)));
+			m_vPos.z + m_pGameInstance->Random(0.f, 2.f)));
 	}
 	else
 	{
@@ -65,6 +67,14 @@ HRESULT CZombie::Initialize(void* pArg)
 	m_fMaxRange = 10.f;
 	//m_AttackfCoolTime = 1.f;
 	//SetUp_OnTerrain(m_pTransformCom, 0.5f, &m_bJump);
+
+	if (m_isAwake)
+	{
+		m_strFrameKey = TEXT("Zombie_Awake");
+		m_bAnimationLock = true;
+		m_pGameInstance->PlaySoundOnce(TEXT("zombie_recog_1.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
+	}
+
 	return S_OK;
 }
 
@@ -151,6 +161,12 @@ void CZombie::Update(_float fTimeDelta)
 		m_bDying = true;
 		m_pGameInstance->PlaySoundOnce(TEXT("zombie_dead_1.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
 	}
+	else if (m_isAwake)
+	{
+		__super::Jump(fTimeDelta);
+		SetUp_OnTerrain(m_pTransformCom, 0.45f, &m_bJump);
+		return;
+	}
 	else if (m_pSightCom->Check_Sight(fTimeDelta) && !m_bAnimationLock)
 	{
 		if (!m_bFirstEncounter)
@@ -203,6 +219,8 @@ void CZombie::Late_Update(_float fTimeDelta)
 		}
 		else
 		{
+			if (m_isAwake)
+				m_isAwake = false;
 			m_bAnimationLock = false;
 			m_strFrameKey = TEXT("Zombie_Front");
 		}
@@ -249,6 +267,7 @@ HRESULT CZombie::Ready_Animations()
 	CAnimation::FRAME_DESC Desc_11{};
 	CAnimation::FRAME_DESC Desc_12{};
 	CAnimation::FRAME_DESC Desc_13{};
+	CAnimation::FRAME_DESC Desc_14{};
 
 	auto iter = m_pTextureComs.find(TEXT("Zombie_Attack"));
 	Desc_0.iFrameSpeed = 12;
@@ -332,6 +351,12 @@ HRESULT CZombie::Ready_Animations()
 	Desc_13.iFrameSpeed = 20;
 	Desc_13.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom->Set_Animation(TEXT("Zombie_Die_HeadShot_Idle"), Desc_13);
+
+	//Zombie_Awake
+	iter = m_pTextureComs.find(TEXT("Zombie_Awake"));
+	Desc_14.iFrameSpeed = 40;
+	Desc_14.iEnd = iter->second->Get_Texture_Length();
+	m_pAnimationCom->Set_Animation(TEXT("Zombie_Awake"), Desc_14);
 
 	return S_OK;
 }
