@@ -3,6 +3,7 @@
 #include "Transform.h"
 #include "GameInstance.h"
 #include "Terrain_Manager.h"
+#include "Zombie.h"
 
 CSpawner::CSpawner(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CGameObject{ pGraphic_Device }
@@ -97,8 +98,19 @@ void CSpawner::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDe
 		CGameObject* pClone = nullptr;
 		if (m_Desc.idx != -1)
 		{
-			pClone = static_cast<CGameObject*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::GAMEPLAY), 
-				m_strFrameKeys[m_Desc.idx], m_pTransformCom->Get_State(STATE::POSITION)));
+			if (m_Desc.idx == 1)
+			{
+				CZombie::ZOMBIE_DESC desc = {};
+				desc.vPos = m_pTransformCom->Get_State(STATE::POSITION);
+				desc.isAwake = true;
+				pClone = static_cast<CGameObject*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::GAMEPLAY),
+					m_strFrameKeys[m_Desc.idx], &desc));
+			}
+			else
+			{
+				pClone = static_cast<CGameObject*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::GAMEPLAY),
+					m_strFrameKeys[m_Desc.idx], m_pTransformCom->Get_State(STATE::POSITION)));
+			}
 		}
 		else
 		{
