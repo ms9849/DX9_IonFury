@@ -46,7 +46,6 @@ HRESULT CBossUpperBody::Initialize(void* pArg)
 	if (FAILED(Ready_Animations()))
 		return E_FAIL;
 
-	m_pTerrain_Manager = CTerrain_Manager::Create();
 	// 최초 코어가 생성된다음 그 위치값을 토대로 생성을 해야하는데 지금은 보장이 안된다
 	// 순서를 보장하기 위해 코어가 클론이 될때  상,하체를 클론 되게 만들었음
 	m_pTransformCom->Set_Scale({ 7.f, 7.f, 1.f });
@@ -201,7 +200,7 @@ void CBossUpperBody::Update(_float fTimeDelta)
 		m_pGameInstance->PlaySoundOnce(TEXT("Boss_lost.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
 		m_bAnimationLock = true;
 		m_isDead = true;
-		CEffect_Manager::GetInstance()->Create_Effect(TEXT("Effect_Boss_Die"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Effect"),
+		CEffect_Manager::GetInstance()->Create_Effect(TEXT("Effect_Grenade_Explosion"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Effect"),
 			m_pTransformCom->Get_State(STATE::POSITION));
 	}
 	else if (m_bAttacking)							// 어택중이면 계속 어택
@@ -704,7 +703,7 @@ void CBossUpperBody::SummonMonster()				// 추후 필요하면 인덱스 받을 수 있도록 �
 
 		m_pGameInstance->Add_Clone_ToLayer(pClone, ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Monster"));
 
-		m_pTerrain_Manager->Add_LandObject_One(pClone);
+		CTerrain_Manager::GetInstance()->Add_LandObject_One(pClone);
 	}
 }
 
@@ -737,6 +736,5 @@ CGameObject* CBossUpperBody::Clone(void* pArg)
 void CBossUpperBody::Free()
 {
 	__super::Free();
-	Safe_Release(m_pTerrain_Manager);
 	Safe_Release(m_pCoreTranform);
 }

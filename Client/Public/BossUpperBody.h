@@ -5,9 +5,6 @@
 
 NS_BEGIN(Client)
 
-class CSpawner;
-class CTerrain_Manager;
-
 enum class BossAttackState {
 	MASS,
 	CHASE_MASS,
@@ -69,7 +66,6 @@ private:
 	_float3 m_vUpOffset = { 0.f, 4.2f, 0.f };
 	_float3 m_vAttackPos = {};
 	BossAttackState m_eState = BossAttackState::END;
-	CTerrain_Manager* m_pTerrain_Manager = { nullptr };
 
 public:
 	static CBossUpperBody* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
