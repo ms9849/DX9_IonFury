@@ -399,49 +399,49 @@ HRESULT CLevel_GamePlay::Ready_Layer_Spawner(const _wstring& strLayerTag)
 	}*/
 
 	CSpawner::SPAWNER_DESC desc;
-	desc.vPos = _float3(22.5f, 0.5f, 12.5f);
+	desc.vPos = _float3(22.5f, 1.f, 12.5f);
 	desc.idx = 0;
 	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Spawner"),
 		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag, &desc)))
 		return E_FAIL;
 
-	desc.vPos = _float3(2.5f, 0.5f, 5.5f);
+	desc.vPos = _float3(12.5f, 1.f, 5.5f);
 	desc.idx = 1;
 	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Spawner"),
 		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag, &desc)))
 		return E_FAIL;
 
-	desc.vPos = _float3(5.5f, 0.5f, 8.5f);
+	desc.vPos = _float3(15.5f, 1.f, 8.5f);
 	desc.idx = 2;
 	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Spawner"),
 		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag, &desc)))
 		return E_FAIL;
 
-	desc.vPos = _float3(7.5f, 0.5f, 10.5f);
+	desc.vPos = _float3(17.5f, 1.f, 10.5f);
 	desc.idx = 3;
 	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Spawner"),
 		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag, &desc)))
 		return E_FAIL;
 
-	desc.vPos = _float3(10.5f, 0.5f, 13.5f);
+	desc.vPos = _float3(20.5f, 1.f, 13.5f);
 	desc.idx = 0;
 	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Spawner"),
 		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag, &desc)))
 		return E_FAIL;
 
-	desc.vPos = _float3(13.5f, 0.5f, 17.5f);
+	desc.vPos = _float3(23.5f, 1.f, 17.5f);
 	desc.idx = 1;
 	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Spawner"),
 		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag, &desc)))
 		return E_FAIL;
 
-	desc.vPos = _float3(16.5f, 0.5f, 22.5f);
+	desc.vPos = _float3(26.5f, 1.f, 22.5f);
 	desc.idx = 2;
 	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Spawner"),
 		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag, &desc)))
 		return E_FAIL;
 
-	desc.vPos = _float3(20.5f, 0.5f, 30.5f);
+	desc.vPos = _float3(16.5f, 1.f, 30.5f);
 	desc.idx = 3;
 	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Spawner"),
 		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag, &desc)))
@@ -471,7 +471,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const _wstring& strLayerTag)
 	//		return E_FAIL;
 	//}
 
-	for (size_t i = 0; i < 50; i++)
+	for (size_t i = 0; i < 1; i++)
 	{
 		if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Monster_Soldier"),
 			ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag)))

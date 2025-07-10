@@ -215,12 +215,14 @@ void CBossUpperBody::Update(_float fTimeDelta)
 		if ((D3DXVec3Length(&vDiff) <= m_fAttackRange) && (m_fSumAttackCoolTime >= m_fAttackCoolTime))
 		{
 			// 랜덤값으로 공격 종류를 정하게 할까?
-			m_uTempNum = rand() % 3;
+			//m_uTempNum = rand() % 3;
+			// 패턴 다 보여주기 위해서 하나씩 올라가도록 임시적 설정
 
 			if (m_uTempNum == 0)
 			{
 				m_uTempNum = rand() % 2;
 				m_eState = static_cast<BossAttackState>(m_uTempNum);
+				m_uTempNum = 0;
 			}
 			else if (m_uTempNum == 1)
 			{
@@ -232,6 +234,9 @@ void CBossUpperBody::Update(_float fTimeDelta)
 			}
 
 			Attack(fTimeDelta, m_eState);
+			m_uTempNum++;
+			if (m_uTempNum > 2)
+				m_uTempNum = 0;
 		}
 	}
 	m_pTransformCom->Set_State(STATE::POSITION, m_pCoreTranform->Get_State(STATE::POSITION));
@@ -549,10 +554,12 @@ void CBossUpperBody::Attack(_float fTimeDelta, BossAttackState state)
 			Desc.vPos = vPos;
 			//Desc.vPos = {vPos.x ,vPos.y += m_vUpOffset.y, vPos.z };
 			Desc.fBulletSpeed = 10.f;
-			Desc.vBulletScale = { 0.2f, 0.2f, 0.1f };
+			Desc.vBulletScale = { 0.005f, 0.005f, 0.2f };
+			//Desc.vBulletScale = { 0.2f, 0.2f, 0.1f };
 			Desc.isPlayerBullet = false;
 			Desc.fDuration = 7.f;
-			m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Bullet"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Monster_Bullet"), &Desc);
+			CBullet_Manager::GetInstance()->Create_Bullet(TEXT("Bullet"), Desc, ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Monster_Bullet"));
+			//m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Bullet"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Monster_Bullet"), &Desc);
 			m_fSumLaunchCoolTime = 0.f;								// 난사 한발 사용했으므로 누적 시간 초기화
 			//m_fSumAttackCoolTime = 0.f;
 			m_uCurBullets++;										// 현재 사용한 총알 수 증가
@@ -596,10 +603,12 @@ void CBossUpperBody::Attack(_float fTimeDelta, BossAttackState state)
 			Desc.vPos = vPos;
 			//Desc.vPos = { vPos.x ,vPos.y += m_vUpOffset.y, vPos.z };
 			Desc.fBulletSpeed = 10.f;
-			Desc.vBulletScale = { 0.2f, 0.2f, 0.1f };
+			Desc.vBulletScale = { 0.005f, 0.005f, 0.2f };
+			//Desc.vBulletScale = { 0.2f, 0.2f, 0.1f };
 			Desc.isPlayerBullet = false;
 			Desc.fDuration = 7.f;
-			m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Bullet"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Monster_Bullet"), &Desc);
+			CBullet_Manager::GetInstance()->Create_Bullet(TEXT("Bullet"), Desc, ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Monster_Bullet"));
+			//m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Bullet"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Monster_Bullet"), &Desc);
 			m_fSumLaunchCoolTime = 0.f;								// 난사 한발 사용했으므로 누적 시간 초기화
 			//m_fSumAttackCoolTime = 0.f;
 			m_uCurBullets++;										// 현재 사용한 총알 수 증가
