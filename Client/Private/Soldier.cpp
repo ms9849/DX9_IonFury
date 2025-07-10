@@ -356,21 +356,21 @@ void CSoldier::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDe
 	if (m_isDead || m_bDying)
 		return;
 
-	if (eColType == COLLISION::SPHERE)
-	{
-		CBullet* pBullet = dynamic_cast<CBullet*>(pDst);
+	//if (eColType == COLLISION::SPHERE)
+	//{
+	//	CBullet* pBullet = dynamic_cast<CBullet*>(pDst);
 
-		if (pBullet != nullptr)
-		{
-			// 피격 사운드
-			if ((m_fHp -= (pBullet->Get_Damage())) > 0)
-			{
-				m_pGameInstance->PlaySoundOnce(TEXT("Soldier_Pain01.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
-			}
-			CParticle_Manager::GetInstance()->Create_Particle(TEXT("Particle_Blood"), ENUM_CLASS(LEVEL::GAMEPLAY),
-				TEXT("Layer_Particle"), m_pTransformCom->Get_State(STATE::POSITION));
-		}
-	}
+	//	if (pBullet != nullptr)
+	//	{
+	//		// 피격 사운드
+	//		if ((m_fHp -= (pBullet->Get_Damage())) > 0)
+	//		{
+	//			m_pGameInstance->PlaySoundOnce(TEXT("Soldier_Pain01.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
+	//		}
+	//		CParticle_Manager::GetInstance()->Create_Particle(TEXT("Particle_Blood"), ENUM_CLASS(LEVEL::GAMEPLAY),
+	//			TEXT("Layer_Particle"), m_pTransformCom->Get_State(STATE::POSITION));
+	//	}
+	//}
 
 	return;
 }

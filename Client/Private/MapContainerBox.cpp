@@ -42,6 +42,7 @@ void CMapContainerBox::Update(_float fTimeDelta)
 
 void CMapContainerBox::Late_Update(_float fTimeDelta)
 {
+	Compute_CamDistance(m_pTransformCom->Get_State(STATE::POSITION));
 	m_pGameInstance->Add_RenderGroup(RENDER::BLEND, this);
 }
 

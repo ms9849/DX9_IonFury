@@ -28,7 +28,9 @@ private:
 	_bool	OBB_Collision(class CGameObject* pSrc, class CGameObject* pDst, _float3* vMTV);
 	_bool	AABB_Collision(class CGameObject* pSrc, class CGameObject* pDst, _float3* vMTV);
 	_bool	Look_Collision(class CGameObject* pDst, _float3* vCollisionPos, _float3 vPos, _float3 vLook);
-	_bool	RayToAABB_Collision(class CGameObject* pRay, class CGameObject* pAABB, _float3* vPos, CComponent** pCollider);
+	_bool	RayToAABB_Collision(class CGameObject* pRay, class CGameObject* pAABB, _float3* vPos, CComponent** pCollider, _float fTimeDelta);
+
+	_bool	Check_inAABB(const _float3& vPos, const _float3& vMin, const _float3 vMax);
 
 public:
 	static CCollision_Manager* Create();

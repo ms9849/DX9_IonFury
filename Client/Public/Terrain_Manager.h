@@ -33,7 +33,7 @@ private:
 	class CGameInstance* m_pGameInstance = {};
 
 	list<class CTerrain*> m_Terrains = {};
-	list<class CMapSlope*> m_CubeObjects = {};
+	list<class CCubeObject*> m_CubeObjects = {};
 	
 	/* LandObject는 아직 수정 X */
 	list<class CLandObject*> m_LandObjects = {};
