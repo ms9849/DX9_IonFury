@@ -309,22 +309,23 @@ HRESULT CSpider::Ready_Animations()
 	return S_OK;
 }
 
-void CSpider::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta)
+void CSpider::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta, CComponent* pCollider)
 {
 	if (m_isDead || m_bDying)
 		return;
 
-	if (eColType == COLLISION::SPHERE)
+	if (eColType == COLLISION::RAY)
 	{
 		CBullet* pBullet = dynamic_cast<CBullet*>(pDst);
 		if (pBullet != nullptr)
 		{
 			if ((m_fHp -= (pBullet->Get_Damage())) > 0)
 			{
-				m_pGameInstance->PlaySoundOnce(TEXT("Spider_Hit.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
+				m_pGameInstance->PlaySoundOnce(TEXT("Spider_hit_1.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
+
+				CParticle_Manager::GetInstance()->Create_Particle(TEXT("Particle_Blood"), ENUM_CLASS(LEVEL::GAMEPLAY),
+					TEXT("Layer_Particle"), m_pTransformCom->Get_State(STATE::POSITION));
 			}
-			CParticle_Manager::GetInstance()->Create_Particle(TEXT("Particle_Blood"), ENUM_CLASS(LEVEL::GAMEPLAY),
-				TEXT("Layer_Particle"), m_pTransformCom->Get_State(STATE::POSITION));
 		}
 	}
 
