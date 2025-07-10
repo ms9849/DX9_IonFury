@@ -42,7 +42,7 @@ private:
 	/* 쓰레기 박스 이미지 3장 가져와서 세팅해줄 것 */
 	CTexture* m_pTextureCom = { nullptr };
 	// 2 -> 1, 1 -> 0 되고 0에서 한대 더맞으면 죽게 처리할 것.
-	_uint m_iHp = { 2 };
+	_int m_iHp = { 2 };
 
 private:
 	HRESULT Begin_RenderState();
