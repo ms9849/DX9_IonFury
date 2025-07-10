@@ -212,10 +212,14 @@ void CPlayer::Update(_float fTimeDelta)
 				m_pGameInstance->PlaySoundOnce(TEXT("Pistol_Reload_3.ogg"), CHANNELID::SOUND_EFFECT, 0.2f);
 			}
 
-			m_tInfo.strAction = TEXT("Idle");
+			// ÀÌ°Å ´Ù½Ã ºÁ¾ßÇÔ
+			if (m_pRightHandAnimationCom->Check_Animation_Finish(TEXT("MachineGun_Shoot")))
+				m_tInfo.strAction = TEXT("Shoot");
+			else
+				m_tInfo.strAction = TEXT("Idle");
 		}
 	}
-	else // ¸Ó½Å°ÇÀÌ ¾Æ´Ñ ¹«±â ÀÏ ¶§
+	else
 	{
 		// ÀÌµ¿
 		if (m_pGameInstance->Key_Pressing('W'))
@@ -270,7 +274,6 @@ void CPlayer::Update(_float fTimeDelta)
 					&& iter->second.iShootBullets > 0
 					&& iter->second.iCurrentBullets > 0)
 				{
-					//m_pRightHandAnimationCom->Clear_Animation();
 					iter->second.iCurrentBullets -= 1;
 					m_tInfo.iBullets = iter->second.iCurrentBullets;
 					iter->second.iShootBullets -= 1;
@@ -289,17 +292,9 @@ void CPlayer::Update(_float fTimeDelta)
 					&& iter->second.iShootBullets > 0
 					&& iter->second.iCurrentBullets > 0)
 				{
-					// ¼¦°Ç µô·¹ÀÌ Áà¾ßÇÔ
-
-					m_pRightHandAnimationCom->Clear_Animation();
-					iter->second.iCurrentBullets -= 1;
-					m_tInfo.iBullets = iter->second.iCurrentBullets;
-					iter->second.iShootBullets -= 1;
-					m_tInfo.iShootBullets = iter->second.iShootBullets;
-					m_tInfo.strAction = TEXT("Shoot");
-
 					if (m_tInfo.strWeapon == TEXT("Pistol"))
 					{
+						m_pRightHandAnimationCom->Clear_Animation();
 
 						m_pGameInstance->PlaySoundOnce(TEXT("Pistol_Shoot.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
 						CEffect_Manager::GetInstance()->Create_Effect(TEXT("Effect_Pistol_Fire"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Effect"), { 0.f, 0.f, 0.f });
@@ -319,8 +314,15 @@ void CPlayer::Update(_float fTimeDelta)
 
 						CBullet_Manager::GetInstance()->Create_Bullet(TEXT("Bullet"), Desc, ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_PlayerBullet"));
 
+						// ¼¦°Ç µô·¹ÀÌ Áà¾ßÇÔ
+						iter->second.iCurrentBullets -= 1;
+						m_tInfo.iBullets = iter->second.iCurrentBullets;
+						iter->second.iShootBullets -= 1;
+						m_tInfo.iShootBullets = iter->second.iShootBullets;
+						m_tInfo.strAction = TEXT("Shoot");
 					}
-					else if (m_tInfo.strWeapon == TEXT("ShootGun"))
+					else if (m_tInfo.strWeapon == TEXT("ShootGun")
+							&& m_tInfo.strAction != TEXT("Shoot"))
 					{
 						m_pGameInstance->PlaySoundOnce(TEXT("ShotGun_Fire.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
 
@@ -348,6 +350,12 @@ void CPlayer::Update(_float fTimeDelta)
 
 							CBullet_Manager::GetInstance()->Create_Bullet(TEXT("Bullet"), Desc, ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_PlayerBullet"));
 						}
+						// ¼¦°Ç µô·¹ÀÌ Áà¾ßÇÔ
+						iter->second.iCurrentBullets -= 1;
+						m_tInfo.iBullets = iter->second.iCurrentBullets;
+						iter->second.iShootBullets -= 1;
+						m_tInfo.iShootBullets = iter->second.iShootBullets;
+						m_tInfo.strAction = TEXT("Shoot");
 					}
 				}
 			}

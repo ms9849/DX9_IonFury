@@ -635,7 +635,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_UI(const _wstring& strLayerTag)
 	Desc_CardKey.fSizeX = 92.f;
 	Desc_CardKey.fSizeY = 56.f;
 	Desc_CardKey.fX = g_iWinSizeX - 20.f - (Desc_CardKey.fSizeX * 0.5f);
-	Desc_CardKey.fY = g_iWinSizeY - 80.f - (Desc_CardKey.fSizeY * 0.5f);
+	Desc_CardKey.fY = g_iWinSizeY - 100.f - (Desc_CardKey.fSizeY * 0.5f);
 
 	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_UICardKey"),
 		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag, &Desc_CardKey)))
