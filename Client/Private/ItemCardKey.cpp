@@ -30,6 +30,7 @@ HRESULT CItemCardKey::Initialize(void* pArg)
 
 	//m_pTransformCom->Set_State(STATE::POSITION, _float3(0.f, 0.f, 5.f));
 
+	m_pTransformCom->Set_Scale({ 0.8f, 0.8f, 0.8 });
 	SetUp_OnTerrain(m_pTransformCom, 0.5f);
 
 	m_fItemOriginPosY = m_pTransformCom->Get_State(STATE::POSITION).y;

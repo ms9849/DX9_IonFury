@@ -1,6 +1,11 @@
 #include "TrashBox.h"
 
 #include "GameInstance.h"
+#include "Bullet.h"
+#include "ItemArmor.h"
+#include "ItemHealpack.h"
+#include "ItemPistolBullet.h"
+#include "ItemShootGunBullet.h"
 
 CTrashBox::CTrashBox(LPDIRECT3DDEVICE9 pGraphicDev) :
     CGameObject { pGraphicDev }
@@ -20,6 +25,32 @@ void CTrashBox::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeD
 void CTrashBox::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta, CComponent* pCollider)
 {
     //여기서 레이랑 충돌판정 하고 실제로 체력이 닳아서 없어지거나 하는 표현을 보여줄 것
+	if (static_cast<CBullet*>(pDst) != nullptr && m_iHp >= 0)
+	{
+		m_iHp -= 1;
+
+		if (m_iHp < 0)
+		{
+			/* 아이템 떨구는 로직도 추가할 것 */
+			m_isDead = true;
+			
+			_int iRandNum = m_pGameInstance->Random(0.f, ENUM_CLASS(CItem::BULLET::END));
+			CItem* pItem;
+
+			if (iRandNum == ENUM_CLASS(CItem::BULLET::PISTOL))
+				pItem = static_cast<CItem*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Item_Pistol_Bullet"), nullptr));
+			
+			else if (iRandNum == ENUM_CLASS(CItem::BULLET::SHOOTGUN))
+				pItem = static_cast<CItem*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Item_ShootGun_Bullet"), nullptr));
+
+			else
+				return;
+
+			_float3 vPos = m_pTransformCom->Get_State(STATE::POSITION);
+			pItem->Set_Pos(vPos);
+			m_pGameInstance->Add_Clone_ToLayer(pItem, ENUM_CLASS(LEVEL::GAMEPLAY),TEXT("Layer_Items"));
+		}
+	}
 }
 
 const COLLISION_DESC& CTrashBox::Get_CollisionDesc(COLLISION eColType)
@@ -46,6 +77,7 @@ HRESULT CTrashBox::Initialize(void* pArg)
 
 	_float3* pDesc = reinterpret_cast<_float3*>(pArg);
 	m_pTransformCom->Set_State(STATE::POSITION, *pDesc);
+	m_pTransformCom->Set_Scale({ 0.3f, 0.3f, 0.3f });
 
     return S_OK;
 }
@@ -58,29 +90,6 @@ void CTrashBox::Priority_Update(_float fTimeDelta)
 
 void CTrashBox::Update(_float fTimeDelta)
 {
-	_float4x4 matWorldTemp = m_pGameInstance->Get_CameraWorld();
-
-	_float3 vLook;
-	memcpy(&vLook, *(_float3*)&matWorldTemp.m[2][0], sizeof(_float3));
-	vLook *= -1;
-	vLook.y = 0.f;
-	D3DXVec3Normalize(&vLook, &vLook);
-
-	_float3 vUp = { 0.f, 1.f, 0.f };
-
-	_float3 vRight;
-	D3DXVec3Cross(&vRight, &vUp, &vLook);
-	D3DXVec3Normalize(&vRight, &vRight);
-
-	_float4x4 matWorld = *m_pTransformCom->Get_WorldMatrixPtr();
-	_float3 vPos = m_pTransformCom->Get_State(STATE::POSITION);
-
-	memcpy(&matWorld.m[0][0], &vRight, sizeof(_float3));
-	memcpy(&matWorld.m[1][0], &vUp, sizeof(_float3));
-	memcpy(&matWorld.m[2][0], &vLook, sizeof(_float3));
-	memcpy(&matWorld.m[3][0], &vPos, sizeof(_float3));
-
-	m_pTransformCom->Set_Transform(matWorld);
 }
 
 void CTrashBox::Late_Update(_float fTimeDelta)
@@ -91,6 +100,8 @@ void CTrashBox::Late_Update(_float fTimeDelta)
 
 HRESULT CTrashBox::Render()
 {
+	if (m_isDead) return S_OK;
+
 	Begin_RenderState();
 
 	m_pTransformCom->Set_Transform();
@@ -106,12 +117,21 @@ HRESULT CTrashBox::Render()
 
 HRESULT CTrashBox::Begin_RenderState()
 {
+	_float4x4 matCameraWorld =  m_pGameInstance->Get_CameraWorld();
+
+	m_pTransformCom->Set_State(STATE::RIGHT, *(_float3 *)&matCameraWorld[0] * 0.3f);
+	m_pTransformCom->Set_State(STATE::LOOK, *(_float3*)&matCameraWorld[2] * 0.3f);
+
 	m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
 	m_pGraphic_Device->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
 	m_pGraphic_Device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
 	m_pGraphic_Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 
+	m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+	m_pGraphic_Device->SetRenderState(D3DRS_ALPHAREF, 200);
+	m_pGraphic_Device->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
 	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+
 
 	return S_OK;
 }
@@ -120,6 +140,7 @@ HRESULT CTrashBox::End_RenderState()
 {
 	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 	m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+	m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
 
 	return S_OK;
 }
@@ -139,8 +160,13 @@ HRESULT CTrashBox::Ready_Components()
 		return E_FAIL;
 
 	/* Com_BoxCollider */
+	CBoxCollider::BOXCOLLIDER_DESC Desc;
+	Desc.vPosition = { 0.f, 0.f, 0.f };
+	Desc.fScaleX = 0.2f;
+	Desc.fScaleZ = 0.2f;
+	Desc.fScaleY = 0.2f;
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_BoxCollider"),
-		TEXT("Com_BoxCollider"), reinterpret_cast<CComponent**>(&m_pBoxColliderCom))))
+		TEXT("Com_BoxCollider"), reinterpret_cast<CComponent**>(&m_pBoxColliderCom), &Desc)))
 		return E_FAIL;
 
 	/* Com_Texture */

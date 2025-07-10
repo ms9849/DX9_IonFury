@@ -84,6 +84,7 @@ void CPlayer_LeftHand::Update(_float fTimeDelta)
 
 void CPlayer_LeftHand::Late_Update(_float fTimeDelta)
 {
+	Compute_CamDistance(m_pTransformCom->Get_State(STATE::POSITION));
 	m_pGameInstance->Add_RenderGroup(RENDER::BLEND_LATE, this);
 }
 

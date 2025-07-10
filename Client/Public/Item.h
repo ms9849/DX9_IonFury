@@ -15,8 +15,8 @@ NS_BEGIN(Client)
 
 class CItem abstract : public CLandObject
 {
-protected:
-    enum class BULLET {PISTOL, SHOOTGUN};
+public:
+    enum class BULLET {PISTOL, SHOOTGUN, END};
 
 protected:
     CItem(LPDIRECT3DDEVICE9 pGraphic_Device);
@@ -40,6 +40,9 @@ protected:
     bool    _isGoUp{ false };
     _float  m_fItemOriginPosY{};
     CPlayer* m_pPlayer{ nullptr };
+
+public:
+    void Set_Pos(const _float3& vPos);
 
 protected:
     virtual HRESULT Ready_Components();

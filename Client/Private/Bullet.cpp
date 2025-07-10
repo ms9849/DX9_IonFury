@@ -89,9 +89,9 @@ HRESULT CBullet::Render()
 	m_pTransformCom->Set_Transform();
 
 	if(m_bPlayerBullet)
-		m_pTextureCom->Set_Texture(0);
+		m_pTextureCom->Set_Texture(1);
 	else
-		m_pTextureCom->Set_Texture(0);
+		m_pTextureCom->Set_Texture(2);
 
 	m_pVIBufferCom->Render();
 

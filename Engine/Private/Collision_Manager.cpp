@@ -309,6 +309,8 @@ _bool CCollision_Manager::AABB_Collision(CGameObject* pSrc, CGameObject* pDst, _
     /*
     AABB 충돌 구현.
     */
+    if (pSrc == pDst) return false;
+
     COLLISION_DESC DescSrc = pSrc->Get_CollisionDesc(COLLISION::BOX);
     COLLISION_DESC DescDst = pDst->Get_CollisionDesc(COLLISION::BOX);
 
