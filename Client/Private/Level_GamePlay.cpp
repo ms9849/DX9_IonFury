@@ -288,7 +288,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const _wstring& strLayerTag)
 			)->Set_State(STATE::POSITION, iter.matWorld.m[3]);
 	}
 
-	m_pTerrain_Manager = CTerrain_Manager::Create();
+	m_pTerrain_Manager = CTerrain_Manager::GetInstance();
 
 	//if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Terrain"),
 	//	ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag)))
@@ -1095,7 +1095,6 @@ void CLevel_GamePlay::Free()
 	Safe_Release(m_pUIInteraction);
 	Safe_Release(m_pUIAim);
 	Safe_Release(m_pUICardKey);
-	Safe_Release(m_pTerrain_Manager);
 	Safe_Release(m_pFileMgr);
 
 	m_pEffect_Manager->Release_Effect_Manager();
@@ -1106,6 +1105,9 @@ void CLevel_GamePlay::Free()
 
 	m_pBullet_Manager->Release_Bullet_Manager();
 	Safe_Release(m_pBullet_Manager);
+
+	m_pTerrain_Manager->Release_Terrain_Manager();
+	Safe_Release(m_pTerrain_Manager);
 
 	for (auto& iter : m_pUIItemQueues)
 	{

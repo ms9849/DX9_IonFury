@@ -46,7 +46,6 @@ private:
 
 	class CTransform* m_pTransformCom = { nullptr };
 	class CBoxCollider* m_pBoxColliderCom = { nullptr };
-	class CTerrain_Manager* m_pTerrain_Manager = { nullptr };
 
 	const _wstring m_strFrameKeys[4] = {
 		TEXT("Prototype_GameObject_Monster_Zombie"), TEXT("Prototype_GameObject_Monster_Spider"),
