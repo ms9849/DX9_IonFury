@@ -46,7 +46,6 @@ HRESULT CBossUpperBody::Initialize(void* pArg)
 	if (FAILED(Ready_Animations()))
 		return E_FAIL;
 
-	m_pTerrain_Manager = CTerrain_Manager::Create();
 	// 최초 코어가 생성된다음 그 위치값을 토대로 생성을 해야하는데 지금은 보장이 안된다
 	// 순서를 보장하기 위해 코어가 클론이 될때  상,하체를 클론 되게 만들었음
 	m_pTransformCom->Set_Scale({ 7.f, 7.f, 1.f });
@@ -737,6 +736,5 @@ CGameObject* CBossUpperBody::Clone(void* pArg)
 void CBossUpperBody::Free()
 {
 	__super::Free();
-	Safe_Release(m_pTerrain_Manager);
 	Safe_Release(m_pCoreTranform);
 }

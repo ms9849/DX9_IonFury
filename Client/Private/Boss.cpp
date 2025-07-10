@@ -49,8 +49,8 @@ HRESULT CBoss::Initialize(void* pArg)
 		ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Boss1_Lower")));
 	Safe_AddRef(m_pBossLowerBody);
 
-	m_pTerrain_Manager = CTerrain_Manager::Create();
-	m_pTerrain_Manager->Add_LandObject_One(m_pBossLowerBody);
+	//m_pTerrain_Manager = CTerrain_Manager::Create();
+	//m_pTerrain_Manager->Add_LandObject_One(m_pBossLowerBody);
 
 	return S_OK;
 }
