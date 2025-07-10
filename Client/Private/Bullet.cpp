@@ -25,7 +25,9 @@ const RAY_DESC& CBullet::Get_RayDesc()
 void CBullet::Set_Desc(const BULLET_DESC& Desc)
 {
 	m_fSumTime = 0.f;
-	m_fBulletSpeed = Desc.fBulletSpeed;
+	if(Desc.fBulletSpeed != 0)
+		m_fBulletSpeed = Desc.fBulletSpeed;
+
 	m_vDir = Desc.vDir;
 	m_fDuration = Desc.fDuration;
 	m_pTransformCom->Set_State(STATE::POSITION, Desc.vPos);

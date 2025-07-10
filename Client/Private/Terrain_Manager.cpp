@@ -78,13 +78,28 @@ void CTerrain_Manager::Add_Terrian(LEVEL eLevelID)
 
 void CTerrain_Manager::Add_Cube(LEVEL eLevelID)
 {
-    list<CGameObject*> GameObjects = m_pGameInstance->Get_GameObjects_inLayer(ENUM_CLASS(eLevelID), TEXT("Layer_Map_Slope"));
+    list<CGameObject*> GameObjects = m_pGameInstance->Get_GameObjects_inLayer(ENUM_CLASS(eLevelID), TEXT("Layer_Map_Objects_AABB_Ride"));
 
     /* Cube 담기 */
     for (auto& iter : GameObjects)
     {
+        m_CubeObjects.push_back(reinterpret_cast<CCubeObject*>(iter));
+    }
 
-        m_CubeObjects.push_back(reinterpret_cast<CMapSlope*>(iter));
+    GameObjects = m_pGameInstance->Get_GameObjects_inLayer(ENUM_CLASS(eLevelID), TEXT("Layer_Map_Objects_Ride"));
+
+    /* Cube 담기 */
+    for (auto& iter : GameObjects)
+    {
+        m_CubeObjects.push_back(reinterpret_cast<CCubeObject*>(iter));
+    }
+
+    GameObjects = m_pGameInstance->Get_GameObjects_inLayer(ENUM_CLASS(eLevelID), TEXT("Layer_Map_Objects_OBB_Ride"));
+
+    /* Cube 담기 */
+    for (auto& iter : GameObjects)
+    {
+        m_CubeObjects.push_back(reinterpret_cast<CCubeObject*>(iter));
     }
 }
 
@@ -122,7 +137,7 @@ void CTerrain_Manager::Check_Landing()
         {
             for (auto& pCube : m_CubeObjects)
             {
-                CMapSlope::CUBE_DESC CubeDesc = pCube->Get_CubeDesc();
+                CCubeObject::CUBE_DESC CubeDesc = pCube->Get_CubeDesc();
 
                 if (CubeDesc.pBuffer->Picking(CubeDesc.pTransform, &vDist, vPos, vRayDir))
                 {
@@ -169,10 +184,10 @@ void CTerrain_Manager::Check_Landing()
                     (*iter)->Set_Time(0.133334f);
                 }
             }
-            /* CMapSlope로 임시 변경 */
-            else if (dynamic_cast<CMapSlope*>(pNearestLand) != nullptr)
+
+            else if (dynamic_cast<CCubeObject*>(pNearestLand) != nullptr)
             {
-                Desc = { dynamic_cast<CMapSlope*>(pNearestLand)->Get_CubeDesc().pBuffer, dynamic_cast<CMapSlope*>(pNearestLand)->Get_CubeDesc().pTransform };
+                Desc = { dynamic_cast<CCubeObject*>(pNearestLand)->Get_CubeDesc().pBuffer, dynamic_cast<CCubeObject*>(pNearestLand)->Get_CubeDesc().pTransform };
 
                 if (fMin > 0.6f && (*iter)->Get_Jump() == false)
                 {

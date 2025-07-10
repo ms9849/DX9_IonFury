@@ -19,9 +19,133 @@ CBoxCollider::CBoxCollider(const CBoxCollider& Prototype) :
 	, m_eIndexFormat{ Prototype.m_eIndexFormat }
 	, m_iNumVerticesX{ Prototype.m_iNumVerticesX }
 	, m_iNumVerticesZ{ Prototype.m_iNumVerticesZ }
+	, m_vMax { Prototype.m_vMax }
+	, m_vMin { Prototype.m_vMin }
 {
 	memcpy(m_vLocalPos, Prototype.m_vLocalPos, sizeof(_float3) * 8);
 	memcpy(m_vAxis, Prototype.m_vAxis, sizeof(_float3));
+}
+
+void CBoxCollider::Set_Matrix(const _float4x4& matWorld)
+{
+	for (_uint i = 0; i < 8; ++i)
+	{
+		D3DXVec3TransformNormal(&m_vLocalPos[i], &m_vLocalPos[i], &matWorld);
+	}
+
+	/* 정점 정보, 즉 크기는 콜라이더마다 다르니까 일단 둔다. */
+	VTXCOLOR* pVertices = { nullptr };
+
+	/* 할당한 공간에 접근하여 값을 기록하낟. */
+	m_pVB->Lock(0, 0, reinterpret_cast<void**>(&pVertices), 0);
+
+	pVertices[0].vPosition = m_vLocalPos[0];
+	pVertices[0].vColor = D3DCOLOR_ARGB(255, 255, 0, 0);
+
+	pVertices[1].vPosition = m_vLocalPos[1];
+	pVertices[1].vColor = D3DCOLOR_ARGB(255, 255, 0, 0);
+
+	pVertices[2].vPosition = m_vLocalPos[2];
+	pVertices[2].vColor = D3DCOLOR_ARGB(255, 255, 0, 0);
+
+	pVertices[3].vPosition = m_vLocalPos[3];
+	pVertices[3].vColor = D3DCOLOR_ARGB(255, 255, 0, 0);
+
+	pVertices[4].vPosition = m_vLocalPos[4];
+	pVertices[4].vColor = D3DCOLOR_ARGB(255, 255, 0, 0);
+
+	pVertices[5].vPosition = m_vLocalPos[5];
+	pVertices[5].vColor = D3DCOLOR_ARGB(255, 255, 0, 0);
+
+	pVertices[6].vPosition = m_vLocalPos[6];
+	pVertices[6].vColor = D3DCOLOR_ARGB(255, 255, 0, 0);
+
+	pVertices[7].vPosition = m_vLocalPos[7];
+	pVertices[7].vColor = D3DCOLOR_ARGB(255, 255, 0, 0);
+
+	m_pVB->Unlock();
+
+	/* vMin 찾기 */
+	_float3 vMin = { FLT_MAX, FLT_MAX, FLT_MAX };
+	_float3 vMax = { FLT_MIN, FLT_MIN, FLT_MIN };
+
+	for (_uint i = 0; i < 8; ++i)
+	{
+		/* 셋 다 작다면 */
+		if (m_vLocalPos[i].x <= vMin.x && m_vLocalPos[i].y <= vMin.y && m_vLocalPos[i].z <= vMin.z)
+		{
+			m_vMin = m_vLocalPos[i];
+			vMin = m_vLocalPos[i];
+		}
+
+		if (m_vLocalPos[i].x >= vMax.x && m_vLocalPos[i].y >= vMax.y && m_vLocalPos[i].z >= vMax.z)
+		{
+			m_vMax = m_vLocalPos[i];
+			vMax = m_vLocalPos[i];
+		}
+	}
+}
+
+void CBoxCollider::Set_Scale(const _float3& vScale)
+{
+	for (_uint i = 0; i < 8; ++i)
+	{
+		m_vLocalPos[i].x *= vScale.x;
+		m_vLocalPos[i].y *= vScale.y;
+		m_vLocalPos[i].z *= vScale.z;
+	}
+
+	/* 정점 정보, 즉 크기는 콜라이더마다 다르니까 일단 둔다. */
+	VTXCOLOR* pVertices = { nullptr };
+
+	/* 할당한 공간에 접근하여 값을 기록하낟. */
+	m_pVB->Lock(0, 0, reinterpret_cast<void**>(&pVertices), 0);
+
+	pVertices[0].vPosition = m_vLocalPos[0];
+	pVertices[0].vColor = D3DCOLOR_ARGB(255, 255, 0, 0);
+
+	pVertices[1].vPosition = m_vLocalPos[1];
+	pVertices[1].vColor = D3DCOLOR_ARGB(255, 255, 0, 0);
+
+	pVertices[2].vPosition = m_vLocalPos[2];
+	pVertices[2].vColor = D3DCOLOR_ARGB(255, 255, 0, 0);
+
+	pVertices[3].vPosition = m_vLocalPos[3];
+	pVertices[3].vColor = D3DCOLOR_ARGB(255, 255, 0, 0);
+
+	pVertices[4].vPosition = m_vLocalPos[4];
+	pVertices[4].vColor = D3DCOLOR_ARGB(255, 255, 0, 0);
+
+	pVertices[5].vPosition = m_vLocalPos[5];
+	pVertices[5].vColor = D3DCOLOR_ARGB(255, 255, 0, 0);
+
+	pVertices[6].vPosition = m_vLocalPos[6];
+	pVertices[6].vColor = D3DCOLOR_ARGB(255, 255, 0, 0);
+
+	pVertices[7].vPosition = m_vLocalPos[7];
+	pVertices[7].vColor = D3DCOLOR_ARGB(255, 255, 0, 0);
+
+	m_pVB->Unlock();
+
+	/* vMin 찾기 */
+	_float3 vMin = { FLT_MAX, FLT_MAX, FLT_MAX };
+	_float3 vMax = { FLT_MIN, FLT_MIN, FLT_MIN };
+
+	for (_uint i = 0; i < 8; ++i)
+	{
+		/* 셋 다 작다면 */
+		if (m_vLocalPos[i].x <= vMin.x && m_vLocalPos[i].y <= vMin.y && m_vLocalPos[i].z <= vMin.z)
+		{
+			m_vMin = m_vLocalPos[i];
+			vMin = m_vLocalPos[i];
+		}
+
+		if (m_vLocalPos[i].x >= vMax.x && m_vLocalPos[i].y >= vMax.y && m_vLocalPos[i].z >= vMax.z)
+		{
+			m_vMax = m_vLocalPos[i];
+			vMax = m_vLocalPos[i];
+		}
+	}
 }
 
 HRESULT CBoxCollider::Initialize_Prototype()
@@ -57,6 +181,9 @@ HRESULT CBoxCollider::Initialize_Prototype()
 	m_vAxis[0] = _float3(0.5f, 0.f, 0.f );
 	m_vAxis[1] = _float3(0.f, 0.5f, 0.f);
 	m_vAxis[2] = _float3(0.f, 0.f, 0.5f);
+
+	m_vMin = m_vLocalPos[3];
+	m_vMax = m_vLocalPos[5];
 
 	return S_OK;
 }
@@ -159,6 +286,9 @@ HRESULT CBoxCollider::Initialize(void* pArg)
 	pIndices[33] = 0; pIndices[34] = 2; pIndices[35] = 3;
 
 	m_pIB->Unlock();
+
+	m_vMin = m_vLocalPos[3];
+	m_vMax = m_vLocalPos[5];
 
 	return S_OK;
 }

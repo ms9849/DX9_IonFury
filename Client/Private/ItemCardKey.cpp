@@ -53,6 +53,7 @@ void CItemCardKey::Update(_float fTimeDelta)
 
 void CItemCardKey::Late_Update(_float fTimeDelta)
 {
+	Compute_CamDistance(m_pTransformCom->Get_State(STATE::POSITION));
 	m_pGameInstance->Add_RenderGroup(RENDER::BLEND, this);
 }
 
