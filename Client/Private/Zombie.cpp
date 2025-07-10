@@ -560,50 +560,47 @@ void CZombie::Move(_float fTimeDelta)
 
 void CZombie::TargetMove(_float fTimeDelta, _float3 vPos)		// 정해져 있는 장소로 이동 시키는 함수
 {
-	/*_float m_fTargetAngle = D3DX_PI;*/
-	//m_pTransformCom->Rotation(_float3(0.f, 1.f, 0.f), 1.5f);
-	m_pTransformCom->Turn(_float3(0.f, 1.f, 0.f), fTimeDelta);
-	m_pTransformCom->Go_Straight(fTimeDelta);
-
-	/*if (m_isArrive)
+	if (m_isArrive)
 	{
-		if (fabsf(m_fSumAngle) <= m_fTargetAngle)
+		if (m_isLeft)
 		{
-			float fDeltaAngle = 0.005f * (m_isLeft ? 1.f : -1.f);
-			m_pTransformCom->Rotation(_float3(0.f, 1.f, 0.f), fDeltaAngle);
-			m_fSumAngle += fDeltaAngle;
-			m_pTransformCom->Go_Straight(fTimeDelta);
+			m_pTransformCom->Turn(_float3(0.f, -1.f, 0.f), fTimeDelta * 0.5f);
 		}
+		else
+		{
+			m_pTransformCom->Turn(_float3(0.f, 1.f, 0.f), fTimeDelta * 0.5f);
+		}
+		
+		_float3 vLook = m_pTransformCom->Get_State(STATE::LOOK);
+
+		vLook.y = 0.f;
+		D3DXVec3Normalize(&vLook, &vLook);
+		m_pTransformCom->Set_State(STATE::LOOK, vLook);
+
+		m_fSumTime += fTimeDelta;
+		m_pTransformCom->Go_Straight(fTimeDelta);
+
+		/*if (m_fSumTime >= 5.f)
+		{
+			m_isTarget = false;
+		}*/
+
 		return;
 	}
 
 	_float3 fMonsterPos = m_pTransformCom->Get_State(STATE::POSITION);
 	_float3 vDir = vPos - fMonsterPos;
-	m_pTransformCom->Set_State(STATE::LOOK, vDir);
-	m_pTransformCom->Go_Straight(fTimeDelta);
 	
 	_float fDistance = D3DXVec3Length(&vDir);
-	wchar_t szBuffer[256];
-	swprintf_s(szBuffer, 256, L"fDistance = %.3f\n", fDistance);
-	OutputDebugString(szBuffer);
+
+	D3DXVec3Normalize(&vDir, &vDir);
+	m_pTransformCom->Set_State(STATE::LOOK, vDir);
+	m_pTransformCom->Go_Straight(fTimeDelta);
+
 	if (fDistance <= 0.5f)
 	{
-		_float3 vWorldUp = _float3(0.f, 1.f, 0.f);
-
-		_float3 vRight;
-		D3DXVec3Cross(&vRight, &vWorldUp, &vDir);
-		D3DXVec3Normalize(&vRight, &vRight);
-
-		_float3 vUp;
-		D3DXVec3Cross(&vUp, &vDir, &vRight);
-		D3DXVec3Normalize(&vUp, &vUp);
-
-		m_pTransformCom->Set_State(STATE::LOOK, vDir);
-		m_pTransformCom->Set_State(STATE::RIGHT, vRight);
-		m_pTransformCom->Set_State(STATE::UP, vUp);
-
 		m_isArrive = true;
-	}*/
+	}
 }
 
 void CZombie::Move()

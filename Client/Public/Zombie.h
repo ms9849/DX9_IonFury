@@ -56,7 +56,7 @@ private:
 	_bool m_isTarget = false;
 	_bool m_isArrive = false;
 	_bool m_isLeft = false;
-	_float m_fSumAngle = 0.f;
+	_float m_fSumTime = 0.f;
 	_float3 m_vPos = {};
 	_uint m_uPosLen = 0;
 	_uint m_uIdx = 0;
