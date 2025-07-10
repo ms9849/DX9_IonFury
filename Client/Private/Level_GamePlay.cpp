@@ -714,10 +714,6 @@ HRESULT CLevel_GamePlay::Ready_Layer_Items(const _wstring& strLayerTag)
 				ENUM_CLASS(iter.iLayerLevel), iter.strLayer, TEXT("Com_Transform"), iter.iObjectID)
 			)->Set_State(STATE::POSITION, iter.matWorld.m[3]);
 	}
-
-	//if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Item_Armor"),
-	//	ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag)))
-	//	return E_FAIL;
 	//
 	//if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Item_Healpack"),
 	//	ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag)))
@@ -807,6 +803,21 @@ HRESULT CLevel_GamePlay::Ready_Layer_Map_Objects_AABB_Ride(const _wstring& strLa
 		CBoxCollider* pCollider = dynamic_cast<CBoxCollider*>(m_pGameInstance->Get_Component(ENUM_CLASS(iter.iLayerLevel), iter.strLayer, TEXT("Com_BoxCollider"), iter.iObjectID));
 		pCollider->Set_Matrix(iter.matWorld);
 	}
+
+	/*if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Map_MachineGun_Bullet_Box"),
+		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag)))
+		return E_FAIL;*/
+
+	/*dynamic_cast<CGameObject*>(m_pGameInstance->Find_GameObject_ToLayer(
+		ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Map_Objects_AABB_Ride")))->Set_ID(100);
+
+	CBoxCollider* pCollider2 = dynamic_cast<CBoxCollider*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Map_Objects_AABB_Ride"), TEXT("Com_BoxCollider")));
+
+	pCollider2->Set_Matrix(
+		*dynamic_cast<CTransform*>(
+			m_pGameInstance->Get_GameObject_By_ID(
+				ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Map_Objects_AABB_Ride"), 100))->Get_WorldMatrixPtr()
+	);*/
 
 	return S_OK;
 }

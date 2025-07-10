@@ -154,9 +154,6 @@
     <Filter Include="03.MapObjects\Box">
       <UniqueIdentifier>{47149285-d4ad-4e5a-ba70-96b8bf247d40}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03.MapObjects\Container">
-      <UniqueIdentifier>{c0027bf5-6103-4201-8387-3ea73dc1ab32}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\Particle">
       <UniqueIdentifier>{5aceb304-8663-4303-b9ce-4b821f11eb75}</UniqueIdentifier>
     </Filter>
@@ -198,6 +195,12 @@
     </Filter>
     <Filter Include="03.MapObjects\TrashBox">
       <UniqueIdentifier>{8cbeaa4a-2cf4-4202-b75b-37fd845f37da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.MapObjects\ContainerBox">
+      <UniqueIdentifier>{c0027bf5-6103-4201-8387-3ea73dc1ab32}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.MapObjects\MachineGunBulletBox">
+      <UniqueIdentifier>{741e9160-c26d-4186-a087-5fe64d60fa9b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -355,7 +358,7 @@
       <Filter>03.MapObjects\Box</Filter>
     </ClInclude>
     <ClInclude Include="..\public\MapContainerBox.h">
-      <Filter>03.MapObjects\Container</Filter>
+      <Filter>03.MapObjects\ContainerBox</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Spider.h">
       <Filter>02.GameObjects\Monster\Melee</Filter>
@@ -419,6 +422,9 @@
     </ClInclude>
     <ClInclude Include="..\public\Spawner.h">
       <Filter>02.GameObjects\Monster\Boss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\MapMachineGunBulletBox.h">
+      <Filter>03.MapObjects\MachineGunBulletBox</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -571,7 +577,7 @@
       <Filter>03.MapObjects\Box</Filter>
     </ClCompile>
     <ClCompile Include="..\private\MapContainerBox.cpp">
-      <Filter>03.MapObjects\Container</Filter>
+      <Filter>03.MapObjects\ContainerBox</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Spider.cpp">
       <Filter>02.GameObjects\Monster\Melee</Filter>
@@ -635,6 +641,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Spawner.cpp">
       <Filter>02.GameObjects\Monster\Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\MapMachineGunBulletBox.cpp">
+      <Filter>03.MapObjects\MachineGunBulletBox</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

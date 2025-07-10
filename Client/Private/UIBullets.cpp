@@ -82,14 +82,11 @@ HRESULT CUIBullets::Render()
 
 	
 	if(m_pPlayer->Get_Player_Info().strWeapon == TEXT("Pistol"))
-		m_pTextureCom->Set_Texture(0);
+		m_pTextureCom->Set_Texture(ENUM_CLASS(BULLET::PISTOL));
 	else if (m_pPlayer->Get_Player_Info().strWeapon == TEXT("ShootGun"))
-		m_pTextureCom->Set_Texture(1);
+		m_pTextureCom->Set_Texture(ENUM_CLASS(BULLET::SHOOTGUN));
 	else if (m_pPlayer->Get_Player_Info().strWeapon == TEXT("MachineGun"))
-	{
-		m_pTransformCom->Set_Scale(_float3{ 1.f, 0.6f, 1.f });
-		m_pTextureCom->Set_Texture(2);
-	}
+		m_pTextureCom->Set_Texture(ENUM_CLASS(BULLET::MACHINEGUN));
 
 	m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
 	m_pGraphic_Device->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
