@@ -46,8 +46,6 @@ HRESULT CSpawner::Initialize(void* pArg)
 		m_pTransformCom->Set_State(STATE::POSITION, m_Desc.vPos);
 	}
 
-	m_pTerrain_Manager = CTerrain_Manager::Create();
-
 	return S_OK;
 }
 

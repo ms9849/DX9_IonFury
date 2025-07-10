@@ -44,6 +44,8 @@ CTerrain_Manager라고 가정하면
 큐브에서 터레인으로 바뀌면 점프 상태로 바뀌지 않고 바로 달라붙는 문제가 있음
 */
 
+IMPLEMENT_SINGLETON(CTerrain_Manager);
+
 CTerrain_Manager::CTerrain_Manager() : 
     m_pGameInstance{ CGameInstance::GetInstance() }
 {
@@ -101,6 +103,11 @@ void CTerrain_Manager::Add_Cube(LEVEL eLevelID)
     {
         m_CubeObjects.push_back(reinterpret_cast<CCubeObject*>(iter));
     }
+}
+
+void CTerrain_Manager::Release_Terrain_Manager()
+{
+    DestroyInstance();
 }
 
 HRESULT CTerrain_Manager::Initialize()
@@ -286,16 +293,6 @@ void CTerrain_Manager::Check_Landing()
     //        LandObj->Change_Land(&Desc);
     //    }
     //}
-}
-
-CTerrain_Manager* CTerrain_Manager::Create()
-{
-    CTerrain_Manager* pInstance = new CTerrain_Manager();
-
-    if (FAILED(pInstance->Initialize()))
-        Safe_Release(pInstance);
-
-    return pInstance;
 }
 
 void CTerrain_Manager::Free()

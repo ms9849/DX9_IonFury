@@ -14,6 +14,7 @@ NS_BEGIN(Client)
 
 class CTerrain_Manager final : public CBase
 {
+	DECLARE_SINGLETON(CTerrain_Manager);
 private:
 	CTerrain_Manager();
 	virtual ~CTerrain_Manager() = default;
@@ -24,6 +25,7 @@ public:
 	void Add_Terrian(LEVEL eLevelID);
 	//큐브 형태 오브젝트들을 담는 메서드. 추후 로직의 분리를 위해 리스트도 따로 관리한다.
 	void Add_Cube(LEVEL eLevelID);
+	void Release_Terrain_Manager();
 
 public:
 	HRESULT Initialize();
@@ -40,7 +42,6 @@ private:
 
 public:
 	//디바이스 장치 필요 없지.
-	static CTerrain_Manager* Create();
 	virtual void Free() override;
 };
 
