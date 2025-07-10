@@ -89,7 +89,7 @@ void CPlayer_RightHand::Priority_Update(_float fTimeDelta)
 	}
 	else if (strWeapon.compare(TEXT("ShootGun")) == 0)
 	{
-		m_pTransformCom->Set_Scale(_float3{ 1.5f, 1.f, 1.f });
+		m_pTransformCom->Set_Scale(_float3{ 1.75f, 1.f, 1.f });
 	}
 	else if (strWeapon.compare(TEXT("MachineGun")) == 0)
 	{
@@ -461,6 +461,18 @@ HRESULT CPlayer_RightHand::Ready_Animations()
 	iter = m_pTextureComs.find(TEXT("MachineGun_Shoot"));
 	CAnimation::FRAME_DESC MachineGunShootDesc{};
 	MachineGunShootDesc.iEnd = iter->second->Get_Texture_Length();
+
+	MachineGunShootDesc.Poses.reserve(MachineGunShootDesc.iEnd);
+
+	MachineGunShootDesc.Poses.push_back(_float3{ 0.05f, 0.05f, -0.075f });
+	MachineGunShootDesc.Poses.push_back(_float3{ -0.025f, -0.025f, 0.075f });
+	MachineGunShootDesc.Poses.push_back(_float3{ 0.025f, 0.025f, -0.075f });
+	MachineGunShootDesc.Poses.push_back(_float3{ 0.f, 0.f, 0.f });
+	MachineGunShootDesc.Poses.push_back(_float3{ -0.025f, -0.025f, 0.075f });
+	MachineGunShootDesc.Poses.push_back(_float3{ 0.025f, 0.025f, -0.075f });
+	MachineGunShootDesc.Poses.push_back(_float3{ -0.025f, -0.025f, 0.075f });
+
+
 	m_pAnimationCom->Set_Animation(TEXT("MachineGun_Shoot"), MachineGunShootDesc);
 
 	//MachineGun_Spin
