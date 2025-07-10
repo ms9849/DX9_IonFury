@@ -47,6 +47,11 @@ HRESULT CItem::Render()
 	return S_OK;
 }
 
+void CItem::Set_Pos(const _float3& vPos)
+{
+	m_pTransformCom->Set_State(STATE::POSITION, vPos);
+}
+
 HRESULT CItem::Ready_Components()
 {
 	return S_OK;

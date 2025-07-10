@@ -7,6 +7,7 @@ NS_BEGIN(Engine)
 class CTexture;
 class CTransform;
 class CVIBuffer_Rect;
+class CBoxCollider;
 NS_END
 
 NS_BEGIN(Client)
@@ -41,13 +42,14 @@ private:
     CTransform* m_pTransformCom = { nullptr };
     CTransform* m_pPlayerTransformCom = { nullptr };
     CVIBuffer_Rect* m_pVIBufferCom = { nullptr };
+    CBoxCollider* m_pBoxColliderCom = { nullptr };
 
     _float m_fTimeStack{ 0.f };
     _bool m_bOpen{ false }, m_bStop{ false };
 
 public:
-    //virtual void OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta) override;
-    //virtual const COLLISION_DESC& Get_CollisionDesc(COLLISION eColType) override;
+    virtual void OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta) override;
+    virtual const COLLISION_DESC& Get_CollisionDesc(COLLISION eColType) override;
 
 public:
     static CMapGate* Create(LPDIRECT3DDEVICE9 pGraphic_Device);

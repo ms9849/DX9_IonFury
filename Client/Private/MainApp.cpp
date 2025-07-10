@@ -584,7 +584,7 @@ HRESULT CMainApp::Ready_Prototypes()
 #pragma region 총알 등 기타 텍스쳐
 	/* For.Prototype_Component_Texture_Bullet */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Bullet"),
-		CTexture::Create(m_pGraphic_Device, TEXTURE::CUBE, TEXT("../Bin/Resources/Textures/Bullet/Bullet%d.dds"), 1))))
+		CTexture::Create(m_pGraphic_Device, TEXTURE::CUBE, TEXT("../Bin/Resources/Textures/Bullet/Bullet%d.dds"), 3))))
 		return E_FAIL;
 
 	/*For Prototype_Component_Texture_Grenade_Bullet*/
