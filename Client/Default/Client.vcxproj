@@ -148,6 +148,8 @@
     <ClInclude Include="..\Public\Blood.h" />
     <ClInclude Include="..\Public\Boss.h" />
     <ClInclude Include="..\Public\BossGrenade.h" />
+    <ClInclude Include="..\Public\BossLowerBody.h" />
+    <ClInclude Include="..\Public\BossUpperBody.h" />
     <ClInclude Include="..\Public\CFile_Manager.h" />
     <ClInclude Include="..\public\Lever.h" />
     <ClInclude Include="..\public\MapDeco.h" />
@@ -170,6 +172,7 @@
     <ClInclude Include="..\public\ItemCardKey.h" />
     <ClInclude Include="..\public\MapGrinder.h" />
     <ClInclude Include="..\public\MapSlope.h" />
+    <ClInclude Include="..\public\Spawner.h" />
     <ClInclude Include="..\Public\Spider.h" />
     <ClInclude Include="..\Public\Particle_Manager.h" />
     <ClInclude Include="..\Public\Snow.h" />
@@ -217,6 +220,8 @@
     <ClCompile Include="..\Private\Boss.cpp" />
     <ClCompile Include="..\Private\BossGrenade.cpp" />
     <ClCompile Include="..\Private\CFile_Manager.cpp" />
+    <ClCompile Include="..\Private\BossLowerBody.cpp" />
+    <ClCompile Include="..\Private\BossUpperBody.cpp" />
     <ClCompile Include="..\private\Lever.cpp" />
     <ClCompile Include="..\private\MapDeco.cpp" />
     <ClCompile Include="..\private\MapDesk.cpp" />
@@ -235,6 +240,7 @@
     <ClCompile Include="..\Private\Effect_Manager.cpp" />
     <ClCompile Include="..\private\MapGrinder.cpp" />
     <ClCompile Include="..\private\MapSlope.cpp" />
+    <ClCompile Include="..\private\Spawner.cpp" />
     <ClCompile Include="..\Private\Spider.cpp" />
     <ClCompile Include="..\Private\Particle_Manager.cpp" />
     <ClCompile Include="..\Private\Snow.cpp" />

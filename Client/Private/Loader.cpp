@@ -21,11 +21,14 @@
 #include "ItemPistolBullet.h"
 #include "ItemShootGunBullet.h"
 #include "ItemCardKey.h"
+#include "Spawner.h"
 #include "Soldier.h"
 #include "EliteSoldier.h"
 #include "Zombie.h"
 #include "Spider.h"
 #include "Boss.h"
+#include "BossUpperBody.h"
+#include "BossLowerBody.h"
 #include "MeleeAttack.h"
 #include "DoorLock.h"
 #include "Lever.h"
@@ -156,7 +159,17 @@ HRESULT CLoader::Loading_For_GamePlay()
 
 	/* For.Prototype_Component_Texture_UI_Aim */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_UI_Aim"),
-		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/UI/Aim/Aim_0.png"), 1))))
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/UI/Aim/Aim_%d.png"), 1))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_UI_Armor */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_UI_Armor"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/UI/Armor/Armor_%d.png"), 1))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_UI_Bullets */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_UI_Bullets"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/UI/Bullets/Bullets_%d.png"), 3))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_UI_CardKey */
@@ -393,6 +406,11 @@ HRESULT CLoader::Loading_For_GamePlay()
 #pragma endregion	
 
 #pragma region ¸ó½ºÅÍ
+	/* For.Prototype_GameObject_Monster_Spawner */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Spawner"),
+		CSpawner::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
 	/* For.Prototype_GameObject_Monster_Soldier */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Monster_Soldier"),
 		CSoldier::Create(m_pGraphic_Device))))
@@ -415,6 +433,14 @@ HRESULT CLoader::Loading_For_GamePlay()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Monster_Boss"),
 		CBoss::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Monster_Boss_Upper"),
+		CBossUpperBody::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Monster_Boss_Lower"),
+		CBossLowerBody::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
 #pragma endregion	

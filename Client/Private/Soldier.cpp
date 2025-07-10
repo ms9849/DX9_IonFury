@@ -24,6 +24,11 @@ HRESULT CSoldier::Initialize(void* pArg)
 {
 	m_pPlayerTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player"), TEXT("Com_Transform")));
 
+	if (pArg != nullptr)				// 스포너의 위치를 받아온다
+	{
+		m_vPos = static_cast<_float3*>(pArg);
+	}
+
 	if (m_pPlayerTransform == nullptr)
 		return E_FAIL;
 
@@ -36,10 +41,20 @@ HRESULT CSoldier::Initialize(void* pArg)
 	if (FAILED(Ready_Animations()))
 		return E_FAIL;
 
-	m_pTransformCom->Set_State(STATE::POSITION, _float3(
-		m_pGameInstance->Random(0.f, 20.f),
-		0.f,
-		m_pGameInstance->Random(0.f, 20.f)));
+	if (m_vPos != nullptr)
+	{
+		m_pTransformCom->Set_State(STATE::POSITION, _float3(
+			m_vPos->x + m_pGameInstance->Random(0.f, 2.f),
+			0.f,
+			m_vPos->z + m_pGameInstance->Random(0.f, 2.f)));
+	}
+	else
+	{
+		m_pTransformCom->Set_State(STATE::POSITION, _float3(
+			m_pGameInstance->Random(0.f, 2.f),
+			0.f,
+			m_pGameInstance->Random(0.f, 2.f)));
+	}
 
 	m_fAttackRange = 4.f;
 	m_fDamage = 30.f;

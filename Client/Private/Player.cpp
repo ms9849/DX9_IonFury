@@ -122,6 +122,15 @@ void CPlayer::Update(_float fTimeDelta)
 				m_bWeaponChange = true;
 			}
 		}
+		if (m_pGameInstance->Key_Down('3'))
+		{
+			m_strNextWeapon = TEXT("MachineGun");
+			if (m_tInfo.strWeapon != m_strNextWeapon)
+			{
+				m_tInfo.strAction = TEXT("Down");
+				m_bWeaponChange = true;
+			}
+		}
 		if (m_pGameInstance->Key_Down('E'))
 		{
 			if (m_bCanUseCardKey && m_bCanOpenDoor)
@@ -186,56 +195,59 @@ void CPlayer::Update(_float fTimeDelta)
 		}
 	}
 
+	_float3 vLook = m_pTransformCom->Get_State(STATE::LOOK);
+	vLook.y = 0.f;
+
+	_float3 vRight = m_pTransformCom->Get_State(STATE::RIGHT);
+	vRight.y = 0.f;
+
 	// 오른손 애니메이션 끝나면 idle로
 	if (m_pRightHandAnimationCom->Check_Animation_Finish())
 	{
 		if (!m_bWeaponChange && !m_bUseCardKey)
 		{
 			/* 장전이 끝났을 때 철컥 소리 나게 */
-			if (m_tInfo.strWeapon.compare(TEXT("Pistol")) == 0 && m_tInfo.strAction.compare(TEXT("Reload")) == 0)
+			if (m_tInfo.strWeapon == TEXT("Pistol") && m_tInfo.strWeapon == TEXT("Reload"))
 			{
 				m_pGameInstance->PlaySoundOnce(TEXT("Pistol_Reload_3.ogg"), CHANNELID::SOUND_EFFECT, 0.2f);
 			}
 
-		
 			m_tInfo.strAction = TEXT("Idle");
 		}
 	}
-	else
+	else // 머신건이 아닌 무기 일 때
 	{
-		_float3 vLook = m_pTransformCom->Get_State(STATE::LOOK);
-		vLook.y = 0.f;
-
-		_float3 vRight = m_pTransformCom->Get_State(STATE::RIGHT);
-		vRight.y = 0.f;
-
 		// 이동
 		if (m_pGameInstance->Key_Pressing('W'))
 		{
 			m_pTransformCom->Go_Direction(vLook, fTimeDelta);
-			if (m_tInfo.strAction.compare(TEXT("Idle")) == 0)
+			if (m_tInfo.strAction == TEXT("Idle"))
 				m_tInfo.strAction = TEXT("Walk");
 		}
 		if (m_pGameInstance->Key_Pressing('S'))
 		{
 			m_pTransformCom->Go_Direction(-1.f * vLook, fTimeDelta);
-			if (m_tInfo.strAction.compare(TEXT("Idle")) == 0)
+			if (m_tInfo.strAction == TEXT("Idle"))
 				m_tInfo.strAction = TEXT("Walk");
 		}
 		if (m_pGameInstance->Key_Pressing('A'))
 		{
 			m_pTransformCom->Go_Direction(-1.f * vRight, fTimeDelta);
-			if (m_tInfo.strAction.compare(TEXT("Idle")) == 0)
+			if (m_tInfo.strAction == TEXT("Idle"))
 				m_tInfo.strAction = TEXT("Walk");
 		}
 		if (m_pGameInstance->Key_Pressing('D'))
 		{
 			m_pTransformCom->Go_Direction(vRight, fTimeDelta);
-			if (m_tInfo.strAction.compare(TEXT("Idle")) == 0)
+			if (m_tInfo.strAction == TEXT("Idle"))
 				m_tInfo.strAction = TEXT("Walk");
 		}
 		// 장전
-		if (m_pGameInstance->Key_Down('R') && !m_bWeaponChange && !m_bUseCardKey && m_tInfo.strAction.compare(TEXT("Reload")) != 0)
+		if (m_pGameInstance->Key_Down('R')
+			&& !m_bWeaponChange
+			&& !m_bUseCardKey
+			&& m_tInfo.strAction != TEXT("Reload")
+			&& m_tInfo.strWeapon != TEXT("MachineGun"))
 		{
 			m_tInfo.strAction = TEXT("Reload");
 			iter->second.iShootBullets = iter->second.iCanShootBullets;
@@ -247,56 +259,53 @@ void CPlayer::Update(_float fTimeDelta)
 				m_pGameInstance->PlaySoundOnce(TEXT("Pistol_Reload_2.ogg"), CHANNELID::SOUND_EFFECT, 0.5f);
 			}
 		}
+
 		// 총알 발사
-		if (m_tInfo.strAction.compare(TEXT("Reload")) != 0)
+		if (m_tInfo.strAction != TEXT("Reload"))
 		{
-			if (m_pGameInstance->Key_Down(VK_LBUTTON)
-				&& iter->second.iShootBullets > 0
-				&& iter->second.iCurrentBullets > 0)
+			// 머신건
+			if (m_tInfo.strWeapon == TEXT("MachineGun"))
 			{
-				m_pRightHandAnimationCom->Clear_Animation();
-				iter->second.iCurrentBullets -= 1;
-				m_tInfo.iBullets = iter->second.iCurrentBullets;
-				iter->second.iShootBullets -= 1;
-				m_tInfo.iShootBullets = iter->second.iShootBullets;
-				m_tInfo.strAction = TEXT("Shoot");
-
-				if (m_tInfo.strWeapon.compare(TEXT("Pistol")) == 0)
+				if (m_pGameInstance->Key_Pressing(VK_LBUTTON)
+					&& iter->second.iShootBullets > 0
+					&& iter->second.iCurrentBullets > 0)
 				{
-					m_pGameInstance->PlaySoundOnce(TEXT("Pistol_Shoot.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
-					CEffect_Manager::GetInstance()->Create_Effect(TEXT("Effect_Pistol_Fire"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Effect"), {0.f, 0.f, 0.f});
-					
-					_float3 vOffset = _float3{ 0.f, 0.f, 0.f };
-					_float3 vDir = Calc_BulletDir(&vOffset);
-					_float3 vPos = m_pTransformCom->Get_State(STATE::POSITION);
-
-					D3DXVec3Normalize(&vDir, &vDir);
-
-					CBullet::BULLET_DESC Desc;
-					Desc.vDir = vDir;
-					Desc.vPos = vPos + vOffset;
-					Desc.vBulletScale = { 0.005f, 0.005f, 0.2f };
-					Desc.isPlayerBullet = true;
-					Desc.fDuration = 5.f;
-
-					CBullet_Manager::GetInstance()->Create_Bullet(TEXT("Bullet"), Desc, ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_PlayerBullet"));
-				
+					//m_pRightHandAnimationCom->Clear_Animation();
+					iter->second.iCurrentBullets -= 1;
+					m_tInfo.iBullets = iter->second.iCurrentBullets;
+					iter->second.iShootBullets -= 1;
+					m_tInfo.iShootBullets = iter->second.iShootBullets;
+					m_tInfo.strAction = TEXT("Shoot");
 				}
-				else if (m_tInfo.strWeapon.compare(TEXT("ShootGun")) == 0)
+				else if (m_pGameInstance->Key_Up(VK_LBUTTON))
 				{
-					m_pGameInstance->PlaySoundOnce(TEXT("ShotGun_Fire.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
+					m_pRightHandAnimationCom->Clear_Animation();
+					m_tInfo.strAction = TEXT("Spin");
+				}
+			}
+			else
+			{
+				if (m_pGameInstance->Key_Down(VK_LBUTTON)
+					&& iter->second.iShootBullets > 0
+					&& iter->second.iCurrentBullets > 0)
+				{
+					// 샷건 딜레이 줘야함
 
-					for (_uint i = 0; i < 7; ++i)
+					m_pRightHandAnimationCom->Clear_Animation();
+					iter->second.iCurrentBullets -= 1;
+					m_tInfo.iBullets = iter->second.iCurrentBullets;
+					iter->second.iShootBullets -= 1;
+					m_tInfo.iShootBullets = iter->second.iShootBullets;
+					m_tInfo.strAction = TEXT("Shoot");
+
+					if (m_tInfo.strWeapon == TEXT("Pistol"))
 					{
-						_float3 vOffset = _float3{ 0.f, 0.f, 0.f };
-						vOffset += (m_pTransformCom->Get_State(STATE::RIGHT)) / 15.f;
-						vOffset += (m_pTransformCom->Get_State(STATE::LOOK)) / 5.f;
-						vOffset.y -= 0.05f;
 
-						_float3 vDir = m_pTransformCom->Get_State(STATE::LOOK);
-						vDir.x += m_pGameInstance->Random(-0.05f, 0.05f);
-						vDir.y += m_pGameInstance->Random(-0.05f, 0.05f);
-						vDir.z += m_pGameInstance->Random(-0.05f, 0.05f);
+						m_pGameInstance->PlaySoundOnce(TEXT("Pistol_Shoot.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
+						CEffect_Manager::GetInstance()->Create_Effect(TEXT("Effect_Pistol_Fire"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Effect"), { 0.f, 0.f, 0.f });
+
+						_float3 vOffset = _float3{ 0.f, 0.f, 0.f };
+						_float3 vDir = Calc_BulletDir(&vOffset);
 						_float3 vPos = m_pTransformCom->Get_State(STATE::POSITION);
 
 						D3DXVec3Normalize(&vDir, &vDir);
@@ -309,12 +318,42 @@ void CPlayer::Update(_float fTimeDelta)
 						Desc.fDuration = 5.f;
 
 						CBullet_Manager::GetInstance()->Create_Bullet(TEXT("Bullet"), Desc, ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_PlayerBullet"));
+
+					}
+					else if (m_tInfo.strWeapon == TEXT("ShootGun"))
+					{
+						m_pGameInstance->PlaySoundOnce(TEXT("ShotGun_Fire.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
+
+						for (_uint i = 0; i < 7; ++i)
+						{
+							_float3 vOffset = _float3{ 0.f, 0.f, 0.f };
+							vOffset += (m_pTransformCom->Get_State(STATE::RIGHT)) / 15.f;
+							vOffset += (m_pTransformCom->Get_State(STATE::LOOK)) / 5.f;
+							vOffset.y -= 0.05f;
+
+							_float3 vDir = m_pTransformCom->Get_State(STATE::LOOK);
+							vDir.x += m_pGameInstance->Random(-0.05f, 0.05f);
+							vDir.y += m_pGameInstance->Random(-0.05f, 0.05f);
+							vDir.z += m_pGameInstance->Random(-0.05f, 0.05f);
+							_float3 vPos = m_pTransformCom->Get_State(STATE::POSITION);
+
+							D3DXVec3Normalize(&vDir, &vDir);
+
+							CBullet::BULLET_DESC Desc;
+							Desc.vDir = vDir;
+							Desc.vPos = vPos + vOffset;
+							Desc.vBulletScale = { 0.005f, 0.005f, 0.2f };
+							Desc.isPlayerBullet = true;
+							Desc.fDuration = 5.f;
+
+							CBullet_Manager::GetInstance()->Create_Bullet(TEXT("Bullet"), Desc, ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_PlayerBullet"));
+						}
 					}
 				}
-			
-				//m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Bullet"),
-					//ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_PlayerBullet"), &Desc);
 			}
+			//m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Bullet"),
+				//ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_PlayerBullet"), &Desc);
+			
 		}
 	}
 
@@ -432,6 +471,15 @@ HRESULT CPlayer::Ready_Weapons()
 	ShootGunDesc.iShootBullets = ShootGunDesc.iCanShootBullets;
 
 	m_Weapons.emplace(TEXT("ShootGun"), ShootGunDesc);
+
+	WEAPON_INFO MachineGunDesc{};
+
+	MachineGunDesc.iBulletsMax = 999;
+	MachineGunDesc.iCurrentBullets = MachineGunDesc.iBulletsMax;
+	MachineGunDesc.iCanShootBullets = MachineGunDesc.iBulletsMax;
+	MachineGunDesc.iShootBullets = MachineGunDesc.iCanShootBullets;
+
+	m_Weapons.emplace(TEXT("MachineGun"), MachineGunDesc);
 
 	return S_OK;
 }

@@ -25,7 +25,7 @@ HRESULT CUIHp::Initialize(void* pArg)
 	UIOBJECT_DESC* pTemp = static_cast<UIOBJECT_DESC*>(pArg);
 
 	// 플레이어 얼굴 이미지 위치 및 크기
-	m_tagDesc.fSizeX = pTemp->fSizeX / (pTemp->iTextLength + 1);
+	m_tagDesc.fSizeX = pTemp->fSizeX / (pTemp->iTextLength);
 	m_tagDesc.fSizeY = pTemp->fSizeY;
 	m_tagDesc.fX = pTemp->fX + (m_tagDesc.fSizeX * 0.5f);
 	m_tagDesc.fY = pTemp->fY;
@@ -43,9 +43,9 @@ HRESULT CUIHp::Initialize(void* pArg)
 	// 전체 체력 텍스트 크기 및 위치
 	UIOBJECT_DESC Desc{};
 
-	Desc.fSizeX = m_tagDesc.fSizeX;
-	Desc.fSizeY = m_tagDesc.fSizeY;
-	Desc.fX = m_tagDesc.fX;
+	Desc.fSizeX = 40.f;
+	Desc.fSizeY = 40.f;
+	Desc.fX = m_tagDesc.fX + 20.f;
 	Desc.fY = m_tagDesc.fY - (Desc.fSizeY * 0.5f);
 	Desc.iTextLength = m_tagDesc.iTextLength;
 	Desc.iLayerLevelIndex = m_tagDesc.iLayerLevelIndex;
