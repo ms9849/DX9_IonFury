@@ -11,6 +11,8 @@ public:
 	typedef struct tagZombieDesc {
 		_float3 vPos;
 		_bool isAwake = false;
+		_bool isTarget = false;
+		vector<_float3> TargetPos;
 	}ZOMBIE_DESC;
 
 private:
@@ -44,13 +46,21 @@ public:
 
 	virtual void Attack() override;
 	void Move(_float fTimeDelta);
+	void TargetMove(_float fTimeDelta, _float3 vPos);
 	virtual void Move() override;
 
 private:
 	_bool m_bAnimationLock = false;
 	_bool m_bFrameBlock = false;
 	_bool m_isAwake = false;
+	_bool m_isTarget = false;
+	_bool m_isArrive = false;
+	_bool m_isLeft = false;
+	_float m_fSumAngle = 0.f;
 	_float3 m_vPos = {};
+	_uint m_uPosLen = 0;
+	_uint m_uIdx = 0;
+	vector<_float3> m_vTargetPos;
 	ZOMBIE_DESC* m_Desc = {};
 
 public:

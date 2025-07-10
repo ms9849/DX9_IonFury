@@ -98,11 +98,13 @@ void CSpawner::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDe
 		CGameObject* pClone = nullptr;
 		if (m_Desc.idx != -1)
 		{
-			if (m_Desc.idx == 1)
+			if (m_Desc.idx == 0)
 			{
 				CZombie::ZOMBIE_DESC desc = {};
 				desc.vPos = m_pTransformCom->Get_State(STATE::POSITION);
 				desc.isAwake = true;
+				desc.isTarget = true;
+				desc.TargetPos.push_back({ 30.5f, 1.f, 28.5f });
 				pClone = static_cast<CGameObject*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::GAMEPLAY),
 					m_strFrameKeys[m_Desc.idx], &desc));
 			}
