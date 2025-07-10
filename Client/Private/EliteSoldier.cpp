@@ -3,6 +3,7 @@
 #include "Bullet.h"
 #include "BehaviorNode.h"
 #include "Particle_Manager.h"
+#include "Bullet_Manager.h"
 
 CEliteSoldier::CEliteSoldier(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CMonster{ pGraphic_Device }
@@ -536,13 +537,14 @@ void CEliteSoldier::Attack(EliteSoldierState eState)
 		CBullet::BULLET_DESC Desc;
 		Desc.vDir = vDir;
 		Desc.vPos = vPos;
-		Desc.vBulletScale = { 0.2f, 0.2f, 0.01f };
+		Desc.vBulletScale = { 0.005f, 0.005f, 0.2f };
+		//Desc.vBulletScale = { 0.2f, 0.2f, 0.01f };
 		Desc.fBulletSpeed = 8.f;
 		Desc.fDuration = 5.f;
 		Desc.isPlayerBullet = false;
 
-
-		m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Bullet"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Monster_Bullet"), &Desc);
+		CBullet_Manager::GetInstance()->Create_Bullet(TEXT("Bullet"), Desc, ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Monster_Bullet"));
+		//m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Bullet"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Monster_Bullet"), &Desc);
 	}
 	else if (eState == EliteSoldierState::MASS)
 	{
@@ -563,11 +565,13 @@ void CEliteSoldier::Attack(EliteSoldierState eState)
 			CBullet::BULLET_DESC Desc;
 			Desc.vDir = vDir + m_vShootPosOffset[i];
 			Desc.vPos = vPos;
-			Desc.vBulletScale = { 0.2f, 0.2f, 0.01f };
+			Desc.vBulletScale = { 0.005f, 0.005f, 0.2f };
+			//Desc.vBulletScale = { 0.2f, 0.2f, 0.01f };
 			Desc.fBulletSpeed = 5.f;
 			Desc.fDuration = 5.f;
 			Desc.isPlayerBullet = false;
-			m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Bullet"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Monster_Bullet"), &Desc);
+			CBullet_Manager::GetInstance()->Create_Bullet(TEXT("Bullet"), Desc, ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Monster_Bullet"));
+			//m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Bullet"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Monster_Bullet"), &Desc);
 		}
 	}
 }
