@@ -140,7 +140,6 @@ void CPlayer::Update(_float fTimeDelta)
 				m_tInfo.strAction = TEXT("Down");
 				m_bUseCardKey = true;
 				m_pDoorLock->Set_Can_Open(m_bUseCardKey);
-				Safe_AddRef(m_pDoorLock);
 				m_bCanUseCardKey = false;
 				Safe_Release(m_pDoorLock);
 			}
@@ -148,7 +147,6 @@ void CPlayer::Update(_float fTimeDelta)
 			if (m_bCanActiveElevator)
 			{
 				m_pLever->Set_Active(true);
-				Safe_AddRef(m_pLever);
 				m_bActiveElevator = true;
 				m_bCanActiveElevator = false;
 				Safe_Release(m_pLever);
@@ -202,22 +200,19 @@ void CPlayer::Update(_float fTimeDelta)
 	vRight.y = 0.f;
 
 	// 오른손 애니메이션 끝나면 idle로
-	if (m_pRightHandAnimationCom->Check_Animation_Finish())
+	if (!m_bWeaponChange && !m_bUseCardKey && m_pRightHandAnimationCom->Check_Animation_Finish())
 	{
-		if (!m_bWeaponChange && !m_bUseCardKey)
+		/* 장전이 끝났을 때 철컥 소리 나게 */
+		if (m_tInfo.strWeapon == TEXT("Pistol") && m_tInfo.strWeapon == TEXT("Reload"))
 		{
-			/* 장전이 끝났을 때 철컥 소리 나게 */
-			if (m_tInfo.strWeapon == TEXT("Pistol") && m_tInfo.strWeapon == TEXT("Reload"))
-			{
-				m_pGameInstance->PlaySoundOnce(TEXT("Pistol_Reload_3.ogg"), CHANNELID::SOUND_EFFECT, 0.2f);
-			}
-
-			// 이거 다시 봐야함
-			if (m_pRightHandAnimationCom->Check_Animation_Finish(TEXT("MachineGun_Shoot")))
-				m_tInfo.strAction = TEXT("Shoot");
-			else
-				m_tInfo.strAction = TEXT("Idle");
+			m_pGameInstance->PlaySoundOnce(TEXT("Pistol_Reload_3.ogg"), CHANNELID::SOUND_EFFECT, 0.2f);
 		}
+
+		// 이거 다시 봐야함
+		if (m_tInfo.strWeapon == TEXT("MachineGun") && m_tInfo.strAction == TEXT("Shoot"))
+			m_tInfo.strAction = TEXT("Shoot");
+		else
+			m_tInfo.strAction = TEXT("Idle");
 	}
 	else
 	{
@@ -280,7 +275,8 @@ void CPlayer::Update(_float fTimeDelta)
 					m_tInfo.iShootBullets = iter->second.iShootBullets;
 					m_tInfo.strAction = TEXT("Shoot");
 				}
-				else if (m_pGameInstance->Key_Up(VK_LBUTTON))
+
+				if (m_pGameInstance->Key_Up(VK_LBUTTON))
 				{
 					m_pRightHandAnimationCom->Clear_Animation();
 					m_tInfo.strAction = TEXT("Spin");
@@ -314,7 +310,6 @@ void CPlayer::Update(_float fTimeDelta)
 
 						CBullet_Manager::GetInstance()->Create_Bullet(TEXT("Bullet"), Desc, ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_PlayerBullet"));
 
-						// 샷건 딜레이 줘야함
 						iter->second.iCurrentBullets -= 1;
 						m_tInfo.iBullets = iter->second.iCurrentBullets;
 						iter->second.iShootBullets -= 1;
@@ -647,11 +642,13 @@ void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 			{
 				m_pDoorLock = dynamic_cast<CDoorLock*>(pDst);
 				m_pDoorLock->Set_TargetID(0);
+				Safe_AddRef(m_pDoorLock);
 			}
 			if (pDst->Get_Desc().iObjectID == 1)
 			{
 				m_pDoorLock = dynamic_cast<CDoorLock*>(pDst);
 				m_pDoorLock->Set_TargetID(1);
+				Safe_AddRef(m_pDoorLock);
 			}
 
 			m_bCanOpenDoor = true;
