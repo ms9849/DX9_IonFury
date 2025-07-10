@@ -45,6 +45,7 @@
 #include "MapFan.h"
 #include "MapSlope.h"
 #include "MapElevator.h"
+#include "MapMachineGunBulletBox.h"
 #include "Snow.h"
 #include "Blood.h"
 #include "TrashBox.h"
@@ -328,6 +329,11 @@ HRESULT CLoader::Loading_For_GamePlay()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Map_Elevator"),
 		CTexture::Create(m_pGraphic_Device, TEXTURE::CUBE, TEXT("../Bin/Resources/Textures/MapObject/Elevator/Elevator_%d.dds"), 1))))
 		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Map_MachineGun_Bullet_Box */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Map_MachineGun_Bullet_Box"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::CUBE, TEXT("../Bin/Resources/Textures/MapObject/MachineGunBulletBox/MachineGun_Bullets_Box.dds"), 1))))
+		return E_FAIL;
 #pragma endregion
 
 	m_strMessage = TEXT("모델를(을) 로딩 중 입니다.");
@@ -605,6 +611,11 @@ HRESULT CLoader::Loading_For_GamePlay()
 	/* For.Prototype_GameObject_TrashBox */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_TrashBox"),
 		CTrashBox::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Map_MachineGun_Bullet_Box */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Map_MachineGun_Bullet_Box"),
+		CMapMachineGunBulletBox::Create(m_pGraphic_Device))))
 		return E_FAIL;
 #pragma endregion
 

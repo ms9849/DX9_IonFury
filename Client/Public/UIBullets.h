@@ -12,6 +12,9 @@ NS_BEGIN(Client)
 class CUIBullets final : public CUIObject
 {
 private:
+	enum class BULLET { PISTOL, SHOOTGUN, MACHINEGUN };
+
+private:
 	CUIBullets(LPDIRECT3DDEVICE9 pGraphic_Device);
 	CUIBullets(const CUIBullets& Prototype);
 	virtual ~CUIBullets() = default;
