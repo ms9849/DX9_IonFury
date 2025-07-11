@@ -12,7 +12,7 @@
 #include "Terrain.h"
 #include "ParticleSystem.h"
 #include "Player.h"
-#include "TrashBox.h"
+#include "MapTrashBox.h"
 #include "Spawner.h"
 
 #include "Particle_Manager.h"
@@ -531,7 +531,7 @@ HRESULT CLevel_BossFight::Ready_Layer_UI(const _wstring& strLayerTag)
 HRESULT CLevel_BossFight::Ready_Layer_Effect(const _wstring& strLayerTag)
 {
 	m_pEffect_Manager = CEffect_Manager::GetInstance();
-	m_pEffect_Manager->Initialize();
+	m_pEffect_Manager->Initialize(LEVEL::BOSSFIGHT);
 	Safe_AddRef(m_pEffect_Manager);
 
 	return S_OK;
@@ -540,7 +540,7 @@ HRESULT CLevel_BossFight::Ready_Layer_Effect(const _wstring& strLayerTag)
 HRESULT CLevel_BossFight::Ready_Layer_Particle(const _wstring& strLayerTag)
 {
 	m_pParticle_Manager = CParticle_Manager::GetInstance();
-	m_pParticle_Manager->Initialize();
+	m_pParticle_Manager->Initialize(LEVEL::BOSSFIGHT);
 	Safe_AddRef(m_pParticle_Manager);
 
 	return S_OK;

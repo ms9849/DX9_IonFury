@@ -11,33 +11,33 @@ CEffect_Manager::CEffect_Manager() :
 	Safe_AddRef(m_pGameInstance);
 }
 
-HRESULT CEffect_Manager::Initialize()
+HRESULT CEffect_Manager::Initialize(LEVEL eLevelID)
 {
 	/* 
 	이펙트들 미리 풀링. 
 	
 	수업 코드의 GameInstance에 존재하던 Clone Prototype을 통해 이펙트를 받아온다. 
 	*/
-	if(FAILED(Ready_Pistol_Fire()))
+	if(FAILED(Ready_Pistol_Fire(eLevelID)))
 		return E_FAIL;
 
-	if (FAILED(Ready_Boss_Die()))
+	if (FAILED(Ready_Boss_Die(eLevelID)))
 		return E_FAIL;
 
-	if (FAILED(Ready_Grenade_Explosion()))
+	if (FAILED(Ready_Grenade_Explosion(eLevelID)))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-HRESULT CEffect_Manager::Ready_Pistol_Fire()
+HRESULT CEffect_Manager::Ready_Pistol_Fire(LEVEL eLevelID)
 {
 	list<class CEffect*> Effects = {};
 
 	for (int i = 0; i < 20; ++i)
 	{
 		Effects.push_back(
-			static_cast<CEffect*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::GAMEPLAY),
+			static_cast<CEffect*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(eLevelID),
 				TEXT("Prototype_GameObject_Effect_Pistol_Fire"),
 				nullptr))
 		);
@@ -48,7 +48,7 @@ HRESULT CEffect_Manager::Ready_Pistol_Fire()
 	return S_OK;
 }
 
-HRESULT CEffect_Manager::Ready_Boss_Die()
+HRESULT CEffect_Manager::Ready_Boss_Die(LEVEL eLevelID)
 {
 	list<class CEffect*> Effects = {};
 
@@ -61,7 +61,7 @@ HRESULT CEffect_Manager::Ready_Boss_Die()
 	for (int i = 0; i < 5; ++i)
 	{
 		Effects.push_back(
-			static_cast<CEffect*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::GAMEPLAY),
+			static_cast<CEffect*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(eLevelID),
 				TEXT("Prototype_GameObject_Effect"),&Desc))
 		);
 	}
@@ -71,7 +71,7 @@ HRESULT CEffect_Manager::Ready_Boss_Die()
 	return S_OK;
 }
 
-HRESULT CEffect_Manager::Ready_Grenade_Explosion()
+HRESULT CEffect_Manager::Ready_Grenade_Explosion(LEVEL eLevelID)
 {
 	list<class CEffect*> Effects = {};
 
@@ -84,7 +84,7 @@ HRESULT CEffect_Manager::Ready_Grenade_Explosion()
 	for (int i = 0; i < 10; ++i)
 	{
 		Effects.push_back(
-			static_cast<CEffect*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::GAMEPLAY),
+			static_cast<CEffect*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(eLevelID),
 				TEXT("Prototype_GameObject_Effect"), &Desc))
 		);
 	}

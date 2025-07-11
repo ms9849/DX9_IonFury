@@ -236,6 +236,7 @@ void CPlayer::Update(_float fTimeDelta)
 		else
 		{
 			// ÀÌµ¿
+
 			if (m_pGameInstance->Key_Pressing('W'))
 			{
 				m_pTransformCom->Go_Direction(vLook, fTimeDelta);

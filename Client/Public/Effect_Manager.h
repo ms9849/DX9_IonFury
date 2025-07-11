@@ -17,10 +17,10 @@ private:
 	virtual ~CEffect_Manager() = default;
 
 public:
-	HRESULT Initialize();
-	HRESULT Ready_Pistol_Fire();
-	HRESULT Ready_Boss_Die();
-	HRESULT Ready_Grenade_Explosion();
+	HRESULT Initialize(LEVEL eLevelID);
+	HRESULT Ready_Pistol_Fire(LEVEL eLevelID);
+	HRESULT Ready_Boss_Die(LEVEL eLevelID);
+	HRESULT Ready_Grenade_Explosion(LEVEL eLevelID);
 
 	void Create_Effect(const _wstring& strEffectTag, _uint iLayerLevelIndex, const _wstring& strLayerTag, const _float3& vPos);
 
