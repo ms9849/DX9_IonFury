@@ -58,7 +58,7 @@ HRESULT CUIInteraction::Initialize(void* pArg)
 	m_pText = dynamic_cast<CUIText*>(m_pGameInstance->Find_GameObject_ToLayer(Desc.iLayerLevelIndex, Desc.strLayerTag));
 	Safe_AddRef(m_pText);
 
-	m_pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player")));
+	m_pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Find_GameObject_ToLayer(m_tagDesc.iLayerLevelIndex, TEXT("Layer_Player")));
 	Safe_AddRef(m_pPlayer);
 
 	return S_OK;

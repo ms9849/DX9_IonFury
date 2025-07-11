@@ -41,7 +41,7 @@ namespace Client
 		123, 124, 125, 126
 	};
 
-	enum class LEVEL { STATIC, LOADING, LOGO, GAMEPLAY, END };
+	enum class LEVEL { STATIC, LOADING, LOGO, GAMEPLAY, BOSSFIGHT, END };
 }
 
 using namespace Client;

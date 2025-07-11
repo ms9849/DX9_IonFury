@@ -21,6 +21,8 @@ HRESULT CDoorLock::Initialize_Prototype()
 
 HRESULT CDoorLock::Initialize(void* pArg)
 {
+	m_pObjectDesc = *static_cast<CGameObject::GAMEOBJECT_DESC*>(pArg);
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
@@ -52,7 +54,7 @@ void CDoorLock::Late_Update(_float fTimeDelta)
 		m_bOpen = true;
 		dynamic_cast<CMapGate*>(
 			m_pGameInstance->Get_GameObject_By_ID(
-				ENUM_CLASS(LEVEL::GAMEPLAY),
+				m_pObjectDesc.iLayerLevel,
 				TEXT("Layer_Map_Objects_Gate"),
 				m_iTargetID))->Set_Open(true);
 		m_strFrameKey = TEXT("DoorLock_Open");
@@ -113,7 +115,7 @@ HRESULT CDoorLock::Ready_Components()
 		wsprintf(strComponentTag, TEXT("Com_%s_Texture"), m_strFrameKeys[i].c_str());
 
 		/* Com_Texture */
-		if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), strPrototypeTag,
+		if (FAILED(__super::Add_Component(m_pObjectDesc.iLayerLevel, strPrototypeTag,
 			strComponentTag, reinterpret_cast<CComponent**>(&pTextureCom))))
 			return E_FAIL;
 		

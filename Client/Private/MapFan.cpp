@@ -19,6 +19,8 @@ HRESULT CMapFan::Initialize_Prototype()
 
 HRESULT CMapFan::Initialize(void* pArg)
 {
+	m_pObjectDesc = *static_cast<CGameObject::GAMEOBJECT_DESC*>(pArg);
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
@@ -88,7 +90,7 @@ HRESULT CMapFan::Ready_Components()
 		wsprintf(strComponentTag, TEXT("Com_%s_Texture"), m_strFrameKeys[i].c_str());
 
 		/* Com_Texture */
-		if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), strPrototypeTag,
+		if (FAILED(__super::Add_Component(m_pObjectDesc.iLayerLevel, strPrototypeTag,
 			strComponentTag, reinterpret_cast<CComponent**>(&pTextureCom))))
 			return E_FAIL;
 
