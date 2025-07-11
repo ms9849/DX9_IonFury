@@ -19,9 +19,11 @@ HRESULT CMapGate::Initialize_Prototype()
 
 HRESULT CMapGate::Initialize(void* pArg)
 {
+	m_pObjectDesc = *static_cast<CGameObject::GAMEOBJECT_DESC*>(pArg);
+
 	CLandObject::LANDOBJECT_DESC			Desc{};
-	Desc.pLandTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_BackGround"), TEXT("Com_Transform")));
-	Desc.pLandVIBuffer = static_cast<CVIBuffer*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_BackGround"), TEXT("Com_VIBuffer")));
+	Desc.pLandTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(m_pObjectDesc.iLayerLevel, TEXT("Layer_BackGround"), TEXT("Com_Transform")));
+	Desc.pLandVIBuffer = static_cast<CVIBuffer*>(m_pGameInstance->Get_Component(m_pObjectDesc.iLayerLevel, TEXT("Layer_BackGround"), TEXT("Com_VIBuffer")));
 
 	if (FAILED(__super::Initialize(&Desc)))
 		return E_FAIL;
@@ -83,13 +85,18 @@ HRESULT CMapGate::Ready_Components()
 		return E_FAIL;
 
 	/* Com_Texture */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Map_Gate"),
+	if (FAILED(__super::Add_Component(m_pObjectDesc.iLayerLevel, TEXT("Prototype_Component_Texture_Map_Gate"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
 	/* Com_VIBuffer */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_Rect"),
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
+		return E_FAIL;
+
+	/* Com_BoxCollider */
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_BoxCollider"),
+		TEXT("Com_BoxCollider"), reinterpret_cast<CComponent**>(&m_pBoxColliderCom))))
 		return E_FAIL;
 
 	return S_OK;
@@ -142,6 +149,19 @@ void CMapGate::Gate_Animation(_float fTimeDelta)
 //	return Desc;
 //}
 
+void CMapGate::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta)
+{
+}
+
+const COLLISION_DESC& CMapGate::Get_CollisionDesc(COLLISION eColType)
+{
+	COLLISION_DESC Desc;
+	Desc.pCollider = m_pBoxColliderCom;
+	Desc.pTransform = m_pTransformCom;
+	
+	return Desc;
+}
+
 CMapGate* CMapGate::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 {
 	CMapGate* pInstance = new CMapGate(pGraphic_Device);
@@ -176,4 +196,5 @@ void CMapGate::Free()
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pPlayerTransformCom);
 	Safe_Release(m_pVIBufferCom);
+	Safe_Release(m_pBoxColliderCom);
 }

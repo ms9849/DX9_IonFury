@@ -42,7 +42,7 @@ private:
 	HRESULT Ready_Layer_Bullet(const _wstring& strLayerTag);
 
 private:
-	class CFile_Manager* m_pFileMgr;
+	class CFile_Manager* m_pFileMgr = {};
 	class CBullet_Manager* m_pBullet_Manager = {};
 	class CParticle_Manager* m_pParticle_Manager = {};
 	class CEffect_Manager* m_pEffect_Manager = {};

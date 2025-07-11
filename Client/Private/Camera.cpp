@@ -8,7 +8,7 @@ CCamera::CCamera(LPDIRECT3DDEVICE9 pGraphic_Device)
 }
 
 CCamera::CCamera(const CCamera& Prototype)
-	: CGameObject{ Prototype }
+	: CGameObject( Prototype )
 {
 }
 

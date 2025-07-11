@@ -20,6 +20,8 @@ HRESULT CPlayer_LeftHand::Initialize_Prototype()
 
 HRESULT CPlayer_LeftHand::Initialize(void* pArg)
 {
+	m_pObjectDesc = *static_cast<CGameObject::GAMEOBJECT_DESC*>(pArg);
+
 	if (FAILED(__super::Initialize(&pArg)))
 		return E_FAIL;
 
@@ -38,9 +40,9 @@ void CPlayer_LeftHand::Priority_Update(_float fTimeDelta)
 	_float4x4 PlayerMatrix{};
 
 	_wstring strItem = dynamic_cast<CPlayer*>(m_pGameInstance->Find_GameObject_ToLayer(
-		ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player")))->Get_Player_Info().strItem;
+		m_pObjectDesc.iLayerLevel, TEXT("Layer_Player")))->Get_Player_Info().strItem;
 	_wstring strItemAction = dynamic_cast<CPlayer*>(m_pGameInstance->Find_GameObject_ToLayer(
-		ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player")))->Get_Player_Info().strItemAction;
+		m_pObjectDesc.iLayerLevel, TEXT("Layer_Player")))->Get_Player_Info().strItemAction;
 
 	if (strItem.compare(TEXT("CardKey")) == 0)
 	{
@@ -59,7 +61,7 @@ void CPlayer_LeftHand::Priority_Update(_float fTimeDelta)
 
 	PlayerMatrix = *dynamic_cast<CTransform*>(
 		m_pGameInstance->Get_Component(
-			ENUM_CLASS(LEVEL::GAMEPLAY),
+			m_pObjectDesc.iLayerLevel,
 			TEXT("Layer_Player"),
 			TEXT("Com_Transform")))->Get_WorldMatrixPtr();
 
@@ -84,6 +86,7 @@ void CPlayer_LeftHand::Update(_float fTimeDelta)
 
 void CPlayer_LeftHand::Late_Update(_float fTimeDelta)
 {
+	Compute_CamDistance(m_pTransformCom->Get_State(STATE::POSITION));
 	m_pGameInstance->Add_RenderGroup(RENDER::BLEND_LATE, this);
 }
 

@@ -27,6 +27,7 @@ HRESULT CMonster::Initialize(void* pArg)
 
 HRESULT CMonster::Initialize()
 {
+	m_bRideCube = true;
 	CLandObject::LANDOBJECT_DESC			Desc{};
 	Desc.pLandTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_BackGround"), TEXT("Com_Transform")));
 	Desc.pLandVIBuffer = static_cast<CVIBuffer*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_BackGround"), TEXT("Com_VIBuffer")));
@@ -89,7 +90,7 @@ void CMonster::Move()
 }
 
 void CMonster::RotateToPlayer(CTransform* pTranform)
-{
+{ 
 	_float4x4 matWorldTemp = m_pGameInstance->Get_CameraWorld();
 
 	_float3 vLook;
@@ -119,6 +120,15 @@ void CMonster::RotateToPlayer(CTransform* pTranform)
 	memcpy(&matWorld.m[3][0], &vPos, sizeof(_float3));
 
 	pTranform->Set_Transform(matWorld);
+
+
+
+	//_float4x4		ViewMatrix = m_pGameInstance->Get_CameraWorldInv();
+
+	//pTranform->Set_State(STATE::RIGHT, *reinterpret_cast<_float3*>(&ViewMatrix.m[0]));
+	///*m_pTransformCom->Set_State(STATE::UP, *reinterpret_cast<_float3*>(&ViewMatrix.m[1]));*/
+	//pTranform->Set_State(STATE::LOOK, *reinterpret_cast<_float3*>(&ViewMatrix.m[2]));
+
 }
 
 void CMonster::Free()

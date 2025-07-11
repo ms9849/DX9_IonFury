@@ -28,7 +28,20 @@ HRESULT CZombie::Initialize(void* pArg)
 
 	if (pArg != nullptr)				// 스포너의 위치를 받아온다
 	{
-		m_vPos = static_cast<_float3*>(pArg);
+		m_Desc = static_cast<CZombie::ZOMBIE_DESC*>(pArg);
+		m_vPos = m_Desc->vPos;
+		m_isAwake = m_Desc->isAwake;
+	}
+	
+	if (m_Desc->isTarget)
+	{
+		m_isTarget = m_Desc->isTarget;
+		m_isLeft = m_Desc->isLeft;
+		m_uPosLen = m_Desc->TargetPos.size();
+		for (int i = 0; i < m_uPosLen; i++)
+		{
+			m_vTargetPos.push_back(m_Desc->TargetPos[i]);
+		}
 	}
 
 	if (m_pPlayerTransform == nullptr)
@@ -46,9 +59,9 @@ HRESULT CZombie::Initialize(void* pArg)
 	if (m_vPos != nullptr)
 	{
 		m_pTransformCom->Set_State(STATE::POSITION, _float3(
-			m_vPos->x + m_pGameInstance->Random(0.f, 2.f),
+			m_vPos.x + m_pGameInstance->Random(0.f, 2.f),
 			0.f,
-			m_vPos->z + m_pGameInstance->Random(0.f, 2.f)));
+			m_vPos.z + m_pGameInstance->Random(0.f, 2.f)));
 	}
 	else
 	{
@@ -65,6 +78,14 @@ HRESULT CZombie::Initialize(void* pArg)
 	m_fMaxRange = 10.f;
 	//m_AttackfCoolTime = 1.f;
 	//SetUp_OnTerrain(m_pTransformCom, 0.5f, &m_bJump);
+
+	if (m_isAwake)
+	{
+		m_strFrameKey = TEXT("Zombie_Awake");
+		m_bAnimationLock = true;
+		m_pGameInstance->PlaySoundOnce(TEXT("zombie_recog_1.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
+	}
+
 	return S_OK;
 }
 
@@ -140,6 +161,26 @@ void CZombie::Update(_float fTimeDelta)
 		m_isMove = false;
 	}
 
+	if (m_isAwake)
+	{
+		__super::Jump(fTimeDelta);
+		SetUp_OnTerrain(m_pTransformCom, 0.45f, &m_bJump);
+		return;
+	}
+	else if (m_isTarget)
+	{
+		if (m_fSumMoveCoolTime >= m_fMoveCoolTime)
+		{
+			/*if (m_uIdx < m_uPosLen)
+				TargetMove(fTimeDelta, m_vTargetPos[m_uIdx]);
+			else
+				m_isTarget = false;*/
+
+			TargetMove(fTimeDelta, m_vTargetPos[m_uIdx]);
+			m_isMove = true;
+			m_fSumMoveCoolTime = 0.f;
+		}
+	}
 
 	if (m_fHp <= 0)
 	{
@@ -151,6 +192,12 @@ void CZombie::Update(_float fTimeDelta)
 		m_bDying = true;
 		m_pGameInstance->PlaySoundOnce(TEXT("zombie_dead_1.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
 	}
+	/*else if (m_isAwake)
+	{
+		__super::Jump(fTimeDelta);
+		SetUp_OnTerrain(m_pTransformCom, 0.45f, &m_bJump);
+		return;
+	}*/
 	else if (m_pSightCom->Check_Sight(fTimeDelta) && !m_bAnimationLock)
 	{
 		if (!m_bFirstEncounter)
@@ -203,6 +250,8 @@ void CZombie::Late_Update(_float fTimeDelta)
 		}
 		else
 		{
+			if (m_isAwake)
+				m_isAwake = false;
 			m_bAnimationLock = false;
 			m_strFrameKey = TEXT("Zombie_Front");
 		}
@@ -249,6 +298,7 @@ HRESULT CZombie::Ready_Animations()
 	CAnimation::FRAME_DESC Desc_11{};
 	CAnimation::FRAME_DESC Desc_12{};
 	CAnimation::FRAME_DESC Desc_13{};
+	CAnimation::FRAME_DESC Desc_14{};
 
 	auto iter = m_pTextureComs.find(TEXT("Zombie_Attack"));
 	Desc_0.iFrameSpeed = 12;
@@ -333,58 +383,13 @@ HRESULT CZombie::Ready_Animations()
 	Desc_13.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom->Set_Animation(TEXT("Zombie_Die_HeadShot_Idle"), Desc_13);
 
+	//Zombie_Awake
+	iter = m_pTextureComs.find(TEXT("Zombie_Awake"));
+	Desc_14.iFrameSpeed = 40;
+	Desc_14.iEnd = iter->second->Get_Texture_Length();
+	m_pAnimationCom->Set_Animation(TEXT("Zombie_Awake"), Desc_14);
+
 	return S_OK;
-}
-
-void CZombie::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta)
-{
-	if (m_isDead || m_bDying)
-		return;
-}
-
-void CZombie::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta, CComponent* pCollider)
-{
-	if (m_isDead || m_bDying)
-		return;
-
-	if (eColType == COLLISION::RAY)
-	{
-		CBullet* pBullet = dynamic_cast<CBullet*>(pDst);
-		if (pBullet != nullptr)
-		{
-			if ((m_fHp -= (pBullet->Get_Damage())) > 0)
-			{
-				m_pGameInstance->PlaySoundOnce(TEXT("zombie_hit_1.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
-
-				CParticle_Manager::GetInstance()->Create_Particle(TEXT("Particle_Blood"), ENUM_CLASS(LEVEL::GAMEPLAY),
-					TEXT("Layer_Particle"), m_pTransformCom->Get_State(STATE::POSITION));
-			}
-			else
-			{
-				if (pCollider == m_pBoxColliderHead)
-				{
-					m_isHead = true;
-				}
-			}
-		}
-	}
-}
-
-const COLLISION_DESC& CZombie::Get_CollisionDesc(COLLISION eColType)
-{
-	COLLISION_DESC Desc;
-	Desc.pTransform = m_pTransformCom;
-
-	if (eColType == COLLISION::SPHERE)
-		Desc.pCollider = m_pSphereColliderCom;
-
-	else if (eColType == COLLISION::BOX)
-	{
-		Desc.pCollider = m_pBoxColliderCom;
-		Desc.pColliderSecond = m_pBoxColliderHead;
-	}
-
-	return Desc;
 }
 
 HRESULT CZombie::Ready_Components()
@@ -467,9 +472,9 @@ HRESULT CZombie::Begin_RenderState()
 	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 
 	/* 알파 테스트 : 픽셀의 알파를 비교해서 그린다 안그린다를 설정. */
-	/*m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
-	m_pGraphic_Device->SetRenderState(D3DRS_ALPHAREF, 0);
-	m_pGraphic_Device->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);*/
+	m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+	m_pGraphic_Device->SetRenderState(D3DRS_ALPHAREF, 50);
+	m_pGraphic_Device->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
 
 
 
@@ -482,7 +487,7 @@ HRESULT CZombie::End_RenderState()
 	//m_pGraphic_Device->SetRenderState(D3DRS_LIGHTING, TRUE);
 
 	m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-	//m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+	m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
 
 	return S_OK;
 }
@@ -542,29 +547,119 @@ void CZombie::Move(_float fTimeDelta)
 	//m_pTransformCom->Go_Straight(fTimeDelta);
 }
 
-/*
-void CZombie::Move(_float fTimeDelta)
+//void CZombie::TargetMove(_float fTimeDelta, _float3 vPos)		// 정해져 있는 장소로 이동 시키는 함수
+//{
+//	//_float3 vDir = vPos - fMonsterPos;
+//	//D3DXVec3Normalize(&vDir, &vDir);
+//	m_pTransformCom->Chase(vPos, fTimeDelta);
+//	_float3 fMonsterPos = m_pTransformCom->Get_State(STATE::POSITION);
+//	_float3 vDir = vPos - fMonsterPos;
+//
+//	_float fDistance = D3DXVec3Length(&vDir);
+//	if (fDistance < 0.5f)
+//		m_uIdx++;
+//}
+
+void CZombie::TargetMove(_float fTimeDelta, _float3 vPos)		// 정해져 있는 장소로 이동 시키는 함수
 {
-	_float3 fPlayerLook = m_pPlayerTransform->Get_State(STATE::LOOK);
-	_float3 fMonsterLook = m_pTransformCom->Get_State(STATE::LOOK);
-	D3DXVec3Normalize(&fPlayerLook, &fPlayerLook);
-	D3DXVec3Normalize(&fMonsterLook, &fMonsterLook);
+	if (m_isArrive)
+	{
+		if (m_isLeft)
+		{
+			m_pTransformCom->Turn(_float3(0.f, -1.f, 0.f), fTimeDelta * 0.5f);
+		}
+		else
+		{
+			m_pTransformCom->Turn(_float3(0.f, 1.f, 0.f), fTimeDelta * 0.5f);
+		}
+		
+		_float3 vLook = m_pTransformCom->Get_State(STATE::LOOK);
 
-	_float dot = D3DXVec3Dot(&fPlayerLook, &fMonsterLook);
-	float fRadian = acosf(dot);
-	m_pTransformCom->Rotation({ 0.f, 1.f, 0.f }, fRadian);
-	m_pTransformCom->Chase(m_pPlayerTransform->Get_State(STATE::POSITION), fTimeDelta);
-	m_pTransformCom->LookAt(m_pPlayerTransform->Get_State(STATE::POSITION));
+		vLook.y = 0.f;
+		D3DXVec3Normalize(&vLook, &vLook);
+		m_pTransformCom->Set_State(STATE::LOOK, vLook);
 
-	//m_pTransformCom->Chase(m_pPlayerTransform->Get_State(STATE::POSITION), fMoveTime);
-	//m_pTransformCom->Go_Straight(fTimeDelta);
+		m_fSumTime += fTimeDelta;
+		m_pTransformCom->Go_Straight(fTimeDelta);
+
+		if (m_fSumTime >= 5.f)
+		{
+			m_isTarget = false;
+		}
+
+		return;
+	}
+
+	_float3 fMonsterPos = m_pTransformCom->Get_State(STATE::POSITION);
+	_float3 vDir = vPos - fMonsterPos;
+	
+	_float fDistance = D3DXVec3Length(&vDir);
+
+	D3DXVec3Normalize(&vDir, &vDir);
+	m_pTransformCom->Set_State(STATE::LOOK, vDir);
+	m_pTransformCom->Go_Straight(fTimeDelta);
+
+	if (fDistance <= 1.5f)
+	{
+		m_isArrive = true;
+	}
 }
-*/
 
 void CZombie::Move()
 {
 	//m_pTransformCom->R
 	m_pTransformCom->Get_State(STATE::POSITION);
+}
+
+void CZombie::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta)
+{
+	if (m_isDead || m_bDying)
+		return;
+}
+
+void CZombie::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta, CComponent* pCollider)
+{
+	if (m_isDead || m_bDying)
+		return;
+
+	if (eColType == COLLISION::RAY)
+	{
+		CBullet* pBullet = dynamic_cast<CBullet*>(pDst);
+		if (pBullet != nullptr)
+		{
+			if ((m_fHp -= (pBullet->Get_Damage())) > 0)
+			{
+				m_pGameInstance->PlaySoundOnce(TEXT("zombie_hit_1.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
+
+				CParticle_Manager::GetInstance()->Create_Particle(TEXT("Particle_Blood"), ENUM_CLASS(LEVEL::GAMEPLAY),
+					TEXT("Layer_Particle"), m_pTransformCom->Get_State(STATE::POSITION));
+			}
+			else
+			{
+				if (pCollider == m_pBoxColliderHead)
+				{
+					m_isHead = true;
+				}
+			}
+		}
+	}
+}
+
+const COLLISION_DESC& CZombie::Get_CollisionDesc(COLLISION eColType)
+{
+	COLLISION_DESC Desc;
+	Desc.pTransform = m_pTransformCom;
+
+	if (eColType == COLLISION::SPHERE)
+		Desc.pCollider = m_pSphereColliderCom;
+
+	else if (eColType == COLLISION::BOX)
+	{
+		Desc.pCollider = m_pBoxColliderCom;
+		Desc.pColliderSecond = m_pBoxColliderHead;
+	}
+
+	return Desc;
 }
 
 CZombie* CZombie::Create(LPDIRECT3DDEVICE9 pGraphic_Device)

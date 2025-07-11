@@ -1,7 +1,6 @@
 [
     {
         "Layer": "Layer_BackGround",
-        "Level": 3,
         "Objects": [
             {
                 "ID": 0,
@@ -346,7 +345,6 @@
     },
     {
         "Layer": "Layer_Camera",
-        "Level": 3,
         "Objects": [
             {
                 "ID": 0,
@@ -384,7 +382,6 @@
     },
     {
         "Layer": "Layer_Interaction_Objects",
-        "Level": 3,
         "Objects": [
             {
                 "ID": 0,
@@ -486,7 +483,6 @@
     },
     {
         "Layer": "Layer_Items",
-        "Level": 3,
         "Objects": [
             {
                 "ID": 0,
@@ -556,7 +552,6 @@
     },
     {
         "Layer": "Layer_Map_Objects_AABB",
-        "Level": 3,
         "Objects": [
             {
                 "ID": 0,
@@ -1354,7 +1349,6 @@
     },
     {
         "Layer": "Layer_Map_Objects_AABB_Ride",
-        "Level": 3,
         "Objects": [
             {
                 "ID": 0,
@@ -1718,12 +1712,44 @@
                 "Proto": "Prototype_GameObject_Map_ContainerBox",
                 "ProtoLevel": 3,
                 "TextureIndex": 0
+            },
+            {
+                "ID": 11,
+                "LayerLevel": 3,
+                "Matrix": [
+                    [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.25,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        0.5,
+                        0.0
+                    ],
+                    [
+                        10.0,
+                        0.125,
+                        10.0,
+                        1.0
+                    ]
+                ],
+                "Proto": "Prototype_GameObject_Map_MachineGun_Bullet_Box",
+                "ProtoLevel": 3,
+                "TextureIndex": 0
             }
         ]
     },
     {
         "Layer": "Layer_Map_Objects_Deco",
-        "Level": 3,
         "Objects": [
             {
                 "ID": 0,
@@ -2059,7 +2085,6 @@
     },
     {
         "Layer": "Layer_Map_Objects_Gate",
-        "Level": 3,
         "Objects": [
             {
                 "ID": 0,
@@ -2197,7 +2222,6 @@
     },
     {
         "Layer": "Layer_Map_Objects_OBB_Ride",
-        "Level": 3,
         "Objects": [
             {
                 "ID": 0,
@@ -2465,9 +2489,46 @@
             }
         ]
     },
+      {
+        "Layer": "Layer_Map_Objects_Ray",
+        "Objects": [
+            {
+                "ID": 0,
+                "LayerLevel": 3,
+                "Matrix": [
+                    [
+                        0.3,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.3,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        0.3,
+                        0.0
+                    ],
+                    [
+                        3.0,
+                        0.15,
+                        10.0,
+                        1.0
+                    ]
+                ],
+                "Proto": "Prototype_GameObject_Map_TrashBox",
+                "ProtoLevel": 3,
+                "TextureIndex": 0
+            }
+        ]
+    },
     {
         "Layer": "Layer_Map_Objects_Ride",
-        "Level": 3,
         "Objects": [
             {
                 "ID": 0,
@@ -2506,7 +2567,6 @@
     },
     {
         "Layer": "Layer_Player",
-        "Level": 3,
         "Objects": [
             {
                 "ID": 0,
@@ -2538,82 +2598,6 @@
                     ]
                 ],
                 "Proto": "Prototype_GameObject_Player",
-                "ProtoLevel": 3
-            }
-        ]
-    },
-    {
-        "Layer": "Layer_Player_LeftHand",
-        "Level": 3,
-        "Objects": [
-            {
-                "ID": 0,
-                "LayerLevel": 0,
-                "Matrix": [
-                    [
-                        -2.1855694143368964e-08,
-                        0.0,
-                        -0.5,
-                        0.0
-                    ],
-                    [
-                        0.0,
-                        1.0,
-                        0.0,
-                        0.0
-                    ],
-                    [
-                        1.0,
-                        0.0,
-                        -4.371138828673793e-08,
-                        0.0
-                    ],
-                    [
-                        3.499999761581421,
-                        -0.8999998569488525,
-                        2.749999761581421,
-                        1.0
-                    ]
-                ],
-                "Proto": "",
-                "ProtoLevel": 0
-            }
-        ]
-    },
-    {
-        "Layer": "Layer_Player_RightHand",
-        "Level": 3,
-        "Objects": [
-            {
-                "ID": 0,
-                "LayerLevel": 0,
-                "Matrix": [
-                    [
-                        -4.371138828673793e-08,
-                        0.0,
-                        -1.0,
-                        0.0
-                    ],
-                    [
-                        0.0,
-                        1.0,
-                        0.0,
-                        0.0
-                    ],
-                    [
-                        1.0,
-                        0.0,
-                        -4.371138828673793e-08,
-                        0.0
-                    ],
-                    [
-                        3.499999761581421,
-                        5.960464477539063e-08,
-                        1.25,
-                        1.0
-                    ]
-                ],
-                "Proto": "",
                 "ProtoLevel": 0
             }
         ]

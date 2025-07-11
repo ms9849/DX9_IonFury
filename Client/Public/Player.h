@@ -80,12 +80,16 @@ private:
 	PLAYER_INFO		m_tInfo{};
 	class CPlayer_RightHand*	m_pRightHand{ nullptr };
 	class CPlayer_LeftHand*		m_pLeftHand{ nullptr };
+	class CDoorLock* m_pDoorLock{nullptr};
+	class CLever* m_pLever{nullptr};
+	
 	map<const _wstring, WEAPON_INFO> m_Weapons{};
-	_bool			m_bWeaponChange{ false };
-	deque<_wstring> m_ItemQueues{};
-	_float			m_fTimeStack{0.f};
+
 	_wstring		m_strNextWeapon{};
+	deque<ITEM_DESC> m_ItemQueues{};
+	_float			m_fTimeStack{0.f};
 	_float			m_fColTimeStack{ 0.f };
+	_bool			m_bWeaponChange{ false };
 
 	_bool			m_bUseCardKey{ false };
 	_bool			m_bCanOpenDoor{ false };
@@ -94,8 +98,8 @@ private:
 	_bool			m_bActiveElevator{ false };
 	_bool			m_bCanActiveElevator{ false };
 
-	class CDoorLock* m_pDoorLock{nullptr};
-	class CLever* m_pLever{nullptr};
+	_bool			m_bMachinGunBulletCharge{ false };
+	_bool			m_bMachinGunShootEnd{ false };
 
 public:
 	virtual void OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta) override;
