@@ -167,8 +167,9 @@ void CBossLowerBody::Update(_float fTimeDelta)
 	}
 	
 	// 이동 후 core위치 잡아주기
+	//__super::Jump(fTimeDelta);
 	m_pCoreTranform->Set_State(STATE::POSITION, m_pTransformCom->Get_State(STATE::POSITION));
-	SetUp_OnTerrain(m_pTransformCom, 0.5f, &m_bJump);
+	SetUp_OnTerrain(m_pTransformCom, 1.2f, &m_bJump);
 }
 
 void CBossLowerBody::Late_Update(_float fTimeDelta)

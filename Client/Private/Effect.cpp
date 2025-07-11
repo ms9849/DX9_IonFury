@@ -21,10 +21,11 @@ HRESULT CEffect::Initialize_Prototype()
 
 HRESULT CEffect::Initialize(void* pArg)
 {
+	EFFECT_DESC* pDesc = static_cast<EFFECT_DESC*>(pArg);
+	m_eType = pDesc->eType;
+
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
-	
-	EFFECT_DESC* pDesc = static_cast<EFFECT_DESC*>(pArg);
 
 	m_pTransformCom->Set_State(STATE::POSITION, pDesc->vPosition);
 	m_fFrame = pDesc->fFrame;
@@ -115,7 +116,7 @@ HRESULT CEffect::Ready_Components()
 			TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 			return E_FAIL;
 
-		m_pTransformCom->Set_Scale({2.f, 2.f, 2.f});
+		m_pTransformCom->Set_Scale({10.f, 10.f, 10.f});
 		break;
 
 	default:

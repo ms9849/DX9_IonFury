@@ -1,4 +1,5 @@
 #include "BossUpperBody.h"
+#include "BossUpperFly.h"
 #include "GameInstance.h"
 #include "Bullet.h"
 #include "BossGrenade.h"
@@ -63,13 +64,14 @@ HRESULT CBossUpperBody::Initialize(void* pArg)
 	//m_pTransformCom_Down->Set_State(STATE::POSITION, m_pTransformCom->Get_State(STATE::POSITION));
 
 	m_fAttackRange = 15.f;
-	m_fAttackCoolTime = 5.f;
+	m_fAttackCoolTime = 8.f;
 	m_fSumAttackCoolTime = 5.f;
 	m_uCurBullets = 0;
-	m_uMaxBullets = 10;
+	m_uMaxBullets = 20;
 	m_uCurExplosionBullets = 0;
-	m_uMaxExplosionBullets = 3;
+	m_uMaxExplosionBullets = 5;
 	m_vUpOffset = { 0.f, 2.9f, 0.f };
+	m_fFirstY = m_pTransformCom->Get_State(STATE::POSITION).y;
 
 	return S_OK;
 }
@@ -86,12 +88,18 @@ void CBossUpperBody::Update(_float fTimeDelta)
 		return;
 	}
 
+	if (m_isLowerDead && !m_bUseBooster)
+	{
+		UseBooster();
+		m_bUseBooster = true;
+	}
+
 	if (!m_bAttacking)
 		m_fSumAttackCoolTime += fTimeDelta;
 	else
 		m_fAttackFailTime += fTimeDelta;
 
-	_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
+	/*_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
 	vDiff.y = 0.f;
 	D3DXVec3Normalize(&vDiff, &vDiff);
 
@@ -108,9 +116,9 @@ void CBossUpperBody::Update(_float fTimeDelta)
 	_float fFov = cosf(D3DXToRadian(45.f));
 
 	_float angle30 = cosf(D3DXToRadian(30.f));
-	_float angle60 = cosf(D3DXToRadian(60.f));
+	_float angle60 = cosf(D3DXToRadian(60.f));*/
 
-	if (!m_bAnimationLock)
+	/*if (!m_bAnimationLock)
 	{
 		if (dot >= fFov)
 		{
@@ -181,15 +189,24 @@ void CBossUpperBody::Update(_float fTimeDelta)
 				}
 			}
 		}
+	}*/
+
+	if (!m_bAnimationLock)
+	{
+		RotationCheck();
+	}
+	else
+	{
+		AttackRotationCheck();
 	}
 
-	if (m_fAttackFailTime >= 7.f)						// 공격 상태가 아닌 상태가 어떤 경우던 7초가 넘었다면
+	if (m_fAttackFailTime >= 15.f)						// 공격 상태가 아닌 상태가 어떤 경우던 15초가 넘었다면
 	{													// 비정상 상태로 판단하고 초기화 작업
 		m_uCurBullets = 0;
 		m_bAnimationLock = false;
 		m_pAnimationCom->Clear_Animation();
-		m_strFrameKey = TEXT("Boss_Front");
-		m_fSumAttackCoolTime = 0.f;
+		//m_strFrameKey = TEXT("Boss_Front");
+		//m_fSumAttackCoolTime = 0.f;
 		m_eState = BossAttackState::END;
 		m_bAttacking = false;
 		m_fAttackFailTime = 0.f;
@@ -200,6 +217,9 @@ void CBossUpperBody::Update(_float fTimeDelta)
 		m_pGameInstance->PlaySoundOnce(TEXT("Boss_lost.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
 		m_bAnimationLock = true;
 		m_isDead = true;
+		if (m_pWing != nullptr)
+			m_pWing->Set_Dead(true);
+
 		CEffect_Manager::GetInstance()->Create_Effect(TEXT("Effect_Grenade_Explosion"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Effect"),
 			m_pTransformCom->Get_State(STATE::POSITION));
 	}
@@ -238,7 +258,11 @@ void CBossUpperBody::Update(_float fTimeDelta)
 				m_uTempNum = 0;
 		}
 	}
-	m_pTransformCom->Set_State(STATE::POSITION, m_pCoreTranform->Get_State(STATE::POSITION));
+
+	if (m_isLowerDead)
+		Move(fTimeDelta);
+	else
+		m_pTransformCom->Set_State(STATE::POSITION, m_pCoreTranform->Get_State(STATE::POSITION));
 	//SetUp_OnTerrain(m_pTransformCom, 0.5f, &m_bJump);
 }
 
@@ -246,10 +270,10 @@ void CBossUpperBody::Late_Update(_float fTimeDelta)
 {
 	m_pAnimationCom->Play_Animation(m_strFrameKey, fTimeDelta);
 
-	if (m_bAnimationLock && m_pAnimationCom->Check_Animation_Finish(m_strFrameKey))
+	/*if (m_bAnimationLock && m_pAnimationCom->Check_Animation_Finish(m_strFrameKey))
 	{
 		m_strFrameKey = TEXT("Boss_Attack_Front");
-	}
+	}*/
 
 	RotateWithParentTransform();				// 이러면 위 아래가 기본 pos에 고정됨
 	Compute_CamDistance(m_pTransformCom->Get_State(STATE::POSITION));
@@ -298,6 +322,18 @@ HRESULT CBossUpperBody::End_RenderTestState()
 	return S_OK;
 }
 
+void CBossUpperBody::UseBooster()
+{
+	CBossUpperFly::Fly_DESC desc;
+	desc.pTransform = m_pTransformCom;
+	m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Monster_Boss_Upper_Fly"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Boss_UpperLeft"), &desc);
+	m_pWing = dynamic_cast<CBossUpperFly*>(m_pGameInstance->Find_GameObject_ToLayer(
+		ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Boss_UpperLeft")));
+	Safe_AddRef(m_pWing);
+
+	return;
+}
+
 void CBossUpperBody::RotateWithParentTransform()
 {
 	_float3 vRootPos = m_pTransformCom->Get_State(STATE::POSITION);
@@ -322,6 +358,11 @@ HRESULT CBossUpperBody::Ready_Animations()
 	CAnimation::FRAME_DESC Desc_8{};
 	CAnimation::FRAME_DESC Desc_9{};
 	CAnimation::FRAME_DESC Desc_10{};
+	CAnimation::FRAME_DESC Desc_11{};
+	CAnimation::FRAME_DESC Desc_12{};
+	CAnimation::FRAME_DESC Desc_13{};
+	CAnimation::FRAME_DESC Desc_14{};
+	CAnimation::FRAME_DESC Desc_15{};
 
 	//Boss_Attack_Front
 	auto iter = m_pTextureComs.find(TEXT("Boss_Attack_Front"));
@@ -388,6 +429,36 @@ HRESULT CBossUpperBody::Ready_Animations()
 	Desc_10.iFrameSpeed = 5;
 	Desc_10.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom->Set_Animation(TEXT("Boss_Right"), Desc_10);
+
+	//Boss_Attack_NW
+	iter = m_pTextureComs.find(TEXT("Boss_Attack_NW"));
+	Desc_11.iFrameSpeed = 9;
+	Desc_11.iEnd = iter->second->Get_Texture_Length();
+	m_pAnimationCom->Set_Animation(TEXT("Boss_Attack_NW"), Desc_11);
+
+	//Boss_Attack_NE
+	iter = m_pTextureComs.find(TEXT("Boss_Attack_NE"));
+	Desc_12.iFrameSpeed = 12;
+	Desc_12.iEnd = iter->second->Get_Texture_Length();
+	m_pAnimationCom->Set_Animation(TEXT("Boss_Attack_NE"), Desc_12);
+
+	//Boss_Attack_Left
+	iter = m_pTextureComs.find(TEXT("Boss_Attack_Left"));
+	Desc_13.iFrameSpeed = 12;
+	Desc_13.iEnd = iter->second->Get_Texture_Length();
+	m_pAnimationCom->Set_Animation(TEXT("Boss_Attack_Left"), Desc_13);
+
+	//Boss_Attack_Right
+	iter = m_pTextureComs.find(TEXT("Boss_Attack_Right"));
+	Desc_14.iFrameSpeed = 9;
+	Desc_14.iEnd = iter->second->Get_Texture_Length();
+	m_pAnimationCom->Set_Animation(TEXT("Boss_Attack_Right"), Desc_14);
+
+	//Boss_Attack_Back
+	iter = m_pTextureComs.find(TEXT("Boss_Attack_Back"));
+	Desc_15.iFrameSpeed = 12;
+	Desc_15.iEnd = iter->second->Get_Texture_Length();
+	m_pAnimationCom->Set_Animation(TEXT("Boss_Attack_Back"), Desc_15);
 
 	return S_OK;
 }
@@ -459,6 +530,11 @@ const COLLISION_DESC& CBossUpperBody::Get_CollisionDesc(COLLISION eColType)
 	return Desc;
 }
 
+void CBossUpperBody::Set_LowerDead()
+{
+	m_isLowerDead = true;
+}
+
 HRESULT CBossUpperBody::Ready_Components()
 {
 	/* Com_Transform */
@@ -528,6 +604,7 @@ void CBossUpperBody::Attack(_float fTimeDelta, BossAttackState state)
 		m_vAttackPos = m_pPlayerTransform->Get_State(STATE::POSITION);
 	}
 	m_fAttackFailTime += fTimeDelta;
+	m_fSumAttackCoolTime += fTimeDelta;
 
 	if (state == BossAttackState::MASS)			// 공격모드가 난사면
 	{
@@ -574,6 +651,7 @@ void CBossUpperBody::Attack(_float fTimeDelta, BossAttackState state)
 			m_eState = BossAttackState::END;				// 공격 상태 종료로 변환
 			m_bAttacking = false;							// 공격 진행중 상태 바꿈
 			m_fSumAttackCoolTime = 0.f;						// 다음 공격 시간을 위한 누적시간 초기화
+			m_fSumLaunchCoolTime = 0.f;
 			m_fAttackFailTime = 0.f;						// 비정상 상태 종료를 위한 누적시간
 		}
 	}
@@ -581,7 +659,7 @@ void CBossUpperBody::Attack(_float fTimeDelta, BossAttackState state)
 	{
 		if (!m_bAnimationLock)					// 애니메이션 락이 걸렸나 확인(처음 공격하는건지 체크)
 		{										// 첫 공격이니까 프레임 키 공격으로 바꾸고 애니메이션 락을 건다
-			m_strFrameKey = TEXT("Boss_Attack_Front");
+			//m_strFrameKey = TEXT("Boss_Attack_Front");
 			m_bAnimationLock = true;
 		}
 		m_fSumLaunchCoolTime += fTimeDelta;		// 난사 쿨타임 증가
@@ -619,7 +697,7 @@ void CBossUpperBody::Attack(_float fTimeDelta, BossAttackState state)
 			m_uCurBullets = 0;								// 총알 수 0으로 초기화
 			m_bAnimationLock = false;						// 애니메이션 락 해제
 			m_pAnimationCom->Clear_Animation();			// 진행중 애니메이션 정지
-			m_strFrameKey = TEXT("Boss_Front");			// idle 키로 전환
+			//m_strFrameKey = TEXT("Boss_Front");			// idle 키로 전환
 			m_eState = BossAttackState::END;				// 공격 상태 종료로 변환
 			m_bAttacking = false;							// 공격 진행중 상태 바꿈
 			m_fSumAttackCoolTime = 0.f;						// 다음 공격 시간을 위한 누적시간 초기화
@@ -631,7 +709,7 @@ void CBossUpperBody::Attack(_float fTimeDelta, BossAttackState state)
 		// 다른 공격 방식
 		if (!m_bAnimationLock)					// 애니메이션 락이 걸렸나 확인(처음 공격하는건지 체크)
 		{										// 첫 공격이니까 프레임 키 공격으로 바꾸고 애니메이션 락을 건다
-			m_strFrameKey = TEXT("Boss_Attack_Front");
+			//m_strFrameKey = TEXT("Boss_Attack_Front");
 			m_bAnimationLock = true;
 		}
 		m_fSumLaunchCoolTime += fTimeDelta;		// 난사 쿨타임 증가
@@ -670,7 +748,7 @@ void CBossUpperBody::Attack(_float fTimeDelta, BossAttackState state)
 			m_uCurExplosionBullets = 0;						// 유탄 수 0으로 초기화
 			m_bAnimationLock = false;						// 애니메이션 락 해제
 			m_pAnimationCom->Clear_Animation();			// 진행중 애니메이션 정지
-			m_strFrameKey = TEXT("Boss_Front");			// idle 키로 전환
+			//m_strFrameKey = TEXT("Boss_Front");			// idle 키로 전환
 			m_eState = BossAttackState::END;				// 공격 상태 종료로 변환
 			m_bAttacking = false;							// 공격 진행중 상태 바꿈
 			m_fSumAttackCoolTime = 0.f;						// 다음 공격 시간을 위한 누적시간 초기화
@@ -685,12 +763,157 @@ void CBossUpperBody::Attack(_float fTimeDelta, BossAttackState state)
 		m_uCurExplosionBullets = 0;						// 유탄 수 0으로 초기화
 		m_bAnimationLock = false;						// 애니메이션 락 해제
 		m_pAnimationCom->Clear_Animation();			// 진행중 애니메이션 정지
-		m_strFrameKey = TEXT("Boss_Front");			// idle 키로 전환
+		//m_strFrameKey = TEXT("Boss_Front");			// idle 키로 전환
 		m_eState = BossAttackState::END;				// 공격 상태 종료로 변환
 		m_bAttacking = false;							// 공격 진행중 상태 바꿈
 		m_fSumAttackCoolTime = 0.f;						// 다음 공격 시간을 위한 누적시간 초기화
 		m_fAttackFailTime = 0.f;						// 비정상 상태 종료를 위한 누적시간
 	}
+}
+
+void CBossUpperBody::RotationCheck()
+{
+	_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
+	vDiff.y = 0.f;
+	D3DXVec3Normalize(&vDiff, &vDiff);
+
+	_float3 vMonsterLook = m_pTransformCom->Get_State(STATE::LOOK);
+	vMonsterLook.y = 0.f;
+	D3DXVec3Normalize(&vMonsterLook, &vMonsterLook);
+
+	_float dot = D3DXVec3Dot(&vMonsterLook, &vDiff);
+	dot = max(-1.f, min(1.f, dot));
+
+	_float3 vCross;
+	D3DXVec3Cross(&vCross, &vMonsterLook, &vDiff);
+
+	_float fFov = cosf(D3DXToRadian(45.f));
+
+	_float angle30 = cosf(D3DXToRadian(30.f));
+	_float angle60 = cosf(D3DXToRadian(60.f));
+
+	if (dot >= fFov)
+	{
+		m_strFrameKey = TEXT("Boss_Front");
+	}
+	else if (dot <= -fFov)
+	{
+		m_strFrameKey = TEXT("Boss_Back");
+	}
+	else
+	{
+		if (vCross.y > 0)
+		{
+			if (dot > 0.2f)
+			{
+				m_strFrameKey = TEXT("Boss_Direction_SW");
+			}
+			else if (dot > 0)
+			{
+				m_strFrameKey = TEXT("Boss_Left");
+			}
+			else
+			{
+				m_strFrameKey = TEXT("Boss_Direction_NW");
+			}
+		}
+		else
+		{
+			if (dot > 0.2f)
+			{
+				m_strFrameKey = TEXT("Boss_Direction_SE");
+			}
+			else if (dot > 0)
+			{
+				m_strFrameKey = TEXT("Boss_Right");
+			}
+			else
+			{
+				m_strFrameKey = TEXT("Boss_Direction_NE");
+			}
+		}
+	}
+}
+
+void CBossUpperBody::AttackRotationCheck()
+{
+	_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
+	vDiff.y = 0.f;
+	D3DXVec3Normalize(&vDiff, &vDiff);
+
+	_float3 vMonsterLook = m_pTransformCom->Get_State(STATE::LOOK);
+	vMonsterLook.y = 0.f;
+	D3DXVec3Normalize(&vMonsterLook, &vMonsterLook);
+
+	_float dot = D3DXVec3Dot(&vMonsterLook, &vDiff);
+	dot = max(-1.f, min(1.f, dot));
+
+	_float3 vCross;
+	D3DXVec3Cross(&vCross, &vMonsterLook, &vDiff);
+
+	_float fFov = cosf(D3DXToRadian(45.f));
+
+	_float angle30 = cosf(D3DXToRadian(30.f));
+	_float angle60 = cosf(D3DXToRadian(60.f));
+
+	if (dot >= fFov)
+	{
+		m_strFrameKey = TEXT("Boss_Attack_Front");
+	}
+	else if (dot <= -fFov)
+	{
+		m_strFrameKey = TEXT("Boss_Attack_Back");
+	}
+	else
+	{
+		if (vCross.y > 0)
+		{
+			if (dot > 0.2f)
+			{
+				m_strFrameKey = TEXT("Boss_Attack_SW");
+			}
+			else if (dot > 0)
+			{
+				m_strFrameKey = TEXT("Boss_Attack_Left");
+			}
+			else
+			{
+				m_strFrameKey = TEXT("Boss_Attack_NW");
+			}
+		}
+		else
+		{
+			if (dot > 0.2f)
+			{
+				m_strFrameKey = TEXT("Boss_Attack_SE");
+			}
+			else if (dot > 0)
+			{
+				m_strFrameKey = TEXT("Boss_Attack_Right");
+			}
+			else
+			{
+				m_strFrameKey = TEXT("Boss_Attack_NE");
+			}
+		}
+	}
+}
+
+void CBossUpperBody::Move(_float fTimeDelta)
+{
+	static float fTimeAcc = 0.f;
+	fTimeAcc += fTimeDelta;
+
+	_float3 vBasePos = m_pTransformCom->Get_State(STATE::POSITION);
+
+	_float fAmplitude = 0.5f;
+	_float fSpeed = 2.0f;
+
+	_float yOffset = sinf(fTimeAcc * fSpeed) * fAmplitude;
+
+	// 최종 위치
+	vBasePos.y = m_fFirstY + yOffset;
+	m_pTransformCom->Set_State(STATE::POSITION, vBasePos);
 }
 
 void CBossUpperBody::SummonMonster()				// 추후 필요하면 인덱스 받을 수 있도록 변경하기
@@ -737,4 +960,5 @@ void CBossUpperBody::Free()
 {
 	__super::Free();
 	Safe_Release(m_pCoreTranform);
+	Safe_Release(m_pWing);
 }

@@ -43,6 +43,7 @@ private:
 	CBossLowerBody* m_pBossLowerBody = { nullptr };
 
 	_bool isUpperLive = true;
+	_bool isLowerLive = true;
 	_float m_fResurrectionTime = 10.f;
 	_float m_fSumResurrectionTime = 0.f;
 
