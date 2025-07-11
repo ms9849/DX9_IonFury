@@ -24,15 +24,19 @@ HRESULT CZombie::Initialize_Prototype()
 
 HRESULT CZombie::Initialize(void* pArg)
 {
-	m_pPlayerTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player"), TEXT("Com_Transform")));
+	m_pObjectDesc = *static_cast<CGameObject::GAMEOBJECT_DESC*>(pArg);
 
-	if (pArg != nullptr)				// 스포너의 위치를 받아온다
-	{
-		m_Desc = static_cast<CZombie::ZOMBIE_DESC*>(pArg);
-		m_vPos = m_Desc->vPos;
-		m_isAwake = m_Desc->isAwake;
-	}
+	m_pPlayerTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(m_pObjectDesc.iLayerLevel, TEXT("Layer_Player"), TEXT("Com_Transform")));
+
+	// 스포너 관련
+	//if (pArg != nullptr)				// 스포너의 위치를 받아온다
+	//{
+	//	m_Desc = static_cast<CZombie::ZOMBIE_DESC*>(pArg);
+	//	m_vPos = m_Desc->vPos;
+	//	m_isAwake = m_Desc->isAwake;
+	//}
 	
+	/* 스포터 관련
 	if (m_Desc->isTarget)
 	{
 		m_isTarget = m_Desc->isTarget;
@@ -42,7 +46,7 @@ HRESULT CZombie::Initialize(void* pArg)
 		{
 			m_vTargetPos.push_back(m_Desc->TargetPos[i]);
 		}
-	}
+	}*/
 
 	if (m_pPlayerTransform == nullptr)
 		return E_FAIL;
@@ -56,6 +60,7 @@ HRESULT CZombie::Initialize(void* pArg)
 	if (FAILED(Ready_Animations()))
 		return E_FAIL;
 
+	/* 스포너 관련
 	if (m_vPos != nullptr)
 	{
 		m_pTransformCom->Set_State(STATE::POSITION, _float3(
@@ -69,7 +74,7 @@ HRESULT CZombie::Initialize(void* pArg)
 			m_pGameInstance->Random(0.f, 2.f),
 			0.f,
 			m_pGameInstance->Random(0.f, 2.f)));
-	}
+	}*/
 
 	m_fDamage = 30.f;
 	m_fAttackRange = 1.5f;
@@ -79,12 +84,13 @@ HRESULT CZombie::Initialize(void* pArg)
 	//m_AttackfCoolTime = 1.f;
 	//SetUp_OnTerrain(m_pTransformCom, 0.5f, &m_bJump);
 
+	/* 스포너 관련
 	if (m_isAwake)
 	{
 		m_strFrameKey = TEXT("Zombie_Awake");
 		m_bAnimationLock = true;
 		m_pGameInstance->PlaySoundOnce(TEXT("zombie_recog_1.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
-	}
+	}*/
 
 	return S_OK;
 }
@@ -430,7 +436,7 @@ HRESULT CZombie::Ready_Components()
 
 	/* Com_Sight */
 	CSight::SIGHT_DESC		SightDesc{ 5.f, D3DXToRadian(90.0f), m_pPlayerTransform, m_pTransformCom, true };
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Sight"),
+	if (FAILED(__super::Add_Component(m_pObjectDesc.iLayerLevel, TEXT("Prototype_Component_Sight"),
 		TEXT("Com_Sight"), reinterpret_cast<CComponent**>(&m_pSightCom), &SightDesc)))
 		return E_FAIL;
 
@@ -513,14 +519,8 @@ void CZombie::Attack()
 	Desc.vDir = vDir;
 	Desc.vPos = vPos;*/
 
-	CMeleeAttack::MELEEATTACK_DESC Desc;
-	Desc.vDir = vDir;
-	Desc.vPos = vPos;
-	Desc.fDamage = m_fDamage;
-	Desc.fDurationTime = 10.f;
-
-	m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Melee_Attack"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Melee_Attack"), &Desc);
-	//m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Bullet"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Zombie_Bullet"), &Desc);
+	m_pGameInstance->Add_GameObject_ToLayer(m_pObjectDesc.iLayerLevel, TEXT("Prototype_GameObject_Melee_Attack"), m_pObjectDesc.iLayerLevel, TEXT("Layer_Melee_Attack"));
+	//m_pGameInstance->Add_GameObject_ToLayer(m_pObjectDesc.iLayerLevel, TEXT("Prototype_GameObject_Bullet"), m_pObjectDesc.iLayerLevel, TEXT("Layer_Zombie_Bullet"), &Desc);
 }
 
 void CZombie::Move(_float fTimeDelta)
@@ -631,7 +631,7 @@ void CZombie::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 			{
 				m_pGameInstance->PlaySoundOnce(TEXT("zombie_hit_1.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
 
-				CParticle_Manager::GetInstance()->Create_Particle(TEXT("Particle_Blood"), ENUM_CLASS(LEVEL::GAMEPLAY),
+				CParticle_Manager::GetInstance()->Create_Particle(TEXT("Particle_Blood"), m_pObjectDesc.iLayerLevel,
 					TEXT("Layer_Particle"), m_pTransformCom->Get_State(STATE::POSITION));
 			}
 			else

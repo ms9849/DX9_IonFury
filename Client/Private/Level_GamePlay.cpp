@@ -43,14 +43,14 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
-	if (FAILED(Ready_Layer_Spawner(TEXT("Layer_Spawner"))))
-		return E_FAIL;
+	// if (FAILED(Ready_Layer_Spawner(TEXT("Layer_Spawner"))))
+	// 	return E_FAIL;
 	
 	if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"))))
 		return E_FAIL;
 	
-	if (FAILED(Ready_Layer_Boss(TEXT("Layer_Boss"))))
-		return E_FAIL;
+	// if (FAILED(Ready_Layer_Boss(TEXT("Layer_Boss"))))
+	// 	return E_FAIL;
 
 	if (FAILED(Ready_Layer_UI(TEXT("Layer_UI"))))
 		return E_FAIL;
@@ -446,25 +446,49 @@ HRESULT CLevel_GamePlay::Ready_Layer_Spawner(const _wstring& strLayerTag)
 		return E_FAIL;*/
 
 	// ¸Ê ¿ìÃø ·ë ½ºÆù
-	CSpawner::SPAWNER_DESC desc;
-	desc.vPos = _float3(45.5f, 1.f, 28.5f);
-	desc.idx = 0;
-	desc.isLeft = false;
-	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Spawner"),
-		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag, &desc)))
-		return E_FAIL;
+	//CSpawner::SPAWNER_DESC desc;
+	//desc.vPos = _float3(45.5f, 1.f, 28.5f);
+	//desc.idx = 0;
+	//desc.isLeft = false;
+	//if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Spawner"),
+	//	ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag, &desc)))
+	//	return E_FAIL;
 
-	// ¸Ê ÁÂÃø ·ë ½ºÆù
-	desc.vPos = _float3(45.5f, 1.f, 63.5f);
-	desc.idx = 0;
-	desc.isLeft = true;
-	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Spawner"),
-		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag, &desc)))
+	//// ¸Ê ÁÂÃø ·ë ½ºÆù
+	//desc.vPos = _float3(45.5f, 1.f, 63.5f);
+	//desc.idx = 0;
+	//desc.isLeft = true;
+	//if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Spawner"),
+	//	ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag, &desc)))
 		return E_FAIL;
 }
 
 HRESULT CLevel_GamePlay::Ready_Layer_Monster(const _wstring& strLayerTag)
 {
+	for (auto& iter : m_ObjectDescs->find(strLayerTag)->second)
+	{
+		if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(iter.iProtoLevel), iter.strProto,
+			ENUM_CLASS(iter.iLayerLevel), iter.strLayer, &iter)))
+			return E_FAIL;
+
+		dynamic_cast<CTransform*>(
+			m_pGameInstance->Get_Component(
+				ENUM_CLASS(iter.iLayerLevel), iter.strLayer, TEXT("Com_Transform"), iter.iObjectID)
+			)->Set_State(STATE::RIGHT, iter.matWorld.m[0]);
+		dynamic_cast<CTransform*>(
+			m_pGameInstance->Get_Component(
+				ENUM_CLASS(iter.iLayerLevel), iter.strLayer, TEXT("Com_Transform"), iter.iObjectID)
+			)->Set_State(STATE::UP, iter.matWorld.m[1]);
+		dynamic_cast<CTransform*>(
+			m_pGameInstance->Get_Component(
+				ENUM_CLASS(iter.iLayerLevel), iter.strLayer, TEXT("Com_Transform"), iter.iObjectID)
+			)->Set_State(STATE::LOOK, iter.matWorld.m[2]);
+		dynamic_cast<CTransform*>(
+			m_pGameInstance->Get_Component(
+				ENUM_CLASS(iter.iLayerLevel), iter.strLayer, TEXT("Com_Transform"), iter.iObjectID)
+			)->Set_State(STATE::POSITION, iter.matWorld.m[3]);
+	}
+
 	/*for (size_t i = 0; i < 2; i++)
 	{
 		if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Monster_EliteSoldier"),
@@ -486,12 +510,12 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const _wstring& strLayerTag)
 	//		return E_FAIL;
 	//}
 
-	for (size_t i = 0; i < 1; i++)
+	/*for (size_t i = 0; i < 1; i++)
 	{
 		if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Monster_Soldier"),
 			ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag)))
 			return E_FAIL;
-	}
+	}*/
 
 	/*for (size_t i = 0; i < 1; i++)
 	{
