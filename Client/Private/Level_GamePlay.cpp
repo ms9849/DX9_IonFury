@@ -405,7 +405,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Spawner(const _wstring& strLayerTag)
 			return E_FAIL;
 	}*/
 
-	CSpawner::SPAWNER_DESC desc;
+	/*CSpawner::SPAWNER_DESC desc;
 	desc.vPos = _float3(22.5f, 1.f, 12.5f);
 	desc.idx = 0;
 	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Spawner"),
@@ -450,6 +450,23 @@ HRESULT CLevel_GamePlay::Ready_Layer_Spawner(const _wstring& strLayerTag)
 
 	desc.vPos = _float3(16.5f, 1.f, 30.5f);
 	desc.idx = 3;
+	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Spawner"),
+		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag, &desc)))
+		return E_FAIL;*/
+
+	// ¸Ê ¿ìÃø ·ë ½ºÆù
+	CSpawner::SPAWNER_DESC desc;
+	desc.vPos = _float3(45.5f, 1.f, 28.5f);
+	desc.idx = 0;
+	desc.isLeft = false;
+	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Spawner"),
+		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag, &desc)))
+		return E_FAIL;
+
+	// ¸Ê ÁÂÃø ·ë ½ºÆù
+	desc.vPos = _float3(45.5f, 1.f, 63.5f);
+	desc.idx = 0;
+	desc.isLeft = true;
 	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Spawner"),
 		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag, &desc)))
 		return E_FAIL;
@@ -499,12 +516,12 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const _wstring& strLayerTag)
 
 HRESULT CLevel_GamePlay::Ready_Layer_Boss(const _wstring& strLayerTag)
 {
-	for (size_t i = 0; i < 1; i++)
+	/*for (size_t i = 0; i < 1; i++)
 	{
 		if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Monster_Boss"),
 			ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag)))
 			return E_FAIL;
-	}
+	}*/
 
 	//m_pTerrain_Manager->Add_LandObject(LEVEL::GAMEPLAY, TEXT("Layer_Boss"));
 
