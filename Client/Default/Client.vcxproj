@@ -151,6 +151,7 @@
     <ClInclude Include="..\Public\BossLowerBody.h" />
     <ClInclude Include="..\Public\BossUpperBody.h" />
     <ClInclude Include="..\Public\CFile_Manager.h" />
+    <ClInclude Include="..\public\Level_BossFight.h" />
     <ClInclude Include="..\public\MapMachineGunBulletBox.h" />
     <ClInclude Include="..\public\Lever.h" />
     <ClInclude Include="..\public\MapDeco.h" />
@@ -180,7 +181,7 @@
     <ClInclude Include="..\Public\Terrain_Manager.h" />
     <ClInclude Include="..\Public\MeleeAttack.h" />
     <ClInclude Include="..\public\Player_LeftHand.h" />
-    <ClInclude Include="..\Public\TrashBox.h" />
+    <ClInclude Include="..\Public\MapTrashBox.h" />
     <ClInclude Include="..\public\UICardKey.h" />
     <ClInclude Include="..\public\UIItemQueue.h" />
     <ClInclude Include="..\public\Item.h" />
@@ -223,6 +224,7 @@
     <ClCompile Include="..\Private\CFile_Manager.cpp" />
     <ClCompile Include="..\Private\BossLowerBody.cpp" />
     <ClCompile Include="..\Private\BossUpperBody.cpp" />
+    <ClCompile Include="..\private\Level_BossFight.cpp" />
     <ClCompile Include="..\private\MapMachineGunBulletBox.cpp" />
     <ClCompile Include="..\private\Lever.cpp" />
     <ClCompile Include="..\private\MapDeco.cpp" />
@@ -246,7 +248,7 @@
     <ClCompile Include="..\Private\Spider.cpp" />
     <ClCompile Include="..\Private\Particle_Manager.cpp" />
     <ClCompile Include="..\Private\Snow.cpp" />
-    <ClCompile Include="..\Private\TrashBox.cpp" />
+    <ClCompile Include="..\Private\MapTrashBox.cpp" />
     <ClCompile Include="..\private\UICardKey.cpp" />
     <ClCompile Include="..\private\ItemArmor.cpp" />
     <ClCompile Include="..\Private\CubeObject.cpp" />

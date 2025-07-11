@@ -34,10 +34,12 @@ HRESULT CPlayer::Initialize_Prototype()
 
 HRESULT CPlayer::Initialize(void* pArg)
 {
+	m_pObjectDesc = *static_cast<CGameObject::GAMEOBJECT_DESC*>(pArg);
+
 	m_bRideCube = true;
 	CLandObject::LANDOBJECT_DESC			Desc{};
-	Desc.pLandTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_BackGround"), TEXT("Com_Transform")));
-	Desc.pLandVIBuffer = static_cast<CVIBuffer*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_BackGround"), TEXT("Com_VIBuffer")));
+	Desc.pLandTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(m_pObjectDesc.iLayerLevel, TEXT("Layer_BackGround"), TEXT("Com_Transform")));
+	Desc.pLandVIBuffer = static_cast<CVIBuffer*>(m_pGameInstance->Get_Component(m_pObjectDesc.iLayerLevel, TEXT("Layer_BackGround"), TEXT("Com_VIBuffer")));
 
 	if (FAILED(__super::Initialize(&Desc)))
 		return E_FAIL;
@@ -59,24 +61,24 @@ HRESULT CPlayer::Initialize(void* pArg)
 	//m_pTransformCom->Set_State(STATE::POSITION, _float3(18.5f, 0.f, 95.f));
 
 	// 오른손
-	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Player_RightHand"),
-		ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player_RightHand"))))
+	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(m_pObjectDesc.iProtoLevel, TEXT("Prototype_GameObject_Player_RightHand"),
+		m_pObjectDesc.iLayerLevel, TEXT("Layer_Player_RightHand"), &m_pObjectDesc)))
 		return E_FAIL;
 
 	m_pRightHand = dynamic_cast<CPlayer_RightHand*>(m_pGameInstance->Find_GameObject_ToLayer(
-		ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player_RightHand")));
+		m_pObjectDesc.iLayerLevel, TEXT("Layer_Player_RightHand")));
 	Safe_AddRef(m_pRightHand);
 
 	m_pRightHandAnimationCom = dynamic_cast<CAnimation*>(m_pRightHand->Find_Component(TEXT("Com_Animation")));
 	Safe_AddRef(m_pRightHandAnimationCom);
 
 	// 왼손
-	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Player_LeftHand"),
-		ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player_LeftHand"))))
+	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(m_pObjectDesc.iProtoLevel, TEXT("Prototype_GameObject_Player_LeftHand"),
+		m_pObjectDesc.iLayerLevel, TEXT("Layer_Player_LeftHand"), &m_pObjectDesc)))
 		return E_FAIL;
 
 	m_pLeftHand = dynamic_cast<CPlayer_LeftHand*>(m_pGameInstance->Find_GameObject_ToLayer(
-		ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player_LeftHand")));
+		m_pObjectDesc.iLayerLevel, TEXT("Layer_Player_LeftHand")));
 	Safe_AddRef(m_pLeftHand);
 
 	m_pLeftHandAnimationCom = dynamic_cast<CAnimation*>(m_pLeftHand->Find_Component(TEXT("Com_Animation")));
@@ -310,7 +312,7 @@ void CPlayer::Update(_float fTimeDelta)
 							m_pRightHandAnimationCom->Clear_Animation();
 
 							m_pGameInstance->PlaySoundOnce(TEXT("Pistol_Shoot.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
-							CEffect_Manager::GetInstance()->Create_Effect(TEXT("Effect_Pistol_Fire"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Effect"), { 0.f, 0.f, 0.f });
+							CEffect_Manager::GetInstance()->Create_Effect(TEXT("Effect_Pistol_Fire"), m_pObjectDesc.iLayerLevel, TEXT("Layer_Effect"), { 0.f, 0.f, 0.f });
 
 							_float3 vOffset = _float3{ 0.f, 0.f, 0.f };
 							_float3 vDir = Calc_BulletDir(&vOffset);
@@ -325,7 +327,7 @@ void CPlayer::Update(_float fTimeDelta)
 							Desc.isPlayerBullet = true;
 							Desc.fDuration = 5.f;
 
-							CBullet_Manager::GetInstance()->Create_Bullet(TEXT("Bullet"), Desc, ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_PlayerBullet"));
+							CBullet_Manager::GetInstance()->Create_Bullet(TEXT("Bullet"), Desc, m_pObjectDesc.iLayerLevel, TEXT("Layer_PlayerBullet"));
 
 							iter->second.iCurrentBullets -= 1;
 							m_tInfo.iBullets = iter->second.iCurrentBullets;
@@ -360,7 +362,7 @@ void CPlayer::Update(_float fTimeDelta)
 								Desc.isPlayerBullet = true;
 								Desc.fDuration = 5.f;
 
-								CBullet_Manager::GetInstance()->Create_Bullet(TEXT("Bullet"), Desc, ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_PlayerBullet"));
+								CBullet_Manager::GetInstance()->Create_Bullet(TEXT("Bullet"), Desc, m_pObjectDesc.iLayerLevel, TEXT("Layer_PlayerBullet"));
 							}
 							iter->second.iCurrentBullets -= 1;
 							m_tInfo.iBullets = iter->second.iCurrentBullets;
@@ -370,8 +372,8 @@ void CPlayer::Update(_float fTimeDelta)
 						}
 					}
 				}
-				//m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Bullet"),
-					//ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_PlayerBullet"), &Desc);
+				//m_pGameInstance->Add_GameObject_ToLayer(m_pObjectDesc.iLayerLevel, TEXT("Prototype_GameObject_Bullet"),
+					//m_pObjectDesc.iLayerLevel, TEXT("Layer_PlayerBullet"), &Desc);
 			
 			}
 		}
@@ -533,7 +535,7 @@ _float3 CPlayer::Calc_BulletDir(_float3* vOffset)
 	_float3 vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
 
 	D3DXVec3Normalize(&vPlayerLook, &vPlayerLook);
-	m_pGameInstance->Check_RayCollision(vPlayerPos, vPlayerLook, TEXT("Layer_Monster"), ENUM_CLASS(LEVEL::GAMEPLAY), &vCollisionPos);
+	m_pGameInstance->Check_RayCollision(vPlayerPos, vPlayerLook, TEXT("Layer_Monster"), m_pObjectDesc.iLayerLevel, &vCollisionPos);
 
 	*vOffset = (*D3DXVec3Normalize(&vPlayerRight, &vPlayerRight) / 10.f) + (vPlayerLook) / 5.f;
 	vOffset->y -= 0.02f;
@@ -562,7 +564,7 @@ _float3 CPlayer::Calc_BulletDir(_float3* vOffset)
 //_float3 vCamPos = *(_float3*)(&m_matViewInv.m[3][0]);
 //
 //D3DXVec3Normalize(&vCamLook, &vCamLook);
-//m_pGameInstance->Check_RayCollision(vCamPos, vCamLook, TEXT("Layer_Monster"), ENUM_CLASS(LEVEL::GAMEPLAY), &vCollisionPos);
+//m_pGameInstance->Check_RayCollision(vCamPos, vCamLook, TEXT("Layer_Monster"), m_pObjectDesc.iLayerLevel, &vCollisionPos);
 //
 //*vOffset = (*D3DXVec3Normalize(&vCamRight, &vCamRight) / 10.f) + (vCamLook) / 5.f;
 //vOffset->y -= 0.02f;
@@ -583,22 +585,32 @@ void CPlayer::Insert_ItemDesc(const _wstring strItemText)
 		m_ItemQueues.pop_back();
 	}
 
-	m_ItemQueues.push_front(strItemText);
+	ITEM_DESC Desc;
+	Desc.fCreateTime = 0.f;
+	Desc.strItemText = strItemText;
+
+	m_ItemQueues.push_front(Desc);
 }
 
 void CPlayer::Pop_ItemDesc(_float fTimeDelta)
 {
 	// 생성된 순서대로 챠라라락 안사라지고 하나하나 다 3초씩 걸려야 사라짐
-	m_fTimeStack += fTimeDelta;
+	for (auto& item : m_ItemQueues)
+		item.fCreateTime += fTimeDelta;
 
-	for (size_t i = 0; i < m_ItemQueues.size(); ++i)
+	if(!m_ItemQueues.empty() && m_ItemQueues.back().fCreateTime > 2.f)
+	{
+		m_ItemQueues.pop_back();
+	}
+
+	/*for (size_t i = 0; i < m_ItemQueues.size(); ++i)
 	{
 		if (m_fTimeStack > 2.f)
 		{
 			m_fTimeStack = 0.f;
 			m_ItemQueues.pop_back();
 		}
-	}
+	}*/
 }
 
 _wstring CPlayer::Set_FrameKey(_wstring strDst, _wstring strSrc)
@@ -723,7 +735,7 @@ const COLLISION_DESC& CPlayer::Get_CollisionDesc(COLLISION eColType)
 
 _wstring CPlayer::Get_ItemText(size_t iIndex)
 {
-	return m_ItemQueues[iIndex];
+	return m_ItemQueues[iIndex].strItemText;
 }
 
 size_t CPlayer::Get_ItemQueue_Length()

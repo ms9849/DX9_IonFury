@@ -15,6 +15,7 @@ public:
 	typedef struct tagSpawnerDesc {
 		_float3 vPos;
 		_uint idx;
+		_bool isLeft = false;
 	}SPAWNER_DESC;
 
 private:
@@ -46,6 +47,8 @@ private:
 
 	class CTransform* m_pTransformCom = { nullptr };
 	class CBoxCollider* m_pBoxColliderCom = { nullptr };
+	_bool m_isActive = true;
+	_bool m_isLeft = false;
 
 	const _wstring m_strFrameKeys[4] = {
 		TEXT("Prototype_GameObject_Monster_Zombie"), TEXT("Prototype_GameObject_Monster_Spider"),

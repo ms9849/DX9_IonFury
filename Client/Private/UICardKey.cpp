@@ -24,6 +24,7 @@ HRESULT CUICardKey::Initialize(void* pArg)
 
 	m_tagDesc.fSizeX = pTemp->fSizeX;
 	m_tagDesc.fSizeY = pTemp->fSizeY;
+	m_tagDesc.iLayerLevelIndex = pTemp->iLayerLevelIndex;
 	m_tagDesc.fX = pTemp->fX;
 	m_tagDesc.fY = pTemp->fY;
 
@@ -35,7 +36,7 @@ HRESULT CUICardKey::Initialize(void* pArg)
 
 	m_pPlayer = dynamic_cast<CPlayer*>(
 		m_pGameInstance->Find_GameObject_ToLayer(
-			ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player")));
+			m_tagDesc.iLayerLevelIndex, TEXT("Layer_Player")));
 
 	return S_OK;
 }
@@ -95,7 +96,7 @@ HRESULT CUICardKey::Ready_Components()
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
 		return E_FAIL;
 	/* Com_Texture */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_UI_CardKey"),
+	if (FAILED(__super::Add_Component(m_tagDesc.iLayerLevelIndex, TEXT("Prototype_Component_Texture_UI_CardKey"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 

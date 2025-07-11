@@ -16,8 +16,18 @@ HRESULT CFile_Manager::Initialize()
 
 HRESULT CFile_Manager::Load_Layers(LEVEL iLevel)
 {
-    HANDLE hFile = CreateFileW(TEXT("../../Data/LevelGamePlay.json"),
-        GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+    HANDLE hFile{ nullptr };
+
+    if (iLevel == LEVEL::GAMEPLAY)
+    {
+        hFile = CreateFileW(TEXT("../../Data/LevelGamePlay.json"),
+            GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+    }
+    else if (iLevel == LEVEL::BOSSFIGHT)
+    {
+        hFile = CreateFileW(TEXT("../../Data/LevelBossFight.json"),
+            GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+    }
 
     if (hFile == INVALID_HANDLE_VALUE) return E_FAIL;
 
@@ -35,9 +45,6 @@ HRESULT CFile_Manager::Load_Layers(LEVEL iLevel)
         m_ObjectDescs->clear();
 
         for (const auto& jLayer : jData) {
-            int iLevelNum = jLayer["Level"].get<int>();
-            LEVEL level = static_cast<LEVEL>(iLevelNum);
-
             _wstring layerName = UTF8ToWString(jLayer["Layer"].get<string>());
             const auto& jObjects = jLayer["Objects"];
 

@@ -3,7 +3,9 @@
 #include "GameInstance.h"
 #include "Level_Loading.h"
 #include "Camera.h"
-#include "CubeObject.h"
+#include "Player.h"
+#include "Player_RightHand.h"
+#include "Player_LeftHand.h"
 
 /*****************************
 대재훈의 은총 이 얼마나 관대한가
@@ -101,23 +103,10 @@ HRESULT CMainApp::Ready_Prototypes()
 		CVIBuffer_Rect::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
-	/*if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_Rect_Up"),
-		CVIBuffer_Rect_Up::Create(m_pGraphic_Device))))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_Rect_Down"),
-		CVIBuffer_Rect_Down::Create(m_pGraphic_Device))))
-		return E_FAIL;*/
-
 	/* For.Prototype_GameObject_Camera */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Camera"),
 		CCamera::Create(m_pGraphic_Device))))
 		return E_FAIL;
-
-	/* For.Prototype_GameObject_CubeObject */
-	//if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_CubeObject"),
-	//	CCubeObject::Create(m_pGraphic_Device))))
-	//	return E_FAIL;
 
 	/* For.Prototype_Component_Animation */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Animation"),
@@ -596,12 +585,25 @@ HRESULT CMainApp::Ready_Prototypes()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Grenade_Explosion"),
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Bullet/Grenade/Grenade_Explosion_%d.png"), 31))))
 		return E_FAIL;
-
-	/*For Prototype_Component_Texture_TrashBox*/
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_TrashBox"),
-		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/TrashBox/TrashBox_%d.png"), 3))))
-		return E_FAIL;
 #pragma endregion
+
+#pragma region 플레이어
+	/* For.Prototype_GameObject_Player */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Player"),
+		CPlayer::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Player_RightHand */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Player_RightHand"),
+		CPlayer_RightHand::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Player_LeftHand */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Player_LeftHand"),
+		CPlayer_LeftHand::Create(m_pGraphic_Device))))
+		return E_FAIL;
+#pragma endregion	
+
 	return S_OK;
 }
 
