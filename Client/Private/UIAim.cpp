@@ -25,7 +25,7 @@ HRESULT CUIAim::Initialize(void* pArg)
 	m_tagDesc.fSizeY = pTemp->fSizeY;
 	m_tagDesc.fX = pTemp->fX;
 	m_tagDesc.fY = pTemp->fY;
-
+	m_tagDesc.iLayerLevelIndex = pTemp->iLayerLevelIndex;
 	m_tagDesc.fX += pTemp->fSizeX / 2.f;
 	m_tagDesc.fY += pTemp->fSizeY / 2.f;
 
@@ -87,7 +87,7 @@ HRESULT CUIAim::Ready_Components()
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
 		return E_FAIL;
 	/* Com_Texture */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_UI_Aim"),
+	if (FAILED(__super::Add_Component(m_tagDesc.iLayerLevelIndex, TEXT("Prototype_Component_Texture_UI_Aim"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 

@@ -3,14 +3,19 @@
 #include "Client_Defines.h"
 #include "Level.h"
 #include "Camera.h"
+#include "GameObject.h"
+
+NS_BEGIN(Engine)
+class GameObject;
+NS_END
 
 NS_BEGIN(Client)
 
-class CLevel_GamePlay final : public CLevel
+class CLevel_BossFight final : public CLevel
 {
 private:
-	CLevel_GamePlay(LPDIRECT3DDEVICE9 pGraphic_Device, LEVEL eLevelID);
-	virtual ~CLevel_GamePlay() = default;
+	CLevel_BossFight(LPDIRECT3DDEVICE9 pGraphic_Device, LEVEL eLevelID);
+	virtual ~CLevel_BossFight() = default;
 
 public:
 	virtual HRESULT Initialize() override;
@@ -47,26 +52,21 @@ private:
 	class CParticle_Manager* m_pParticle_Manager = {};
 	class CEffect_Manager* m_pEffect_Manager = {};
 	class CTerrain_Manager* m_pTerrain_Manager = {};
-	class CUIHp* m_pUIHp { nullptr };
-	class CUIArmor* m_pUIArmor { nullptr };
-	class CUIBullets* m_pUIBullets { nullptr };
-	class CUIInteraction* m_pUIInteraction { nullptr };
-	class CUIAim* m_pUIAim { nullptr };
-	class CUICardKey* m_pUICardKey { nullptr };
+	class CUIHp* m_pUIHp{ nullptr };
+	class CUIArmor* m_pUIArmor{ nullptr };
+	class CUIBullets* m_pUIBullets{ nullptr };
+	class CUIInteraction* m_pUIInteraction{ nullptr };
+	class CUIAim* m_pUIAim{ nullptr };
+	class CUICardKey* m_pUICardKey{ nullptr };
 
 	CCamera::CAMERA_CONFIG m_CameraSettings;
 	vector<class CUIItemQueue*> m_pUIItemQueues{};
 
-
-	// FPS 계산 변수
-	_float m_fFPSTimer{ 0.f }, m_fTimeDelta{ 0.f };
-	_uint m_iFPSCount{ 0 }, m_iCurrentFPS{ 0 };
-
-	// json
+private:
 	map<_wstring, vector<CGameObject::GAMEOBJECT_DESC>>* m_ObjectDescs{};
 
 public:
-	static CLevel_GamePlay* Create(LPDIRECT3DDEVICE9 pGraphic_Device, LEVEL eLevelID);
+	static CLevel_BossFight* Create(LPDIRECT3DDEVICE9 pGraphic_Device, LEVEL eLevelID);
 	virtual void Free() override;
 };
 

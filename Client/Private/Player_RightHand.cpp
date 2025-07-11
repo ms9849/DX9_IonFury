@@ -20,6 +20,8 @@ HRESULT CPlayer_RightHand::Initialize_Prototype()
 
 HRESULT CPlayer_RightHand::Initialize(void* pArg)
 {
+	m_pObjectDesc = *static_cast<CGameObject::GAMEOBJECT_DESC*>(pArg);
+
 	if (FAILED(__super::Initialize(&pArg)))
 		return E_FAIL;
 
@@ -38,10 +40,10 @@ void CPlayer_RightHand::Priority_Update(_float fTimeDelta)
 	_float4x4 PlayerMatrix{};
 
 	_wstring strWeapon = dynamic_cast<CPlayer*>(m_pGameInstance->Find_GameObject_ToLayer(
-		ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player")))->Get_Player_Info().strWeapon;
+		m_pObjectDesc.iLayerLevel, TEXT("Layer_Player")))->Get_Player_Info().strWeapon;
 
 	_wstring strAction = dynamic_cast<CPlayer*>(m_pGameInstance->Find_GameObject_ToLayer(
-		ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player")))->Get_Player_Info().strAction;
+		m_pObjectDesc.iLayerLevel, TEXT("Layer_Player")))->Get_Player_Info().strAction;
 
 	if (strWeapon.compare(TEXT("Pistol")) == 0)
 	{
@@ -72,7 +74,7 @@ void CPlayer_RightHand::Priority_Update(_float fTimeDelta)
 
 	PlayerMatrix = *dynamic_cast<CTransform*>(
 		m_pGameInstance->Get_Component(
-			ENUM_CLASS(LEVEL::GAMEPLAY),
+			m_pObjectDesc.iLayerLevel,
 			TEXT("Layer_Player"),
 			TEXT("Com_Transform")))->Get_WorldMatrixPtr();
 

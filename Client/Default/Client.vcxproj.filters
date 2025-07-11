@@ -202,6 +202,9 @@
     <Filter Include="03.MapObjects\MachineGunBulletBox">
       <UniqueIdentifier>{741e9160-c26d-4186-a087-5fe64d60fa9b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Levels\BossFight">
+      <UniqueIdentifier>{332ec638-154a-4e3f-b0a8-167f4ee1a9f5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -426,6 +429,9 @@
     <ClInclude Include="..\public\MapMachineGunBulletBox.h">
       <Filter>03.MapObjects\MachineGunBulletBox</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Level_BossFight.h">
+      <Filter>01.Levels\BossFight</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -644,6 +650,9 @@
     </ClCompile>
     <ClCompile Include="..\private\MapMachineGunBulletBox.cpp">
       <Filter>03.MapObjects\MachineGunBulletBox</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Level_BossFight.cpp">
+      <Filter>01.Levels\BossFight</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
