@@ -33,7 +33,6 @@ HRESULT CBoss::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-	// 아래 추가하고 나니까 안보이던게 보임
 	m_pTransformCom->Set_State(STATE::POSITION, _float3(
 		m_pGameInstance->Random(30.f, 50.f),
 		0.f,
@@ -51,6 +50,7 @@ HRESULT CBoss::Initialize(void* pArg)
 
 	//m_pTerrain_Manager = CTerrain_Manager::Create();
 	//m_pTerrain_Manager->Add_LandObject_One(m_pBossLowerBody);
+	CTerrain_Manager::GetInstance()->Add_LandObject_One(m_pBossLowerBody);
 
 	return S_OK;
 }
@@ -83,12 +83,10 @@ void CBoss::Update(_float fTimeDelta)
 		isUpperLive = true;
 	}
 
-	if (m_pBossUpperBody->isDead())
+	if (m_pBossLowerBody->isDead() && isLowerLive)
 	{
-		// bool 변수 하나 체크 시킨다음 부활시간 증가
-		// 부활 시간이 다 차면 새로운 상체 클론해서 붙이기
-		// 아니면 특정 위치로 가서 하게 해도 될듯
-		isUpperLive = false;
+		isLowerLive = false;
+		m_pBossUpperBody->Set_LowerDead();
 	}
 
 	if (m_pBossUpperBody->isDead() && m_pBossLowerBody->isDead())
@@ -98,8 +96,15 @@ void CBoss::Update(_float fTimeDelta)
 		m_pGameInstance->PlaySoundOnce(TEXT("Boss1_Die.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
 		/*CEffect_Manager::GetInstance()->Create_Effect(TEXT("Effect_Boss_Die"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Effect"),
 			m_pTransformCom->Get_State(STATE::POSITION));*/
+	}
 
-		return;
+	if (m_pBossUpperBody->isDead())
+	{
+		// bool 변수 하나 체크 시킨다음 부활시간 증가
+		// 부활 시간이 다 차면 새로운 상체 클론해서 붙이기
+		// 아니면 특정 위치로 가서 하게 해도 될듯
+		//Safe_Release(m_pBossUpperBody);
+		isUpperLive = false;
 	}
 }
 
@@ -168,5 +173,4 @@ void CBoss::Free()
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pBossUpperBody);
 	Safe_Release(m_pBossLowerBody);
-	//Safe_Release(m_pTerrain_Manager);
 }

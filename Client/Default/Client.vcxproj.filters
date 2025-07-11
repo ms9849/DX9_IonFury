@@ -444,6 +444,9 @@
     <ClInclude Include="..\Public\ItemMachineGun.h">
       <Filter>02.GameObjects\Item\ItemMachineGun</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\BossUpperFly.h">
+      <Filter>02.GameObjects\Monster\Boss</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -671,6 +674,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\ItemMachineGun.cpp">
       <Filter>02.GameObjects\Item\ItemMachineGun</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\BossUpperFly.cpp">
+      <Filter>02.GameObjects\Monster\Boss</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
