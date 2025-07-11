@@ -103,7 +103,7 @@ HRESULT CEffect::Ready_Components()
 	switch (m_eType)
 	{
 	case EFFECT_TYPE::BOSS_DIE:
-		if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Effect_Boss_Die"),
+		if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Effect_Boss_Die"),
 			TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 			return E_FAIL;
 
@@ -111,7 +111,7 @@ HRESULT CEffect::Ready_Components()
 		break;
 
 	case EFFECT_TYPE::GRENADE_EXPLOSION:
-		if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Effect_Grenade_Explosion"),
+		if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Effect_Grenade_Explosion"),
 			TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 			return E_FAIL;
 
@@ -196,5 +196,4 @@ void CEffect::Free()
 	Safe_Release(m_pTextureCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pVIBufferCom);
-
 }

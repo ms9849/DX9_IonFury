@@ -225,7 +225,12 @@ void CPlayer::Update(_float fTimeDelta)
 			/* ÀåÀüÀÌ ³¡³µÀ» ¶§ Ã¶ÄÀ ¼Ò¸® ³ª°Ô */
 			if (m_tInfo.strWeapon == TEXT("Pistol") && m_tInfo.strWeapon == TEXT("Reload"))
 			{
-				m_pGameInstance->PlaySoundOnce(TEXT("Pistol_Reload_3.ogg"), CHANNELID::SOUND_EFFECT, 0.2f);
+				m_pGameInstance->PlaySoundOnce(TEXT("Pistol_Reload_3.ogg"), CHANNELID::SOUND_EFFECT, 0.5f);
+			}
+
+			if (m_tInfo.strWeapon == TEXT("ShootGun") && m_tInfo.strWeapon == TEXT("Reload"))
+			{
+				m_pGameInstance->PlaySoundOnce(TEXT("ShotGun_Reload_2.ogg"), CHANNELID::SOUND_EFFECT, 0.5f);
 			}
 
 			if (m_tInfo.strWeapon == TEXT("MachineGun") && m_tInfo.strAction == TEXT("Shoot"))
@@ -277,6 +282,11 @@ void CPlayer::Update(_float fTimeDelta)
 				{
 					m_pGameInstance->PlaySoundOnce(TEXT("Pistol_Reload_1.ogg"), CHANNELID::SOUND_EFFECT, 0.5f);
 					m_pGameInstance->PlaySoundOnce(TEXT("Pistol_Reload_2.ogg"), CHANNELID::SOUND_EFFECT, 0.5f);
+				}
+
+				if (m_tInfo.strWeapon.compare(TEXT("ShootGun")) == 0)
+				{
+					m_pGameInstance->PlaySoundOnce(TEXT("ShotGun_Reload_1.ogg"), CHANNELID::SOUND_EFFECT, 0.5f);
 				}
 			}
 
@@ -660,7 +670,7 @@ void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 			if (m_tInfo.strWeapon == TEXT("ShootGun"))
 				m_tInfo.iBullets = iter->second.iCurrentBullets;
 
-			Insert_ItemDesc(TEXT("Get ShootGun Bullets [Bullet+10]"));
+			Insert_ItemDesc(TEXT("Get ShotGun Bullets [Bullet+10]"));
 		}
 		if (dynamic_cast<CItemCardKey*>(pDst))
 		{

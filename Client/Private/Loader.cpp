@@ -20,6 +20,8 @@
 #include "ItemHealpack.h"
 #include "ItemPistolBullet.h"
 #include "ItemShootGunBullet.h"
+#include "ItemShootGun.h"
+#include "ItemMachineGun.h"
 #include "ItemCardKey.h"
 #include "Spawner.h"
 #include "Soldier.h"
@@ -47,8 +49,6 @@
 #include "MapElevator.h"
 #include "MapMachineGunBulletBox.h"
 #include "MapTrashBox.h"
-#include "Snow.h"
-#include "Blood.h"
 
 #include "GameInstance.h"
 
@@ -181,40 +181,6 @@ HRESULT CLoader::Loading_For_GamePlay()
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/UI/CardKey/CardKey.png"), 1))))
 		return E_FAIL;
 
-#pragma region 이펙트, 파티클
-	/* For. Prototype_Component_Texture_Snow */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Snow"),
-		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Snow/Snow.png"), 1))))
-		return E_FAIL;
-
-	/* For. Prototype_Component_Texture_Blood */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Blood"),
-		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Particle/Blood.png"), 1))))
-		return E_FAIL;
-
-	/* For. Prototype_GameObject_Snow*/
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Snow"), CSnow::Create(m_pGraphic_Device))))
-		return E_FAIL;
-
-	/* For. Prototype_GameObject_Blood */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Blood"), CBlood::Create(m_pGraphic_Device))))
-		return E_FAIL;
-
-	/* For.Prototype_Component_Texture_Effect */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Effect"),
-		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Explosion/Explosion%d.png"), 90))))
-		return E_FAIL;
-
-	/* For.Prototype_Component_Texture_Effect_Boss_Die */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Effect_Boss_Die"),
-		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Effect/Boss_Die/Boss_Die_%d.png"), 32))))
-		return E_FAIL;
-
-	/* For.Prototype_Component_Texture_Effect_Grenade_Explosion */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Effect_Grenade_Explosion"),
-		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Effect/Grenade_Explosion/Grenade_Explosion_%d.png"), 31))))
-		return E_FAIL;
-
 #pragma endregion
 	
 #pragma region 아이템
@@ -236,6 +202,16 @@ HRESULT CLoader::Loading_For_GamePlay()
 	/* For.Prototype_Component_Texture_Item_Bullets */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Item_Bullets"),
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Item/Item_Bullet_%d.png"), 2))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Item_ShotGun */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Item_ShootGun"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Item/Item_ShootGun_%d.png"), 1))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Item_Machinegun */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Item_MachineGun"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Item/Item_MachineGun_%d.png"), 1))))
 		return E_FAIL;
 #pragma endregion
 
@@ -370,11 +346,6 @@ HRESULT CLoader::Loading_For_GamePlay()
 		CVIBuffer_Terrain::Create(m_pGraphic_Device, TEXT("../Bin/Resources/Textures/Terrain/Height1.bmp")))))
 		return E_FAIL;*/
 
-	/* For.Prototype_GameObject_Bullet */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Bullet"),
-		CBullet::Create(m_pGraphic_Device))))
-		return E_FAIL;
-
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_BossGrenade"),
 		CBossGrenade::Create(m_pGraphic_Device))))
 		return E_FAIL;
@@ -445,16 +416,6 @@ HRESULT CLoader::Loading_For_GamePlay()
 	/* For.Prototype_GameObject_Sky */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Sky"),
 		CSky::Create(m_pGraphic_Device))))
-		return E_FAIL;
-
-	/* For.Prototype_GameObject_Effect */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Effect_Pistol_Fire"),
-		CEffect_Pistol_Fire::Create(m_pGraphic_Device))))
-		return E_FAIL;
-
-	/* For.Prototype_GameObject_Effect */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Effect"),
-		CEffect::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
 #pragma region UI
@@ -528,6 +489,16 @@ HRESULT CLoader::Loading_For_GamePlay()
 	/* For.Prototype_GameObject_Item_CardKey */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Item_CardKey"),
 		CItemCardKey::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Item_ShootGun */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Item_ShootGun"),
+		CItemShootGun::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Item_MachineGun */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Item_MachineGun"),
+		CItemMachineGun::Create(m_pGraphic_Device))))
 		return E_FAIL;
 #pragma endregion	
 
@@ -666,29 +637,6 @@ HRESULT CLoader::Loading_For_BossFight()
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Particle/Blood.png"), 1))))
 		return E_FAIL;
 
-	/* For. Prototype_GameObject_Snow*/
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_GameObject_Snow"), CSnow::Create(m_pGraphic_Device))))
-		return E_FAIL;
-
-	/* For. Prototype_GameObject_Blood */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_GameObject_Blood"), CBlood::Create(m_pGraphic_Device))))
-		return E_FAIL;
-
-	/* For.Prototype_Component_Texture_Effect */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_Component_Texture_Effect"),
-		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Explosion/Explosion%d.png"), 90))))
-		return E_FAIL;
-
-	/* For.Prototype_Component_Texture_Effect_Boss_Die */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_Component_Texture_Effect_Boss_Die"),
-		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Effect/Boss_Die/Boss_Die_%d.png"), 32))))
-		return E_FAIL;
-
-	/* For.Prototype_Component_Texture_Effect_Grenade_Explosion */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_Component_Texture_Effect_Grenade_Explosion"),
-		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Effect/Grenade_Explosion/Grenade_Explosion_%d.png"), 31))))
-		return E_FAIL;
-
 #pragma endregion
 
 #pragma region 아이템
@@ -710,6 +658,16 @@ HRESULT CLoader::Loading_For_BossFight()
 	/* For.Prototype_Component_Texture_Item_Bullets */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_Component_Texture_Item_Bullets"),
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Item/Item_Bullet_%d.png"), 2))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Item_ShootGun */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_Component_Texture_Item_ShootGun"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Item/Item_ShootGun_%d.png"), 1))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Item_MachineGun */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_Component_Texture_Item_MachineGun"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Item/Item_MachineGun_%d.png"), 1))))
 		return E_FAIL;
 #pragma endregion
 
@@ -921,15 +879,6 @@ HRESULT CLoader::Loading_For_BossFight()
 		CSky::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
-	/* For.Prototype_GameObject_Effect */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_GameObject_Effect_Pistol_Fire"),
-		CEffect_Pistol_Fire::Create(m_pGraphic_Device))))
-		return E_FAIL;
-
-	/* For.Prototype_GameObject_Effect */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_GameObject_Effect"),
-		CEffect::Create(m_pGraphic_Device))))
-		return E_FAIL;
 
 #pragma region UI
 	/* For.Prototype_GameObject_UIHp */
@@ -1002,6 +951,16 @@ HRESULT CLoader::Loading_For_BossFight()
 	/* For.Prototype_GameObject_Item_CardKey */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_GameObject_Item_CardKey"),
 		CItemCardKey::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Item_ShootGun */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Item_ShootGun"),
+		CItemShootGun::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Item_MachineGun */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Item_MachineGun"),
+		CItemMachineGun::Create(m_pGraphic_Device))))
 		return E_FAIL;
 #pragma endregion	
 

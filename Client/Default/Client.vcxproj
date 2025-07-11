@@ -151,6 +151,8 @@
     <ClInclude Include="..\Public\BossLowerBody.h" />
     <ClInclude Include="..\Public\BossUpperBody.h" />
     <ClInclude Include="..\Public\CFile_Manager.h" />
+    <ClInclude Include="..\Public\ItemMachineGun.h" />
+    <ClInclude Include="..\Public\ItemShootGun.h" />
     <ClInclude Include="..\public\Level_BossFight.h" />
     <ClInclude Include="..\public\MapMachineGunBulletBox.h" />
     <ClInclude Include="..\public\Lever.h" />
@@ -224,6 +226,8 @@
     <ClCompile Include="..\Private\CFile_Manager.cpp" />
     <ClCompile Include="..\Private\BossLowerBody.cpp" />
     <ClCompile Include="..\Private\BossUpperBody.cpp" />
+    <ClCompile Include="..\Private\ItemMachineGun.cpp" />
+    <ClCompile Include="..\Private\ItemShootGun.cpp" />
     <ClCompile Include="..\private\Level_BossFight.cpp" />
     <ClCompile Include="..\private\MapMachineGunBulletBox.cpp" />
     <ClCompile Include="..\private\Lever.cpp" />

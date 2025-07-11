@@ -30,7 +30,7 @@ public:
 public:
 	HRESULT Initialize();
 	void Check_Landing();
-
+	void Clear_Terrains();
 private:
 	class CGameInstance* m_pGameInstance = {};
 
