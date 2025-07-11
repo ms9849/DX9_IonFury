@@ -274,12 +274,17 @@ void CPlayer::Update(_float fTimeDelta)
 			iter->second.iShootBullets = iter->second.iCanShootBullets;
 			m_tInfo.iShootBullets = iter->second.iShootBullets;
 
-			if (m_tInfo.strWeapon.compare(TEXT("Pistol")) == 0)
-			{
-				m_pGameInstance->PlaySoundOnce(TEXT("Pistol_Reload_1.ogg"), CHANNELID::SOUND_EFFECT, 0.5f);
-				m_pGameInstance->PlaySoundOnce(TEXT("Pistol_Reload_2.ogg"), CHANNELID::SOUND_EFFECT, 0.5f);
+				if (m_tInfo.strWeapon.compare(TEXT("Pistol")) == 0)
+				{
+					m_pGameInstance->PlaySoundOnce(TEXT("Pistol_Reload_1.ogg"), CHANNELID::SOUND_EFFECT, 0.5f);
+					m_pGameInstance->PlaySoundOnce(TEXT("Pistol_Reload_2.ogg"), CHANNELID::SOUND_EFFECT, 0.5f);
+				}
+
+				if (m_tInfo.strWeapon.compare(TEXT("ShootGun")) == 0)
+				{
+					m_pGameInstance->PlaySoundOnce(TEXT("ShotGun_Reload_1.ogg"), CHANNELID::SOUND_EFFECT, 0.5f);
+				}
 			}
-		}
 
 		// 총알 발사
 		if (m_tInfo.strAction != TEXT("Reload")
@@ -661,7 +666,7 @@ void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 			if (m_tInfo.strWeapon == TEXT("ShootGun"))
 				m_tInfo.iBullets = iter->second.iCurrentBullets;
 
-			Insert_ItemDesc(TEXT("Get ShootGun Bullets [Bullet+10]"));
+			Insert_ItemDesc(TEXT("Get ShotGun Bullets [Bullet+10]"));
 		}
 		if (dynamic_cast<CItemCardKey*>(pDst))
 		{

@@ -25,8 +25,9 @@ public:
 	void Create_Effect(const _wstring& strEffectTag, _uint iLayerLevelIndex, const _wstring& strLayerTag, const _float3& vPos);
 
 	void Release_Effect_Manager();
+
 private:
-	map<const _wstring, list<class CEffect*>> m_Effects;
+	map<const _wstring, list<class CEffect*>> m_Effects = {};
 	class CGameInstance* m_pGameInstance = { nullptr };
 
 public:

@@ -13,6 +13,7 @@ CEffect_Manager::CEffect_Manager() :
 
 HRESULT CEffect_Manager::Initialize(LEVEL eLevelID)
 {
+	m_Effects = {};
 	/* 
 	이펙트들 미리 풀링. 
 	
@@ -32,16 +33,23 @@ HRESULT CEffect_Manager::Initialize(LEVEL eLevelID)
 
 HRESULT CEffect_Manager::Ready_Pistol_Fire(LEVEL eLevelID)
 {
+	auto iter = m_Effects.find(TEXT("Effect_Pistol_Fire"));
+
+	if (iter != m_Effects.end())
+		return S_OK;
+
 	list<class CEffect*> Effects = {};
 
 	for (int i = 0; i < 20; ++i)
 	{
+
 		Effects.push_back(
-			static_cast<CEffect*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(eLevelID),
+			static_cast<CEffect*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC),
 				TEXT("Prototype_GameObject_Effect_Pistol_Fire"),
 				nullptr))
 		);
 	}
+
 
 	m_Effects.emplace(TEXT("Effect_Pistol_Fire"), Effects);
 
@@ -50,6 +58,11 @@ HRESULT CEffect_Manager::Ready_Pistol_Fire(LEVEL eLevelID)
 
 HRESULT CEffect_Manager::Ready_Boss_Die(LEVEL eLevelID)
 {
+	auto iter = m_Effects.find(TEXT("Effect_Boss_Die"));
+
+	if (iter != m_Effects.end())
+		return S_OK;
+
 	list<class CEffect*> Effects = {};
 
 	CEffect::EFFECT_DESC  Desc;
@@ -61,7 +74,7 @@ HRESULT CEffect_Manager::Ready_Boss_Die(LEVEL eLevelID)
 	for (int i = 0; i < 5; ++i)
 	{
 		Effects.push_back(
-			static_cast<CEffect*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(eLevelID),
+			static_cast<CEffect*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC),
 				TEXT("Prototype_GameObject_Effect"),&Desc))
 		);
 	}
@@ -73,6 +86,11 @@ HRESULT CEffect_Manager::Ready_Boss_Die(LEVEL eLevelID)
 
 HRESULT CEffect_Manager::Ready_Grenade_Explosion(LEVEL eLevelID)
 {
+	auto iter = m_Effects.find(TEXT("Effect_Grenade_Explosion"));
+
+	if (iter != m_Effects.end())
+		return S_OK;
+
 	list<class CEffect*> Effects = {};
 
 	CEffect::EFFECT_DESC  Desc;
@@ -84,7 +102,7 @@ HRESULT CEffect_Manager::Ready_Grenade_Explosion(LEVEL eLevelID)
 	for (int i = 0; i < 10; ++i)
 	{
 		Effects.push_back(
-			static_cast<CEffect*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(eLevelID),
+			static_cast<CEffect*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC),
 				TEXT("Prototype_GameObject_Effect"), &Desc))
 		);
 	}
@@ -171,6 +189,7 @@ void CEffect_Manager::Free()
 		}
 		Effects.second.clear();
 	}
+	m_Effects.clear();
 
 	Safe_Release(m_pGameInstance);
 }

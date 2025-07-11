@@ -295,6 +295,10 @@ void CTerrain_Manager::Check_Landing()
     //}
 }
 
+void CTerrain_Manager::Clear_Terrains()
+{
+}
+
 void CTerrain_Manager::Free()
 {
     __super::Free();

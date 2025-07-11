@@ -6,6 +6,14 @@
 #include "Player.h"
 #include "Player_RightHand.h"
 #include "Player_LeftHand.h"
+#include "Effect_Manager.h"
+#include "Particle_Manager.h"
+#include "Bullet_Manager.h"
+#include "Snow.h"
+#include "Blood.h"
+#include "Effect.h"
+#include "Effect_Pistol_Fire.h"
+#include "Bullet.h"
 
 /*****************************
 대재훈의 은총 이 얼마나 관대한가
@@ -111,6 +119,11 @@ HRESULT CMainApp::Ready_Prototypes()
 	/* For.Prototype_Component_Animation */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Animation"),
 		CAnimation::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_Cube */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_Cube"),
+		CVIBuffer_Cube::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
 #pragma region 폰트 텍스처
@@ -585,6 +598,10 @@ HRESULT CMainApp::Ready_Prototypes()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Grenade_Explosion"),
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Bullet/Grenade/Grenade_Explosion_%d.png"), 31))))
 		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Bullet"),
+		CBullet::Create(m_pGraphic_Device))))
+		return E_FAIL;
 #pragma endregion
 
 #pragma region 플레이어
@@ -604,6 +621,51 @@ HRESULT CMainApp::Ready_Prototypes()
 		return E_FAIL;
 #pragma endregion	
 
+#pragma region 이펙트
+	/* For.Prototype_Component_Texture_Effect */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Effect"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Explosion/Explosion%d.png"), 90))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Effect_Boss_Die */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Effect_Boss_Die"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Effect/Boss_Die/Boss_Die_%d.png"), 32))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Effect_Grenade_Explosion */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Effect_Grenade_Explosion"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Effect/Grenade_Explosion/Grenade_Explosion_%d.png"), 31))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Effect_Pistol_Fire */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Effect_Pistol_Fire"),
+		CEffect_Pistol_Fire::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Effect */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Effect"),
+		CEffect::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	/* For. Prototype_Component_Texture_Snow */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Snow"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Snow/Snow.png"), 1))))
+		return E_FAIL;
+
+	/* For. Prototype_Component_Texture_Blood */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Blood"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Particle/Blood.png"), 1))))
+		return E_FAIL;
+
+	/* For. Prototype_GameObject_Snow*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Snow"), CSnow::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	/* For. Prototype_GameObject_Blood */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Blood"), CBlood::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+#pragma endregion
 	return S_OK;
 }
 
@@ -629,4 +691,8 @@ void Client::CMainApp::Free()
 	m_pGameInstance->Release_Engine();
 
 	Safe_Release(m_pGameInstance);	
+
+	//CEffect_Manager::GetInstance()->Release_Effect_Manager();
+	//CParticle_Manager::GetInstance()->Release_Particle_Manager();
+	//CBullet_Manager::GetInstance()->Release_Bullet_Manager();
 }
