@@ -163,4 +163,6 @@ void CUIText::Free()
 	{
 		Safe_Release(iter);
 	}
+
+	m_vecFont.clear();
 }

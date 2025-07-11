@@ -20,6 +20,8 @@ HRESULT CLever::Initialize_Prototype()
 
 HRESULT CLever::Initialize(void* pArg)
 {
+	m_pObjectDesc = *static_cast<CGameObject::GAMEOBJECT_DESC*>(pArg);
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
@@ -41,7 +43,7 @@ void CLever::Update(_float fTimeDelta)
 	if (m_bActive &&
 		dynamic_cast<CMapElevator*>(
 			m_pGameInstance->Get_GameObject_By_ID(
-				ENUM_CLASS(LEVEL::GAMEPLAY),
+				m_pObjectDesc.iLayerLevel,
 				TEXT("Layer_Map_Objects_Ride"),
 				m_iTargetID))->Get_Elevator_End())
 	{
@@ -93,7 +95,7 @@ void CLever::Lever_Control(_float fTimeDelta)
 		m_bUp = !m_bUp;
 		dynamic_cast<CMapElevator*>(
 			m_pGameInstance->Get_GameObject_By_ID(
-				ENUM_CLASS(LEVEL::GAMEPLAY),
+				m_pObjectDesc.iLayerLevel,
 				TEXT("Layer_Map_Objects_Ride"),
 				m_iTargetID))->Set_Elevator_Active(true);
 	}
@@ -123,7 +125,7 @@ HRESULT CLever::Ready_Components()
 		return E_FAIL;
 
 	/* Com_Texture */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Interaction_Default_Lever"),
+	if (FAILED(__super::Add_Component(m_pObjectDesc.iLayerLevel, TEXT("Prototype_Component_Texture_Interaction_Default_Lever"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
