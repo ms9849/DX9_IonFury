@@ -583,22 +583,32 @@ void CPlayer::Insert_ItemDesc(const _wstring strItemText)
 		m_ItemQueues.pop_back();
 	}
 
-	m_ItemQueues.push_front(strItemText);
+	ITEM_DESC Desc;
+	Desc.fCreateTime = 0.f;
+	Desc.strItemText = strItemText;
+
+	m_ItemQueues.push_front(Desc);
 }
 
 void CPlayer::Pop_ItemDesc(_float fTimeDelta)
 {
 	// 생성된 순서대로 챠라라락 안사라지고 하나하나 다 3초씩 걸려야 사라짐
-	m_fTimeStack += fTimeDelta;
+	for (auto& item : m_ItemQueues)
+		item.fCreateTime += fTimeDelta;
 
-	for (size_t i = 0; i < m_ItemQueues.size(); ++i)
+	if(!m_ItemQueues.empty() && m_ItemQueues.back().fCreateTime > 2.f)
+	{
+		m_ItemQueues.pop_back();
+	}
+
+	/*for (size_t i = 0; i < m_ItemQueues.size(); ++i)
 	{
 		if (m_fTimeStack > 2.f)
 		{
 			m_fTimeStack = 0.f;
 			m_ItemQueues.pop_back();
 		}
-	}
+	}*/
 }
 
 _wstring CPlayer::Set_FrameKey(_wstring strDst, _wstring strSrc)
@@ -723,7 +733,7 @@ const COLLISION_DESC& CPlayer::Get_CollisionDesc(COLLISION eColType)
 
 _wstring CPlayer::Get_ItemText(size_t iIndex)
 {
-	return m_ItemQueues[iIndex];
+	return m_ItemQueues[iIndex].strItemText;
 }
 
 size_t CPlayer::Get_ItemQueue_Length()
