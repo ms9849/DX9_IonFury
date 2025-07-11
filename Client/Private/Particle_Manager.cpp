@@ -11,20 +11,23 @@ CParticle_Manager::CParticle_Manager() :
 	Safe_AddRef(m_pGameInstance);
 }
 
-HRESULT CParticle_Manager::Initialize()
+HRESULT CParticle_Manager::Initialize(LEVEL eLevelID)
 {
 	/*
 	파티클들 미리 풀링.
 
 	수업 코드의 GameInstance에 존재하던 Clone Prototype을 통해 파티클 오브젝트를 받아온다.
 	*/
+	auto iter = m_Particles.find(TEXT("Particle_Blood"));
+	if (iter != m_Particles.end())
+		return S_OK;
 
 	list<CParticleSystem*> Particles = {};
 
 	for (int i = 0; i < 30; ++i)
 	{
 		Particles.push_back(
-			static_cast<CParticleSystem*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Blood"), nullptr))
+			static_cast<CParticleSystem*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Blood"), nullptr))
 		);
 	}
 

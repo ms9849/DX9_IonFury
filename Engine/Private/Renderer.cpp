@@ -145,6 +145,4 @@ void CRenderer::Free()
 	}
 
 	Safe_Release(m_pGraphic_Device);
-
-
 }

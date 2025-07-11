@@ -27,7 +27,6 @@ CLevel_BossFight::CLevel_BossFight(LPDIRECT3DDEVICE9 pGraphic_Device, LEVEL eLev
 
 HRESULT CLevel_BossFight::Initialize()
 {
-
 	if (FAILED(Ready_Objects_By_JSON()))
 		return E_FAIL;
 
@@ -52,11 +51,11 @@ HRESULT CLevel_BossFight::Initialize()
 	if (FAILED(Ready_Layer_UI(TEXT("Layer_UI"))))
 		return E_FAIL;
 	
-	// if (FAILED(Ready_Layer_Effect(TEXT("Layer_Effect"))))
-	// 	return E_FAIL;
-	// 
-	// if (FAILED(Ready_Layer_Particle(TEXT("Layer_Particle"))))
-	// 	return E_FAIL;
+	 if (FAILED(Ready_Layer_Effect(TEXT("Layer_Effect"))))
+	 	return E_FAIL;
+	 
+	 if (FAILED(Ready_Layer_Particle(TEXT("Layer_Particle"))))
+	 	return E_FAIL;
 	// 
 	//if (FAILED(Ready_Layer_Items(TEXT("Layer_Items"))))
 	//	return E_FAIL;
@@ -88,8 +87,8 @@ HRESULT CLevel_BossFight::Initialize()
 	//if (FAILED(Ready_Layer_Interaction_Objects(TEXT("Layer_Interaction_Objects"))))
 	//	return E_FAIL;
 
-	// if (FAILED(Ready_Layer_Bullet(TEXT("Layer_Bullet"))))
-	// 	return E_FAIL;
+	if (FAILED(Ready_Layer_Bullet(TEXT("Layer_Bullet"))))
+	 	return E_FAIL;
 
 	return S_OK;
 }
@@ -531,7 +530,7 @@ HRESULT CLevel_BossFight::Ready_Layer_UI(const _wstring& strLayerTag)
 HRESULT CLevel_BossFight::Ready_Layer_Effect(const _wstring& strLayerTag)
 {
 	m_pEffect_Manager = CEffect_Manager::GetInstance();
-	m_pEffect_Manager->Initialize();
+	m_pEffect_Manager->Initialize(LEVEL::BOSSFIGHT); 
 	Safe_AddRef(m_pEffect_Manager);
 
 	return S_OK;
@@ -540,7 +539,7 @@ HRESULT CLevel_BossFight::Ready_Layer_Effect(const _wstring& strLayerTag)
 HRESULT CLevel_BossFight::Ready_Layer_Particle(const _wstring& strLayerTag)
 {
 	m_pParticle_Manager = CParticle_Manager::GetInstance();
-	m_pParticle_Manager->Initialize();
+	m_pParticle_Manager->Initialize(LEVEL::BOSSFIGHT);
 	Safe_AddRef(m_pParticle_Manager);
 
 	return S_OK;
@@ -901,14 +900,14 @@ void CLevel_BossFight::Free()
 	Safe_Release(m_pUICardKey);
 	Safe_Release(m_pFileMgr);
 
-	m_pEffect_Manager->Release_Effect_Manager();
 	Safe_Release(m_pEffect_Manager);
+	m_pEffect_Manager->Release_Effect_Manager();
 
-	m_pParticle_Manager->Release_Particle_Manager();
 	Safe_Release(m_pParticle_Manager);
+	m_pParticle_Manager->Release_Particle_Manager();
 
-	m_pBullet_Manager->Release_Bullet_Manager();
 	Safe_Release(m_pBullet_Manager);
+	m_pBullet_Manager->Release_Bullet_Manager();
 
 	m_pTerrain_Manager->Release_Terrain_Manager();
 	Safe_Release(m_pTerrain_Manager);

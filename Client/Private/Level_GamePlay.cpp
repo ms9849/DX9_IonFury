@@ -13,7 +13,7 @@
 #include "Terrain.h"
 #include "ParticleSystem.h"
 #include "Player.h"
-//#include "MapTrashBox.h"
+#include "MapTrashBox.h"
 #include "Spawner.h"
 
 #include "Particle_Manager.h"
@@ -682,7 +682,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_UI(const _wstring& strLayerTag)
 HRESULT CLevel_GamePlay::Ready_Layer_Effect(const _wstring& strLayerTag)
 {
 	m_pEffect_Manager = CEffect_Manager::GetInstance();
-	m_pEffect_Manager->Initialize();
+	m_pEffect_Manager->Initialize(LEVEL::GAMEPLAY);
 	Safe_AddRef(m_pEffect_Manager);
 
 	return S_OK;
@@ -697,7 +697,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Effect(const _wstring& strLayerTag)
 HRESULT CLevel_GamePlay::Ready_Layer_Particle(const _wstring& strLayerTag)
 {
 	m_pParticle_Manager = CParticle_Manager::GetInstance();
-	m_pParticle_Manager->Initialize();
+	m_pParticle_Manager->Initialize(LEVEL::GAMEPLAY);
 	Safe_AddRef(m_pParticle_Manager);
 
 	return S_OK;
@@ -736,6 +736,10 @@ HRESULT CLevel_GamePlay::Ready_Layer_Items(const _wstring& strLayerTag)
 				ENUM_CLASS(iter.iLayerLevel), iter.strLayer, TEXT("Com_Transform"), iter.iObjectID)
 			)->Set_State(STATE::POSITION, iter.matWorld.m[3]);
 	}
+	/*if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Item_Healpack"),
+			ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag)))
+			return E_FAIL;*/
+
 	//
 	//if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Item_Healpack"),
 	//	ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag)))
@@ -749,9 +753,9 @@ HRESULT CLevel_GamePlay::Ready_Layer_Items(const _wstring& strLayerTag)
 	//	ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag)))
 	//	return E_FAIL;
 	//
-	//if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Item_CardKey"),
-	//	ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag)))
-	//	return E_FAIL;
+	/*if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Item_CardKey"),
+		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag)))
+		return E_FAIL;*/
 
 	return S_OK;
 }
@@ -1097,14 +1101,14 @@ void CLevel_GamePlay::Free()
 	Safe_Release(m_pUICardKey);
 	Safe_Release(m_pFileMgr);
 
-	m_pEffect_Manager->Release_Effect_Manager();
 	Safe_Release(m_pEffect_Manager);
+	m_pEffect_Manager->Release_Effect_Manager();
 
-	m_pParticle_Manager->Release_Particle_Manager();
 	Safe_Release(m_pParticle_Manager);
+	m_pParticle_Manager->Release_Particle_Manager();
 
-	m_pBullet_Manager->Release_Bullet_Manager();
 	Safe_Release(m_pBullet_Manager);
+	m_pBullet_Manager->Release_Bullet_Manager();
 
 	m_pTerrain_Manager->Release_Terrain_Manager();
 	Safe_Release(m_pTerrain_Manager);
