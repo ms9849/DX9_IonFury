@@ -36,6 +36,7 @@ HRESULT CZombie::Initialize(void* pArg)
 	if (m_Desc->isTarget)
 	{
 		m_isTarget = m_Desc->isTarget;
+		m_isLeft = m_Desc->isLeft;
 		m_uPosLen = m_Desc->TargetPos.size();
 		for (int i = 0; i < m_uPosLen; i++)
 		{
@@ -176,6 +177,7 @@ void CZombie::Update(_float fTimeDelta)
 				m_isTarget = false;*/
 
 			TargetMove(fTimeDelta, m_vTargetPos[m_uIdx]);
+			m_isMove = true;
 			m_fSumMoveCoolTime = 0.f;
 		}
 	}
@@ -580,10 +582,10 @@ void CZombie::TargetMove(_float fTimeDelta, _float3 vPos)		// 정해져 있는 장소로
 		m_fSumTime += fTimeDelta;
 		m_pTransformCom->Go_Straight(fTimeDelta);
 
-		/*if (m_fSumTime >= 5.f)
+		if (m_fSumTime >= 5.f)
 		{
 			m_isTarget = false;
-		}*/
+		}
 
 		return;
 	}
@@ -597,7 +599,7 @@ void CZombie::TargetMove(_float fTimeDelta, _float3 vPos)		// 정해져 있는 장소로
 	m_pTransformCom->Set_State(STATE::LOOK, vDir);
 	m_pTransformCom->Go_Straight(fTimeDelta);
 
-	if (fDistance <= 0.5f)
+	if (fDistance <= 1.5f)
 	{
 		m_isArrive = true;
 	}

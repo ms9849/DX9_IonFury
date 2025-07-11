@@ -30,6 +30,7 @@ HRESULT CSpawner::Initialize(void* pArg)
 	if (pArg != nullptr)
 	{
 		m_Desc = *static_cast<SPAWNER_DESC*>(pArg);
+		m_isLeft = m_Desc.isLeft;
 	}
 	
 	if (FAILED(Ready_Components()))
@@ -73,6 +74,87 @@ void CSpawner::Priority_Update(_float fTimeDelta)
 
 void CSpawner::Update(_float fTimeDelta)
 {
+	if(m_pGameInstance->Key_Down('Q'))
+	{
+		for (size_t i = 0; i < 5; i++)
+		{
+			CGameObject* pClone = nullptr;
+			if (m_Desc.idx != -1)
+			{
+				if (m_Desc.idx == 0)
+				{
+					CZombie::ZOMBIE_DESC desc = {};
+					desc.vPos = m_pTransformCom->Get_State(STATE::POSITION);
+					desc.isAwake = true;
+					desc.isTarget = true;
+					if (!m_isLeft)
+					{
+						desc.isLeft = false;
+						desc.TargetPos.push_back({ 31.5f, 1.f, 28.5f });
+					}
+					else
+					{
+						desc.isLeft = true;
+						desc.TargetPos.push_back({ 31.5f, 1.f, 63.5f });
+					}
+					pClone = static_cast<CGameObject*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::GAMEPLAY),
+						m_strFrameKeys[m_Desc.idx], &desc));
+				}
+				else
+				{
+					pClone = static_cast<CGameObject*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::GAMEPLAY),
+						m_strFrameKeys[m_Desc.idx], m_pTransformCom->Get_State(STATE::POSITION)));
+				}
+			}
+			else
+			{
+				pClone = static_cast<CGameObject*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::GAMEPLAY),
+					m_strFrameKeys[0], m_pTransformCom->Get_State(STATE::POSITION)));
+			}
+
+			m_pGameInstance->Add_Clone_ToLayer(pClone, ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Monster"));
+
+			CTerrain_Manager::GetInstance()->Add_LandObject_One(pClone);
+		}
+
+		m_isDead = true;
+	}
+	/*if (m_isActive)
+	{
+		for (size_t i = 0; i < 5; i++)
+		{
+			CGameObject* pClone = nullptr;
+			if (m_Desc.idx != -1)
+			{
+				if (m_Desc.idx == 0)
+				{
+					CZombie::ZOMBIE_DESC desc = {};
+					desc.vPos = m_pTransformCom->Get_State(STATE::POSITION);
+					desc.isAwake = true;
+					desc.isTarget = true;
+					desc.TargetPos.push_back({ 30.5f, 1.f, 28.5f });
+					pClone = static_cast<CGameObject*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::GAMEPLAY),
+						m_strFrameKeys[m_Desc.idx], &desc));
+				}
+				else
+				{
+					pClone = static_cast<CGameObject*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::GAMEPLAY),
+						m_strFrameKeys[m_Desc.idx], m_pTransformCom->Get_State(STATE::POSITION)));
+				}
+			}
+			else
+			{
+				pClone = static_cast<CGameObject*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::GAMEPLAY),
+					m_strFrameKeys[0], m_pTransformCom->Get_State(STATE::POSITION)));
+			}
+
+			m_pGameInstance->Add_Clone_ToLayer(pClone, ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Monster"));
+
+			CTerrain_Manager::GetInstance()->Add_LandObject_One(pClone);
+		}
+
+		m_isActive = false;
+	}*/
 }
 
 void CSpawner::Late_Update(_float fTimeDelta)

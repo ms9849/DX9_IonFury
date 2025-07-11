@@ -458,16 +458,18 @@ HRESULT CLevel_GamePlay::Ready_Layer_Spawner(const _wstring& strLayerTag)
 	CSpawner::SPAWNER_DESC desc;
 	desc.vPos = _float3(45.5f, 1.f, 28.5f);
 	desc.idx = 0;
+	desc.isLeft = false;
 	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Spawner"),
 		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag, &desc)))
 		return E_FAIL;
 
 	// ¸Ê ÁÂÃø ·ë ½ºÆù
-	/*desc.vPos = _float3(45.5f, 1.f, 63.5f);
+	desc.vPos = _float3(45.5f, 1.f, 63.5f);
 	desc.idx = 0;
+	desc.isLeft = true;
 	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Spawner"),
 		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag, &desc)))
-		return E_FAIL;*/
+		return E_FAIL;
 }
 
 HRESULT CLevel_GamePlay::Ready_Layer_Monster(const _wstring& strLayerTag)

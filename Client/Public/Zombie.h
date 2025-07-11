@@ -12,6 +12,7 @@ public:
 		_float3 vPos;
 		_bool isAwake = false;
 		_bool isTarget = false;
+		_bool isLeft = false;
 		vector<_float3> TargetPos;
 	}ZOMBIE_DESC;
 
