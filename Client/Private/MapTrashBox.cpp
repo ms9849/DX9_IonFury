@@ -1,4 +1,4 @@
-#include "TrashBox.h"
+#include "MapTrashBox.h"
 
 #include "GameInstance.h"
 #include "Bullet.h"
@@ -7,22 +7,22 @@
 #include "ItemPistolBullet.h"
 #include "ItemShootGunBullet.h"
 
-CTrashBox::CTrashBox(LPDIRECT3DDEVICE9 pGraphicDev) :
+CMapTrashBox::CMapTrashBox(LPDIRECT3DDEVICE9 pGraphicDev) :
     CGameObject { pGraphicDev }
 {
 }
 
-CTrashBox::CTrashBox(const CTrashBox& Prototype) :
-    CGameObject{ Prototype }
+CMapTrashBox::CMapTrashBox(const CMapTrashBox& Prototype) :
+    CGameObject( Prototype )
 {
 }
 
-void CTrashBox::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta)
+void CMapTrashBox::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta)
 {
     //아마 레이충돌만 발생할거라서 여기에 뭐 안해도 됨
 }
 
-void CTrashBox::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta, CComponent* pCollider)
+void CMapTrashBox::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta, CComponent* pCollider)
 {
     //여기서 레이랑 충돌판정 하고 실제로 체력이 닳아서 없어지거나 하는 표현을 보여줄 것
 	if (static_cast<CBullet*>(pDst) != nullptr && m_iHp >= 0)
@@ -53,7 +53,7 @@ void CTrashBox::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeD
 	}
 }
 
-const COLLISION_DESC& CTrashBox::Get_CollisionDesc(COLLISION eColType)
+const COLLISION_DESC& CMapTrashBox::Get_CollisionDesc(COLLISION eColType)
 {
 	COLLISION_DESC Desc;
 	Desc.pCollider = m_pBoxColliderCom;
@@ -62,43 +62,45 @@ const COLLISION_DESC& CTrashBox::Get_CollisionDesc(COLLISION eColType)
 	return Desc;
 }
 
-HRESULT CTrashBox::Initialize_Prototype()
+HRESULT CMapTrashBox::Initialize_Prototype()
 {
     return S_OK;
 }
 
-HRESULT CTrashBox::Initialize(void* pArg)
+HRESULT CMapTrashBox::Initialize(void* pArg)
 {
+	m_pObjectDesc = *static_cast<CGameObject::GAMEOBJECT_DESC*>(pArg);
+
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
 	if (pArg == nullptr)
 		return S_OK;
 
-	_float3* pDesc = reinterpret_cast<_float3*>(pArg);
-	m_pTransformCom->Set_State(STATE::POSITION, *pDesc);
-	m_pTransformCom->Set_Scale({ 0.3f, 0.3f, 0.3f });
+	//_float3* pDesc = reinterpret_cast<_float3*>(pArg);
+	//m_pTransformCom->Set_State(STATE::POSITION, *pDesc);
+	//m_pTransformCom->Set_Scale({ 0.3f, 0.3f, 0.3f });
 
     return S_OK;
 }
 
-void CTrashBox::Priority_Update(_float fTimeDelta)
+void CMapTrashBox::Priority_Update(_float fTimeDelta)
 {
 	//테스트용 추후 발견하시면 지워버리셔도 됩니다
 	int a = 10;
 }
 
-void CTrashBox::Update(_float fTimeDelta)
+void CMapTrashBox::Update(_float fTimeDelta)
 {
 }
 
-void CTrashBox::Late_Update(_float fTimeDelta)
+void CMapTrashBox::Late_Update(_float fTimeDelta)
 {
 	Compute_CamDistance(m_pTransformCom->Get_State(STATE::POSITION));
 	m_pGameInstance->Add_RenderGroup(RENDER::BLEND, this);
 }
 
-HRESULT CTrashBox::Render()
+HRESULT CMapTrashBox::Render()
 {
 	if (m_isDead) return S_OK;
 
@@ -115,7 +117,7 @@ HRESULT CTrashBox::Render()
     return S_OK;
 }
 
-HRESULT CTrashBox::Begin_RenderState()
+HRESULT CMapTrashBox::Begin_RenderState()
 {
 	_float4x4 matCameraWorld =  m_pGameInstance->Get_CameraWorld();
 
@@ -136,7 +138,7 @@ HRESULT CTrashBox::Begin_RenderState()
 	return S_OK;
 }
 
-HRESULT CTrashBox::End_RenderState()
+HRESULT CMapTrashBox::End_RenderState()
 {
 	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 	m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
@@ -145,7 +147,7 @@ HRESULT CTrashBox::End_RenderState()
 	return S_OK;
 }
 
-HRESULT CTrashBox::Ready_Components()
+HRESULT CMapTrashBox::Ready_Components()
 {
 	/* 텍스쳐는 추후 세팅할 것 */
 	/* Com_Transform */
@@ -170,16 +172,16 @@ HRESULT CTrashBox::Ready_Components()
 		return E_FAIL;
 
 	/* Com_Texture */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_TrashBox"),
+	if (FAILED(__super::Add_Component(m_pObjectDesc.iLayerLevel, TEXT("Prototype_Component_Texture_Map_TrashBox"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
     return S_OK;
 }
 
-CTrashBox* CTrashBox::Create(LPDIRECT3DDEVICE9 pGraphicDev)
+CMapTrashBox* CMapTrashBox::Create(LPDIRECT3DDEVICE9 pGraphicDev)
 {
-	CTrashBox* pInstance = new CTrashBox(pGraphicDev);
+	CMapTrashBox* pInstance = new CMapTrashBox(pGraphicDev);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 		Safe_Release(pInstance);
@@ -187,9 +189,9 @@ CTrashBox* CTrashBox::Create(LPDIRECT3DDEVICE9 pGraphicDev)
     return pInstance;
 }
 
-CGameObject* CTrashBox::Clone(void* pArg)
+CGameObject* CMapTrashBox::Clone(void* pArg)
 {
-	CTrashBox* pInstance = new CTrashBox(*this);
+	CMapTrashBox* pInstance = new CMapTrashBox(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 		Safe_Release(pInstance);
@@ -197,7 +199,7 @@ CGameObject* CTrashBox::Clone(void* pArg)
 	return pInstance;
 }
 
-void CTrashBox::Free()
+void CMapTrashBox::Free()
 {
 	__super::Free();
 

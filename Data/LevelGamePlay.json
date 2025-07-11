@@ -2489,6 +2489,44 @@
             }
         ]
     },
+      {
+        "Layer": "Layer_Map_Objects_Ray",
+        "Objects": [
+            {
+                "ID": 0,
+                "LayerLevel": 3,
+                "Matrix": [
+                    [
+                        0.3,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.3,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        0.3,
+                        0.0
+                    ],
+                    [
+                        3.0,
+                        0.15,
+                        10.0,
+                        1.0
+                    ]
+                ],
+                "Proto": "Prototype_GameObject_Map_TrashBox",
+                "ProtoLevel": 3,
+                "TextureIndex": 0
+            }
+        ]
+    },
     {
         "Layer": "Layer_Map_Objects_Ride",
         "Objects": [

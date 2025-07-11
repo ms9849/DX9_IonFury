@@ -420,7 +420,7 @@
     <ClInclude Include="..\Public\CFile_Manager.h">
       <Filter>05.FileMgr</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\TrashBox.h">
+    <ClInclude Include="..\Public\MapTrashBox.h">
       <Filter>03.MapObjects\TrashBox</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Spawner.h">
@@ -642,7 +642,7 @@
     <ClCompile Include="..\Private\CFile_Manager.cpp">
       <Filter>05.FileMgr</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\TrashBox.cpp">
+    <ClCompile Include="..\Private\MapTrashBox.cpp">
       <Filter>03.MapObjects\TrashBox</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Spawner.cpp">
