@@ -1,4 +1,4 @@
-#include "Player.h"
+﻿#include "Player.h"
 
 #include "GameInstance.h"
 #include "Bullet.h"
@@ -186,6 +186,7 @@ void CPlayer::Update(_float fTimeDelta)
 			m_bUseCardKey = false;
 		}
 	}
+
 	if (m_pLeftHandAnimationCom->Check_Animation_Finish())
 	{
 		if (!m_bUseCardKey)
@@ -216,10 +217,6 @@ void CPlayer::Update(_float fTimeDelta)
 
 	_float3 vRight = m_pTransformCom->Get_State(STATE::RIGHT);
 	vRight.y = 0.f;
-
-	/*
-	
-	*/
 
 	// 오른손 애니메이션 끝나면 idle로
 	if (!m_bWeaponChange && !m_bUseCardKey && m_pRightHandAnimationCom->Check_Animation_Finish())
@@ -274,17 +271,17 @@ void CPlayer::Update(_float fTimeDelta)
 			iter->second.iShootBullets = iter->second.iCanShootBullets;
 			m_tInfo.iShootBullets = iter->second.iShootBullets;
 
-				if (m_tInfo.strWeapon.compare(TEXT("Pistol")) == 0)
-				{
-					m_pGameInstance->PlaySoundOnce(TEXT("Pistol_Reload_1.ogg"), CHANNELID::SOUND_EFFECT, 0.5f);
-					m_pGameInstance->PlaySoundOnce(TEXT("Pistol_Reload_2.ogg"), CHANNELID::SOUND_EFFECT, 0.5f);
-				}
-
-				if (m_tInfo.strWeapon.compare(TEXT("ShootGun")) == 0)
-				{
-					m_pGameInstance->PlaySoundOnce(TEXT("ShotGun_Reload_1.ogg"), CHANNELID::SOUND_EFFECT, 0.5f);
-				}
+			if (m_tInfo.strWeapon.compare(TEXT("Pistol")) == 0)
+			{
+				m_pGameInstance->PlaySoundOnce(TEXT("Pistol_Reload_1.ogg"), CHANNELID::SOUND_EFFECT, 0.5f);
+				m_pGameInstance->PlaySoundOnce(TEXT("Pistol_Reload_2.ogg"), CHANNELID::SOUND_EFFECT, 0.5f);
 			}
+
+			if (m_tInfo.strWeapon.compare(TEXT("ShootGun")) == 0)
+			{
+				m_pGameInstance->PlaySoundOnce(TEXT("ShotGun_Reload_1.ogg"), CHANNELID::SOUND_EFFECT, 0.5f);
+			}
+		}
 
 		// 총알 발사
 		if (m_tInfo.strAction != TEXT("Reload")
@@ -345,7 +342,7 @@ void CPlayer::Update(_float fTimeDelta)
 						m_tInfo.strAction = TEXT("Shoot");
 					}
 					else if (m_tInfo.strWeapon == TEXT("ShootGun")
-							&& m_tInfo.strAction != TEXT("Shoot"))
+						&& m_tInfo.strAction != TEXT("Shoot"))
 					{
 						m_pGameInstance->PlaySoundOnce(TEXT("ShotGun_Fire.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
 

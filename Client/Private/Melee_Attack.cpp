@@ -22,17 +22,6 @@ HRESULT CMeleeAttack::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-	MELEEATTACK_DESC* pDesc = static_cast<MELEEATTACK_DESC*>(pArg);
-
-	if (pDesc == nullptr)
-		return S_OK;
-
-	m_vDir = pDesc->vDir;
-	m_fDamage = pDesc->fDamage;
-	m_fDurationTime = pDesc->fDurationTime;
-	m_pTransformCom->Set_State(STATE::POSITION, pDesc->vPos);
-	m_pTransformCom->Set_Scale(_float3(0.1f, 0.1f, 0.1f));
-
 	return S_OK;
 }
 
@@ -88,12 +77,12 @@ HRESULT CMeleeAttack::Ready_Components()
 		return E_FAIL;
 
 	/* Com_Texture */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Sky"),
+	if (FAILED(__super::Add_Component(m_pObjectDesc.iLayerLevel, TEXT("Prototype_Component_Texture_Sky"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
 	/* Com_VIBuffer */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_VIBuffer_Cube"),
+	if (FAILED(__super::Add_Component(m_pObjectDesc.iLayerLevel, TEXT("Prototype_Component_VIBuffer_Cube"),
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
 		return E_FAIL;
 

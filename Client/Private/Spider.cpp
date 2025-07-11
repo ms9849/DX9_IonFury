@@ -24,12 +24,14 @@ HRESULT CSpider::Initialize_Prototype()
 
 HRESULT CSpider::Initialize(void* pArg)
 {
-	m_pPlayerTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player"), TEXT("Com_Transform")));
+	m_pObjectDesc = *static_cast<CGameObject::GAMEOBJECT_DESC*>(pArg);
 
-	if (pArg != nullptr)				// 스포너의 위치를 받아온다
-	{
-		m_vPos = static_cast<_float3*>(pArg);
-	}
+	m_pPlayerTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(m_pObjectDesc.iLayerLevel, TEXT("Layer_Player"), TEXT("Com_Transform")));
+
+	//if (pArg != nullptr)				// 스포너의 위치를 받아온다
+	//{
+	//	m_vPos = static_cast<_float3*>(pArg);
+	//}
 
 	if (m_pPlayerTransform == nullptr)
 		return E_FAIL;
@@ -45,7 +47,7 @@ HRESULT CSpider::Initialize(void* pArg)
 
 	m_pTransformCom->Set_Scale({ 0.5f, 0.5f, 0.1f });
 
-	if (m_vPos != nullptr)
+	/*if (m_vPos != nullptr)
 	{
 		m_pTransformCom->Set_State(STATE::POSITION, _float3(
 			m_vPos->x + m_pGameInstance->Random(0.f, 2.f),
@@ -58,7 +60,7 @@ HRESULT CSpider::Initialize(void* pArg)
 			m_pGameInstance->Random(0.f, 2.f),
 			0.f,
 			m_pGameInstance->Random(0.f, 2.f)));
-	}
+	}*/
 
 	m_fDamage = 30.f;
 	m_fAttackRange = 1.5f;
@@ -323,7 +325,7 @@ void CSpider::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 			{
 				m_pGameInstance->PlaySoundOnce(TEXT("Spider_hit_1.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
 
-				CParticle_Manager::GetInstance()->Create_Particle(TEXT("Particle_Blood"), ENUM_CLASS(LEVEL::GAMEPLAY),
+				CParticle_Manager::GetInstance()->Create_Particle(TEXT("Particle_Blood"), m_pObjectDesc.iLayerLevel,
 					TEXT("Layer_Particle"), m_pTransformCom->Get_State(STATE::POSITION));
 			}
 		}
@@ -383,7 +385,7 @@ HRESULT CSpider::Ready_Components()
 
 	/* Com_Sight */
 	CSight::SIGHT_DESC		SightDesc{ 5.f, D3DXToRadian(90.0f), m_pPlayerTransform, m_pTransformCom, true };
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Sight"),
+	if (FAILED(__super::Add_Component(m_pObjectDesc.iLayerLevel, TEXT("Prototype_Component_Sight"),
 		TEXT("Com_Sight"), reinterpret_cast<CComponent**>(&m_pSightCom), &SightDesc)))
 		return E_FAIL;
 
@@ -459,14 +461,8 @@ void CSpider::Attack()
 	Desc.vDir = vDir;
 	Desc.vPos = vPos;*/
 
-	CMeleeAttack::MELEEATTACK_DESC Desc;
-	Desc.vDir = vDir;
-	Desc.vPos = vPos;
-	Desc.fDamage = m_fDamage;
-	Desc.fDurationTime = 10.f;
-
-	m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Melee_Attack"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Melee_Attack"), &Desc);
-	//m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Bullet"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Spider_Bullet"), &Desc);
+	m_pGameInstance->Add_GameObject_ToLayer(m_pObjectDesc.iLayerLevel, TEXT("Prototype_GameObject_Melee_Attack"), m_pObjectDesc.iLayerLevel, TEXT("Layer_Melee_Attack"));
+	//m_pGameInstance->Add_GameObject_ToLayer(m_pObjectDesc.iLayerLevel, TEXT("Prototype_GameObject_Bullet"), m_pObjectDesc.iLayerLevel, TEXT("Layer_Spider_Bullet"), &Desc);
 }
 
 void CSpider::Move(_float fTimeDelta)

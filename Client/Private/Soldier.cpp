@@ -23,12 +23,14 @@ HRESULT CSoldier::Initialize_Prototype()
 
 HRESULT CSoldier::Initialize(void* pArg)
 {
-	m_pPlayerTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player"), TEXT("Com_Transform")));
+	m_pObjectDesc = *static_cast<CGameObject::GAMEOBJECT_DESC*>(pArg);
 
-	if (pArg != nullptr)				// 스포너의 위치를 받아온다
-	{
-		m_vPos = static_cast<_float3*>(pArg);
-	}
+	m_pPlayerTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(m_pObjectDesc.iLayerLevel, TEXT("Layer_Player"), TEXT("Com_Transform")));
+
+	//if (pArg != nullptr)				// 스포너의 위치를 받아온다
+	//{
+	//	m_vPos = static_cast<_float3*>(pArg);
+	//}
 
 	if (m_pPlayerTransform == nullptr)
 		return E_FAIL;
@@ -42,20 +44,20 @@ HRESULT CSoldier::Initialize(void* pArg)
 	if (FAILED(Ready_Animations()))
 		return E_FAIL;
 
-	if (m_vPos != nullptr)
-	{
-		m_pTransformCom->Set_State(STATE::POSITION, _float3(
-			m_vPos->x + m_pGameInstance->Random(0.f, 2.f),
-			0.f,
-			m_vPos->z + m_pGameInstance->Random(0.f, 2.f)));
-	}
-	else
-	{
-		m_pTransformCom->Set_State(STATE::POSITION, _float3(
-			m_pGameInstance->Random(0.f, 2.f),
-			0.f,
-			m_pGameInstance->Random(0.f, 2.f)));
-	}
+	//if (m_vPos != nullptr)
+	//{
+	//	m_pTransformCom->Set_State(STATE::POSITION, _float3(
+	//		m_vPos->x + m_pGameInstance->Random(0.f, 2.f),
+	//		0.f,
+	//		m_vPos->z + m_pGameInstance->Random(0.f, 2.f)));
+	//}
+	//else
+	//{
+	//	m_pTransformCom->Set_State(STATE::POSITION, _float3(
+	//		m_pGameInstance->Random(0.f, 2.f),
+	//		0.f,
+	//		m_pGameInstance->Random(0.f, 2.f)));
+	//}
 
 	m_fAttackRange = 4.f;
 	m_fDamage = 30.f;
@@ -368,7 +370,7 @@ void CSoldier::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDe
 	//		{
 	//			m_pGameInstance->PlaySoundOnce(TEXT("Soldier_Pain01.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
 	//		}
-	//		CParticle_Manager::GetInstance()->Create_Particle(TEXT("Particle_Blood"), ENUM_CLASS(LEVEL::GAMEPLAY),
+	//		CParticle_Manager::GetInstance()->Create_Particle(TEXT("Particle_Blood"), m_pObjectDesc.iLayerLevel,
 	//			TEXT("Layer_Particle"), m_pTransformCom->Get_State(STATE::POSITION));
 	//	}
 	//}
@@ -390,7 +392,7 @@ void CSoldier::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDe
 			{
 				m_pGameInstance->PlaySoundOnce(TEXT("Soldier_Pain01.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
 
-				CParticle_Manager::GetInstance()->Create_Particle(TEXT("Particle_Blood"), ENUM_CLASS(LEVEL::GAMEPLAY),
+				CParticle_Manager::GetInstance()->Create_Particle(TEXT("Particle_Blood"), m_pObjectDesc.iLayerLevel,
 					TEXT("Layer_Particle"), m_pTransformCom->Get_State(STATE::POSITION));
 			}
 			else
@@ -458,7 +460,7 @@ HRESULT CSoldier::Ready_Components()
 
 	/* Com_Sight */
 	CSight::SIGHT_DESC		SightDesc{ 5.f, D3DXToRadian(90.0f), m_pPlayerTransform, m_pTransformCom };
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Sight"),
+	if (FAILED(__super::Add_Component(m_pObjectDesc.iLayerLevel, TEXT("Prototype_Component_Sight"),
 		TEXT("Com_Sight"), reinterpret_cast<CComponent**>(&m_pSightCom), &SightDesc)))
 		return E_FAIL;
 
@@ -548,8 +550,8 @@ void CSoldier::Attack()
 	Desc.fDuration = 5.f;
 	Desc.isPlayerBullet = false;
 
-	CBullet_Manager::GetInstance()->Create_Bullet(TEXT("Bullet"), Desc, ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Monster_Bullet"));
-	//m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Bullet"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Monster_Bullet"), &Desc);
+	CBullet_Manager::GetInstance()->Create_Bullet(TEXT("Bullet"), Desc, m_pObjectDesc.iLayerLevel, TEXT("Layer_Monster_Bullet"));
+	//m_pGameInstance->Add_GameObject_ToLayer(m_pObjectDesc.iLayerLevel, TEXT("Prototype_GameObject_Bullet"), m_pObjectDesc.iLayerLevel, TEXT("Layer_Monster_Bullet"), &Desc);
 }
 
 void CSoldier::Move(_float fTimeDelta)
