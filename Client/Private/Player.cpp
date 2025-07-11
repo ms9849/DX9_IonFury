@@ -60,7 +60,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 	//m_pTransformCom->Set_State(STATE::POSITION, _float3(18.5f, 0.f, 95.f));
 
-	// ¿À¸¥¼Õ
+	// ì˜¤ë¥¸ì†
 	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(m_pObjectDesc.iProtoLevel, TEXT("Prototype_GameObject_Player_RightHand"),
 		m_pObjectDesc.iLayerLevel, TEXT("Layer_Player_RightHand"), &m_pObjectDesc)))
 		return E_FAIL;
@@ -72,7 +72,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 	m_pRightHandAnimationCom = dynamic_cast<CAnimation*>(m_pRightHand->Find_Component(TEXT("Com_Animation")));
 	Safe_AddRef(m_pRightHandAnimationCom);
 
-	// ¿Ş¼Õ
+	// ì™¼ì†
 	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(m_pObjectDesc.iProtoLevel, TEXT("Prototype_GameObject_Player_LeftHand"),
 		m_pObjectDesc.iLayerLevel, TEXT("Layer_Player_LeftHand"), &m_pObjectDesc)))
 		return E_FAIL;
@@ -93,7 +93,7 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 
 void CPlayer::Update(_float fTimeDelta)
 {
-	/* Á¡ÇÁ ·ÎÁ÷*/
+	/* ì í”„ ë¡œì§*/
 	if (!m_bJump && m_pGameInstance->Key_Down(VK_SPACE))
 	{
 		m_bJump = true;
@@ -102,7 +102,7 @@ void CPlayer::Update(_float fTimeDelta)
 
 	__super::Jump(fTimeDelta);
 
-	/* ¾Ö´Ï¸ŞÀÌ¼Ç Á¦¾î */
+	/* ì• ë‹ˆë©”ì´ì…˜ ì œì–´ */
 	auto iter = m_Weapons.find(m_tInfo.strWeapon);
 
 	if (m_tInfo.strAction.compare(TEXT("Reload")) != 0 && !m_bWeaponChange && !m_bUseCardKey)
@@ -172,8 +172,8 @@ void CPlayer::Update(_float fTimeDelta)
 		}
 	}
 
-	// ¾ÆÀÌÅÛ : Ä«µåÅ° »ç¿ë
-	// Ä«µåÅ° »ç¿ë Áß ÀÌµ¿ ¹× ´Ù¸¥ µ¿ÀÛ ¸·¾Æ¾ßÇÔ
+	// ì•„ì´í…œ : ì¹´ë“œí‚¤ ì‚¬ìš©
+	// ì¹´ë“œí‚¤ ì‚¬ìš© ì¤‘ ì´ë™ ë° ë‹¤ë¥¸ ë™ì‘ ë§‰ì•„ì•¼í•¨
 	if (m_bUseCardKey)
 	{
 		if (m_pLeftHandAnimationCom->Check_Animation_Finish(Set_FrameKey(m_tInfo.strItem, TEXT("Up"))))
@@ -192,7 +192,7 @@ void CPlayer::Update(_float fTimeDelta)
 			m_tInfo.strItemAction = TEXT("Idle");
 	}
 
-	// ¹«±â ±³Ã¼
+	// ë¬´ê¸° êµì²´
 	if (m_bWeaponChange)
 	{
 		if (m_pRightHandAnimationCom->Check_Animation_Finish(Set_FrameKey(m_tInfo.strWeapon, TEXT("Down"))))
@@ -221,10 +221,10 @@ void CPlayer::Update(_float fTimeDelta)
 	
 	*/
 
-	// ¿À¸¥¼Õ ¾Ö´Ï¸ŞÀÌ¼Ç ³¡³ª¸é idle·Î
+	// ì˜¤ë¥¸ì† ì• ë‹ˆë©”ì´ì…˜ ëë‚˜ë©´ idleë¡œ
 	if (!m_bWeaponChange && !m_bUseCardKey && m_pRightHandAnimationCom->Check_Animation_Finish())
 	{
-		/* ÀåÀüÀÌ ³¡³µÀ» ¶§ Ã¶ÄÀ ¼Ò¸® ³ª°Ô */
+		/* ì¥ì „ì´ ëë‚¬ì„ ë•Œ ì² ì»¥ ì†Œë¦¬ ë‚˜ê²Œ */
 		if (m_tInfo.strWeapon == TEXT("Pistol") && m_tInfo.strWeapon == TEXT("Reload"))
 		{
 			m_pGameInstance->PlaySoundOnce(TEXT("Pistol_Reload_3.ogg"), CHANNELID::SOUND_EFFECT, 0.2f);
@@ -237,7 +237,7 @@ void CPlayer::Update(_float fTimeDelta)
 	}
 	else
 	{
-		// ÀÌµ¿
+		// ì´ë™
 		if (m_pGameInstance->Key_Pressing('W'))
 		{
 			m_pTransformCom->Go_Direction(vLook, fTimeDelta);
@@ -263,7 +263,7 @@ void CPlayer::Update(_float fTimeDelta)
 				m_tInfo.strAction = TEXT("Walk");
 		}
 
-		// ÀåÀü
+		// ì¥ì „
 		if (m_pGameInstance->Key_Down('R')
 			&& !m_bWeaponChange
 			&& !m_bUseCardKey
@@ -281,12 +281,12 @@ void CPlayer::Update(_float fTimeDelta)
 			}
 		}
 
-		// ÃÑ¾Ë ¹ß»ç
+		// ì´ì•Œ ë°œì‚¬
 		if (m_tInfo.strAction != TEXT("Reload")
 			&& !m_bWeaponChange
 			&& !m_bUseCardKey)
 		{
-			// ¸Ó½Å°Ç
+			// ë¨¸ì‹ ê±´
 			if (m_tInfo.strWeapon == TEXT("MachineGun"))
 			{
 				if (m_pGameInstance->Key_Pressing(VK_LBUTTON)
@@ -387,7 +387,7 @@ void CPlayer::Update(_float fTimeDelta)
 	m_pRightHand->Set_Current_Animation(Set_FrameKey(m_tInfo.strWeapon, m_tInfo.strAction));
 	m_pLeftHand->Set_Current_Animation(Set_FrameKey(m_tInfo.strItem, m_tInfo.strItemAction));
 
-	/* Priority¿¡¼­ ÇÑ¹ø ¹Ù²ñ*/
+	/* Priorityì—ì„œ í•œë²ˆ ë°”ë€œ*/
 	SetUp_OnTerrain(m_pTransformCom, 0.5f, &m_bJump);
 
 	m_pRightHand->Set_Player_Transform(m_pTransformCom);
@@ -510,7 +510,7 @@ HRESULT CPlayer::Ready_Weapons()
 
 HRESULT CPlayer::Begin_RenderState()
 {
-	/* ¾ËÆÄ Å×½ºÆ® : ÇÈ¼¿ÀÇ ¾ËÆÄ¸¦ ºñ±³ÇØ¼­ ±×¸°´Ù ¾È±×¸°´Ù¸¦ ¼³Á¤. */
+	/* ì•ŒíŒŒ í…ŒìŠ¤íŠ¸ : í”½ì…€ì˜ ì•ŒíŒŒë¥¼ ë¹„êµí•´ì„œ ê·¸ë¦°ë‹¤ ì•ˆê·¸ë¦°ë‹¤ë¥¼ ì„¤ì •. */
 	m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
 	m_pGraphic_Device->SetRenderState(D3DRS_ALPHAREF, 200);
 	m_pGraphic_Device->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
@@ -530,7 +530,7 @@ _float3 CPlayer::Calc_BulletDir(_float3* vOffset)
 	_float3 vCollisionPos{0.f, 0.f, 0.f};
 
 	/*
-	vLook, vRight °¡Á®¿Í¼­ º¸Á¤ÇÏ±â
+	vLook, vRight ê°€ì ¸ì™€ì„œ ë³´ì •í•˜ê¸°
 	*/
 	_float3 vPlayerRight = m_pTransformCom->Get_State(STATE::RIGHT);
 	_float3 vPlayerLook = m_pTransformCom->Get_State(STATE::LOOK);
@@ -554,12 +554,12 @@ _float3 CPlayer::Calc_BulletDir(_float3* vOffset)
 
 //_float3 vCollisionPos{ 0.f, 0.f, 0.f };
 //
-////mat view Inv´Â Ä«¸Ş¶óÀÇ ¿ùµå Çà·Ä.
+////mat view InvëŠ” ì¹´ë©”ë¼ì˜ ì›”ë“œ í–‰ë ¬.
 //_float4x4 m_matViewInv;
 //m_matViewInv = m_pGameInstance->Get_CameraWorld();
 //
 ///*
-//vLook, vRight °¡Á®¿Í¼­ º¸Á¤ÇÏ±â
+//vLook, vRight ê°€ì ¸ì™€ì„œ ë³´ì •í•˜ê¸°
 //*/
 //_float3 vCamRight = *(_float3*)(&m_matViewInv.m[0][0]);
 //_float3 vCamLook = *(_float3*)(&m_matViewInv.m[2][0]);
@@ -596,7 +596,7 @@ void CPlayer::Insert_ItemDesc(const _wstring strItemText)
 
 void CPlayer::Pop_ItemDesc(_float fTimeDelta)
 {
-	// »ı¼ºµÈ ¼ø¼­´ë·Î Ã­¶ó¶ó¶ô ¾È»ç¶óÁö°í ÇÏ³ªÇÏ³ª ´Ù 3ÃÊ¾¿ °É·Á¾ß »ç¶óÁü
+	// ìƒì„±ëœ ìˆœì„œëŒ€ë¡œ ì± ë¼ë¼ë½ ì•ˆì‚¬ë¼ì§€ê³  í•˜ë‚˜í•˜ë‚˜ ë‹¤ 3ì´ˆì”© ê±¸ë ¤ì•¼ ì‚¬ë¼ì§
 	for (auto& item : m_ItemQueues)
 		item.fCreateTime += fTimeDelta;
 
@@ -728,7 +728,7 @@ const COLLISION_DESC& CPlayer::Get_CollisionDesc(COLLISION eColType)
 
 	if (eColType == COLLISION::SPHERE)
 		Desc.pCollider = m_pSphereColliderCom;
-	/* ÇÃ·¹ÀÌ¾î´Â Çìµå¼¦ ÆÇÁ¤ X */
+	/* í”Œë ˆì´ì–´ëŠ” í—¤ë“œìƒ· íŒì • X */
 	else if (eColType == COLLISION::BOX)
 		Desc.pCollider = m_pBoxColliderCom;
 

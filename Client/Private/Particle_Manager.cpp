@@ -11,7 +11,7 @@ CParticle_Manager::CParticle_Manager() :
 	Safe_AddRef(m_pGameInstance);
 }
 
-HRESULT CParticle_Manager::Initialize()
+HRESULT CParticle_Manager::Initialize(LEVEL eLevelID)
 {
 	/*
 	파티클들 미리 풀링.
@@ -24,7 +24,7 @@ HRESULT CParticle_Manager::Initialize()
 	for (int i = 0; i < 30; ++i)
 	{
 		Particles.push_back(
-			static_cast<CParticleSystem*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Blood"), nullptr))
+			static_cast<CParticleSystem*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(eLevelID), TEXT("Prototype_GameObject_Blood"), nullptr))
 		);
 	}
 
