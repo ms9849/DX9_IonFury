@@ -86,7 +86,7 @@ private:
 	map<const _wstring, WEAPON_INFO> m_Weapons{};
 
 	_wstring		m_strNextWeapon{};
-	deque<_wstring> m_ItemQueues{};
+	deque<ITEM_DESC> m_ItemQueues{};
 	_float			m_fTimeStack{0.f};
 	_float			m_fColTimeStack{ 0.f };
 	_bool			m_bWeaponChange{ false };
