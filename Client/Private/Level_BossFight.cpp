@@ -12,7 +12,7 @@
 #include "Terrain.h"
 #include "ParticleSystem.h"
 #include "Player.h"
-#include "TrashBox.h"
+#include "MapTrashBox.h"
 #include "Spawner.h"
 
 #include "Particle_Manager.h"
