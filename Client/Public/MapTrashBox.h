@@ -12,12 +12,12 @@ NS_END
 
 NS_BEGIN(Client)
 
-class CTrashBox : public CGameObject
+class CMapTrashBox : public CGameObject
 {
 private:
-	CTrashBox(LPDIRECT3DDEVICE9 pGraphicDev);
-	CTrashBox(const CTrashBox& Prototype); 
-	virtual ~CTrashBox() = default;
+	CMapTrashBox(LPDIRECT3DDEVICE9 pGraphicDev);
+	CMapTrashBox(const CMapTrashBox& Prototype); 
+	virtual ~CMapTrashBox() = default;
 
 public:
 	/* 충돌한 상대 객체, 충돌이 발생한 내 자신의 콜라이더, 충돌 타입을 리턴 */
@@ -50,7 +50,7 @@ private:
 	HRESULT Ready_Components();
 
 public:
-	static CTrashBox* Create(LPDIRECT3DDEVICE9 pGraphicDev);
+	static CMapTrashBox* Create(LPDIRECT3DDEVICE9 pGraphicDev);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
 };

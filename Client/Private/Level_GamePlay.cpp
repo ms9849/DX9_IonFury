@@ -13,7 +13,7 @@
 #include "Terrain.h"
 #include "ParticleSystem.h"
 #include "Player.h"
-#include "TrashBox.h"
+//#include "MapTrashBox.h"
 #include "Spawner.h"
 
 #include "Particle_Manager.h"
@@ -900,7 +900,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Map_Objects_OBB_Ride(const _wstring& strLay
 
 HRESULT CLevel_GamePlay::Ready_Layer_Map_Objects_Ray(const _wstring& strLayerTag)
 {
-	/*for (auto& iter : m_ObjectDescs->find(strLayerTag)->second)
+	for (auto& iter : m_ObjectDescs->find(strLayerTag)->second)
 	{
 		if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(iter.iProtoLevel), iter.strProto,
 			ENUM_CLASS(iter.iLayerLevel), iter.strLayer, &iter)))
@@ -922,12 +922,12 @@ HRESULT CLevel_GamePlay::Ready_Layer_Map_Objects_Ray(const _wstring& strLayerTag
 			m_pGameInstance->Get_Component(
 				ENUM_CLASS(iter.iLayerLevel), iter.strLayer, TEXT("Com_Transform"), iter.iObjectID)
 			)->Set_State(STATE::POSITION, iter.matWorld.m[3]);
-	}*/
+	}
 
-	_float3 vPos = { 3.f, 0.3f, 3.f };
+	/*_float3 vPos = { 3.f, 0.3f, 3.f };
 	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_TrashBox"),
 		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag, &vPos)))
-		return E_FAIL;
+		return E_FAIL;*/
 
 	return S_OK;
 }

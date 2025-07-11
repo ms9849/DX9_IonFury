@@ -46,9 +46,9 @@
 #include "MapSlope.h"
 #include "MapElevator.h"
 #include "MapMachineGunBulletBox.h"
+#include "MapTrashBox.h"
 #include "Snow.h"
 #include "Blood.h"
-#include "TrashBox.h"
 
 #include "GameInstance.h"
 
@@ -337,6 +337,11 @@ HRESULT CLoader::Loading_For_GamePlay()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Map_MachineGun_Bullet_Box"),
 		CTexture::Create(m_pGraphic_Device, TEXTURE::CUBE, TEXT("../Bin/Resources/Textures/MapObject/MachineGunBulletBox/MachineGun_Bullets_Box.dds"), 1))))
 		return E_FAIL;
+
+	/*For Prototype_Component_Texture_Map_TrashBox*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Map_TrashBox"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/MapObject/TrashBox/TrashBox_%d.png"), 3))))
+		return E_FAIL;
 #pragma endregion
 
 	m_strMessage = TEXT("모델를(을) 로딩 중 입니다.");
@@ -594,9 +599,9 @@ HRESULT CLoader::Loading_For_GamePlay()
 		CMapElevator::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
-	/* For.Prototype_GameObject_TrashBox */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_TrashBox"),
-		CTrashBox::Create(m_pGraphic_Device))))
+	/* For.Prototype_GameObject_Map_TrashBox */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Map_TrashBox"),
+		CMapTrashBox::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_Map_MachineGun_Bullet_Box */
@@ -805,6 +810,11 @@ HRESULT CLoader::Loading_For_BossFight()
 	/* For.Prototype_Component_Texture_Map_MachineGun_Bullet_Box */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_Component_Texture_Map_MachineGun_Bullet_Box"),
 		CTexture::Create(m_pGraphic_Device, TEXTURE::CUBE, TEXT("../Bin/Resources/Textures/MapObject/MachineGunBulletBox/MachineGun_Bullets_Box.dds"), 1))))
+		return E_FAIL;
+
+	/*For Prototype_Component_Texture_Map_TrashBox*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_Component_Texture_Map_TrashBox"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/MapObject/TrashBox/TrashBox_%d.png"), 3))))
 		return E_FAIL;
 #pragma endregion
 
@@ -1063,9 +1073,9 @@ HRESULT CLoader::Loading_For_BossFight()
 		CMapElevator::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
-	/* For.Prototype_GameObject_TrashBox */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_GameObject_TrashBox"),
-		CTrashBox::Create(m_pGraphic_Device))))
+	/* For.Prototype_GameObject_Map_TrashBox */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_GameObject_Map_TrashBox"),
+		CMapTrashBox::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_Map_MachineGun_Bullet_Box */
