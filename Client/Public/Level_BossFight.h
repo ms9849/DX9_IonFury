@@ -4,6 +4,7 @@
 #include "Level.h"
 #include "Camera.h"
 #include "GameObject.h"
+#include "Player.h"
 
 NS_BEGIN(Engine)
 class GameObject;
@@ -18,7 +19,7 @@ private:
 	virtual ~CLevel_BossFight() = default;
 
 public:
-	virtual HRESULT Initialize() override;
+	virtual HRESULT Initialize(void* pArg = nullptr);
 	virtual void Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
@@ -64,9 +65,10 @@ private:
 
 private:
 	map<_wstring, vector<CGameObject::GAMEOBJECT_DESC>>* m_ObjectDescs{};
+	CPlayer::PLAYER_INFO m_tPlayerInfo{};
 
 public:
-	static CLevel_BossFight* Create(LPDIRECT3DDEVICE9 pGraphic_Device, LEVEL eLevelID);
+	static CLevel_BossFight* Create(LPDIRECT3DDEVICE9 pGraphic_Device, LEVEL eLevelID, void* pArg = nullptr);
 	virtual void Free() override;
 };
 

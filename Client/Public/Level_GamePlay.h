@@ -3,6 +3,7 @@
 #include "Client_Defines.h"
 #include "Level.h"
 #include "Camera.h"
+#include "Player.h"
 
 NS_BEGIN(Client)
 
@@ -56,7 +57,6 @@ private:
 
 	CCamera::CAMERA_CONFIG m_CameraSettings;
 	vector<class CUIItemQueue*> m_pUIItemQueues{};
-
 
 	// FPS 계산 변수
 	_float m_fFPSTimer{ 0.f }, m_fTimeDelta{ 0.f };
