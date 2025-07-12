@@ -325,40 +325,12 @@ HRESULT CLevel_BossFight::Ready_Layer_Spawner(const _wstring& strLayerTag)
 
 HRESULT CLevel_BossFight::Ready_Layer_Monster(const _wstring& strLayerTag)
 {
-	/*for (size_t i = 0; i < 2; i++)
+	for (auto& iter : m_ObjectDescs->find(strLayerTag)->second)
 	{
-		if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_GameObject_Monster_EliteSoldier"),
-			ENUM_CLASS(LEVEL::BOSSFIGHT), strLayerTag)))
-			return E_FAIL;
-	}*/
-
-	//for (size_t i = 0; i < 2; i++)
-	//{
-	//	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_GameObject_Monster_Spider"),
-	//		ENUM_CLASS(LEVEL::BOSSFIGHT), strLayerTag)))
-	//		return E_FAIL;
-	//}
-
-	//for (size_t i = 0; i < 10; i++)
-	//{
-	//	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_GameObject_Monster_Zombie"),
-	//		ENUM_CLASS(LEVEL::BOSSFIGHT), strLayerTag)))
-	//		return E_FAIL;
-	//}
-
-	for (size_t i = 0; i < 1; i++)
-	{
-		if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_GameObject_Monster_Soldier"),
-			ENUM_CLASS(LEVEL::BOSSFIGHT), strLayerTag)))
+		if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(iter.iProtoLevel), iter.strProto,
+			ENUM_CLASS(iter.iLayerLevel), iter.strLayer, &iter)))
 			return E_FAIL;
 	}
-
-	/*for (size_t i = 0; i < 1; i++)
-	{
-		if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_GameObject_Monster_Boss"),
-			ENUM_CLASS(LEVEL::BOSSFIGHT), strLayerTag)))
-			return E_FAIL;
-	}*/
 
 	m_pTerrain_Manager->Add_LandObject(LEVEL::BOSSFIGHT, TEXT("Layer_Monster"));
 
