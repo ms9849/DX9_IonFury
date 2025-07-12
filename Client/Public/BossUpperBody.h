@@ -55,6 +55,7 @@ public:
 	void Attack(_float fTimeDelta, BossAttackState eState);
 	void RotationCheck();
 	void AttackRotationCheck();
+	void Swing(_float fTimeDelta);
 	void Move(_float fTimeDelta);
 	void SummonMonster();
 
