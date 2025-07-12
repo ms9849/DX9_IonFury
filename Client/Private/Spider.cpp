@@ -47,9 +47,9 @@ HRESULT CSpider::Initialize(void* pArg)
 
 	// m_pTransformCom ¼¼ÆÃ
 	m_pTransformCom->Set_State(STATE::RIGHT, m_pObjectDesc.matWorld.m[0]);
-	m_pTransformCom->Set_State(STATE::UP, m_pObjectDesc.matWorld.m[0]);
-	m_pTransformCom->Set_State(STATE::LOOK, m_pObjectDesc.matWorld.m[0]);
-	m_pTransformCom->Set_State(STATE::POSITION, m_pObjectDesc.matWorld.m[0]);
+	m_pTransformCom->Set_State(STATE::UP, m_pObjectDesc.matWorld.m[1]);
+	m_pTransformCom->Set_State(STATE::LOOK, m_pObjectDesc.matWorld.m[2]);
+	m_pTransformCom->Set_State(STATE::POSITION, m_pObjectDesc.matWorld.m[3]);
 
 	/*if (m_vPos != nullptr)
 	{
