@@ -13,9 +13,12 @@ CLevel_Loading::CLevel_Loading(LPDIRECT3DDEVICE9 pGraphic_Device, LEVEL eLevelID
 
 }
 
-HRESULT CLevel_Loading::Initialize(LEVEL eNextLevelID)
+HRESULT CLevel_Loading::Initialize(LEVEL eNextLevelID, void* pArg)
 {
 	m_eNextLevelID = eNextLevelID;
+
+	if(pArg != nullptr)
+		m_tPlayerInfo = *static_cast<CPlayer::PLAYER_INFO*>(pArg);
 
 	/* 다음 레벨에 대한 자원을 로드하여 준비해둔다. */
 	m_pLoader = CLoader::Create(m_pGraphic_Device, eNextLevelID);
@@ -45,7 +48,7 @@ void CLevel_Loading::Update(_float fTimeDelta)
 			pNewLevel = CLevel_GamePlay::Create(m_pGraphic_Device, m_eNextLevelID);
 			break;
 		case LEVEL::BOSSFIGHT:
-			pNewLevel = CLevel_BossFight::Create(m_pGraphic_Device, m_eNextLevelID);
+			pNewLevel = CLevel_BossFight::Create(m_pGraphic_Device, m_eNextLevelID, &m_tPlayerInfo);
 			break;
 		}
 
@@ -66,11 +69,11 @@ HRESULT CLevel_Loading::Ready_Layer_BackGround()
 	return S_OK;
 }
 
-CLevel_Loading* CLevel_Loading::Create(LPDIRECT3DDEVICE9 pGraphic_Device, LEVEL eLevelID, LEVEL eNextLevelID)
+CLevel_Loading* CLevel_Loading::Create(LPDIRECT3DDEVICE9 pGraphic_Device, LEVEL eLevelID, LEVEL eNextLevelID, void* pArg)
 {
 	CLevel_Loading* pInstance = new CLevel_Loading(pGraphic_Device, eLevelID);
 
-	if (FAILED(pInstance->Initialize(eNextLevelID)))
+	if (FAILED(pInstance->Initialize(eNextLevelID, pArg)))
 	{
 		MSG_BOX("Failed to Created : CLevel_Loading");
 		Safe_Release(pInstance);

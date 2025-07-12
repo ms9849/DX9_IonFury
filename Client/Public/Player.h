@@ -20,7 +20,13 @@ private:
 	CPlayer(const CPlayer& Prototype);
 	virtual ~CPlayer() = default;
 
-private:
+public:
+	typedef struct tagWeapon
+	{
+		_uint iBulletsMax{}, iCanShootBullets{}, iCurrentBullets{}, iShootBullets{};
+		_bool bUseable{ false };
+	}WEAPON_INFO;
+
 	typedef struct tagPlayerInfo
 	{
 		_uint iHp{}, iBullets{}, iShootBullets{}, iArmor{};
@@ -28,14 +34,10 @@ private:
 		_wstring strAction{ TEXT("Idle") };
 		_wstring strItem{ TEXT("CardKey") };
 		_wstring strItemAction{ TEXT("Idle") };
+		map<const _wstring, WEAPON_INFO> Weapons{};
 	}PLAYER_INFO;
 
-	typedef struct tagWeapon
-	{
-		_uint iBulletsMax{}, iCanShootBullets{}, iCurrentBullets{}, iShootBullets{};
-		_bool bUseable{ false };
-	}WEAPON_INFO;
-
+private:
 	typedef struct tagItem
 	{
 		_float fCreateTime{};
@@ -52,6 +54,8 @@ public:
 
 public:
 	PLAYER_INFO Get_Player_Info();
+	void Set_Player_Info(PLAYER_INFO tPlayerInfo);
+
 	_bool Get_CanUse_CardKey();
 	_bool Get_Can_Open_Door();
 	_bool Get_Use_CardKey();
@@ -83,8 +87,6 @@ private:
 	class CPlayer_LeftHand*		m_pLeftHand{ nullptr };
 	class CDoorLock* m_pDoorLock{nullptr};
 	class CLever* m_pLever{nullptr};
-	
-	map<const _wstring, WEAPON_INFO> m_Weapons{};
 
 	_wstring		m_strNextWeapon{};
 	deque<ITEM_DESC> m_ItemQueues{};

@@ -56,7 +56,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 	m_tInfo.iHp = 70;
 	m_tInfo.iArmor = 70;
 
-	auto iter = m_Weapons.find(m_tInfo.strWeapon);
+	auto iter = m_tInfo.Weapons.find(m_tInfo.strWeapon);
 
 	m_tInfo.iBullets = iter->second.iCurrentBullets;
 	m_tInfo.iShootBullets = iter->second.iShootBullets;
@@ -107,7 +107,7 @@ void CPlayer::Update(_float fTimeDelta)
 	__super::Jump(fTimeDelta);
 
 	/* 애니메이션 제어 */
-	auto iter = m_Weapons.find(m_tInfo.strWeapon);
+	auto iter = m_tInfo.Weapons.find(m_tInfo.strWeapon);
 
 	if (m_tInfo.strAction.compare(TEXT("Reload")) != 0 && !m_bWeaponChange && !m_bUseCardKey)
 	{
@@ -122,7 +122,7 @@ void CPlayer::Update(_float fTimeDelta)
 		}
 		if (m_pGameInstance->Key_Down('2'))
 		{
-			auto iter = m_Weapons.find(TEXT("ShootGun"));
+			auto iter = m_tInfo.Weapons.find(TEXT("ShootGun"));
 
 			if (iter->second.bUseable)
 			{
@@ -136,7 +136,7 @@ void CPlayer::Update(_float fTimeDelta)
 		}
 		if (m_pGameInstance->Key_Down('3'))
 		{
-			auto iter = m_Weapons.find(TEXT("ShootGun"));
+			auto iter = m_tInfo.Weapons.find(TEXT("MachineGun"));
 
 			if (iter->second.bUseable)
 			{
@@ -169,7 +169,7 @@ void CPlayer::Update(_float fTimeDelta)
 
 			if(m_bMachinGunBulletCharge)
 			{
-				auto iter = m_Weapons.find(TEXT("MachineGun"));
+				auto iter = m_tInfo.Weapons.find(TEXT("MachineGun"));
 
 				iter->second.iCurrentBullets += 20;
 
@@ -214,7 +214,7 @@ void CPlayer::Update(_float fTimeDelta)
 		{
 			m_tInfo.strWeapon = m_strNextWeapon;
 			m_tInfo.strAction = TEXT("Up");
-			iter = m_Weapons.find(m_tInfo.strWeapon);
+			iter = m_tInfo.Weapons.find(m_tInfo.strWeapon);
 			m_tInfo.iBullets = iter->second.iCurrentBullets;
 			iter->second.iShootBullets = iter->second.iShootBullets;
 			m_tInfo.iShootBullets = iter->second.iShootBullets;
@@ -477,6 +477,11 @@ CPlayer::PLAYER_INFO CPlayer::Get_Player_Info()
 	return m_tInfo;
 }
 
+void CPlayer::Set_Player_Info(PLAYER_INFO tPlayerInfo)
+{
+	m_tInfo = tPlayerInfo;
+}
+
 _bool CPlayer::Get_CanUse_CardKey()
 {
 	return m_bCanUseCardKey;
@@ -538,7 +543,7 @@ HRESULT CPlayer::Ready_Weapons()
 	PistolDesc.iShootBullets = PistolDesc.iCanShootBullets;
 	PistolDesc.bUseable = true;
 
-	m_Weapons.emplace(TEXT("Pistol"), PistolDesc);
+	m_tInfo.Weapons.emplace(TEXT("Pistol"), PistolDesc);
 
 	WEAPON_INFO ShootGunDesc{};
 
@@ -547,7 +552,7 @@ HRESULT CPlayer::Ready_Weapons()
 	ShootGunDesc.iCanShootBullets = 2;
 	ShootGunDesc.iShootBullets = ShootGunDesc.iCanShootBullets;
 
-	m_Weapons.emplace(TEXT("ShootGun"), ShootGunDesc);
+	m_tInfo.Weapons.emplace(TEXT("ShootGun"), ShootGunDesc);
 
 	WEAPON_INFO MachineGunDesc{};
 
@@ -557,7 +562,7 @@ HRESULT CPlayer::Ready_Weapons()
 	MachineGunDesc.iCanShootBullets = MachineGunDesc.iBulletsMax;
 	MachineGunDesc.iShootBullets = MachineGunDesc.iCanShootBullets;
 
-	m_Weapons.emplace(TEXT("MachineGun"), MachineGunDesc);
+	m_tInfo.Weapons.emplace(TEXT("MachineGun"), MachineGunDesc);
 
 	return S_OK;
 }
@@ -692,7 +697,7 @@ void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 		}
 		if (dynamic_cast<CItemPistolBullet*>(pDst))
 		{
-			auto iter = m_Weapons.find(TEXT("Pistol"));
+			auto iter = m_tInfo.Weapons.find(TEXT("Pistol"));
 			iter->second.iCurrentBullets += 10;
 
 			if (iter->second.iCurrentBullets >= iter->second.iBulletsMax)
@@ -705,7 +710,7 @@ void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 		}
 		if (dynamic_cast<CItemShootGunBullet*>(pDst))
 		{
-			auto iter = m_Weapons.find(TEXT("ShootGun"));
+			auto iter = m_tInfo.Weapons.find(TEXT("ShootGun"));
 
 			iter->second.iCurrentBullets += 10;
 
@@ -719,7 +724,7 @@ void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 		}
 		if (dynamic_cast<CItemShootGun*>(pDst))
 		{
-			auto iter = m_Weapons.find(TEXT("ShootGun"));
+			auto iter = m_tInfo.Weapons.find(TEXT("ShootGun"));
 			iter->second.bUseable = true;
 
 			// 문 열리는 사운드 넣어주세요
@@ -739,7 +744,7 @@ void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 		}
 		if (dynamic_cast<CItemMachineGun*>(pDst))
 		{
-			auto iter = m_Weapons.find(TEXT("MachineGun"));
+			auto iter = m_tInfo.Weapons.find(TEXT("MachineGun"));
 			iter->second.bUseable = true;
 		}
 		if (dynamic_cast<CItemCardKey*>(pDst))
@@ -780,7 +785,7 @@ void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 	{
 		if (dynamic_cast<CMapMachineGunBulletBox*>(pDst))
 		{
-			auto iter = m_Weapons.find(TEXT("MachineGun"));
+			auto iter = m_tInfo.Weapons.find(TEXT("MachineGun"));
 
 			if(iter->second.iCurrentBullets < iter->second.iBulletsMax)
 				m_bMachinGunBulletCharge = true;
