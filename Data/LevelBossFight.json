@@ -25,15 +25,16 @@
                         0.0
                     ],
                     [
-                        87.62345123291016,
-                        14.90359878540039,
-                        98.86693572998047,
+                        0.0,
+                        0.0,
+                        0.0,
                         1.0
                     ]
                 ],
-                "Proto": "Prototype_GameObject_Sky",
+                "Proto": "Prototype_GameObject_Terrain",
                 "ProtoLevel": 4,
-                "TextureIndex": 4
+                "TerrainSize": "128x128",
+                "TextureIndex": 0
             },
             {
                 "ID": 1,
@@ -58,16 +59,15 @@
                         0.0
                     ],
                     [
-                        0.0,
-                        0.0,
-                        0.0,
+                        87.62345123291016,
+                        14.90359878540039,
+                        98.86693572998047,
                         1.0
                     ]
                 ],
-                "Proto": "Prototype_GameObject_Terrain",
+                "Proto": "Prototype_GameObject_Sky",
                 "ProtoLevel": 4,
-                "TerrainSize": "128x128",
-                "TextureIndex": 0
+                "TextureIndex": 4
             }
         ]
     },
