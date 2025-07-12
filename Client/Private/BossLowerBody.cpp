@@ -25,9 +25,11 @@ HRESULT CBossLowerBody::Initialize_Prototype()
 
 HRESULT CBossLowerBody::Initialize(void* pArg)
 {
-	m_pPlayerTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player"), TEXT("Com_Transform")));
+	m_pPlayerTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Layer_Player"), TEXT("Com_Transform")));
 	m_pCoreTranform = static_cast<CTransform*>(pArg);
 	Safe_AddRef(m_pCoreTranform);
+
+	m_pObjectDesc.iLayerLevel = ENUM_CLASS(LEVEL::BOSSFIGHT);
 
 	if (m_pCoreTranform == nullptr)
 		return E_FAIL;
@@ -149,7 +151,7 @@ void CBossLowerBody::Update(_float fTimeDelta)
 		m_pGameInstance->PlaySoundOnce(TEXT("Boss_lost.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
 		m_bAnimationLock = true;
 		m_isDead = true;
-		CEffect_Manager::GetInstance()->Create_Effect(TEXT("Effect_Grenade_Explosion"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Effect"),
+		CEffect_Manager::GetInstance()->Create_Effect(TEXT("Effect_Grenade_Explosion"), ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Layer_Effect"),
 			m_pTransformCom->Get_State(STATE::POSITION));
 	}
 	else if (m_pSightCom->Check_Sight(fTimeDelta))
@@ -406,7 +408,7 @@ HRESULT CBossLowerBody::Ready_Components()
 
 	/* Com_Sight */
 	CSight::SIGHT_DESC		SightDesc{ 30.f, D3DXToRadian(90.0f), m_pPlayerTransform, m_pTransformCom, true };
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Sight"),
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Sight"),
 		TEXT("Com_Sight"), reinterpret_cast<CComponent**>(&m_pSightCom), &SightDesc)))
 		return E_FAIL;
 

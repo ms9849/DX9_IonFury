@@ -2,6 +2,7 @@
 
 #include "GameInstance.h"
 #include "Blood.h"
+#include "YellowDust.h"
 
 IMPLEMENT_SINGLETON(CParticle_Manager);
 
@@ -12,6 +13,16 @@ CParticle_Manager::CParticle_Manager() :
 }
 
 HRESULT CParticle_Manager::Initialize(LEVEL eLevelID)
+{
+	if (FAILED(Ready_Particle_Blood()))
+		return E_FAIL;
+
+	if (FAILED(Ready_Particle_YellowDust()))
+		return E_FAIL;
+	return S_OK;
+}
+
+HRESULT CParticle_Manager::Ready_Particle_Blood()
 {
 	/*
 	파티클들 미리 풀링.
@@ -24,7 +35,7 @@ HRESULT CParticle_Manager::Initialize(LEVEL eLevelID)
 
 	list<CParticleSystem*> Particles = {};
 
-	for (int i = 0; i < 30; ++i)
+	for (_int i = 0; i < 50; ++i)
 	{
 		Particles.push_back(
 			static_cast<CParticleSystem*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Blood"), nullptr))
@@ -35,7 +46,27 @@ HRESULT CParticle_Manager::Initialize(LEVEL eLevelID)
 	return S_OK;
 }
 
-void CParticle_Manager::Create_Particle(const _wstring& strParticleTag, _uint iLayerLevelIndex, const _wstring& strLayerTag, const _float3& vPos)
+HRESULT CParticle_Manager::Ready_Particle_YellowDust()
+{
+	auto iter = m_Particles.find(TEXT("Particle_YellowDust"));
+	if (iter != m_Particles.end())
+		return S_OK;
+
+	list<CParticleSystem*> Particles = {};
+
+	for (_int i = 0; i < 50; ++i)
+	{
+		Particles.push_back(
+			static_cast<CParticleSystem*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_YellowDust"), nullptr))
+		);
+	}
+
+	m_Particles.emplace(TEXT("Particle_YellowDust"), Particles);
+
+	return S_OK;
+}
+
+void CParticle_Manager::Create_Particle(const _wstring& strParticleTag, _uint iLayerLevelIndex, const _wstring& strLayerTag, const _float3& vPos, const _float3& vLocalPos)
 {
 	auto Particles = m_Particles.find(strParticleTag);
 
@@ -51,6 +82,11 @@ void CParticle_Manager::Create_Particle(const _wstring& strParticleTag, _uint iL
 			if (strParticleTag == TEXT("Particle_Blood"))
 			{
 				static_cast<CBlood*>(pParticle)->Set_Pos(vPos);
+				pParticle->Reset();
+			}
+			else if (strParticleTag == TEXT("Particle_YellowDust"))
+			{
+				static_cast<CYellowDust*>(pParticle)->Set_Pos(vPos);
 				pParticle->Reset();
 			}
 

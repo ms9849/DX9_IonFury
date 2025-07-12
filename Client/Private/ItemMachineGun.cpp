@@ -129,8 +129,8 @@ void CItemMachineGun::OnCollision(CGameObject* pDst, COLLISION eColType, _float 
 	if (eColType == COLLISION::SPHERE)
 	{
 		m_isDead = true;
-		m_pGameInstance->PlaySoundOnce(TEXT("Get_Item.ogg"), CHANNELID::SOUND_EFFECT, 0.5f);
-		m_pGameInstance->PlaySoundOnce(TEXT("Gacha.ogg"), CHANNELID::SOUND_EFFECT, 0.5f);
+		m_pGameInstance->PlaySoundOnce(TEXT("Get_MachineGun.ogg"), CHANNELID::SOUND_EFFECT, 0.5f);
+		m_pGameInstance->PlaySoundOnce(TEXT("My_Bread_In_Butter.ogg"), CHANNELID::SOUND_EFFECT, 0.5f);
 	}
 }
 

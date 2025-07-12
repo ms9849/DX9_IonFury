@@ -19,6 +19,8 @@ HRESULT CMeleeAttack::Initialize_Prototype()
 
 HRESULT CMeleeAttack::Initialize(void* pArg)
 {
+	m_pObjectDesc = *static_cast<CGameObject::GAMEOBJECT_DESC*>(pArg);
+
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
@@ -114,7 +116,7 @@ CGameObject* CMeleeAttack::Clone(void* pArg)
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
 		Safe_Release(pInstance);
-		MSG_BOX("CREATE FAILED: Clone_Bullet");
+		MSG_BOX("CREATE FAILED: CMeleeAttack");
 	}
 
 	return pInstance;

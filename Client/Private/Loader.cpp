@@ -880,7 +880,6 @@ HRESULT CLoader::Loading_For_BossFight()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_GameObject_Monster_Boss_Upper_Fly"),
 		CBossUpperFly::Create(m_pGraphic_Device))))
 		return E_FAIL;
-
 #pragma endregion	
 
 	/* For.Prototype_GameObject_Sky */
