@@ -57,8 +57,10 @@ HRESULT CBossLowerBody::Initialize(void* pArg)
 	m_fStopMoveTime = 2.f;
 	// ±âÁ¸ 0.05
 	m_fMoveCoolTime = 0.2f;
-	m_strFrameKey = TEXT("Boss_Front_Leg");
-	m_strLegFrameKey = TEXT("Boss_LeftLeg");
+	m_strFrameKey = TEXT("Boss_Front_LeftLeg");
+	m_strLegFrameKey = TEXT("Boss_Front_LeftLeg");
+	m_fDirDuraionTime = 10.f;
+	m_fSumDirDurarionTime = 0.f;
 
 	return S_OK;
 }
@@ -77,74 +79,13 @@ void CBossLowerBody::Update(_float fTimeDelta)
 
 	if (!m_isMove)
 		m_fSumStopMoveTime += fTimeDelta;
+	/*else
+		m_fSumMoveCoolTime += fTimeDelta;*/
 
 	__super::Jump(fTimeDelta);
 
 	m_fSumMoveCoolTime += fTimeDelta;
-
-	_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
-	vDiff.y = 0.f;
-	D3DXVec3Normalize(&vDiff, &vDiff);
-
-	_float3 vMonsterLook = m_pTransformCom->Get_State(STATE::LOOK);
-	vMonsterLook.y = 0.f;
-	D3DXVec3Normalize(&vMonsterLook, &vMonsterLook);
-
-	_float dot = D3DXVec3Dot(&vMonsterLook, &vDiff);
-	dot = max(-1.f, min(1.f, dot));
-
-	_float3 vCross;
-	D3DXVec3Cross(&vCross, &vMonsterLook, &vDiff);
-
-	_float fFov = cosf(D3DXToRadian(45.f));
-
-	_float angle30 = cosf(D3DXToRadian(30.f));
-	_float angle60 = cosf(D3DXToRadian(60.f));
-
-	if (!m_bAnimationLock && !m_isMove)
-	{
-		if (dot >= fFov)
-		{
-			m_strFrameKey = TEXT("Boss_Front_Leg");
-		}
-		else if (dot <= -fFov)
-		{
-			m_strFrameKey = TEXT("Boss_Back_Leg");
-		}
-		else
-		{
-			if (vCross.y > 0)
-			{
-				if (dot > 0.2f)
-				{
-					m_strFrameKey = TEXT("Boss_Leg_Direction_SW");
-				}
-				else if (dot > 0)
-				{
-					m_strFrameKey = TEXT("Boss_Left_Leg");
-				}
-				else
-				{
-					m_strFrameKey = TEXT("Boss_Leg_Direction_NW");
-				}
-			}
-			else
-			{
-				if (dot > 0.2f)
-				{
-					m_strFrameKey = TEXT("Boss_Leg_Direction_SE");
-				}
-				else if (dot > 0)
-				{
-					m_strFrameKey = TEXT("Boss_Right_Leg");
-				}
-				else
-				{
-					m_strFrameKey = TEXT("Boss_Leg_Direction_NE");
-				}
-			}
-		}
-	}
+	m_fSumDirDurarionTime += fTimeDelta;
 
 	if (m_fHp <= 0)
 	{
@@ -181,15 +122,18 @@ void CBossLowerBody::Late_Update(_float fTimeDelta)
 		m_pAnimationCom->Play_Animation(m_strFrameKey, fTimeDelta);
 		if (m_pAnimationCom->Check_Animation_Finish(m_strFrameKey))
 		{
-			if (m_strLegFrameKey == TEXT("Boss_LeftLeg"))
+			m_isLeftLeg = !m_isLeftLeg;
+
+			/*if (m_strLegFrameKey == TEXT("Boss_LeftLeg"))
 			{
 				m_strLegFrameKey = TEXT("Boss_RightLeg");
 			}
 			else
 			{
 				m_strLegFrameKey = TEXT("Boss_LeftLeg");
-			}
+			}*/
 			m_isMove = false;
+			m_bAnimationLock = false;
 			m_fSumStopMoveTime = 0.f;
 		}
 	}
@@ -244,6 +188,20 @@ HRESULT CBossLowerBody::Ready_Animations()
 	CAnimation::FRAME_DESC Desc_7{};
 	CAnimation::FRAME_DESC Desc_8{};
 	CAnimation::FRAME_DESC Desc_9{};
+	CAnimation::FRAME_DESC Desc_10{};
+	CAnimation::FRAME_DESC Desc_11{};
+	CAnimation::FRAME_DESC Desc_12{};
+	CAnimation::FRAME_DESC Desc_13{};
+	CAnimation::FRAME_DESC Desc_14{};
+	CAnimation::FRAME_DESC Desc_15{};
+	CAnimation::FRAME_DESC Desc_16{};
+	CAnimation::FRAME_DESC Desc_17{};
+	CAnimation::FRAME_DESC Desc_18{};
+	CAnimation::FRAME_DESC Desc_19{};
+	CAnimation::FRAME_DESC Desc_20{};
+	CAnimation::FRAME_DESC Desc_21{};
+	CAnimation::FRAME_DESC Desc_22{};
+	CAnimation::FRAME_DESC Desc_23{};
 
 	//Boss_Leg_Direction_NE
 	auto iter = m_pTextureComs.find(TEXT("Boss_Leg_Direction_NE"));
@@ -293,17 +251,101 @@ HRESULT CBossLowerBody::Ready_Animations()
 	Desc_7.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom->Set_Animation(TEXT("Boss_Right_Leg"), Desc_7);
 
-	//Boss_Leg_Left
-	iter = m_pTextureComs.find(TEXT("Boss_LeftLeg"));
+	//Boss_Front_LeftLeg
+	iter = m_pTextureComs.find(TEXT("Boss_Front_LeftLeg"));
 	Desc_8.iFrameSpeed = 20;
 	Desc_8.iEnd = iter->second->Get_Texture_Length();
-	m_pAnimationCom->Set_Animation(TEXT("Boss_LeftLeg"), Desc_8);
+	m_pAnimationCom->Set_Animation(TEXT("Boss_Front_LeftLeg"), Desc_8);
 
-	//Boss_Leg_Right
-	iter = m_pTextureComs.find(TEXT("Boss_RightLeg"));
+	//Boss_Front_RightLeg
+	iter = m_pTextureComs.find(TEXT("Boss_Front_RightLeg"));
 	Desc_9.iFrameSpeed = 20;
 	Desc_9.iEnd = iter->second->Get_Texture_Length();
-	m_pAnimationCom->Set_Animation(TEXT("Boss_RightLeg"), Desc_9);
+	m_pAnimationCom->Set_Animation(TEXT("Boss_Front_RightLeg"), Desc_9);
+
+	//Boss_Back_LeftLeg
+	iter = m_pTextureComs.find(TEXT("Boss_Back_LeftLeg"));
+	Desc_10.iFrameSpeed = 20;
+	Desc_10.iEnd = iter->second->Get_Texture_Length();
+	m_pAnimationCom->Set_Animation(TEXT("Boss_Back_LeftLeg"), Desc_10);
+
+	//Boss_Back_RightLeg
+	iter = m_pTextureComs.find(TEXT("Boss_Back_RightLeg"));
+	Desc_11.iFrameSpeed = 20;
+	Desc_11.iEnd = iter->second->Get_Texture_Length();
+	m_pAnimationCom->Set_Animation(TEXT("Boss_Back_RightLeg"), Desc_11);
+
+	//Boss_Left_LeftLeg
+	iter = m_pTextureComs.find(TEXT("Boss_Left_LeftLeg"));
+	Desc_12.iFrameSpeed = 20;
+	Desc_12.iEnd = iter->second->Get_Texture_Length();
+	m_pAnimationCom->Set_Animation(TEXT("Boss_Left_LeftLeg"), Desc_12);
+
+	//Boss_Left_RightLeg
+	iter = m_pTextureComs.find(TEXT("Boss_Left_RightLeg"));
+	Desc_13.iFrameSpeed = 20;
+	Desc_13.iEnd = iter->second->Get_Texture_Length();
+	m_pAnimationCom->Set_Animation(TEXT("Boss_Left_RightLeg"), Desc_13);
+
+	//Boss_Right_LeftLeg
+	iter = m_pTextureComs.find(TEXT("Boss_Right_LeftLeg"));
+	Desc_14.iFrameSpeed = 20;
+	Desc_14.iEnd = iter->second->Get_Texture_Length();
+	m_pAnimationCom->Set_Animation(TEXT("Boss_Right_LeftLeg"), Desc_14);
+
+	//Boss_Right_RightLeg
+	iter = m_pTextureComs.find(TEXT("Boss_Right_RightLeg"));
+	Desc_15.iFrameSpeed = 20;
+	Desc_15.iEnd = iter->second->Get_Texture_Length();
+	m_pAnimationCom->Set_Animation(TEXT("Boss_Right_RightLeg"), Desc_15);
+
+	//Boss_Direction_NW_LeftLeg
+	iter = m_pTextureComs.find(TEXT("Boss_Direction_NW_LeftLeg"));
+	Desc_16.iFrameSpeed = 20;
+	Desc_16.iEnd = iter->second->Get_Texture_Length();
+	m_pAnimationCom->Set_Animation(TEXT("Boss_Direction_NW_LeftLeg"), Desc_16);
+
+	//Boss_Direction_NW_RightLeg
+	iter = m_pTextureComs.find(TEXT("Boss_Direction_NW_RightLeg"));
+	Desc_17.iFrameSpeed = 20;
+	Desc_17.iEnd = iter->second->Get_Texture_Length();
+	m_pAnimationCom->Set_Animation(TEXT("Boss_Direction_NW_RightLeg"), Desc_17);
+
+	//Boss_Direction_NE_LeftLeg
+	iter = m_pTextureComs.find(TEXT("Boss_Direction_NE_LeftLeg"));
+	Desc_18.iFrameSpeed = 20;
+	Desc_18.iEnd = iter->second->Get_Texture_Length();
+	m_pAnimationCom->Set_Animation(TEXT("Boss_Direction_NE_LeftLeg"), Desc_18);
+
+	//Boss_Direction_NE_RightLeg
+	iter = m_pTextureComs.find(TEXT("Boss_Direction_NE_RightLeg"));
+	Desc_19.iFrameSpeed = 20;
+	Desc_19.iEnd = iter->second->Get_Texture_Length();
+	m_pAnimationCom->Set_Animation(TEXT("Boss_Direction_NE_RightLeg"), Desc_19);
+
+	//Boss_Direction_SW_LeftLeg
+	iter = m_pTextureComs.find(TEXT("Boss_Direction_SW_LeftLeg"));
+	Desc_20.iFrameSpeed = 20;
+	Desc_20.iEnd = iter->second->Get_Texture_Length();
+	m_pAnimationCom->Set_Animation(TEXT("Boss_Direction_SW_LeftLeg"), Desc_20);
+
+	//Boss_Direction_SW_RightLeg
+	iter = m_pTextureComs.find(TEXT("Boss_Direction_SW_RightLeg"));
+	Desc_21.iFrameSpeed = 20;
+	Desc_21.iEnd = iter->second->Get_Texture_Length();
+	m_pAnimationCom->Set_Animation(TEXT("Boss_Direction_SW_RightLeg"), Desc_21);
+
+	//Boss_Direction_SE_LeftLeg
+	iter = m_pTextureComs.find(TEXT("Boss_Direction_SE_LeftLeg"));
+	Desc_22.iFrameSpeed = 20;
+	Desc_22.iEnd = iter->second->Get_Texture_Length();
+	m_pAnimationCom->Set_Animation(TEXT("Boss_Direction_SE_LeftLeg"), Desc_22);
+
+	//Boss_Direction_SE_RightLeg
+	iter = m_pTextureComs.find(TEXT("Boss_Direction_SE_RightLeg"));
+	Desc_23.iFrameSpeed = 20;
+	Desc_23.iEnd = iter->second->Get_Texture_Length();
+	m_pAnimationCom->Set_Animation(TEXT("Boss_Direction_SE_RightLeg"), Desc_23);
 
 	return S_OK;
 }
@@ -452,6 +494,161 @@ HRESULT CBossLowerBody::End_RenderState()
 	return S_OK;
 }
 
+void CBossLowerBody::RotationCheck()
+{
+	_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
+	//_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_vTargetPos;
+	//_float3 vDiff = m_vTargetPos - m_pPlayerTransform->Get_State(STATE::POSITION);
+	vDiff.y = 0.f;
+	D3DXVec3Normalize(&vDiff, &vDiff);
+
+	//_float3 vMonsterLook = m_pTransformCom->Get_State(STATE::LOOK);
+	_float3 vMonsterLook = m_vTargetPos - m_pTransformCom->Get_State(STATE::POSITION);
+	vMonsterLook.y = 0.f;
+	D3DXVec3Normalize(&vMonsterLook, &vMonsterLook);
+
+	_float dot = D3DXVec3Dot(&vMonsterLook, &vDiff);
+	dot = max(-1.f, min(1.f, dot));
+
+	_float3 vCross;
+	D3DXVec3Cross(&vCross, &vMonsterLook, &vDiff);
+
+	_float fFov = cosf(D3DXToRadian(45.f));
+
+	_float angle30 = cosf(D3DXToRadian(30.f));
+	_float angle60 = cosf(D3DXToRadian(60.f));
+
+	if (dot >= fFov)
+	{
+		if (m_isLeftLeg)
+			m_strFrameKey = TEXT("Boss_Front_LeftLeg");
+		else
+			m_strFrameKey = TEXT("Boss_Front_RightLeg");
+	}
+	else if (dot <= -fFov)
+	{
+		if (m_isLeftLeg)
+			m_strFrameKey = TEXT("Boss_Back_LeftLeg");
+		else
+			m_strFrameKey = TEXT("Boss_Back_RightLeg");
+	}
+	else
+	{
+		if (vCross.y > 0)
+		{
+			if (dot > 0.2f)
+			{
+				if (m_isLeftLeg)
+					m_strFrameKey = TEXT("Boss_Direction_SW_LeftLeg");
+				else
+					m_strFrameKey = TEXT("Boss_Direction_SW_RightLeg");
+			}
+			else if (dot > 0)
+			{
+				if (m_isLeftLeg)
+					m_strFrameKey = TEXT("Boss_Left_LeftLeg");
+				else
+					m_strFrameKey = TEXT("Boss_Left_RightLeg");
+			}
+			else
+			{
+				if (m_isLeftLeg)
+					m_strFrameKey = TEXT("Boss_Direction_NW_LeftLeg");
+				else
+					m_strFrameKey = TEXT("Boss_Direction_NW_RightLeg");
+			}
+		}
+		else
+		{
+			if (dot > 0.2f)
+			{
+				if (m_isLeftLeg)
+					m_strFrameKey = TEXT("Boss_Direction_SE_LeftLeg");
+				else
+					m_strFrameKey = TEXT("Boss_Direction_SE_RightLeg");
+			}
+			else if (dot > 0)
+			{
+				if (m_isLeftLeg)
+					m_strFrameKey = TEXT("Boss_Right_LeftLeg");
+				else
+					m_strFrameKey = TEXT("Boss_Right_RightLeg");
+			}
+			else
+			{
+				if (m_isLeftLeg)
+					m_strFrameKey = TEXT("Boss_Direction_NE_LeftLeg");
+				else
+					m_strFrameKey = TEXT("Boss_Direction_NE_RightLeg");
+			}
+		}
+	}
+}
+
+void CBossLowerBody::StopRotationCheck()
+{
+	_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
+	//_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_vTargetPos;
+	vDiff.y = 0.f;
+	D3DXVec3Normalize(&vDiff, &vDiff);
+
+	_float3 vMonsterLook = m_pTransformCom->Get_State(STATE::LOOK);
+	vMonsterLook.y = 0.f;
+	D3DXVec3Normalize(&vMonsterLook, &vMonsterLook);
+
+	_float dot = D3DXVec3Dot(&vMonsterLook, &vDiff);
+	dot = max(-1.f, min(1.f, dot));
+
+	_float3 vCross;
+	D3DXVec3Cross(&vCross, &vMonsterLook, &vDiff);
+
+	_float fFov = cosf(D3DXToRadian(45.f));
+
+	_float angle30 = cosf(D3DXToRadian(30.f));
+	_float angle60 = cosf(D3DXToRadian(60.f));
+
+	if (dot >= fFov)
+	{
+		m_strFrameKey = TEXT("Boss_Front_Leg");
+	}
+	else if (dot <= -fFov)
+	{
+		m_strFrameKey = TEXT("Boss_Back_Leg");
+	}
+	else
+	{
+		if (vCross.y > 0)
+		{
+			if (dot > 0.2f)
+			{
+				m_strFrameKey = TEXT("Boss_Leg_Direction_SW");
+			}
+			else if (dot > 0)
+			{
+				m_strFrameKey = TEXT("Boss_Left_Leg");
+			}
+			else
+			{
+				m_strFrameKey = TEXT("Boss_Leg_Direction_NW");
+			}
+		}
+		else
+		{
+			if (dot > 0.2f)
+			{
+				m_strFrameKey = TEXT("Boss_Leg_Direction_SE");
+			}
+			else if (dot > 0)
+			{
+				m_strFrameKey = TEXT("Boss_Right_Leg");
+			}
+			else
+			{
+				m_strFrameKey = TEXT("Boss_Leg_Direction_NE");
+			}
+		}
+	}
+}
 
 void CBossLowerBody::Attack()
 {
@@ -459,36 +656,59 @@ void CBossLowerBody::Attack()
 
 void CBossLowerBody::Move(_float fTimeDelta)
 {	
+	if (!m_isMoveDir)
+	{
+		m_bAnimationLock = true;
+		m_isMoveDir = true;
+		m_vTargetPos = m_pPlayerTransform->Get_State(STATE::POSITION);
+		//RotationCheck();
+	}
+
+	RotationCheck();
 	if (m_isMove)
 	{
+		//m_fSumDirDurarionTime += fTimeDelta;
+		//RotationCheck();
 		_wstring tag = m_pAnimationCom->Get_FrameKey();
 		m_pAnimationCom->Get_Frame_Desc(tag)->iEnd;
 		if (m_pAnimationCom->Get_Frame_Current_Index(tag) == m_pAnimationCom->Get_Frame_Desc(tag)->iEnd)
 			return;
 	}
 
-	if (!m_isMove && m_strLegFrameKey == TEXT("Boss_LeftLeg"))
+	/*if (!m_isMove && m_strLegFrameKey == TEXT("Boss_LeftLeg"))*/
+	if (!m_isMove && m_isLeftLeg)
 	{
 		m_isMove = true;
+		//RotationCheck();
 		m_pGameInstance->PlaySoundOnce(TEXT("Boss1_Move_0.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
-		m_strFrameKey = TEXT("Boss_LeftLeg");
+		/*m_strFrameKey = TEXT("Boss_LeftLeg");*/
 	}
-	else if (!m_isMove && m_strLegFrameKey == TEXT("Boss_RightLeg"))
+	else if (!m_isMove)
 	{
 		m_isMove = true;
+		//RotationCheck();
 		m_pGameInstance->PlaySoundOnce(TEXT("Boss1_Move_1.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
-		m_strFrameKey = TEXT("Boss_RightLeg");
+		//m_strFrameKey = TEXT("Boss_RightLeg");
 	}
 
-	_float3 fPlayerLook = m_pPlayerTransform->Get_State(STATE::LOOK);
+	/*_float3 fPlayerLook = m_pPlayerTransform->Get_State(STATE::LOOK);
 	_float3 fMonsterLook = m_pTransformCom->Get_State(STATE::LOOK);
 	D3DXVec3Normalize(&fPlayerLook, &fPlayerLook);
 	D3DXVec3Normalize(&fMonsterLook, &fMonsterLook);
 
 	_float dot = D3DXVec3Dot(&fPlayerLook, &fMonsterLook);
-	float fRadian = acosf(dot);
+	float fRadian = acosf(dot);*/
 
-	m_pTransformCom->Chase(m_pPlayerTransform->Get_State(STATE::POSITION), fTimeDelta);
+	/*m_pTransformCom->Chase(m_pPlayerTransform->Get_State(STATE::POSITION), fTimeDelta);*/
+
+	if (m_fSumDirDurarionTime >= m_fDirDuraionTime)
+	{
+		m_isMoveDir = false;
+		m_fSumDirDurarionTime = 0.f;
+		//RotationCheck();
+	}
+
+	m_pTransformCom->Chase(m_vTargetPos, fTimeDelta);
 }
 
 void CBossLowerBody::Move()
