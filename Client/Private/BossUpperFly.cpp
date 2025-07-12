@@ -41,7 +41,7 @@ HRESULT CBossUpperFly::Initialize(void* pArg)
 	_float3 vOffset = vBasePos +_float3(0.f, -1.5f, 0.f);
 
 	m_pTransformCom->Set_State(STATE::POSITION, vOffset);
-	m_pTransformCom->Set_Scale({ 6.f, 6.f, 1.f });
+	m_pTransformCom->Set_Scale({ 3.5f, 6.f, 1.f });
 
 	return S_OK;
 }
