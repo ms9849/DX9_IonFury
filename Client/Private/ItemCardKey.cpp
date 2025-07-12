@@ -127,6 +127,7 @@ void CItemCardKey::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTi
 	{
 		m_isDead = true;
 		m_pGameInstance->PlaySoundOnce(TEXT("Get_Item.ogg"), CHANNELID::SOUND_EFFECT, 0.f);
+		m_pGameInstance->PlaySoundOnce(TEXT("nice.ogg"), CHANNELID::SOUND_EFFECT, 0.f);
 	}
 }
 

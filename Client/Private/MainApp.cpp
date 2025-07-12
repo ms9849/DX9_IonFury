@@ -11,6 +11,7 @@
 #include "Bullet_Manager.h"
 #include "Snow.h"
 #include "Blood.h"
+#include "YellowDust.h"
 #include "Effect.h"
 #include "Effect_Pistol_Fire.h"
 #include "Bullet.h"
@@ -124,6 +125,11 @@ HRESULT CMainApp::Ready_Prototypes()
 	/* For.Prototype_Component_VIBuffer_Cube */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_Cube"),
 		CVIBuffer_Cube::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Sight */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Sight"),
+		CSight::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
 #pragma region 폰트 텍스처
@@ -685,12 +691,21 @@ HRESULT CMainApp::Ready_Prototypes()
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Particle/Blood.png"), 1))))
 		return E_FAIL;
 
+	/* For. Prototype_Component_Texture_YellowDust */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_YellowDust"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Particle/YellowDust.png"), 1))))
+		return E_FAIL;
+
 	/* For. Prototype_GameObject_Snow*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Snow"), CSnow::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
 	/* For. Prototype_GameObject_Blood */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Blood"), CBlood::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	/* For. Prototype_GameObject_YellowDust */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_YellowDust"), CYellowDust::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
 #pragma endregion

@@ -48,9 +48,6 @@ HRESULT CLevel_GamePlay::Initialize()
 	
 	if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"))))
 		return E_FAIL;
-	
-	 if (FAILED(Ready_Layer_Boss(TEXT("Layer_Boss"))))
-	 	return E_FAIL;
 
 	if (FAILED(Ready_Layer_UI(TEXT("Layer_UI"))))
 		return E_FAIL;
@@ -160,7 +157,7 @@ void CLevel_GamePlay::Update(_float fTimeDelta)
 
 	m_pGameInstance->Check_AABBCollision(TEXT("Layer_Player"), TEXT("Layer_Map_Objects_AABB"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta);
 	m_pGameInstance->Check_AABBCollision(TEXT("Layer_Player"), TEXT("Layer_Map_Objects_AABB_Ride"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta);
-	m_pGameInstance->Check_AABBCollision(TEXT("Layer_Player"), TEXT("Layer_Map_Objects_Gate"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta);
+	//m_pGameInstance->Check_AABBCollision(TEXT("Layer_Player"), TEXT("Layer_Map_Objects_Gate"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta);
 
 	m_pGameInstance->Check_AABBCollision(TEXT("Layer_Monster"), TEXT("Layer_Monster"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta);
 	m_pGameInstance->Check_AABBCollision(TEXT("Layer_Monster"), TEXT("Layer_Map_Objects_AABB"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta);
@@ -172,8 +169,6 @@ void CLevel_GamePlay::Update(_float fTimeDelta)
 	m_pGameInstance->Check_AABBCollision(TEXT("Layer_Player"), TEXT("Layer_Spawner"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta);
 	m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_PlayerBullet"), TEXT("Layer_Map_Objects_Ray"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta, nullptr);
 	m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_PlayerBullet"), TEXT("Layer_Monster"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta, nullptr);
-	m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_PlayerBullet"), TEXT("Layer_Boss1_Upper"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta, nullptr);
-	m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_PlayerBullet"), TEXT("Layer_Boss1_Lower"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta, nullptr);
 	m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_Monster_Bullet"), TEXT("Layer_Player"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta, nullptr);
 
 	m_pTerrain_Manager->Check_Landing();
@@ -527,20 +522,6 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const _wstring& strLayerTag)
 	}*/
 
 	m_pTerrain_Manager->Add_LandObject(LEVEL::GAMEPLAY, TEXT("Layer_Monster"));
-
-	return S_OK;
-}
-
-HRESULT CLevel_GamePlay::Ready_Layer_Boss(const _wstring& strLayerTag)
-{
-	for (size_t i = 0; i < 1; i++)
-	{
-		if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Monster_Boss"),
-			ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag)))
-			return E_FAIL;
-	}
-
-	//m_pTerrain_Manager->Add_LandObject(LEVEL::GAMEPLAY, TEXT("Layer_Boss"));
 
 	return S_OK;
 }

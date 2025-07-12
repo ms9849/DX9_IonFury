@@ -28,9 +28,11 @@ HRESULT CBossUpperBody::Initialize_Prototype()
 
 HRESULT CBossUpperBody::Initialize(void* pArg)
 {
-	m_pPlayerTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player"), TEXT("Com_Transform")));
+	m_pPlayerTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Layer_Player"), TEXT("Com_Transform")));
 	m_pCoreTranform = static_cast<CTransform*>(pArg);
 	Safe_AddRef(m_pCoreTranform);
+
+	m_pObjectDesc.iLayerLevel = ENUM_CLASS(LEVEL::BOSSFIGHT);
 
 	if (m_pCoreTranform == nullptr)
 		return E_FAIL;
@@ -128,7 +130,7 @@ void CBossUpperBody::Update(_float fTimeDelta)
 		if (m_pWing != nullptr)
 			m_pWing->Set_Dead(true);
 
-		CEffect_Manager::GetInstance()->Create_Effect(TEXT("Effect_Grenade_Explosion"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Effect"),
+		CEffect_Manager::GetInstance()->Create_Effect(TEXT("Effect_Grenade_Explosion"), ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Layer_Effect"),
 			m_pTransformCom->Get_State(STATE::POSITION));
 	}
 	else if (m_bAttacking)							// 어택중이면 계속 어택
@@ -234,9 +236,9 @@ void CBossUpperBody::UseBooster()
 {
 	CBossUpperFly::Fly_DESC desc;
 	desc.pTransform = m_pTransformCom;
-	m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Monster_Boss_Upper_Fly"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Boss_UpperLeft"), &desc);
+	m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_GameObject_Monster_Boss_Upper_Fly"), ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Layer_Boss_UpperLeft"), &desc);
 	m_pWing = dynamic_cast<CBossUpperFly*>(m_pGameInstance->Find_GameObject_ToLayer(
-		ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Boss_UpperLeft")));
+		ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Layer_Boss_UpperLeft")));
 	Safe_AddRef(m_pWing);
 
 	return;
@@ -481,7 +483,7 @@ HRESULT CBossUpperBody::Ready_Components()
 
 	/* Com_Sight */
 	CSight::SIGHT_DESC		SightDesc{ 30.f, D3DXToRadian(90.0f), m_pPlayerTransform, m_pTransformCom, true };
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Sight"),
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Sight"),
 		TEXT("Com_Sight"), reinterpret_cast<CComponent**>(&m_pSightCom), &SightDesc)))
 		return E_FAIL;
 
@@ -550,8 +552,8 @@ void CBossUpperBody::Attack(_float fTimeDelta, BossAttackState state)
 			Desc.vBulletScale = { 0.005f, 0.005f, 0.2f };
 			//Desc.vBulletScale = { 0.2f, 0.2f, 0.1f };
 			Desc.isPlayerBullet = false;
-			Desc.fDuration = 7.f;
-			CBullet_Manager::GetInstance()->Create_Bullet(TEXT("Bullet"), Desc, ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Monster_Bullet"));
+			Desc.fDuration = 5.f;
+			CBullet_Manager::GetInstance()->Create_Bullet(TEXT("Bullet"), Desc, ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Layer_Monster_Bullet"));
 			//m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Bullet"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Monster_Bullet"), &Desc);
 			m_fSumLaunchCoolTime = 0.f;								// 난사 한발 사용했으므로 누적 시간 초기화
 			//m_fSumAttackCoolTime = 0.f;
@@ -607,7 +609,7 @@ void CBossUpperBody::Attack(_float fTimeDelta, BossAttackState state)
 			//Desc.vBulletScale = { 0.2f, 0.2f, 0.1f };
 			Desc.isPlayerBullet = false;
 			Desc.fDuration = 7.f;
-			CBullet_Manager::GetInstance()->Create_Bullet(TEXT("Bullet"), Desc, ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Monster_Bullet"));
+			CBullet_Manager::GetInstance()->Create_Bullet(TEXT("Bullet"), Desc, ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Layer_Monster_Bullet"));
 			//m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Bullet"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Monster_Bullet"), &Desc);
 			m_fSumLaunchCoolTime = 0.f;								// 난사 한발 사용했으므로 누적 시간 초기화
 			//m_fSumAttackCoolTime = 0.f;
@@ -668,7 +670,7 @@ void CBossUpperBody::Attack(_float fTimeDelta, BossAttackState state)
 			Desc.vBulletScale = { 0.1f, 0.1f, 0.1f };
 			Desc.pPlayerTransform = m_pPlayerTransform;
 			Desc.fDuration = 7.f;
-			m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_BossGrenade"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Monster_Bullet"), &Desc);	
+			m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_GameObject_BossGrenade"), ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Layer_Monster_Bullet"), &Desc);
 			m_fSumLaunchCoolTime = 0.f;								// 유탄 한발 사용했으므로 누적 시간 초기화
 			m_uCurExplosionBullets++;										// 현재 사용한 총알 수 증가
 
@@ -854,10 +856,10 @@ void CBossUpperBody::SummonMonster()				// 추후 필요하면 인덱스 받을 수 있도록 �
 	for (size_t i = 0; i < 5; i++)
 	{
 		CGameObject* pClone = nullptr;
-		pClone = static_cast<CGameObject*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::GAMEPLAY),
+		pClone = static_cast<CGameObject*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::BOSSFIGHT),
 			m_MonsterKeys[0], m_pTransformCom->Get_State(STATE::POSITION)));
 
-		m_pGameInstance->Add_Clone_ToLayer(pClone, ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Monster"));
+		m_pGameInstance->Add_Clone_ToLayer(pClone, ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Layer_Monster"));
 
 		CTerrain_Manager::GetInstance()->Add_LandObject_One(pClone);
 	}

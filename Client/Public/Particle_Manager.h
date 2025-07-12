@@ -19,7 +19,10 @@ private:
 
 public:
 	HRESULT Initialize(LEVEL eLevelID);
-	void Create_Particle(const _wstring& strParticleTag, _uint iLayerLevelIndex, const _wstring& strLayerTag, const _float3& vPos);
+	HRESULT Ready_Particle_Blood();
+	HRESULT Ready_Particle_YellowDust();
+
+	void Create_Particle(const _wstring& strParticleTag, _uint iLayerLevelIndex, const _wstring& strLayerTag, const _float3& vPos, const _float3& vLocalPos = {});
 
 	void Release_Particle_Manager();
 private:

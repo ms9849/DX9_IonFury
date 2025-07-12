@@ -308,9 +308,44 @@ void CPlayer::Update(_float fTimeDelta)
 				if (m_pGameInstance->Key_Pressing(VK_LBUTTON)
 					&& iter->second.iCurrentBullets > 0)
 				{
+					/* 미니건 총알 발사 로직 */
+					_float3 vOffset = _float3{ 0.f, 0.f, 0.f };
+					vOffset += (m_pTransformCom->Get_State(STATE::RIGHT)) / 50.f;
+					vOffset += (m_pTransformCom->Get_State(STATE::LOOK)) / 5.f;
+					vOffset.y -= 0.05f;
+
+					_float3 vDir = m_pTransformCom->Get_State(STATE::LOOK);
+					vDir.x += m_pGameInstance->Random(-0.05f, 0.05f);
+					vDir.y += m_pGameInstance->Random(-0.05f, 0.05f);
+					vDir.z += m_pGameInstance->Random(-0.05f, 0.05f);
+					_float3 vPos = m_pTransformCom->Get_State(STATE::POSITION);
+
+					if (m_pGameInstance->Key_Pressing('D'))
+						vPos -= fTimeDelta * 8.f * m_pTransformCom->Get_State(STATE::RIGHT);
+					if (m_pGameInstance->Key_Pressing('A'))
+						vPos += fTimeDelta * 8.f * m_pTransformCom->Get_State(STATE::RIGHT);
+
+					D3DXVec3Normalize(&vDir, &vDir);
+
+					CBullet::BULLET_DESC Desc;
+					Desc.vDir = vDir;
+					Desc.vPos = vPos + vOffset;
+					Desc.vBulletScale = { 0.005f, 0.005f, 0.2f };
+					Desc.isPlayerBullet = true;
+					Desc.fDuration = 5.f;
+
+					m_fMachinGunSoundCoolDown += fTimeDelta;
+					if (m_fMachinGunSoundCoolDown > 0.05f)
+					{
+						m_pGameInstance->PlaySoundOnce(TEXT("MachineGun_Fire.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
+						m_fMachinGunSoundCoolDown = 0.f;
+					}
+					CBullet_Manager::GetInstance()->Create_Bullet(TEXT("Bullet"), Desc, m_pObjectDesc.iLayerLevel, TEXT("Layer_PlayerBullet"));
+					/* 애니메이션 제어 */
 					iter->second.iCurrentBullets -= 1;
 					m_tInfo.iBullets = iter->second.iCurrentBullets;
 					m_tInfo.strAction = TEXT("Shoot");
+
 				}
 				else if (!m_pGameInstance->Key_Pressing(VK_LBUTTON) && m_tInfo.strAction == TEXT("Shoot"))
 				{
@@ -515,7 +550,8 @@ HRESULT CPlayer::Ready_Weapons()
 
 	WEAPON_INFO MachineGunDesc{};
 
-	MachineGunDesc.iBulletsMax = 130;
+	/* 임시로 999로 설정*/
+	MachineGunDesc.iBulletsMax = 999;
 	MachineGunDesc.iCurrentBullets = MachineGunDesc.iBulletsMax;
 	MachineGunDesc.iCanShootBullets = MachineGunDesc.iBulletsMax;
 	MachineGunDesc.iShootBullets = MachineGunDesc.iCanShootBullets;

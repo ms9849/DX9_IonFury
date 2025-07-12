@@ -101,7 +101,7 @@ private:
 
 	_bool			m_bMachinGunBulletCharge{ false };
 	_bool			m_bMachinGunShootEnd{ false };
-
+	_float			m_fMachinGunSoundCoolDown = { 0.f };
 public:
 	virtual void OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta) override;
 	virtual void OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta, CComponent* pCollider) override;

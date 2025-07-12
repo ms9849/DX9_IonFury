@@ -211,6 +211,9 @@
     <Filter Include="02.GameObjects\Item\ItemMachineGun">
       <UniqueIdentifier>{3bc8d8fd-58c6-4421-bb10-9db4426c49ad}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\Particle\YellowDust">
+      <UniqueIdentifier>{d53c7e74-b51e-46b2-aec0-834dc23aebf1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -444,6 +447,9 @@
     <ClInclude Include="..\Public\ItemMachineGun.h">
       <Filter>02.GameObjects\Item\ItemMachineGun</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\YellowDust.h">
+      <Filter>02.GameObjects\Particle\YellowDust</Filter>
+    </ClInclude>
     <ClInclude Include="..\public\BossUpperFly.h">
       <Filter>02.GameObjects\Monster\Boss</Filter>
     </ClInclude>
@@ -674,6 +680,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\ItemMachineGun.cpp">
       <Filter>02.GameObjects\Item\ItemMachineGun</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\YellowDust.cpp">
+      <Filter>02.GameObjects\Particle\YellowDust</Filter>
     </ClCompile>
     <ClCompile Include="..\private\BossUpperFly.cpp">
       <Filter>02.GameObjects\Monster\Boss</Filter>

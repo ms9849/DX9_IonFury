@@ -395,7 +395,10 @@ void CSoldier::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDe
 			{
 				m_pGameInstance->PlaySoundOnce(TEXT("Soldier_Pain01.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
 
-				CParticle_Manager::GetInstance()->Create_Particle(TEXT("Particle_Blood"), m_pObjectDesc.iLayerLevel,
+				//CParticle_Manager::GetInstance()->Create_Particle(TEXT("Particle_Blood"), m_pObjectDesc.iLayerLevel,
+				//	TEXT("Layer_Particle"), m_pTransformCom->Get_State(STATE::POSITION));
+
+				CParticle_Manager::GetInstance()->Create_Particle(TEXT("Particle_YellowDust"), m_pObjectDesc.iLayerLevel,
 					TEXT("Layer_Particle"), m_pTransformCom->Get_State(STATE::POSITION));
 			}
 			else
