@@ -11,7 +11,6 @@
 #include "UICardKey.h"
 #include "Terrain.h"
 #include "ParticleSystem.h"
-#include "Player.h"
 #include "MapTrashBox.h"
 #include "Spawner.h"
 
@@ -25,8 +24,11 @@ CLevel_BossFight::CLevel_BossFight(LPDIRECT3DDEVICE9 pGraphic_Device, LEVEL eLev
 {
 }
 
-HRESULT CLevel_BossFight::Initialize()
+HRESULT CLevel_BossFight::Initialize(void* pArg)
 {
+	if (pArg != nullptr)
+		m_tPlayerInfo = *static_cast<CPlayer::PLAYER_INFO*>(pArg);
+
 	if (FAILED(Ready_Objects_By_JSON()))
 		return E_FAIL;
 
@@ -234,6 +236,11 @@ HRESULT CLevel_BossFight::Ready_Layer_Player(const _wstring& strLayerTag)
 		if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(iter.iProtoLevel), iter.strProto,
 			ENUM_CLASS(iter.iLayerLevel), iter.strLayer, &iter)))
 			return E_FAIL;
+
+		dynamic_cast<CPlayer*>(
+			m_pGameInstance->Find_GameObject_ToLayer(
+				ENUM_CLASS(iter.iLayerLevel), iter.strLayer)
+			)->Set_Player_Info(m_tPlayerInfo);
 
 		dynamic_cast<CTransform*>(
 			m_pGameInstance->Get_Component(
@@ -852,11 +859,11 @@ HRESULT CLevel_BossFight::Ready_Layer_Bullet(const _wstring& strLayerTag)
 	return S_OK;
 }
 
-CLevel_BossFight* CLevel_BossFight::Create(LPDIRECT3DDEVICE9 pGraphic_Device, LEVEL eLevelID)
+CLevel_BossFight* CLevel_BossFight::Create(LPDIRECT3DDEVICE9 pGraphic_Device, LEVEL eLevelID, void* pArg)
 {
 	CLevel_BossFight* pInstance = new CLevel_BossFight(pGraphic_Device, eLevelID);
 
-	if (FAILED(pInstance->Initialize()))
+	if (FAILED(pInstance->Initialize(pArg)))
 	{
 		MSG_BOX("Failed to Created : CLevel_BossFight");
 		Safe_Release(pInstance);

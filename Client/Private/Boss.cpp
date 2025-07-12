@@ -34,9 +34,9 @@ HRESULT CBoss::Initialize(void* pArg)
 		return E_FAIL;
 
 	m_pTransformCom->Set_State(STATE::POSITION, _float3(
-		m_pGameInstance->Random(30.f, 50.f),
+		m_pGameInstance->Random(15.f, 16.f),
 		0.f,
-		m_pGameInstance->Random(30.f, 50.f)));
+		m_pGameInstance->Random(15.f, 16.f)));
 
 	m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_GameObject_Monster_Boss_Upper"), ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Layer_Boss1_Upper"), m_pTransformCom);
 	m_pBossUpperBody = dynamic_cast<CBossUpperBody*>(m_pGameInstance->Find_GameObject_ToLayer(

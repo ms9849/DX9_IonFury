@@ -190,54 +190,64 @@ void CLevel_GamePlay::Update(_float fTimeDelta)
 
 	if (m_pGameInstance->Key_Down(VK_F9))
 	{
-		if (FAILED(m_pGameInstance->Change_Level(CLevel_Loading::Create(m_pGraphic_Device, LEVEL::LOADING, LEVEL::BOSSFIGHT))))
+		CPlayer::PLAYER_INFO Desc{};
+
+		Desc = dynamic_cast<CPlayer*>(
+			m_pGameInstance->Find_GameObject_ToLayer(
+				ENUM_CLASS(LEVEL::GAMEPLAY),
+				TEXT("Layer_Player")))->Get_Player_Info();
+
+
+		if (FAILED(m_pGameInstance->Change_Level(
+			CLevel_Loading::Create(
+				m_pGraphic_Device, LEVEL::LOADING, LEVEL::BOSSFIGHT, &Desc))))
 			return;
 	}
 }
 
 HRESULT CLevel_GamePlay::Render()
 {
-	// //// FPS 및 애니메이션 체크
-	// m_fFPSTimer += m_fTimeDelta;
-	// ++m_iFPSCount;
-	// 
-	// _tchar strFPS[256];
-	// 
-	// CAnimation* pPRAnimation = dynamic_cast<CAnimation*>(m_pGameInstance->Get_Component(
-	// 	ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player_RightHand"),
-	// 	TEXT("Com_Animation")));
-	// 
-	// CAnimation* pPLAnimation = dynamic_cast<CAnimation*>(m_pGameInstance->Get_Component(
-	// 	ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player_LeftHand"),
-	// 	TEXT("Com_Animation")));
-	// 
-	// //CAnimation* pDLAnimation = dynamic_cast<CAnimation*>(m_pGameInstance->Get_Component(
-	// //	ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Interaction_Objects"),
-	// //	TEXT("Com_Animation")));
-	// 
-	// _tchar strAni[256];
-	// 
-	// // 윈도우 타이틀에 FPS 표시
-	// if (pPRAnimation->Get_FrameKey() != TEXT("")
-	// 	&& pPLAnimation->Get_FrameKey() != TEXT(""))
-	// {
-	// 	if (m_fFPSTimer >= 1.0f) // 1초 지났을 때 FPS 계산
-	// 	{
-	// 		m_iCurrentFPS = m_iFPSCount;
-	// 		m_iFPSCount = 0;
-	// 		m_fFPSTimer = 0.f;
-	// 	}
-	// 	wsprintf(strAni, TEXT("GamePlay FPS : %d | PRAnimation : %s / %d / %s | PLAnimation : %s / %d / %s"),
-	// 		m_iCurrentFPS,
-	// 		pPRAnimation->Get_FrameKey().c_str(),
-	// 		pPRAnimation->Get_Frame_Current_Index(pPRAnimation->Get_FrameKey()),
-	// 		pPRAnimation->Get_Frame_Desc(pPRAnimation->Get_FrameKey())->bFinish ? TEXT("true") : TEXT("false"),
-	// 		pPLAnimation->Get_FrameKey().c_str(),
-	// 		pPLAnimation->Get_Frame_Current_Index(pPLAnimation->Get_FrameKey()),
-	// 		pPLAnimation->Get_Frame_Desc(pPLAnimation->Get_FrameKey())->bFinish ? TEXT("true") : TEXT("false")
-	// 	);
-	// 	SetWindowText(g_hWnd, strAni);
-	// }
+	//// FPS 및 애니메이션 체크
+	m_fFPSTimer += m_fTimeDelta;
+	++m_iFPSCount;
+	
+	_tchar strFPS[256];
+	
+	CAnimation* pPRAnimation = dynamic_cast<CAnimation*>(m_pGameInstance->Get_Component(
+		ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player_RightHand"),
+		TEXT("Com_Animation")));
+	
+	CAnimation* pPLAnimation = dynamic_cast<CAnimation*>(m_pGameInstance->Get_Component(
+		ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player_LeftHand"),
+		TEXT("Com_Animation")));
+	
+	//CAnimation* pDLAnimation = dynamic_cast<CAnimation*>(m_pGameInstance->Get_Component(
+	//	ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Interaction_Objects"),
+	//	TEXT("Com_Animation")));
+	
+	_tchar strAni[256];
+	
+	// 윈도우 타이틀에 FPS 표시
+	if (pPRAnimation->Get_FrameKey() != TEXT("")
+		&& pPLAnimation->Get_FrameKey() != TEXT(""))
+	{
+		if (m_fFPSTimer >= 1.0f) // 1초 지났을 때 FPS 계산
+		{
+			m_iCurrentFPS = m_iFPSCount;
+			m_iFPSCount = 0;
+			m_fFPSTimer = 0.f;
+		}
+		wsprintf(strAni, TEXT("GamePlay FPS : %d | PRAnimation : %s / %d / %s | PLAnimation : %s / %d / %s"),
+			m_iCurrentFPS,
+			pPRAnimation->Get_FrameKey().c_str(),
+			pPRAnimation->Get_Frame_Current_Index(pPRAnimation->Get_FrameKey()),
+			pPRAnimation->Get_Frame_Desc(pPRAnimation->Get_FrameKey())->bFinish ? TEXT("true") : TEXT("false"),
+			pPLAnimation->Get_FrameKey().c_str(),
+			pPLAnimation->Get_Frame_Current_Index(pPLAnimation->Get_FrameKey()),
+			pPLAnimation->Get_Frame_Desc(pPLAnimation->Get_FrameKey())->bFinish ? TEXT("true") : TEXT("false")
+		);
+		SetWindowText(g_hWnd, strAni);
+	}
 
 	return S_OK;
 }
