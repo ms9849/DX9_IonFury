@@ -87,7 +87,7 @@ void CEliteSoldier::Update(_float fTimeDelta)
 
 	if (m_bDying)
 	{
-		SetUp_OnTerrain(m_pTransformCom, 0.4f, &m_bJump);
+		SetUp_OnTerrain(m_pTransformCom, 0.55f, &m_bJump);
 		return;
 	}
 
@@ -380,6 +380,9 @@ void CEliteSoldier::OnCollision(CGameObject* pDst, COLLISION eColType, _float fT
 		CBullet* pBullet = dynamic_cast<CBullet*>(pDst);
 		if (pBullet != nullptr)
 		{
+			m_pTransformCom->Turn({ 0.f, 1.0f, 0.f }, fTimeDelta);
+			m_pTransformCom->LookAt(m_pPlayerTransform->Get_State(STATE::POSITION));
+
 			if ((m_fHp -= (pBullet->Get_Damage())) > 0)
 			{
 				m_pGameInstance->PlaySoundOnce(TEXT("Soldier_Pain01.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
