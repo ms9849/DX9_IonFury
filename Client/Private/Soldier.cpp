@@ -59,6 +59,12 @@ HRESULT CSoldier::Initialize(void* pArg)
 	//		m_pGameInstance->Random(0.f, 2.f)));
 	//}
 
+	// m_pTransformCom ¼¼ÆÃ
+	m_pTransformCom->Set_State(STATE::RIGHT, m_pObjectDesc.matWorld.m[0]);
+	m_pTransformCom->Set_State(STATE::UP, m_pObjectDesc.matWorld.m[0]);
+	m_pTransformCom->Set_State(STATE::LOOK, m_pObjectDesc.matWorld.m[0]);
+	m_pTransformCom->Set_State(STATE::POSITION, m_pObjectDesc.matWorld.m[0]);
+
 	m_fAttackRange = 4.f;
 	m_fDamage = 30.f;
 	m_fAttackCoolTime = 5.f;
