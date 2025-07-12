@@ -112,7 +112,7 @@ void CZombie::Update(_float fTimeDelta)
 
 	if (m_bDying)
 	{
-		SetUp_OnTerrain(m_pTransformCom, 0.35f, &m_bJump);
+		SetUp_OnTerrain(m_pTransformCom, 0.45f, &m_bJump);
 		return;
 	}
 
