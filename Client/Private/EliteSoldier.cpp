@@ -374,7 +374,7 @@ void CEliteSoldier::OnCollision(CGameObject* pDst, COLLISION eColType, _float fT
 	return;
 }
 
-void CEliteSoldier::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta, CComponent* pCollider)
+void CEliteSoldier::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta, CComponent* pCollider, const _float3& vPos)
 {
 	if (m_isDead || m_bDying)
 		return;

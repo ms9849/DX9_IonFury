@@ -315,7 +315,7 @@ HRESULT CSpider::Ready_Animations()
 	return S_OK;
 }
 
-void CSpider::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta, CComponent* pCollider)
+void CSpider::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta, CComponent* pCollider, const _float3& vPos)
 {
 	if (m_isDead || m_bDying)
 		return;

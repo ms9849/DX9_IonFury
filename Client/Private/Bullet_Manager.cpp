@@ -29,8 +29,8 @@ HRESULT CBullet_Manager::Ready_Bullet()
 	if (iter != m_Bullets.end())
 		return S_OK;
 
-	/* 총알은 1000개 풀링 */
-	for (int i = 0; i < 1000; ++i)
+	/* 총알은 600개 풀링 */
+	for (int i = 0; i < 600; ++i)
 	{
 		Bullets.push_back(
 			static_cast<CBullet*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC),

@@ -21,8 +21,8 @@ public:
 	HRESULT Ready_Pistol_Fire(LEVEL eLevelID);
 	HRESULT Ready_Boss_Die(LEVEL eLevelID);
 	HRESULT Ready_Grenade_Explosion(LEVEL eLevelID);
-
-	void Create_Effect(const _wstring& strEffectTag, _uint iLayerLevelIndex, const _wstring& strLayerTag, const _float3& vPos);
+	HRESULT Ready_Bullet_Wound(LEVEL eLevelID);
+	void Create_Effect(const _wstring& strEffectTag, _uint iLayerLevelIndex, const _wstring& strLayerTag, const _float3& vPos, const _float3& vLook = {0.f, 0.f, 0.f});
 
 	void Release_Effect_Manager();
 

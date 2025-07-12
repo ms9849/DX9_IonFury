@@ -106,7 +106,7 @@ private:
 	_float			m_fMachinGunSoundCoolDown = { 0.f };
 public:
 	virtual void OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta) override;
-	virtual void OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta, CComponent* pCollider) override;
+	virtual void OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta, CComponent* pCollider, const _float3& vPos) override;
 	virtual const COLLISION_DESC& Get_CollisionDesc(COLLISION eColType);
 	_wstring Get_ItemText(size_t iIndex);
 	size_t Get_ItemQueue_Length();

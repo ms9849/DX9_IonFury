@@ -38,7 +38,7 @@ _bool CPicking::Picking_InLocalSpace(const _float4x4* pWorldMatrixInverse, const
     _float      fU{}, fV{}, fDist{};
     _float3     m_vRayPos, m_vRayDir = {};
 
-    D3DXVec3TransformCoord(&m_vRayPos, &vRayPos, pWorldMatrixInverse);
+aaa    D3DXVec3TransformCoord(&m_vRayPos, &vRayPos, pWorldMatrixInverse);
     D3DXVec3TransformNormal(&m_vRayDir, &vRayDir, pWorldMatrixInverse);
     D3DXVec3Normalize(&m_vRayDir, &m_vRayDir);
 

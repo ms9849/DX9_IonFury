@@ -51,7 +51,7 @@ public:
 
 public:
 	virtual void OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta) override;
-	virtual void OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta, CComponent* pCollider) override;
+	virtual void OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta, CComponent* pCollider, const _float3& vPos, const _float3& vPlaneNormal) override;
 
 	virtual const COLLISION_DESC& Get_CollisionDesc(COLLISION eColType);
 

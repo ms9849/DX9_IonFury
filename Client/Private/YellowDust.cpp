@@ -22,7 +22,7 @@ HRESULT CYellowDust::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-	m_fSize = 0.05f;
+	m_fSize = 0.01f;
 	m_vertexBufferSize = 2048;
 	m_vertexBufferOffset = 0;
 	m_vertexBufferBatchSize = 512;
@@ -123,7 +123,7 @@ void CYellowDust::ResetParticle(PARTICLE_ATTRIBUTE* attribute)
 {
 	for (auto& attribute : m_Particles)
 	{
-		attribute.vPosition = { 0.f, 0.2f, 0.f };
+		attribute.vPosition = { 0.f, 0.f, 0.f };
 	}
 
 	attribute->bisAlive = true;

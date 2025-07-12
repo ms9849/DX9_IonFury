@@ -86,6 +86,12 @@ void CEffect::Set_Pos(const _float3& vPos)
 	m_pTransformCom->Set_State(STATE::POSITION, vPos);
 }
 
+void CEffect::Set_Look(const _float3& vLook)
+{
+	m_pTransformCom->LookAt(m_pTransformCom->Get_State(STATE::POSITION) - vLook);
+	m_fFrame += 1.f;
+}
+
 HRESULT CEffect::Ready_Components()
 {
 	/* Com_Transform */

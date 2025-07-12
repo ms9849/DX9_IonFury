@@ -16,18 +16,18 @@ class CEffect : public CGameObject
 public:
 	enum class EFFECT_TYPE {
 		BOSS_DIE,
-		GRENADE_EXPLOSION
+		GRENADE_EXPLOSION,
+		BULLET_WOUND
 	};
 public:
 	typedef struct tagEffectDesc{
 		//포지션 값을 어떻게 받아올 것인가? 는 충분히 고민해야하는 상황
 		_float3 vPosition = {};
-
+		_float3 vLook = {};
 		//프레임은 객체 내부에서 따로따로 선언해줄지, 받아올지 생각 잘해봐야 한다.
 		_float	fFrame = {};
 		EFFECT_TYPE eType = {};
 		_float  fNumFrame = {};
-
 	} EFFECT_DESC;
 
 protected:
@@ -45,7 +45,7 @@ public:
 
 public:
 	virtual void Set_Pos(const _float3& vPos);
-
+	virtual void Set_Look(const _float3& vLook);
 	_float Get_Frame() const {
 		return m_fFrame;
 	}
@@ -56,8 +56,8 @@ protected:
 	class CTransform*				m_pTransformCom = { nullptr };	
 	class CVIBuffer_Rect*			m_pVIBufferCom = { nullptr };
 	
-	_float					m_fFrame = {};
-	_float					m_fNumFrame = {};
+	_float					m_fFrame = { 0.f };
+	_float					m_fNumFrame = { 0.f };
 	EFFECT_TYPE				m_eType = {};
 
 protected:

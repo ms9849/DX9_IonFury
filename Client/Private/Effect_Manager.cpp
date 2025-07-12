@@ -2,6 +2,7 @@
 
 #include "GameInstance.h"
 #include "Effect_Pistol_Fire.h"
+#include "BUllet_Wound.h"
 
 IMPLEMENT_SINGLETON(CEffect_Manager);
 
@@ -26,6 +27,9 @@ HRESULT CEffect_Manager::Initialize(LEVEL eLevelID)
 		return E_FAIL;
 
 	if (FAILED(Ready_Grenade_Explosion(eLevelID)))
+		return E_FAIL;
+
+	if (FAILED(Ready_Bullet_Wound(eLevelID)))
 		return E_FAIL;
 
 	return S_OK;
@@ -112,7 +116,33 @@ HRESULT CEffect_Manager::Ready_Grenade_Explosion(LEVEL eLevelID)
 	return S_OK;
 }
 
-void CEffect_Manager::Create_Effect(const _wstring& strBulletTag, _uint iLayerLevelIndex, const _wstring& strLayerTag, const _float3& vPos)
+HRESULT CEffect_Manager::Ready_Bullet_Wound(LEVEL eLevelID)
+{
+	auto iter = m_Effects.find(TEXT("Effect_Bullet_Wound"));
+
+	if (iter != m_Effects.end())
+		return S_OK;
+
+	list<class CEffect*> Effects = {};
+
+	CEffect::EFFECT_DESC  Desc;
+	Desc.vPosition = { 0.f, 0.f, 0.f };
+
+
+	for (int i = 0; i < 200; ++i)
+	{
+		Effects.push_back(
+			static_cast<CEffect*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC),
+				TEXT("Prototype_GameObject_Effect_Bullet_Wound"), &Desc))
+		);
+	}
+
+	m_Effects.emplace(TEXT("Effect_Bullet_Wound"), Effects);
+
+	return S_OK;
+}
+
+void CEffect_Manager::Create_Effect(const _wstring& strBulletTag, _uint iLayerLevelIndex, const _wstring& strLayerTag, const _float3& vPos, const _float3& vLook)
 {
 	/*
 	Object_Manager와 GameInstance에 Add_Clone_Prototype 메서드를 추가하여, 
@@ -153,6 +183,8 @@ void CEffect_Manager::Create_Effect(const _wstring& strBulletTag, _uint iLayerLe
 		if (pEffect->Get_Frame() == 0.f && pEffect->isDead() == false)
 		{
 			pEffect->Set_Pos(vPos);
+			if(vLook != _float3{0.f, 0.f, 0.f})
+				pEffect->Set_Look(vLook);
 			Safe_AddRef(pEffect);
 			m_pGameInstance->Add_Clone_ToLayer(pEffect, iLayerLevelIndex, strLayerTag);
 			break;

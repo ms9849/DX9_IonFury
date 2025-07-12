@@ -48,6 +48,7 @@ public:
 #pragma region LEVEL_MANAGER
 public:
 	HRESULT Change_Level(class CLevel* pNewLevel);
+	_uint	Get_CurrentLevelID();
 #pragma endregion
 
 #pragma region PROTOTYPE_MANAGER

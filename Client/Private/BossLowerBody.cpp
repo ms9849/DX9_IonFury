@@ -379,7 +379,7 @@ void CBossLowerBody::OnCollision(CGameObject* pDst, COLLISION eColType, _float f
 	return;
 }
 
-void CBossLowerBody::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta, CComponent* pCollider)
+void CBossLowerBody::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta, CComponent* pCollider, const _float3& vPos)
 {
 	if (m_isDead || m_bDying)
 		return;

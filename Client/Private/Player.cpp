@@ -331,9 +331,9 @@ void CPlayer::Update(_float fTimeDelta)
 					CBullet::BULLET_DESC Desc;
 					Desc.vDir = vDir;
 					Desc.vPos = vPos + vOffset;
-					Desc.vBulletScale = { 0.005f, 0.005f, 0.2f };
+					Desc.vBulletScale = { 0.005f, 0.005f, 0.1f };
 					Desc.isPlayerBullet = true;
-					Desc.fDuration = 5.f;
+					Desc.fDuration = 1.5f;
 
 					m_fMachinGunSoundCoolDown += fTimeDelta;
 					if (m_fMachinGunSoundCoolDown > 0.05f)
@@ -395,7 +395,7 @@ void CPlayer::Update(_float fTimeDelta)
 						&& m_tInfo.strAction != TEXT("Shoot"))
 					{
 						m_pGameInstance->PlaySoundOnce(TEXT("ShotGun_Fire.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
-
+						CBullet::BULLET_DESC Desc;
 						for (_uint i = 0; i < 7; ++i)
 						{
 							_float3 vOffset = _float3{ 0.f, 0.f, 0.f };
@@ -411,7 +411,6 @@ void CPlayer::Update(_float fTimeDelta)
 
 							D3DXVec3Normalize(&vDir, &vDir);
 
-							CBullet::BULLET_DESC Desc;
 							Desc.vDir = vDir;
 							Desc.vPos = vPos + vOffset;
 							Desc.vBulletScale = { 0.005f, 0.005f, 0.2f };
@@ -596,6 +595,8 @@ _float3 CPlayer::Calc_BulletDir(_float3* vOffset)
 	_float3 vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
 
 	D3DXVec3Normalize(&vPlayerLook, &vPlayerLook);
+	m_pGameInstance->Check_RayCollision(vPlayerPos, vPlayerLook, TEXT("Layer_Map_Objects_AABB"), m_pObjectDesc.iLayerLevel, &vCollisionPos);
+	m_pGameInstance->Check_RayCollision(vPlayerPos, vPlayerLook, TEXT("Layer_Map_Objects_AABB_Ride"), m_pObjectDesc.iLayerLevel, &vCollisionPos);
 	m_pGameInstance->Check_RayCollision(vPlayerPos, vPlayerLook, TEXT("Layer_Monster"), m_pObjectDesc.iLayerLevel, &vCollisionPos);
 
 	*vOffset = (*D3DXVec3Normalize(&vPlayerRight, &vPlayerRight) / 10.f) + (vPlayerLook) / 5.f;
@@ -793,7 +794,7 @@ void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 	}
 }
 
-void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta, CComponent* pCollider)
+void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta, CComponent* pCollider, const _float3& vPos)
 {
 	if (eColType == COLLISION::RAY)
 	{

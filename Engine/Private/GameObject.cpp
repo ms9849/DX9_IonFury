@@ -33,13 +33,17 @@ void CGameObject::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTim
 	// 다들 조심
 }
 
-void CGameObject::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta, CComponent* pCollider)
+void CGameObject::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta, CComponent* pCollider, const _float3& vPos)
 {
 	/* 콜라이더의 정보가 필요하다면 이 메소드를 구현하면 됩니다. */
 
 	// 이 주석을 보고 있다면
 	// 하위 클래스에서 OnCollision 구현 안한거니까
 	// 다들 조심
+}
+
+void CGameObject::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta, CComponent* pCollider, const _float3& vPos, const _float3& vPlaneNormal)
+{
 }
 
 const COLLISION_DESC& CGameObject::Get_CollisionDesc(COLLISION eColType)
