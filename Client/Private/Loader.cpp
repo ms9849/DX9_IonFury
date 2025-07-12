@@ -247,7 +247,7 @@ HRESULT CLoader::Loading_For_GamePlay()
 
 	/* For.Prototype_Component_Texture_Map_Building */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Map_Building"),
-		CTexture::Create(m_pGraphic_Device, TEXTURE::CUBE, TEXT("../Bin/Resources/Textures/MapObject/Building/Building_%d.dds"), 2))))
+		CTexture::Create(m_pGraphic_Device, TEXTURE::CUBE, TEXT("../Bin/Resources/Textures/MapObject/Building/Building_%d.dds"), 4))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Map_Wall */
@@ -257,7 +257,7 @@ HRESULT CLoader::Loading_For_GamePlay()
 
 	/* For.Prototype_Component_Texture_Map_Box */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Map_Box"),
-		CTexture::Create(m_pGraphic_Device, TEXTURE::CUBE, TEXT("../Bin/Resources/Textures/MapObject/Box/Box_%d.dds"), 6))))
+		CTexture::Create(m_pGraphic_Device, TEXTURE::CUBE, TEXT("../Bin/Resources/Textures/MapObject/Box/Box_%d.dds"), 7))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Map_ContainerBox */
@@ -302,7 +302,7 @@ HRESULT CLoader::Loading_For_GamePlay()
 
 	/* For.Prototype_Component_Texture_Map_Slope */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Map_Slope"),
-		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/MapObject/Slope/Slope_%d.dds"), 1))))
+		CTexture::Create(m_pGraphic_Device, TEXTURE::CUBE, TEXT("../Bin/Resources/Textures/MapObject/Slope/Slope_%d.dds"), 1))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Map_Elevator */
@@ -707,7 +707,7 @@ HRESULT CLoader::Loading_For_BossFight()
 
 	/* For.Prototype_Component_Texture_Map_Building */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_Component_Texture_Map_Building"),
-		CTexture::Create(m_pGraphic_Device, TEXTURE::CUBE, TEXT("../Bin/Resources/Textures/MapObject/Building/Building_%d.dds"), 2))))
+		CTexture::Create(m_pGraphic_Device, TEXTURE::CUBE, TEXT("../Bin/Resources/Textures/MapObject/Building/Building_%d.dds"), 4))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Map_Wall */
@@ -717,7 +717,7 @@ HRESULT CLoader::Loading_For_BossFight()
 
 	/* For.Prototype_Component_Texture_Map_Box */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_Component_Texture_Map_Box"),
-		CTexture::Create(m_pGraphic_Device, TEXTURE::CUBE, TEXT("../Bin/Resources/Textures/MapObject/Box/Box_%d.dds"), 6))))
+		CTexture::Create(m_pGraphic_Device, TEXTURE::CUBE, TEXT("../Bin/Resources/Textures/MapObject/Box/Box_%d.dds"), 7))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Map_ContainerBox */
@@ -762,7 +762,7 @@ HRESULT CLoader::Loading_For_BossFight()
 
 	/* For.Prototype_Component_Texture_Map_Slope */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_Component_Texture_Map_Slope"),
-		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/MapObject/Slope/Slope_%d.dds"), 1))))
+		CTexture::Create(m_pGraphic_Device, TEXTURE::CUBE, TEXT("../Bin/Resources/Textures/MapObject/Slope/Slope_%d.dds"), 1))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Map_Elevator */
