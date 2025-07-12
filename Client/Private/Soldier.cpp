@@ -384,7 +384,7 @@ void CSoldier::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDe
 	return;
 }
 
-void CSoldier::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta, CComponent* pCollider)
+void CSoldier::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta, CComponent* pCollider, const _float3& vPos)
 {
 	if (m_isDead || m_bDying)
 		return;

@@ -214,6 +214,9 @@
     <Filter Include="02.GameObjects\Particle\YellowDust">
       <UniqueIdentifier>{d53c7e74-b51e-46b2-aec0-834dc23aebf1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\Effect\Bullet_Wound">
+      <UniqueIdentifier>{08ac39b3-eb1b-4888-9f36-ed6bce1e49c0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -453,6 +456,9 @@
     <ClInclude Include="..\public\BossUpperFly.h">
       <Filter>02.GameObjects\Monster\Boss</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Bullet_Wound.h">
+      <Filter>02.GameObjects\Effect\Bullet_Wound</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -686,6 +692,9 @@
     </ClCompile>
     <ClCompile Include="..\private\BossUpperFly.cpp">
       <Filter>02.GameObjects\Monster\Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Bullet_Wound.cpp">
+      <Filter>02.GameObjects\Effect\Bullet_Wound</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
