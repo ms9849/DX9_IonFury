@@ -33,6 +33,7 @@ private:
 	typedef struct tagWeapon
 	{
 		_uint iBulletsMax{}, iCanShootBullets{}, iCurrentBullets{}, iShootBullets{};
+		_bool bUseable{ false };
 	}WEAPON_INFO;
 
 	typedef struct tagItem

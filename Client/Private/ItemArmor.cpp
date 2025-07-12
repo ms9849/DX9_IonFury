@@ -32,6 +32,11 @@ HRESULT CItemArmor::Initialize(void* pArg)
 
 	//m_pTransformCom->Set_State(STATE::POSITION, _float3(25.f, 0.f, 5.f));
 
+	m_pTransformCom->Set_State(STATE::RIGHT, m_pObjectDesc.matWorld.m[0]);
+	m_pTransformCom->Set_State(STATE::UP, m_pObjectDesc.matWorld.m[1]);
+	m_pTransformCom->Set_State(STATE::LOOK, m_pObjectDesc.matWorld.m[2]);
+	m_pTransformCom->Set_State(STATE::POSITION, m_pObjectDesc.matWorld.m[3]);
+
 	SetUp_OnTerrain(m_pTransformCom, 0.5f);
 
 	m_fItemOriginPosY = m_pTransformCom->Get_State(STATE::POSITION).y;
