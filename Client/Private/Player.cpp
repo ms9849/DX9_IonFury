@@ -7,12 +7,9 @@
 #include "ItemPistolBullet.h"
 #include "ItemShootGunBullet.h"
 #include "ItemCardKey.h"
-#include "ItemShootGun.h"
-#include "ItemMachineGun.h"
 #include "DoorLock.h"
 #include "Lever.h"
 #include "MapElevator.h"
-#include "MapGate.h"
 #include "Player_RightHand.h"
 #include "Player_LeftHand.h"
 #include "Effect_Manager.h"
@@ -61,7 +58,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 	m_tInfo.iBullets = iter->second.iCurrentBullets;
 	m_tInfo.iShootBullets = iter->second.iShootBullets;
 
-	//m_pTransformCom->Set_State(STATE::POSITION, _float3(35.f, 1.f, 45.f));
+	//m_pTransformCom->Set_State(STATE::POSITION, _float3(18.5f, 0.f, 95.f));
 
 	// 오른손
 	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(m_pObjectDesc.iProtoLevel, TEXT("Prototype_GameObject_Player_RightHand"),
@@ -121,30 +118,20 @@ void CPlayer::Update(_float fTimeDelta)
 		}
 		if (m_pGameInstance->Key_Down('2'))
 		{
-			auto iter = m_Weapons.find(TEXT("ShootGun"));
-
-			if (iter->second.bUseable)
+			m_strNextWeapon = TEXT("ShootGun");
+			if (m_tInfo.strWeapon != m_strNextWeapon)
 			{
-				m_strNextWeapon = TEXT("ShootGun");
-				if (m_tInfo.strWeapon != m_strNextWeapon)
-				{
-					m_tInfo.strAction = TEXT("Down");
-					m_bWeaponChange = true;
-				}
+				m_tInfo.strAction = TEXT("Down");
+				m_bWeaponChange = true;
 			}
 		}
 		if (m_pGameInstance->Key_Down('3'))
 		{
-			auto iter = m_Weapons.find(TEXT("ShootGun"));
-
-			if (iter->second.bUseable)
+			m_strNextWeapon = TEXT("MachineGun");
+			if (m_tInfo.strWeapon != m_strNextWeapon)
 			{
-				m_strNextWeapon = TEXT("MachineGun");
-				if (m_tInfo.strWeapon != m_strNextWeapon)
-				{
-					m_tInfo.strAction = TEXT("Down");
-					m_bWeaponChange = true;
-				}
+				m_tInfo.strAction = TEXT("Down");
+				m_bWeaponChange = true;
 			}
 		}
 		if (m_pGameInstance->Key_Down('E'))
@@ -235,7 +222,7 @@ void CPlayer::Update(_float fTimeDelta)
 	if (!m_bWeaponChange && !m_bUseCardKey && m_pRightHandAnimationCom->Check_Animation_Finish())
 	{
 		/* 장전이 끝났을 때 철컥 소리 나게 */
-		if (m_tInfo.strWeapon == TEXT("Pistol") && m_tInfo.strAction == TEXT("Reload"))
+		if (m_tInfo.strWeapon == TEXT("Pistol") && m_tInfo.strWeapon == TEXT("Reload"))
 		{
 			m_pGameInstance->PlaySoundOnce(TEXT("Pistol_Reload_3.ogg"), CHANNELID::SOUND_EFFECT, 0.2f);
 		}
@@ -244,7 +231,6 @@ void CPlayer::Update(_float fTimeDelta)
 			m_tInfo.strAction = TEXT("Shoot");
 		else
 			m_tInfo.strAction = TEXT("Idle");
-
 	}
 	else
 	{
@@ -285,13 +271,13 @@ void CPlayer::Update(_float fTimeDelta)
 			iter->second.iShootBullets = iter->second.iCanShootBullets;
 			m_tInfo.iShootBullets = iter->second.iShootBullets;
 
-			if (m_tInfo.strWeapon == TEXT("Pistol"))
+			if (m_tInfo.strWeapon.compare(TEXT("Pistol")) == 0)
 			{
 				m_pGameInstance->PlaySoundOnce(TEXT("Pistol_Reload_1.ogg"), CHANNELID::SOUND_EFFECT, 0.5f);
 				m_pGameInstance->PlaySoundOnce(TEXT("Pistol_Reload_2.ogg"), CHANNELID::SOUND_EFFECT, 0.5f);
 			}
 
-			if (m_tInfo.strWeapon == TEXT("ShootGun"))
+			if (m_tInfo.strWeapon.compare(TEXT("ShootGun")) == 0)
 			{
 				m_pGameInstance->PlaySoundOnce(TEXT("ShotGun_Reload_1.ogg"), CHANNELID::SOUND_EFFECT, 0.5f);
 			}
@@ -500,7 +486,6 @@ HRESULT CPlayer::Ready_Weapons()
 	PistolDesc.iCurrentBullets = 230;
 	PistolDesc.iCanShootBullets = 7;
 	PistolDesc.iShootBullets = PistolDesc.iCanShootBullets;
-	PistolDesc.bUseable = true;
 
 	m_Weapons.emplace(TEXT("Pistol"), PistolDesc);
 
@@ -679,31 +664,6 @@ void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 				m_tInfo.iBullets = iter->second.iCurrentBullets;
 
 			Insert_ItemDesc(TEXT("Get ShotGun Bullets [Bullet+10]"));
-		}
-		if (dynamic_cast<CItemShootGun*>(pDst))
-		{
-			auto iter = m_Weapons.find(TEXT("ShootGun"));
-			iter->second.bUseable = true;
-
-			// 문 열리는 사운드 넣어주세요
-
-			dynamic_cast<CMapGate*>(
-				m_pGameInstance->Get_GameObject_By_ID(
-					m_pObjectDesc.iLayerLevel,
-					TEXT("Layer_Map_Objects_Gate"),
-					2))->Set_Dead(true);
-
-			dynamic_cast<CMapGate*>(
-				m_pGameInstance->Get_GameObject_By_ID(
-					m_pObjectDesc.iLayerLevel,
-					TEXT("Layer_Map_Objects_Gate"),
-					3))->Set_Dead(true);
-
-		}
-		if (dynamic_cast<CItemMachineGun*>(pDst))
-		{
-			auto iter = m_Weapons.find(TEXT("MachineGun"));
-			iter->second.bUseable = true;
 		}
 		if (dynamic_cast<CItemCardKey*>(pDst))
 		{
