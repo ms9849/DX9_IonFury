@@ -60,6 +60,33 @@ HRESULT CZombie::Initialize(void* pArg)
 	if (FAILED(Ready_Animations()))
 		return E_FAIL;
 
+	// m_pTransformCom 세팅
+	m_pTransformCom->Set_State(STATE::RIGHT, m_pObjectDesc.matWorld.m[0]);
+	m_pTransformCom->Set_State(STATE::UP, m_pObjectDesc.matWorld.m[1]);
+	m_pTransformCom->Set_State(STATE::LOOK, m_pObjectDesc.matWorld.m[2]);
+	m_pTransformCom->Set_State(STATE::POSITION, m_pObjectDesc.matWorld.m[3]);
+
+	if (m_pObjectDesc.iObjectID >= 12 || m_pObjectDesc.iObjectID <= 51)
+	{
+		m_isTarget = true;
+		if (m_pTransformCom->Get_State(STATE::POSITION).z >= 45.f)
+		{
+			m_isLeft = true;
+			m_vPos = { 31.5f, 1.f, 63.5f };
+		}
+		else
+		{
+			m_isLeft = false;
+			m_vPos = { 31.5f, 1.f, 28.5f };
+		}
+	}
+	else
+	{
+		m_isTarget = false;
+		// 일어나는 연출 필요할 경우
+		//m_isAwake = true;
+	}
+
 	/* 스포너 관련
 	if (m_vPos != nullptr)
 	{
@@ -182,7 +209,8 @@ void CZombie::Update(_float fTimeDelta)
 			else
 				m_isTarget = false;*/
 
-			TargetMove(fTimeDelta, m_vTargetPos[m_uIdx]);
+			//TargetMove(fTimeDelta, m_vTargetPos[m_uIdx]);
+			TargetMove(fTimeDelta, m_vPos);
 			m_isMove = true;
 			m_fSumMoveCoolTime = 0.f;
 		}
@@ -566,11 +594,12 @@ void CZombie::TargetMove(_float fTimeDelta, _float3 vPos)		// 정해져 있는 장소로
 	{
 		if (m_isLeft)
 		{
-			m_pTransformCom->Turn(_float3(0.f, -1.f, 0.f), fTimeDelta * 0.5f);
+			//0.5
+			m_pTransformCom->Turn(_float3(0.f, -1.f, 0.f), fTimeDelta * 0.4f);
 		}
 		else
 		{
-			m_pTransformCom->Turn(_float3(0.f, 1.f, 0.f), fTimeDelta * 0.5f);
+			m_pTransformCom->Turn(_float3(0.f, 1.f, 0.f), fTimeDelta * 0.4f);
 		}
 		
 		_float3 vLook = m_pTransformCom->Get_State(STATE::LOOK);

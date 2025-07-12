@@ -74,6 +74,8 @@ HRESULT CBossUpperBody::Initialize(void* pArg)
 	m_uMaxExplosionBullets = 5;
 	m_vUpOffset = { 0.f, 2.9f, 0.f };
 	m_fFirstY = m_pTransformCom->Get_State(STATE::POSITION).y;
+	m_fMoveCoolTime = 0.07f;
+	m_fSumMoveCoolTime = 0.f;
 
 	return S_OK;
 }
@@ -100,6 +102,8 @@ void CBossUpperBody::Update(_float fTimeDelta)
 		m_fSumAttackCoolTime += fTimeDelta;
 	else
 		m_fAttackFailTime += fTimeDelta;
+
+	m_fSumMoveCoolTime += fTimeDelta;
 
 	if (!m_bAnimationLock)
 	{
@@ -164,13 +168,22 @@ void CBossUpperBody::Update(_float fTimeDelta)
 
 			Attack(fTimeDelta, m_eState);
 			m_uTempNum++;
-			if (m_uTempNum > 2)
+			/*if (m_uTempNum > 2)
+				m_uTempNum = 0;*/
+			if (m_uTempNum > 1)
 				m_uTempNum = 0;
 		}
 	}
 
 	if (m_isLowerDead)
-		Move(fTimeDelta);
+	{
+		Swing(fTimeDelta);
+		if (m_fSumMoveCoolTime >= m_fMoveCoolTime)
+		{
+			Move(fTimeDelta);
+			m_fSumMoveCoolTime = 0.f;
+		}
+	}
 	else
 		m_pTransformCom->Set_State(STATE::POSITION, m_pCoreTranform->Get_State(STATE::POSITION));
 	//SetUp_OnTerrain(m_pTransformCom, 0.5f, &m_bJump);
@@ -692,7 +705,7 @@ void CBossUpperBody::Attack(_float fTimeDelta, BossAttackState state)
 	}
 	else if (m_eState == BossAttackState::SUMMON)
 	{
-		SummonMonster();
+		//SummonMonster();
 
 		m_uCurBullets = 0;								// 총알 수 0으로 초기화
 		m_uCurExplosionBullets = 0;						// 유탄 수 0으로 초기화
@@ -834,7 +847,7 @@ void CBossUpperBody::AttackRotationCheck()
 	}
 }
 
-void CBossUpperBody::Move(_float fTimeDelta)
+void CBossUpperBody::Swing(_float fTimeDelta)
 {
 	static float fTimeAcc = 0.f;
 	fTimeAcc += fTimeDelta;
@@ -849,6 +862,27 @@ void CBossUpperBody::Move(_float fTimeDelta)
 	// 최종 위치
 	vBasePos.y = m_fFirstY + yOffset;
 	m_pTransformCom->Set_State(STATE::POSITION, vBasePos);
+}
+
+void CBossUpperBody::Move(_float fTimeDelta)
+{
+	if (m_isMove)
+	{
+		_wstring tag = m_pAnimationCom->Get_FrameKey();
+		m_pAnimationCom->Get_Frame_Desc(tag)->iEnd;
+		if (m_pAnimationCom->Get_Frame_Current_Index(tag) == m_pAnimationCom->Get_Frame_Desc(tag)->iEnd)
+			return;
+	}
+
+	_float3 fPlayerLook = m_pPlayerTransform->Get_State(STATE::LOOK);
+	_float3 fMonsterLook = m_pTransformCom->Get_State(STATE::LOOK);
+	D3DXVec3Normalize(&fPlayerLook, &fPlayerLook);
+	D3DXVec3Normalize(&fMonsterLook, &fMonsterLook);
+
+	_float dot = D3DXVec3Dot(&fPlayerLook, &fMonsterLook);
+	float fRadian = acosf(dot);
+
+	m_pTransformCom->Chase(m_pPlayerTransform->Get_State(STATE::POSITION), fTimeDelta);
 }
 
 void CBossUpperBody::SummonMonster()				// 추후 필요하면 인덱스 받을 수 있도록 변경하기

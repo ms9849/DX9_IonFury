@@ -60,12 +60,12 @@ HRESULT CLevel_BossFight::Initialize()
 	//if (FAILED(Ready_Layer_Items(TEXT("Layer_Items"))))
 	//	return E_FAIL;
 	//
-	//if (FAILED(Ready_Layer_Map_Objects_AABB(TEXT("Layer_Map_Objects_AABB")))) // 벽 같이 회전 안한 큐브
-	//	return E_FAIL;
-	//
-	//if (FAILED(Ready_Layer_Map_Objects_AABB_Ride(TEXT("Layer_Map_Objects_AABB_Ride")))) // 회전 안한 탈 수 있는 큐브
-	//	return E_FAIL;
-	//
+	if (FAILED(Ready_Layer_Map_Objects_AABB(TEXT("Layer_Map_Objects_AABB")))) // 벽 같이 회전 안한 큐브
+		return E_FAIL;
+	
+	if (FAILED(Ready_Layer_Map_Objects_AABB_Ride(TEXT("Layer_Map_Objects_AABB_Ride")))) // 회전 안한 탈 수 있는 큐브
+		return E_FAIL;
+	
 	////if (FAILED(Ready_Layer_Map_Objects_OBB(TEXT("Layer_Map_Objects_OBB")))) // 회전 한 큐브
 	////	return E_FAIL;
 	//
@@ -125,10 +125,10 @@ void CLevel_BossFight::Update(_float fTimeDelta)
 
 	m_pTerrain_Manager->Check_Landing();
 
-	m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_PlayerBullet"), TEXT("Layer_Monster"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta, nullptr);
-	m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_PlayerBullet"), TEXT("Layer_Boss1_Upper"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta, nullptr);
-	m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_PlayerBullet"), TEXT("Layer_Boss1_Lower"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta, nullptr);
-	m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_Monster_Bullet"), TEXT("Layer_Player"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta, nullptr);
+	m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_PlayerBullet"), TEXT("Layer_Monster"), ENUM_CLASS(LEVEL::BOSSFIGHT), fTimeDelta, nullptr);
+	m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_PlayerBullet"), TEXT("Layer_Boss1_Upper"), ENUM_CLASS(LEVEL::BOSSFIGHT), fTimeDelta, nullptr);
+	m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_PlayerBullet"), TEXT("Layer_Boss1_Lower"), ENUM_CLASS(LEVEL::BOSSFIGHT), fTimeDelta, nullptr);
+	m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_Monster_Bullet"), TEXT("Layer_Player"), ENUM_CLASS(LEVEL::BOSSFIGHT), fTimeDelta, nullptr);
 }
 
 HRESULT CLevel_BossFight::Render()
@@ -325,40 +325,12 @@ HRESULT CLevel_BossFight::Ready_Layer_Spawner(const _wstring& strLayerTag)
 
 HRESULT CLevel_BossFight::Ready_Layer_Monster(const _wstring& strLayerTag)
 {
-	/*for (size_t i = 0; i < 2; i++)
+	for (auto& iter : m_ObjectDescs->find(strLayerTag)->second)
 	{
-		if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_GameObject_Monster_EliteSoldier"),
-			ENUM_CLASS(LEVEL::BOSSFIGHT), strLayerTag)))
-			return E_FAIL;
-	}*/
-
-	//for (size_t i = 0; i < 2; i++)
-	//{
-	//	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_GameObject_Monster_Spider"),
-	//		ENUM_CLASS(LEVEL::BOSSFIGHT), strLayerTag)))
-	//		return E_FAIL;
-	//}
-
-	//for (size_t i = 0; i < 10; i++)
-	//{
-	//	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_GameObject_Monster_Zombie"),
-	//		ENUM_CLASS(LEVEL::BOSSFIGHT), strLayerTag)))
-	//		return E_FAIL;
-	//}
-
-	for (size_t i = 0; i < 1; i++)
-	{
-		if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_GameObject_Monster_Soldier"),
-			ENUM_CLASS(LEVEL::BOSSFIGHT), strLayerTag)))
+		if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(iter.iProtoLevel), iter.strProto,
+			ENUM_CLASS(iter.iLayerLevel), iter.strLayer, &iter)))
 			return E_FAIL;
 	}
-
-	/*for (size_t i = 0; i < 1; i++)
-	{
-		if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_GameObject_Monster_Boss"),
-			ENUM_CLASS(LEVEL::BOSSFIGHT), strLayerTag)))
-			return E_FAIL;
-	}*/
 
 	m_pTerrain_Manager->Add_LandObject(LEVEL::BOSSFIGHT, TEXT("Layer_Monster"));
 
