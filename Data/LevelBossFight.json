@@ -25,18 +25,17 @@
                         0.0
                     ],
                     [
-                        0.0,
-                        0.0,
-                        0.0,
+                        87.62345123291016,
+                        14.90359878540039,
+                        98.86693572998047,
                         1.0
                     ]
                 ],
-                "Proto": "Prototype_GameObject_Terrain",
+                "Proto": "Prototype_GameObject_Sky",
                 "ProtoLevel": 4,
-                "TerrainSize": "32x32",
-                "TextureIndex": 0
+                "TextureIndex": 4
             },
-		    {
+            {
                 "ID": 1,
                 "LayerLevel": 4,
                 "Matrix": [
@@ -59,15 +58,1812 @@
                         0.0
                     ],
                     [
-                        2.0827412605285645,
-                        1.9691530466079712,
-                        0.6927987337112427,
+                        0.0,
+                        0.0,
+                        0.0,
                         1.0
                     ]
                 ],
-                "Proto": "Prototype_GameObject_Sky",
+                "Proto": "Prototype_GameObject_Terrain",
                 "ProtoLevel": 4,
-                "TextureIndex": 4
+                "TerrainSize": "128x128",
+                "TextureIndex": 0
+            }
+        ]
+    },
+    {
+        "Layer": "Layer_Camera",
+        "Objects": [
+            {
+                "ID": 0,
+                "LayerLevel": 0,
+                "Matrix": [
+                    [
+                        -0.9805598258972168,
+                        -7.2177499532699585e-09,
+                        0.19625025987625122,
+                        0.0
+                    ],
+                    [
+                        -0.0649046078324318,
+                        0.943730890750885,
+                        -0.32429760694503784,
+                        0.0
+                    ],
+                    [
+                        -0.18520811200141907,
+                        -0.33072522282600403,
+                        -0.9253802299499512,
+                        0.0
+                    ],
+                    [
+                        87.62344360351563,
+                        14.903600692749023,
+                        98.86692810058594,
+                        1.0
+                    ]
+                ],
+                "Proto": "",
+                "ProtoLevel": 0
+            }
+        ]
+    },
+    {
+        "Layer": "Layer_Map_Objects_AABB",
+        "Objects": [
+            {
+                "ID": 0,
+                "LayerLevel": 4,
+                "Matrix": [
+                    [
+                        10.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        20.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        10.0,
+                        0.0
+                    ],
+                    [
+                        12.0,
+                        5.0,
+                        14.0,
+                        1.0
+                    ]
+                ],
+                "Proto": "Prototype_GameObject_Map_Building",
+                "ProtoLevel": 4,
+                "TextureIndex": 1
+            },
+            {
+                "ID": 1,
+                "LayerLevel": 4,
+                "Matrix": [
+                    [
+                        7.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        20.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        10.0,
+                        0.0
+                    ],
+                    [
+                        20.5,
+                        10.0,
+                        11.0,
+                        1.0
+                    ]
+                ],
+                "Proto": "Prototype_GameObject_Map_Building",
+                "ProtoLevel": 4,
+                "TextureIndex": 2
+            },
+            {
+                "ID": 2,
+                "LayerLevel": 4,
+                "Matrix": [
+                    [
+                        8.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        20.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        10.0,
+                        0.0
+                    ],
+                    [
+                        28.0,
+                        6.5,
+                        9.0,
+                        1.0
+                    ]
+                ],
+                "Proto": "Prototype_GameObject_Map_Building",
+                "ProtoLevel": 4,
+                "TextureIndex": 3
+            },
+            {
+                "ID": 3,
+                "LayerLevel": 4,
+                "Matrix": [
+                    [
+                        -3.4969110629390343e-07,
+                        0.0,
+                        -8.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        19.999998092651367,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        10.0,
+                        0.0,
+                        -4.3711392549994343e-07,
+                        0.0
+                    ],
+                    [
+                        37.0,
+                        9.5,
+                        10.5,
+                        1.0
+                    ]
+                ],
+                "Proto": "Prototype_GameObject_Map_Building",
+                "ProtoLevel": 4,
+                "TextureIndex": 1
+            },
+            {
+                "ID": 4,
+                "LayerLevel": 4,
+                "Matrix": [
+                    [
+                        6.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        20.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        15.0,
+                        0.0
+                    ],
+                    [
+                        45.0,
+                        10.0,
+                        6.5,
+                        1.0
+                    ]
+                ],
+                "Proto": "Prototype_GameObject_Map_Building",
+                "ProtoLevel": 4,
+                "TextureIndex": 2
+            },
+            {
+                "ID": 5,
+                "LayerLevel": 4,
+                "Matrix": [
+                    [
+                        10.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        20.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        10.0,
+                        0.0
+                    ],
+                    [
+                        53.0,
+                        8.0,
+                        6.5,
+                        1.0
+                    ]
+                ],
+                "Proto": "Prototype_GameObject_Map_Building",
+                "ProtoLevel": 4,
+                "TextureIndex": 0
+            },
+            {
+                "ID": 6,
+                "LayerLevel": 4,
+                "Matrix": [
+                    [
+                        7.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        20.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        10.0,
+                        0.0
+                    ],
+                    [
+                        61.5,
+                        5.0,
+                        8.5,
+                        1.0
+                    ]
+                ],
+                "Proto": "Prototype_GameObject_Map_Building",
+                "ProtoLevel": 4,
+                "TextureIndex": 3
+            },
+            {
+                "ID": 7,
+                "LayerLevel": 4,
+                "Matrix": [
+                    [
+                        8.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        20.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        10.0,
+                        0.0
+                    ],
+                    [
+                        69.0,
+                        6.199999809265137,
+                        7.0,
+                        1.0
+                    ]
+                ],
+                "Proto": "Prototype_GameObject_Map_Building",
+                "ProtoLevel": 4,
+                "TextureIndex": 1
+            },
+            {
+                "ID": 8,
+                "LayerLevel": 4,
+                "Matrix": [
+                    [
+                        10.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        20.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        10.0,
+                        0.0
+                    ],
+                    [
+                        78.0,
+                        10.0,
+                        4.50034236907959,
+                        1.0
+                    ]
+                ],
+                "Proto": "Prototype_GameObject_Map_Building",
+                "ProtoLevel": 4,
+                "TextureIndex": 0
+            },
+            {
+                "ID": 9,
+                "LayerLevel": 4,
+                "Matrix": [
+                    [
+                        -3.4969110629390343e-07,
+                        0.0,
+                        -8.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        19.999998092651367,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        10.0,
+                        0.0,
+                        -4.3711392549994343e-07,
+                        0.0
+                    ],
+                    [
+                        9.168261528015137,
+                        3.0,
+                        23.0,
+                        1.0
+                    ]
+                ],
+                "Proto": "Prototype_GameObject_Map_Building",
+                "ProtoLevel": 4,
+                "TextureIndex": 2
+            },
+            {
+                "ID": 10,
+                "LayerLevel": 4,
+                "Matrix": [
+                    [
+                        -3.0597971090173814e-07,
+                        0.0,
+                        -7.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        19.999998092651367,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        10.0,
+                        0.0,
+                        -4.3711392549994343e-07,
+                        0.0
+                    ],
+                    [
+                        7.0,
+                        7.0,
+                        31.0,
+                        1.0
+                    ]
+                ],
+                "Proto": "Prototype_GameObject_Map_Building",
+                "ProtoLevel": 4,
+                "TextureIndex": 0
+            },
+            {
+                "ID": 11,
+                "LayerLevel": 4,
+                "Matrix": [
+                    [
+                        10.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        20.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        6.0,
+                        0.0
+                    ],
+                    [
+                        4.0,
+                        7.75,
+                        37.5,
+                        1.0
+                    ]
+                ],
+                "Proto": "Prototype_GameObject_Map_Building",
+                "ProtoLevel": 4,
+                "TextureIndex": 1
+            },
+            {
+                "ID": 12,
+                "LayerLevel": 4,
+                "Matrix": [
+                    [
+                        -10.0,
+                        0.0,
+                        8.742278509998869e-07,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        19.999996185302734,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        -8.742278509998869e-07,
+                        0.0,
+                        -10.0,
+                        0.0
+                    ],
+                    [
+                        5.5,
+                        5.0,
+                        45.5,
+                        1.0
+                    ]
+                ],
+                "Proto": "Prototype_GameObject_Map_Building",
+                "ProtoLevel": 4,
+                "TextureIndex": 3
+            },
+            {
+                "ID": 13,
+                "LayerLevel": 4,
+                "Matrix": [
+                    [
+                        -4.3711392549994343e-07,
+                        0.0,
+                        -10.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        19.9999942779541,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        10.0,
+                        0.0,
+                        -4.3711392549994343e-07,
+                        0.0
+                    ],
+                    [
+                        1.75,
+                        10.0,
+                        55.5,
+                        1.0
+                    ]
+                ],
+                "Proto": "Prototype_GameObject_Map_Building",
+                "ProtoLevel": 4,
+                "TextureIndex": 0
+            },
+            {
+                "ID": 14,
+                "LayerLevel": 4,
+                "Matrix": [
+                    [
+                        -2.6226831550957286e-07,
+                        0.0,
+                        -6.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        19.999998092651367,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        10.0,
+                        0.0,
+                        -4.3711392549994343e-07,
+                        0.0
+                    ],
+                    [
+                        7.0,
+                        4.0,
+                        63.5,
+                        1.0
+                    ]
+                ],
+                "Proto": "Prototype_GameObject_Map_Building",
+                "ProtoLevel": 4,
+                "TextureIndex": 2
+            },
+            {
+                "ID": 15,
+                "LayerLevel": 4,
+                "Matrix": [
+                    [
+                        7.25,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        20.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        10.0,
+                        0.0
+                    ],
+                    [
+                        5.5,
+                        8.0,
+                        71.5,
+                        1.0
+                    ]
+                ],
+                "Proto": "Prototype_GameObject_Map_Building",
+                "ProtoLevel": 4,
+                "TextureIndex": 1
+            },
+            {
+                "ID": 16,
+                "LayerLevel": 4,
+                "Matrix": [
+                    [
+                        -4.3711392549994343e-07,
+                        0.0,
+                        10.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        19.9999942779541,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        -10.0,
+                        0.0,
+                        -4.3711392549994343e-07,
+                        0.0
+                    ],
+                    [
+                        8.0,
+                        6.0,
+                        81.5,
+                        1.0
+                    ]
+                ],
+                "Proto": "Prototype_GameObject_Map_Building",
+                "ProtoLevel": 4,
+                "TextureIndex": 0
+            },
+            {
+                "ID": 17,
+                "LayerLevel": 4,
+                "Matrix": [
+                    [
+                        -3.4969110629390343e-07,
+                        0.0,
+                        -8.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        19.999998092651367,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        10.0,
+                        0.0,
+                        -4.3711392549994343e-07,
+                        0.0
+                    ],
+                    [
+                        6.0,
+                        5.0,
+                        90.5,
+                        1.0
+                    ]
+                ],
+                "Proto": "Prototype_GameObject_Map_Building",
+                "ProtoLevel": 4,
+                "TextureIndex": 2
+            },
+            {
+                "ID": 18,
+                "LayerLevel": 4,
+                "Matrix": [
+                    [
+                        10.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        20.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        10.0,
+                        0.0
+                    ],
+                    [
+                        7.0,
+                        2.0,
+                        99.5,
+                        1.0
+                    ]
+                ],
+                "Proto": "Prototype_GameObject_Map_Building",
+                "ProtoLevel": 4,
+                "TextureIndex": 3
+            },
+            {
+                "ID": 19,
+                "LayerLevel": 4,
+                "Matrix": [
+                    [
+                        10.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        20.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        5.0,
+                        0.0
+                    ],
+                    [
+                        88.0,
+                        5.0,
+                        5.5,
+                        1.0
+                    ]
+                ],
+                "Proto": "Prototype_GameObject_Map_Building",
+                "ProtoLevel": 4,
+                "TextureIndex": 3
+            },
+            {
+                "ID": 20,
+                "LayerLevel": 4,
+                "Matrix": [
+                    [
+                        10.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        20.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        8.0,
+                        0.0
+                    ],
+                    [
+                        98.0,
+                        7.75,
+                        8.0,
+                        1.0
+                    ]
+                ],
+                "Proto": "Prototype_GameObject_Map_Building",
+                "ProtoLevel": 4,
+                "TextureIndex": 1
+            },
+            {
+                "ID": 21,
+                "LayerLevel": 4,
+                "Matrix": [
+                    [
+                        10.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        19.999996185302734,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        10.0,
+                        0.0
+                    ],
+                    [
+                        108.0,
+                        9.0,
+                        10.0,
+                        1.0
+                    ]
+                ],
+                "Proto": "Prototype_GameObject_Map_Building",
+                "ProtoLevel": 4,
+                "TextureIndex": 2
+            },
+            {
+                "ID": 22,
+                "LayerLevel": 4,
+                "Matrix": [
+                    [
+                        5.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        14.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        7.0,
+                        0.0
+                    ],
+                    [
+                        115.5,
+                        7.25,
+                        15.5,
+                        1.0
+                    ]
+                ],
+                "Proto": "Prototype_GameObject_Map_Building",
+                "ProtoLevel": 4,
+                "TextureIndex": 0
+            },
+            {
+                "ID": 23,
+                "LayerLevel": 4,
+                "Matrix": [
+                    [
+                        10.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        20.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        10.0,
+                        0.0
+                    ],
+                    [
+                        10.0,
+                        5.0,
+                        109.5,
+                        1.0
+                    ]
+                ],
+                "Proto": "Prototype_GameObject_Map_Building",
+                "ProtoLevel": 4,
+                "TextureIndex": 1
+            },
+            {
+                "ID": 24,
+                "LayerLevel": 4,
+                "Matrix": [
+                    [
+                        7.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        14.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        10.0,
+                        0.0
+                    ],
+                    [
+                        18.5,
+                        7.0,
+                        118.0,
+                        1.0
+                    ]
+                ],
+                "Proto": "Prototype_GameObject_Map_Building",
+                "ProtoLevel": 4,
+                "TextureIndex": 0
+            },
+            {
+                "ID": 25,
+                "LayerLevel": 4,
+                "Matrix": [
+                    [
+                        -8.0,
+                        0.0,
+                        6.993822694312257e-07,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        20.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        -6.993822694312257e-07,
+                        0.0,
+                        -8.0,
+                        0.0
+                    ],
+                    [
+                        26.0,
+                        10.0,
+                        122.0,
+                        1.0
+                    ]
+                ],
+                "Proto": "Prototype_GameObject_Map_Building",
+                "ProtoLevel": 4,
+                "TextureIndex": 2
+            },
+            {
+                "ID": 26,
+                "LayerLevel": 4,
+                "Matrix": [
+                    [
+                        10.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        20.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        10.0,
+                        0.0
+                    ],
+                    [
+                        35.0,
+                        5.0,
+                        125.0,
+                        1.0
+                    ]
+                ],
+                "Proto": "Prototype_GameObject_Map_Building",
+                "ProtoLevel": 4,
+                "TextureIndex": 3
+            },
+            {
+                "ID": 27,
+                "LayerLevel": 4,
+                "Matrix": [
+                    [
+                        10.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        20.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        10.0,
+                        0.0
+                    ],
+                    [
+                        45.0,
+                        8.0,
+                        123.0,
+                        1.0
+                    ]
+                ],
+                "Proto": "Prototype_GameObject_Map_Building",
+                "ProtoLevel": 4,
+                "TextureIndex": 1
+            },
+            {
+                "ID": 28,
+                "LayerLevel": 4,
+                "Matrix": [
+                    [
+                        -8.0,
+                        0.0,
+                        6.993822694312257e-07,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        22.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        -8.742278509998869e-07,
+                        0.0,
+                        -10.0,
+                        0.0
+                    ],
+                    [
+                        54.0,
+                        10.0,
+                        120.0,
+                        1.0
+                    ]
+                ],
+                "Proto": "Prototype_GameObject_Map_Building",
+                "ProtoLevel": 4,
+                "TextureIndex": 0
+            },
+            {
+                "ID": 29,
+                "LayerLevel": 4,
+                "Matrix": [
+                    [
+                        6.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        16.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        10.0,
+                        0.0
+                    ],
+                    [
+                        61.0,
+                        8.0,
+                        124.0,
+                        1.0
+                    ]
+                ],
+                "Proto": "Prototype_GameObject_Map_Building",
+                "ProtoLevel": 4,
+                "TextureIndex": 2
+            },
+            {
+                "ID": 30,
+                "LayerLevel": 4,
+                "Matrix": [
+                    [
+                        10.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        20.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        10.0,
+                        0.0
+                    ],
+                    [
+                        69.0,
+                        5.0,
+                        122.0,
+                        1.0
+                    ]
+                ],
+                "Proto": "Prototype_GameObject_Map_Building",
+                "ProtoLevel": 4,
+                "TextureIndex": 1
+            },
+            {
+                "ID": 31,
+                "LayerLevel": 4,
+                "Matrix": [
+                    [
+                        6.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        14.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        10.0,
+                        0.0
+                    ],
+                    [
+                        77.0,
+                        6.0,
+                        126.0,
+                        1.0
+                    ]
+                ],
+                "Proto": "Prototype_GameObject_Map_Building",
+                "ProtoLevel": 4,
+                "TextureIndex": 0
+            },
+            {
+                "ID": 32,
+                "LayerLevel": 4,
+                "Matrix": [
+                    [
+                        10.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        20.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        10.0,
+                        0.0
+                    ],
+                    [
+                        85.0,
+                        9.5,
+                        124.0,
+                        1.0
+                    ]
+                ],
+                "Proto": "Prototype_GameObject_Map_Building",
+                "ProtoLevel": 4,
+                "TextureIndex": 3
+            },
+            {
+                "ID": 33,
+                "LayerLevel": 4,
+                "Matrix": [
+                    [
+                        8.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        20.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        10.0,
+                        0.0
+                    ],
+                    [
+                        94.0,
+                        5.0,
+                        127.0,
+                        1.0
+                    ]
+                ],
+                "Proto": "Prototype_GameObject_Map_Building",
+                "ProtoLevel": 4,
+                "TextureIndex": 1
+            },
+            {
+                "ID": 34,
+                "LayerLevel": 4,
+                "Matrix": [
+                    [
+                        -6.0,
+                        0.0,
+                        5.245366310191457e-07,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        20.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        -8.742278509998869e-07,
+                        0.0,
+                        -10.0,
+                        0.0
+                    ],
+                    [
+                        101.0,
+                        5.0,
+                        125.0,
+                        1.0
+                    ]
+                ],
+                "Proto": "Prototype_GameObject_Map_Building",
+                "ProtoLevel": 4,
+                "TextureIndex": 2
+            },
+            {
+                "ID": 35,
+                "LayerLevel": 4,
+                "Matrix": [
+                    [
+                        7.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        20.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        10.0,
+                        0.0
+                    ],
+                    [
+                        107.5,
+                        8.0,
+                        123.0,
+                        1.0
+                    ]
+                ],
+                "Proto": "Prototype_GameObject_Map_Building",
+                "ProtoLevel": 4,
+                "TextureIndex": 1
+            },
+            {
+                "ID": 36,
+                "LayerLevel": 4,
+                "Matrix": [
+                    [
+                        -10.0,
+                        0.0,
+                        8.742278509998869e-07,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        17.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        -8.742278509998869e-07,
+                        0.0,
+                        -10.0,
+                        0.0
+                    ],
+                    [
+                        116.0,
+                        8.0,
+                        119.0,
+                        1.0
+                    ]
+                ],
+                "Proto": "Prototype_GameObject_Map_Building",
+                "ProtoLevel": 4,
+                "TextureIndex": 0
+            },
+            {
+                "ID": 37,
+                "LayerLevel": 4,
+                "Matrix": [
+                    [
+                        -4.3711392549994343e-07,
+                        0.0,
+                        10.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        19.999996185302734,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        -10.0,
+                        0.0,
+                        -4.3711392549994343e-07,
+                        0.0
+                    ],
+                    [
+                        120.0,
+                        5.0,
+                        109.0,
+                        1.0
+                    ]
+                ],
+                "Proto": "Prototype_GameObject_Map_Building",
+                "ProtoLevel": 4,
+                "TextureIndex": 2
+            },
+            {
+                "ID": 38,
+                "LayerLevel": 4,
+                "Matrix": [
+                    [
+                        -3.4969113471561286e-07,
+                        0.0,
+                        8.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        17.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        -10.0,
+                        0.0,
+                        -4.3711392549994343e-07,
+                        0.0
+                    ],
+                    [
+                        123.0,
+                        8.0,
+                        100.0,
+                        1.0
+                    ]
+                ],
+                "Proto": "Prototype_GameObject_Map_Building",
+                "ProtoLevel": 4,
+                "TextureIndex": 3
+            },
+            {
+                "ID": 39,
+                "LayerLevel": 4,
+                "Matrix": [
+                    [
+                        -4.3711392549994343e-07,
+                        0.0,
+                        10.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        19.999998092651367,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        -10.0,
+                        0.0,
+                        -4.3711392549994343e-07,
+                        0.0
+                    ],
+                    [
+                        122.0,
+                        10.0,
+                        91.0,
+                        1.0
+                    ]
+                ],
+                "Proto": "Prototype_GameObject_Map_Building",
+                "ProtoLevel": 4,
+                "TextureIndex": 2
+            },
+            {
+                "ID": 40,
+                "LayerLevel": 4,
+                "Matrix": [
+                    [
+                        10.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        20.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        8.0,
+                        0.0
+                    ],
+                    [
+                        125.0,
+                        10.0,
+                        82.0,
+                        1.0
+                    ]
+                ],
+                "Proto": "Prototype_GameObject_Map_Building",
+                "ProtoLevel": 4,
+                "TextureIndex": 1
+            },
+            {
+                "ID": 41,
+                "LayerLevel": 4,
+                "Matrix": [
+                    [
+                        -4.3711392549994343e-07,
+                        0.0,
+                        10.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        18.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        -10.0,
+                        0.0,
+                        -4.3711392549994343e-07,
+                        0.0
+                    ],
+                    [
+                        123.0,
+                        9.0,
+                        73.0,
+                        1.0
+                    ]
+                ],
+                "Proto": "Prototype_GameObject_Map_Building",
+                "ProtoLevel": 4,
+                "TextureIndex": 0
+            },
+            {
+                "ID": 42,
+                "LayerLevel": 4,
+                "Matrix": [
+                    [
+                        -4.3711392549994343e-07,
+                        0.0,
+                        10.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        19.999998092651367,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        -10.0,
+                        0.0,
+                        -4.3711392549994343e-07,
+                        0.0
+                    ],
+                    [
+                        127.75048065185547,
+                        10.0,
+                        63.0,
+                        1.0
+                    ]
+                ],
+                "Proto": "Prototype_GameObject_Map_Building",
+                "ProtoLevel": 4,
+                "TextureIndex": 3
+            },
+            {
+                "ID": 43,
+                "LayerLevel": 4,
+                "Matrix": [
+                    [
+                        -2.622683439312823e-07,
+                        0.0,
+                        6.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        19.999998092651367,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        -10.0,
+                        0.0,
+                        -4.3711392549994343e-07,
+                        0.0
+                    ],
+                    [
+                        125.0,
+                        3.0,
+                        55.0,
+                        1.0
+                    ]
+                ],
+                "Proto": "Prototype_GameObject_Map_Building",
+                "ProtoLevel": 4,
+                "TextureIndex": 2
+            },
+            {
+                "ID": 44,
+                "LayerLevel": 4,
+                "Matrix": [
+                    [
+                        10.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        20.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        10.0,
+                        0.0
+                    ],
+                    [
+                        126.0,
+                        5.25,
+                        47.0,
+                        1.0
+                    ]
+                ],
+                "Proto": "Prototype_GameObject_Map_Building",
+                "ProtoLevel": 4,
+                "TextureIndex": 1
+            },
+            {
+                "ID": 45,
+                "LayerLevel": 4,
+                "Matrix": [
+                    [
+                        -2.1855696274997172e-07,
+                        0.0,
+                        -5.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        14.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        10.0,
+                        0.0,
+                        -4.3711392549994343e-07,
+                        0.0
+                    ],
+                    [
+                        129.0,
+                        7.0,
+                        39.5,
+                        1.0
+                    ]
+                ],
+                "Proto": "Prototype_GameObject_Map_Building",
+                "ProtoLevel": 4,
+                "TextureIndex": 0
+            },
+            {
+                "ID": 46,
+                "LayerLevel": 4,
+                "Matrix": [
+                    [
+                        10.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        20.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        8.0,
+                        0.0
+                    ],
+                    [
+                        125.00007629394531,
+                        5.0,
+                        33.0,
+                        1.0
+                    ]
+                ],
+                "Proto": "Prototype_GameObject_Map_Building",
+                "ProtoLevel": 4,
+                "TextureIndex": 3
+            },
+            {
+                "ID": 47,
+                "LayerLevel": 4,
+                "Matrix": [
+                    [
+                        10.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        20.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        10.0,
+                        0.0
+                    ],
+                    [
+                        120.0,
+                        5.0,
+                        24.0,
+                        1.0
+                    ]
+                ],
+                "Proto": "Prototype_GameObject_Map_Building",
+                "ProtoLevel": 4,
+                "TextureIndex": 1
+            }
+        ]
+    },
+    {
+        "Layer": "Layer_Map_Objects_AABB_Ride",
+        "Objects": [
+            {
+                "ID": 0,
+                "LayerLevel": 4,
+                "Matrix": [
+                    [
+                        15.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        1.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        15.0,
+                        0.0
+                    ],
+                    [
+                        63.5,
+                        -0.25,
+                        63.5,
+                        1.0
+                    ]
+                ],
+                "Proto": "Prototype_GameObject_Map_Box",
+                "ProtoLevel": 4,
+                "TextureIndex": 6
+            },
+            {
+                "ID": 1,
+                "LayerLevel": 4,
+                "Matrix": [
+                    [
+                        2.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        1.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        2.0,
+                        0.0
+                    ],
+                    [
+                        63.5,
+                        0.0,
+                        20.0,
+                        1.0
+                    ]
+                ],
+                "Proto": "Prototype_GameObject_Map_MachineGun_Bullet_Box",
+                "ProtoLevel": 4,
+                "TextureIndex": 0
+            },
+            {
+                "ID": 2,
+                "LayerLevel": 4,
+                "Matrix": [
+                    [
+                        2.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        1.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        2.0,
+                        0.0
+                    ],
+                    [
+                        63.5,
+                        0.0,
+                        108.0,
+                        1.0
+                    ]
+                ],
+                "Proto": "Prototype_GameObject_Map_MachineGun_Bullet_Box",
+                "ProtoLevel": 4,
+                "TextureIndex": 0
+            },
+            {
+                "ID": 3,
+                "LayerLevel": 4,
+                "Matrix": [
+                    [
+                        2.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        1.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        2.0,
+                        0.0
+                    ],
+                    [
+                        20.0,
+                        0.0,
+                        63.5,
+                        1.0
+                    ]
+                ],
+                "Proto": "Prototype_GameObject_Map_MachineGun_Bullet_Box",
+                "ProtoLevel": 4,
+                "TextureIndex": 0
+            },
+            {
+                "ID": 4,
+                "LayerLevel": 4,
+                "Matrix": [
+                    [
+                        2.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        1.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        2.0,
+                        0.0
+                    ],
+                    [
+                        108.0,
+                        0.0,
+                        63.5,
+                        1.0
+                    ]
+                ],
+                "Proto": "Prototype_GameObject_Map_MachineGun_Bullet_Box",
+                "ProtoLevel": 4,
+                "TextureIndex": 0
             }
         ]
     },
@@ -79,9 +1875,9 @@
                 "LayerLevel": 4,
                 "Matrix": [
                     [
-                        -4.371138473402425e-08,
+                        0.9999998807907104,
                         0.0,
-                        -0.9999998807907104,
+                        0.0,
                         0.0
                     ],
                     [
@@ -91,15 +1887,89 @@
                         0.0
                     ],
                     [
-                        0.9999998807907104,
                         0.0,
-                        -4.371138473402425e-08,
+                        0.0,
+                        0.9999998807907104,
                         0.0
                     ],
                     [
-                        2.0,
+                        63.5,
                         0.5,
-                        2.0,
+                        30.0,
+                        1.0
+                    ]
+                ],
+                "Proto": "Prototype_GameObject_Player",
+                "ProtoLevel": 0
+            }
+        ]
+    },
+    {
+        "Layer": "Layer_Player_LeftHand",
+        "Objects": [
+            {
+                "ID": 0,
+                "LayerLevel": 4,
+                "Matrix": [
+                    [
+                        0.5,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        1.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        1.0,
+                        0.0
+                    ],
+                    [
+                        62.75,
+                        -0.8999998569488525,
+                        31.5,
+                        1.0
+                    ]
+                ],
+                "Proto": "Prototype_GameObject_Player",
+                "ProtoLevel": 0
+            }
+        ]
+    },
+    {
+        "Layer": "Layer_Player_RightHand",
+        "Objects": [
+            {
+                "ID": 0,
+                "LayerLevel": 4,
+                "Matrix": [
+                    [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        1.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        0.0,
+                        1.0,
+                        0.0
+                    ],
+                    [
+                        64.25,
+                        5.960464477539063e-08,
+                        31.5,
                         1.0
                     ]
                 ],
