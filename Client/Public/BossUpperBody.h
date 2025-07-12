@@ -69,6 +69,7 @@ private:
 	_bool m_bAttacking = false;
 	_bool m_isLowerDead = false;
 	_bool m_bUseBooster = false;
+	_bool m_isLeftAttack = false;
 	_uint m_uMaxBullets = {};
 	_uint m_uMaxExplosionBullets = {};
 	_uint m_uCurBullets = {};

@@ -99,98 +99,6 @@ void CBossUpperBody::Update(_float fTimeDelta)
 	else
 		m_fAttackFailTime += fTimeDelta;
 
-	/*_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
-	vDiff.y = 0.f;
-	D3DXVec3Normalize(&vDiff, &vDiff);
-
-	_float3 vMonsterLook = m_pTransformCom->Get_State(STATE::LOOK);
-	vMonsterLook.y = 0.f;
-	D3DXVec3Normalize(&vMonsterLook, &vMonsterLook);
-
-	_float dot = D3DXVec3Dot(&vMonsterLook, &vDiff);
-	dot = max(-1.f, min(1.f, dot));
-
-	_float3 vCross;
-	D3DXVec3Cross(&vCross, &vMonsterLook, &vDiff);
-
-	_float fFov = cosf(D3DXToRadian(45.f));
-
-	_float angle30 = cosf(D3DXToRadian(30.f));
-	_float angle60 = cosf(D3DXToRadian(60.f));*/
-
-	/*if (!m_bAnimationLock)
-	{
-		if (dot >= fFov)
-		{
-			m_strFrameKey = TEXT("Boss_Front");
-		}
-		else if (dot <= -fFov)
-		{
-			m_strFrameKey = TEXT("Boss_Back");
-		}
-		else
-		{
-			if (vCross.y > 0)
-			{
-				if (dot > 0.2f)
-				{
-					m_strFrameKey = TEXT("Boss_Direction_SW");
-				}
-				else if (dot > 0)
-				{
-					m_strFrameKey = TEXT("Boss_Left");
-				}
-				else
-				{
-					m_strFrameKey = TEXT("Boss_Direction_NW");
-				}
-			}
-			else
-			{
-				if (dot > 0.2f)
-				{
-					m_strFrameKey = TEXT("Boss_Direction_SE");
-				}
-				else if (dot > 0)
-				{
-					m_strFrameKey = TEXT("Boss_Right");
-				}
-				else
-				{
-					m_strFrameKey = TEXT("Boss_Direction_NE");
-				}
-			}
-		}
-	}
-	else
-	{
-		if (dot >= fFov)
-		{
-			
-		}
-		else if (dot <= -fFov)
-		{
-			
-		}
-		else
-		{
-			if (vCross.y > 0)
-			{
-				if (dot > 0.2f)
-				{
-					m_strFrameKey = TEXT("Boss_Attack_SW");
-				}
-			}
-			else
-			{
-				if (dot > 0.2f)
-				{
-					m_strFrameKey = TEXT("Boss_Attack_SE");
-				}
-			}
-		}
-	}*/
-
 	if (!m_bAnimationLock)
 	{
 		RotationCheck();
@@ -610,7 +518,8 @@ void CBossUpperBody::Attack(_float fTimeDelta, BossAttackState state)
 	{
 		if (!m_bAnimationLock)					// 애니메이션 락이 걸렸나 확인(처음 공격하는건지 체크)
 		{										// 첫 공격이니까 프레임 키 공격으로 바꾸고 애니메이션 락을 건다
-			m_strFrameKey = TEXT("Boss_Attack_Front");
+			//m_strFrameKey = TEXT("Boss_Attack_Front");
+			AttackRotationCheck();
 			m_bAnimationLock = true;
 		}
 		m_fSumLaunchCoolTime += fTimeDelta;		// 난사 쿨타임 증가
@@ -618,16 +527,24 @@ void CBossUpperBody::Attack(_float fTimeDelta, BossAttackState state)
 		if (m_fLaunchCoolTime <= m_fSumLaunchCoolTime)			// 누적 시간이 정해둔 쿨타임보다 길면 공격
 		{
 			m_pGameInstance->PlaySoundOnce(TEXT("Boss1_SMG.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
-
 			_float3 vMonsterPos = m_pTransformCom->Get_State(STATE::POSITION);
-			//vMonsterPos.y += m_vUpOffset.y;
+			if (!m_isLeftAttack)
+			{
+				vMonsterPos += m_pTransformCom->Get_State(STATE::RIGHT) * 0.22f;
+				m_isLeftAttack = true;
+			}
+			else
+			{
+				vMonsterPos -= m_pTransformCom->Get_State(STATE::RIGHT) * 0.22f;
+				m_isLeftAttack = false;
+			}
+			vMonsterPos += _float3(0.f, -0.8f, 0.f);
 			_float3 vDir = m_vAttackPos - vMonsterPos;									// 나중에 m_vAttackPos를 약간 랜덤하게 위치 지정
-			_float3 vPos = m_pTransformCom->Get_State(STATE::POSITION);
 			D3DXVec3Normalize(&vDir, &vDir);
 
 			CBullet::BULLET_DESC Desc;
 			Desc.vDir = vDir;
-			Desc.vPos = vPos;
+			Desc.vPos = vMonsterPos;
 			//Desc.vPos = {vPos.x ,vPos.y += m_vUpOffset.y, vPos.z };
 			Desc.fBulletSpeed = 10.f;
 			Desc.vBulletScale = { 0.005f, 0.005f, 0.2f };
@@ -667,18 +584,24 @@ void CBossUpperBody::Attack(_float fTimeDelta, BossAttackState state)
 		if (m_fLaunchCoolTime <= m_fSumLaunchCoolTime)			// 누적 시간이 정해둔 쿨타임보다 길면 공격
 		{
 			m_pGameInstance->PlaySoundOnce(TEXT("Boss1_SMG.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
-
 			_float3 vMonsterPos = m_pTransformCom->Get_State(STATE::POSITION);
-			//vMonsterPos.y += m_vUpOffset.y;
-
+			if (!m_isLeftAttack)
+			{
+				vMonsterPos += m_pTransformCom->Get_State(STATE::RIGHT) * 0.22f;
+				m_isLeftAttack = true;
+			}
+			else
+			{
+				vMonsterPos -= m_pTransformCom->Get_State(STATE::RIGHT) * 0.22f;
+				m_isLeftAttack = false;
+			}
+			vMonsterPos += _float3(0.f, -0.8f, 0.f);
 			_float3 vDir = m_pPlayerTransform->Get_State(STATE::POSITION) - vMonsterPos;									// 나중에 m_vAttackPos를 약간 랜덤하게 위치 지정
-			_float3 vPos = m_pTransformCom->Get_State(STATE::POSITION);
 			D3DXVec3Normalize(&vDir, &vDir);
 
 			CBullet::BULLET_DESC Desc;
 			Desc.vDir = vDir;
-			Desc.vPos = vPos;
-			//Desc.vPos = { vPos.x ,vPos.y += m_vUpOffset.y, vPos.z };
+			Desc.vPos = vMonsterPos;
 			Desc.fBulletSpeed = 10.f;
 			Desc.vBulletScale = { 0.005f, 0.005f, 0.2f };
 			//Desc.vBulletScale = { 0.2f, 0.2f, 0.1f };
@@ -717,8 +640,18 @@ void CBossUpperBody::Attack(_float fTimeDelta, BossAttackState state)
 		if (m_fLaunchCoolTime <= m_fSumLaunchCoolTime)			// 누적 시간이 정해둔 쿨타임보다 길면 공격
 		{
 			m_pGameInstance->PlaySoundOnce(TEXT("Boss1_Grenade.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
-
 			_float3 vMonsterPos = m_pTransformCom->Get_State(STATE::POSITION);
+			if (!m_isLeftAttack)
+			{
+				vMonsterPos += m_pTransformCom->Get_State(STATE::RIGHT) * 0.15f;
+				m_isLeftAttack = true;
+			}
+			else
+			{
+				vMonsterPos -= m_pTransformCom->Get_State(STATE::RIGHT) * 0.15f;
+				m_isLeftAttack = false;
+			}
+			//_float3 vMonsterPos = m_pTransformCom->Get_State(STATE::POSITION);
 			vMonsterPos.y += m_vUpOffset.y;
 			_float3 vDir = m_vAttackPos - vMonsterPos;
 			_float3 vPos = m_pTransformCom->Get_State(STATE::POSITION);
