@@ -62,7 +62,9 @@ public:
 private:
 	//void RotateToPlayer(CTransform* pTranform);
 	void UseBooster();
+	void TurnOffBooster();
 	void RotateWithParentTransform();
+	void RotateToTarget();
 	CTransform* m_pCoreTranform = { nullptr };
 
 private:
@@ -71,6 +73,9 @@ private:
 	_bool m_isLowerDead = false;
 	_bool m_bUseBooster = false;
 	_bool m_isLeftAttack = false;
+	_bool m_isRegenerate = false;
+	_bool m_isLanding = true;
+	_bool m_isFlying = false;
 	_uint m_uMaxBullets = {};
 	_uint m_uMaxExplosionBullets = {};
 	_uint m_uCurBullets = {};

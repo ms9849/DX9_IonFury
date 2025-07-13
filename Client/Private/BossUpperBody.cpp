@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "Bullet.h"
 #include "BossGrenade.h"
+#include "Boss.h"
 #include "Spawner.h"
 #include "Particle_Manager.h"
 #include "Bullet_Manager.h"
@@ -28,9 +29,23 @@ HRESULT CBossUpperBody::Initialize_Prototype()
 
 HRESULT CBossUpperBody::Initialize(void* pArg)
 {
-	m_pPlayerTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Layer_Player"), TEXT("Com_Transform")));
-	m_pCoreTranform = static_cast<CTransform*>(pArg);
+ 	m_pPlayerTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Layer_Player"), TEXT("Com_Transform")));
+	Safe_AddRef(m_pPlayerTransform);
+	CBoss::UPPER_DESC desc;
+	desc = *static_cast<CBoss::UPPER_DESC*>(pArg);
+	//m_pCoreTranform = static_cast<CTransform*>(pArg);
+	m_pCoreTranform = desc.pCoreTransform;
+	m_isRegenerate = desc.isRegenerate;
 	Safe_AddRef(m_pCoreTranform);
+
+	if (m_isRegenerate)
+	{
+		m_isLanding = false;
+	}
+	else
+	{
+		m_isLanding = true;
+	}
 
 	m_pObjectDesc.iLayerLevel = ENUM_CLASS(LEVEL::BOSSFIGHT);
 
@@ -57,7 +72,15 @@ HRESULT CBossUpperBody::Initialize(void* pArg)
 		m_pGameInstance->Random(30.f, 50.f),
 		0.f,
 		m_pGameInstance->Random(30.f, 50.f)));*/
-	m_pTransformCom->Set_State(STATE::POSITION, m_pCoreTranform->Get_State(STATE::POSITION));
+	if (!m_isRegenerate)
+		m_pTransformCom->Set_State(STATE::POSITION, m_pCoreTranform->Get_State(STATE::POSITION));
+	else
+	{
+		m_isFlying = true;
+		m_pTransformCom->Set_State(STATE::POSITION, m_pCoreTranform->Get_State(STATE::POSITION) + _float3{ 10.f, 35.f, 10.f });
+		UseBooster();
+		m_isFlying = false;
+	}
 
 	// 오프셋 준다음 꾸준히 보여줄떄마다 올려야할거 같은데
 	/*_float3 vPos = m_pTransformCom->Get_State(STATE::POSITION);
@@ -73,7 +96,8 @@ HRESULT CBossUpperBody::Initialize(void* pArg)
 	m_uCurExplosionBullets = 0;
 	m_uMaxExplosionBullets = 5;
 	m_vUpOffset = { 0.f, 2.9f, 0.f };
-	m_fFirstY = m_pTransformCom->Get_State(STATE::POSITION).y;
+	//m_fFirstY = m_pTransformCom->Get_State(STATE::POSITION).y;
+	m_fFirstY = 3.9f;
 	m_fMoveCoolTime = 0.07f;
 	m_fSumMoveCoolTime = 0.f;
 
@@ -87,6 +111,43 @@ void CBossUpperBody::Priority_Update(_float fTimeDelta)
 
 void CBossUpperBody::Update(_float fTimeDelta)
 {
+	/*_float3 vPos = m_pTransformCom->Get_State(STATE::POSITION);
+
+	wchar_t szBuffer[128];
+	swprintf_s(szBuffer, 128, L"[디버그] 상체 위치: X: %.3f, Y: %.3f, Z: %.3f\n", vPos.x, vPos.y, vPos.z);
+	OutputDebugStringW(szBuffer);*/
+
+	m_fSumMoveCoolTime += fTimeDelta;
+
+	if (!m_isLanding)
+	{
+		RotationCheck();
+		//Swing(fTimeDelta);
+		//Move(fTimeDelta);
+		RotateToTarget();
+		if (m_fSumMoveCoolTime >= m_fMoveCoolTime)
+		{
+			m_pTransformCom->Chase(m_pCoreTranform->Get_State(STATE::POSITION) + _float3{0.f, 3.f, 0.f}, fTimeDelta * 3.5f);
+			m_fSumMoveCoolTime = 0.f;
+
+			if (fabsf(m_pTransformCom->Get_State(STATE::POSITION).y - m_pCoreTranform->Get_State(STATE::POSITION).y) <= 3.0f)
+			{
+				m_pTransformCom->Chase(m_pCoreTranform->Get_State(STATE::POSITION), fTimeDelta);
+				m_fSumMoveCoolTime = 0.f;
+				TurnOffBooster();
+				m_isLanding = true;
+			}
+
+			/*if (fabsf(m_pTransformCom->Get_State(STATE::POSITION).y - m_pCoreTranform->Get_State(STATE::POSITION).y) <= 2.0f)
+			{
+				TurnOffBooster();
+				m_isLanding = true;
+			}*/
+		}
+
+		return;
+	}
+
 	if (m_isDead)
 	{
 		return;
@@ -103,7 +164,7 @@ void CBossUpperBody::Update(_float fTimeDelta)
 	else
 		m_fAttackFailTime += fTimeDelta;
 
-	m_fSumMoveCoolTime += fTimeDelta;
+	/*m_fSumMoveCoolTime += fTimeDelta;*/
 
 	if (!m_bAnimationLock)
 	{
@@ -185,7 +246,10 @@ void CBossUpperBody::Update(_float fTimeDelta)
 		}
 	}
 	else
-		m_pTransformCom->Set_State(STATE::POSITION, m_pCoreTranform->Get_State(STATE::POSITION));
+	{
+		m_pTransformCom->Set_State(STATE::POSITION, m_pCoreTranform->Get_State(STATE::POSITION) + m_vUpOffset);
+		m_pTransformCom->Set_Scale({ 7.f, 7.f, 1.f });
+	}
 	//SetUp_OnTerrain(m_pTransformCom, 0.5f, &m_bJump);
 }
 
@@ -198,7 +262,13 @@ void CBossUpperBody::Late_Update(_float fTimeDelta)
 		m_strFrameKey = TEXT("Boss_Attack_Front");
 	}*/
 
-	RotateWithParentTransform();				// 이러면 위 아래가 기본 pos에 고정됨
+	/*if (m_isLanding)
+		RotateWithParentTransform();*/			// 이러면 위 아래가 기본 pos에 고정됨
+	//else
+	//{
+	//	OutputDebugStringA("디버그 메시지: 하늘 나는 중...\n");
+	//}
+	//RotateWithParentTransform();
 	Compute_CamDistance(m_pTransformCom->Get_State(STATE::POSITION));
 	m_pGameInstance->Add_RenderGroup(RENDER::BLEND, this);
 
@@ -247,12 +317,20 @@ HRESULT CBossUpperBody::End_RenderTestState()
 
 void CBossUpperBody::UseBooster()
 {
-	CBossUpperFly::Fly_DESC desc;
-	desc.pTransform = m_pTransformCom;
-	m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_GameObject_Monster_Boss_Upper_Fly"), ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Layer_Boss_UpperLeft"), &desc);
+	//desc.pTransform = m_pTransformCom;
+	
+	m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_GameObject_Monster_Boss_Upper_Fly"), ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Layer_Boss_UpperLeft"), m_pTransformCom);
 	m_pWing = dynamic_cast<CBossUpperFly*>(m_pGameInstance->Find_GameObject_ToLayer(
 		ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Layer_Boss_UpperLeft")));
 	Safe_AddRef(m_pWing);
+
+	return;
+}
+
+void CBossUpperBody::TurnOffBooster()
+{
+	m_pWing->Set_Dead(true);
+	Safe_Release(m_pWing);
 
 	return;
 }
@@ -261,11 +339,50 @@ void CBossUpperBody::RotateWithParentTransform()
 {
 	_float3 vRootPos = m_pTransformCom->Get_State(STATE::POSITION);
 
-	m_pTransformCom->Set_State(STATE::POSITION, vRootPos + m_vUpOffset);
+	/*if (m_isLanding)
+		m_pTransformCom->Set_State(STATE::POSITION, vRootPos + m_vUpOffset);*/
+	//else
+	//{
+	//	m_pTransformCom->Set_State(STATE::POSITION, m_pTransformCom->Get_State(STATE::POSITION) + m_vUpOffset);
+	//	//m_pTransformCom->Set_State(STATE::POSITION, m_pCoreTranform->Get_State(STATE::POSITION) + m_vUpOffset);
+	//}
 
-	m_pTransformCom->Set_State(STATE::RIGHT, m_pTransformCom->Get_State(STATE::RIGHT));
+	/*m_pTransformCom->Set_State(STATE::RIGHT, m_pTransformCom->Get_State(STATE::RIGHT));
 	m_pTransformCom->Set_State(STATE::UP, m_pTransformCom->Get_State(STATE::UP));
-	m_pTransformCom->Set_State(STATE::LOOK, m_pTransformCom->Get_State(STATE::LOOK));
+	m_pTransformCom->Set_State(STATE::LOOK, m_pTransformCom->Get_State(STATE::LOOK));*/
+	//m_pTransformCom->Set_State(STATE::POSITION, m_pTransformCom->Get_State(STATE::POSITION) + m_vUpOffset);
+	m_pTransformCom->Set_State(STATE::POSITION, m_pTransformCom->Get_State(STATE::POSITION));
+	//m_pTransformCom->Set_State(STATE::POSITION, m_pTransformCom->Get_State(STATE::POSITION));
+}
+
+void CBossUpperBody::RotateToTarget()
+{
+	_float3 vBossPos = m_pTransformCom->Get_State(STATE::POSITION);
+	_float3 vTargetPos = m_pPlayerTransform->Get_State(STATE::POSITION);
+
+	_float3 vLook = vTargetPos - vBossPos;
+	D3DXVec3Normalize(&vLook, &vLook);
+
+	_float3 vRight, vUp;
+	_float3 vWorldUp = { 0.f, 1.f, 0.f };
+
+	D3DXVec3Cross(&vRight, &vWorldUp, &vLook);
+	D3DXVec3Normalize(&vRight, &vRight);
+
+	D3DXVec3Cross(&vUp, &vLook, &vRight);
+	D3DXVec3Normalize(&vUp, &vUp);
+
+	_float3 scale = m_pTransformCom->Get_Scaled();
+
+	vRight *= scale.x;
+	vUp *= scale.y;
+	vLook *= scale.z;
+
+	m_pTransformCom->Set_State(STATE::LOOK, vLook);
+	m_pTransformCom->Set_State(STATE::RIGHT, vRight);
+	m_pTransformCom->Set_State(STATE::UP, vUp);
+
+	return;
 }
 
 HRESULT CBossUpperBody::Ready_Animations()
@@ -929,5 +1046,6 @@ void CBossUpperBody::Free()
 {
 	__super::Free();
 	Safe_Release(m_pCoreTranform);
+	Safe_Release(m_pPlayerTransform);
 	Safe_Release(m_pWing);
 }

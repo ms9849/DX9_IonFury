@@ -27,6 +27,7 @@ HRESULT CSpider::Initialize(void* pArg)
 	m_pObjectDesc = *static_cast<CGameObject::GAMEOBJECT_DESC*>(pArg);
 
 	m_pPlayerTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(m_pObjectDesc.iLayerLevel, TEXT("Layer_Player"), TEXT("Com_Transform")));
+	Safe_AddRef(m_pPlayerTransform);
 
 	//if (pArg != nullptr)				// 스포너의 위치를 받아온다
 	//{
@@ -573,4 +574,5 @@ void CSpider::Free()
 {
 	//m_pRoot->ReleaseSubtree();
 	__super::Free();
+	Safe_Release(m_pPlayerTransform);
 }

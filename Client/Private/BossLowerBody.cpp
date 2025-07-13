@@ -26,6 +26,7 @@ HRESULT CBossLowerBody::Initialize_Prototype()
 HRESULT CBossLowerBody::Initialize(void* pArg)
 {
 	m_pPlayerTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Layer_Player"), TEXT("Com_Transform")));
+	Safe_AddRef(m_pPlayerTransform);
 	m_pCoreTranform = static_cast<CTransform*>(pArg);
 	Safe_AddRef(m_pCoreTranform);
 
@@ -73,6 +74,11 @@ void CBossLowerBody::Priority_Update(_float fTimeDelta)
 
 void CBossLowerBody::Update(_float fTimeDelta)
 {
+	//_float3 vPos = m_pTransformCom->Get_State(STATE::POSITION);
+
+	//wchar_t szBuffer[128];
+	//swprintf_s(szBuffer, 128, L"[디버그] 하체 위치: X: %.3f, Y: %.3f, Z: %.3f\n", vPos.x, vPos.y, vPos.z);
+	//OutputDebugStringW(szBuffer);
 	if (m_isDead)
 	{
 		return;
@@ -814,4 +820,5 @@ void CBossLowerBody::Free()
 	__super::Free();
 
 	Safe_Release(m_pCoreTranform);
+	Safe_Release(m_pPlayerTransform);
 }

@@ -10,6 +10,12 @@ class CBossLowerBody;
 
 class CBoss final : public CGameObject
 {
+public:
+	typedef struct UpperDesc
+	{
+		CTransform* pCoreTransform;
+		_bool isRegenerate = false;
+	} UPPER_DESC;
 private:
 	CBoss(LPDIRECT3DDEVICE9 pGraphic_Device);
 	CBoss(const CBoss& Prototype);

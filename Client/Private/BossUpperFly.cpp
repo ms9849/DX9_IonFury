@@ -20,6 +20,8 @@ HRESULT CBossUpperFly::Initialize_Prototype()
 
 HRESULT CBossUpperFly::Initialize(void* pArg)
 {
+	m_pPlayerTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Layer_Player"), TEXT("Com_Transform")));
+	Safe_AddRef(m_pPlayerTransform);
 	/*if (FAILED(__super::Initialize()))
 		return E_FAIL;*/
 
@@ -31,17 +33,27 @@ HRESULT CBossUpperFly::Initialize(void* pArg)
 
 	if (pArg != nullptr)
 	{
-		m_Desc = *static_cast<Fly_DESC*>(pArg);
+		//m_Desc = *static_cast<Fly_DESC*>(pArg);
+		m_pTransformUpperBody = static_cast<CTransform*>(pArg);
 	}
 
-	m_pTransformUpperBody = m_Desc.pTransform;
+	//m_pTransformUpperBody = m_Desc.pTransform;
 	Safe_AddRef(m_pTransformUpperBody);
-
-	_float3 vBasePos = m_pTransformUpperBody->Get_State(STATE::POSITION);
-	_float3 vOffset = vBasePos +_float3(0.f, -1.5f, 0.f);
-
-	m_pTransformCom->Set_State(STATE::POSITION, vOffset);
+	m_pTransformCom->Set_State(STATE::POSITION, m_pTransformUpperBody->Get_State(STATE::POSITION));
 	m_pTransformCom->Set_Scale({ 3.5f, 6.f, 1.f });
+
+
+	//_float3 r = m_pTransformUpperBody->Get_State(STATE::RIGHT);
+	//_float3 u = m_pTransformUpperBody->Get_State(STATE::UP);
+	//_float3 l = m_pTransformUpperBody->Get_State(STATE::LOOK);
+
+	//std::wstring debugText =
+	//	L"[디버그] RIGHT: " + std::to_wstring(r.x) + L", " + std::to_wstring(r.y) + L", " + std::to_wstring(r.z) + L"\n" +
+	//	L"[디버그] UP   : " + std::to_wstring(u.x) + L", " + std::to_wstring(u.y) + L", " + std::to_wstring(u.z) + L"\n" +
+	//	L"[디버그] LOOK : " + std::to_wstring(l.x) + L", " + std::to_wstring(l.y) + L", " + std::to_wstring(l.z) + L"\n";
+
+	//// 출력
+	//OutputDebugStringW(debugText.c_str());
 
 	return S_OK;
 }
@@ -56,24 +68,17 @@ void CBossUpperFly::Update(_float fTimeDelta)
 	if (m_pTransformUpperBody == nullptr)
 		m_isDead = true;
 
-	/*_float3 vRight = m_pTransformUpperBody->Get_State(STATE::RIGHT);
-	vRight.y = 0.f;
-	D3DXVec3Normalize(&vRight, &vRight);
-
-	_float3 vBasePos = m_pTransformUpperBody->Get_State(STATE::POSITION);
-	_float3 vOffset;
-
-	if (m_isLeft)
-		vOffset = vBasePos - vRight * 2.f;
-	else
-		vOffset = vBasePos + vRight * 2.f;*/
-
 	_float3 vBasePos = m_pTransformUpperBody->Get_State(STATE::POSITION);
 	_float3 vRight = m_pTransformUpperBody->Get_State(STATE::RIGHT);
 	vRight.y = 0.f;
 	D3DXVec3Normalize(&vRight, &vRight);
 
-	_float3 vOffset = vBasePos + vRight * -0.15f + _float3(0.f, -1.5f, 0.f);
+	_float3 vOffset = vBasePos + vRight * -0.15f + _float3(0.f, -4.5f, 0.f);
+	/*if (!m_isFly)
+		vOffset = vBasePos + vRight * -0.15f + _float3(0.f, -4.5f, 0.f);
+	else
+		vOffset = vBasePos + vRight * -0.15f + _float3(0.f, -4.5f, 0.f);*/
+
 
 	m_pTransformCom->Set_State(STATE::POSITION, vOffset);
 }
@@ -249,4 +254,5 @@ void CBossUpperFly::Free()
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pAnimationCom);
 	Safe_Release(m_pVIBufferCom);
+	Safe_Release(m_pPlayerTransform);
 }
