@@ -47,6 +47,8 @@ public:
 
 	virtual void Attack() override;
 	void Move(_float fTimeDelta);
+	void Escape(_float fTimeDelta);
+	void Set_BodyLive(_bool isLive);
 	virtual void Move() override;
 
 private:
@@ -58,9 +60,11 @@ private:
 	_bool m_bAnimationLock = false;
 	_bool m_isMoveDir = false;
 	_bool m_isLeftLeg = true;
+	_bool m_isBodyLive = true;
 	_uint m_uTempNum = 0;
 	_float m_fSafeDistance = {};
 	_float m_fStopMoveTime = {};
+	_float m_fDefaultStopMoveTime = {};
 	_float m_fDirDuraionTime = {};
 	_float m_fSumDirDurarionTime = {};
 	_float m_fSumStopMoveTime = 0.f;

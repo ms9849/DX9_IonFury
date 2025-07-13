@@ -55,11 +55,12 @@ HRESULT CBossLowerBody::Initialize(void* pArg)
 	m_fChaseRange = 20.f;
 	m_fSafeDistance = 5.f;
 	m_fStopMoveTime = 2.f;
+	m_fDefaultStopMoveTime = m_fStopMoveTime;
 	// ±âÁ¸ 0.05
 	m_fMoveCoolTime = 0.2f;
 	m_strFrameKey = TEXT("Boss_Front_LeftLeg");
 	m_strLegFrameKey = TEXT("Boss_Front_LeftLeg");
-	m_fDirDuraionTime = 10.f;
+	m_fDirDuraionTime = 3.f;
 	m_fSumDirDurarionTime = 0.f;
 
 	return S_OK;
@@ -75,6 +76,19 @@ void CBossLowerBody::Update(_float fTimeDelta)
 	if (m_isDead)
 	{
 		return;
+	}
+
+	//m_isBodyLive == false ? m_fStopMoveTime *= 0.01f : m_fStopMoveTime = m_fDefaultStopMoveTime;
+	if (!m_isBodyLive)
+	{
+		m_fDirDuraionTime = 0.3f;
+		m_fStopMoveTime = 0.002f;
+	}
+	else
+	{
+		m_fStopMoveTime = m_fDefaultStopMoveTime;
+		m_fDirDuraionTime = 3.f;
+		m_fStopMoveTime = 2.f;
 	}
 
 	if (!m_isMove)
@@ -103,7 +117,14 @@ void CBossLowerBody::Update(_float fTimeDelta)
 		{
 			if (m_fSumStopMoveTime >= m_fStopMoveTime)
 			{
-				Move(fTimeDelta);
+				if (m_isBodyLive)
+				{
+					Move(fTimeDelta);
+				}
+				else
+				{
+					Escape(fTimeDelta);
+				}
 				m_fSumMoveCoolTime = 0.f;
 			}
 		}
@@ -709,6 +730,52 @@ void CBossLowerBody::Move(_float fTimeDelta)
 	}
 
 	m_pTransformCom->Chase(m_vTargetPos, fTimeDelta);
+}
+
+void CBossLowerBody::Escape(_float fTimeDelta)
+{
+	if (!m_isMoveDir)
+	{
+		m_bAnimationLock = true;
+		m_isMoveDir = true;
+		_float3 dirToPlayer = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
+		D3DXVec3Normalize(&dirToPlayer, &dirToPlayer);
+		m_vTargetPos = m_pTransformCom->Get_State(STATE::POSITION) - dirToPlayer * 10.f;
+	}
+
+	RotationCheck();
+	if (m_isMove)
+	{
+		_wstring tag = m_pAnimationCom->Get_FrameKey();
+		m_pAnimationCom->Get_Frame_Desc(tag)->iEnd;
+		if (m_pAnimationCom->Get_Frame_Current_Index(tag) == m_pAnimationCom->Get_Frame_Desc(tag)->iEnd)
+			return;
+	}
+
+	/*if (!m_isMove && m_strLegFrameKey == TEXT("Boss_LeftLeg"))*/
+	if (!m_isMove && m_isLeftLeg)
+	{
+		m_isMove = true;
+		m_pGameInstance->PlaySoundOnce(TEXT("Boss1_Move_0.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
+	}
+	else if (!m_isMove)
+	{
+		m_isMove = true;
+		m_pGameInstance->PlaySoundOnce(TEXT("Boss1_Move_1.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
+	}
+
+	if (m_fSumDirDurarionTime >= m_fDirDuraionTime)
+	{
+		m_isMoveDir = false;
+		m_fSumDirDurarionTime = 0.f;
+	}
+
+	m_pTransformCom->Chase(m_vTargetPos, fTimeDelta * 5.f);
+}
+
+void CBossLowerBody::Set_BodyLive(_bool isLive)
+{
+	m_isBodyLive = isLive;
 }
 
 void CBossLowerBody::Move()
