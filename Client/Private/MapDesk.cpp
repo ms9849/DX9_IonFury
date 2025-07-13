@@ -53,9 +53,17 @@ HRESULT CMapDesk::Render()
 
 	m_pTransformCom->Set_Transform();
 
-	m_pTextureCom->Set_Texture(0);
+	m_pTextureCom->Set_Texture(m_pObjectDesc.iTextureIndex);
+
+	m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+	m_pGraphic_Device->SetRenderState(D3DRS_ALPHAREF, 200);
+	m_pGraphic_Device->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
 
 	m_pVIBufferCom->Render();
+
+	m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+
+	m_pGraphic_Device->SetRenderState(D3DRS_ZENABLE, TRUE);
 
 	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 

@@ -449,7 +449,7 @@ void CPlayer::Update(_float fTimeDelta)
 	m_pLeftHand->Set_Current_Animation(Set_FrameKey(m_tInfo.strItem, m_tInfo.strItemAction));
 
 	/* Priority에서 한번 바뀜*/
-	SetUp_OnTerrain(m_pTransformCom, 0.5f, &m_bJump);
+	SetUp_OnTerrain(m_pTransformCom, 1.f, &m_bJump);
 
 	m_pRightHand->Set_Player_Transform(m_pTransformCom);
 	m_pLeftHand->Set_Player_Transform(m_pTransformCom);
