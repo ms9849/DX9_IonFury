@@ -22,7 +22,7 @@ void CMapTrashBox::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTi
     //아마 레이충돌만 발생할거라서 여기에 뭐 안해도 됨
 }
 
-void CMapTrashBox::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta, CComponent* pCollider)
+void CMapTrashBox::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta, CComponent* pCollider, const _float3& vPos)
 {
     //여기서 레이랑 충돌판정 하고 실제로 체력이 닳아서 없어지거나 하는 표현을 보여줄 것
 	if (static_cast<CBullet*>(pDst) != nullptr && m_iHp >= 0)
@@ -38,17 +38,18 @@ void CMapTrashBox::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTi
 			CItem* pItem;
 
 			if (iRandNum == ENUM_CLASS(CItem::BULLET::PISTOL))
-				pItem = static_cast<CItem*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Item_Pistol_Bullet"), nullptr));
+				pItem = static_cast<CItem*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, m_pObjectDesc.iLayerLevel, TEXT("Prototype_GameObject_Item_Pistol_Bullet"), &m_pObjectDesc));
 			
 			else if (iRandNum == ENUM_CLASS(CItem::BULLET::SHOOTGUN))
-				pItem = static_cast<CItem*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Item_ShootGun_Bullet"), nullptr));
-
+				pItem = static_cast<CItem*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, m_pObjectDesc.iLayerLevel, TEXT("Prototype_GameObject_Item_ShootGun_Bullet"), &m_pObjectDesc));
+				
 			else
 				return;
 
-			_float3 vPos = m_pTransformCom->Get_State(STATE::POSITION);
-			pItem->Set_Pos(vPos);
-			m_pGameInstance->Add_Clone_ToLayer(pItem, ENUM_CLASS(LEVEL::GAMEPLAY),TEXT("Layer_Items"));
+		/*	_float3 vPos = m_pTransformCom->Get_State(STATE::POSITION);
+			vPos.y -= 0.3;
+			pItem->Set_Pos(vPos);*/
+			m_pGameInstance->Add_Clone_ToLayer(pItem, m_pObjectDesc.iLayerLevel,TEXT("Layer_Items"));
 		}
 	}
 }

@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "Effect_Pistol_Fire.h"
 #include "BUllet_Wound.h"
+#include "Effect_Screen_Blur.h"
 
 IMPLEMENT_SINGLETON(CEffect_Manager);
 
@@ -32,6 +33,15 @@ HRESULT CEffect_Manager::Initialize(LEVEL eLevelID)
 	if (FAILED(Ready_Bullet_Wound(eLevelID)))
 		return E_FAIL;
 
+	if (FAILED(Ready_Screen_Blur_Hit(eLevelID)))
+		return E_FAIL;
+
+	if (FAILED(Ready_Screen_Blur_Heal(eLevelID)))
+		return E_FAIL;
+
+	if (FAILED(Ready_Screen_Blur_Blue(eLevelID)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -53,7 +63,6 @@ HRESULT CEffect_Manager::Ready_Pistol_Fire(LEVEL eLevelID)
 				nullptr))
 		);
 	}
-
 
 	m_Effects.emplace(TEXT("Effect_Pistol_Fire"), Effects);
 
@@ -142,6 +151,63 @@ HRESULT CEffect_Manager::Ready_Bullet_Wound(LEVEL eLevelID)
 	return S_OK;
 }
 
+HRESULT CEffect_Manager::Ready_Screen_Blur_Hit(LEVEL eLevelID)
+{
+	auto iter = m_Effects.find(TEXT("Effect_Screen_Blur_Hit"));
+
+	if (iter != m_Effects.end())
+		return S_OK;
+
+	list<class CEffect*> Effects = {};
+
+	CEffect_Screen_Blur* pEffect = static_cast<CEffect_Screen_Blur*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC),
+		TEXT("Prototype_GameObject_Effect_Screen_Blur"), nullptr));
+	pEffect->Set_TextureNum(0);
+
+	Effects.push_back(pEffect);
+	m_Effects.emplace(TEXT("Effect_Screen_Blur_Hit"), Effects);
+
+	return S_OK;
+}
+
+HRESULT CEffect_Manager::Ready_Screen_Blur_Heal(LEVEL eLevelID)
+{
+	auto iter = m_Effects.find(TEXT("Effect_Screen_Blur_Heal"));
+
+	if (iter != m_Effects.end())
+		return S_OK;
+
+	list<class CEffect*> Effects = {};
+
+	CEffect_Screen_Blur* pEffect = static_cast<CEffect_Screen_Blur*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC),
+		TEXT("Prototype_GameObject_Effect_Screen_Blur"), nullptr));
+	pEffect->Set_TextureNum(1);
+
+	Effects.push_back(pEffect);
+	m_Effects.emplace(TEXT("Effect_Screen_Blur_Heal"), Effects);
+
+	return S_OK;
+}
+
+HRESULT CEffect_Manager::Ready_Screen_Blur_Blue(LEVEL eLevelID)
+{
+	auto iter = m_Effects.find(TEXT("Effect_Screen_Blur_Blue"));
+
+	if (iter != m_Effects.end())
+		return S_OK;
+
+	list<class CEffect*> Effects = {};
+
+	CEffect_Screen_Blur* pEffect = static_cast<CEffect_Screen_Blur*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC),
+		TEXT("Prototype_GameObject_Effect_Screen_Blur"), nullptr));
+	pEffect->Set_TextureNum(2);
+
+	Effects.push_back(pEffect);
+	m_Effects.emplace(TEXT("Effect_Screen_Blur_Blue"), Effects);
+
+	return S_OK;
+}
+
 void CEffect_Manager::Create_Effect(const _wstring& strBulletTag, _uint iLayerLevelIndex, const _wstring& strLayerTag, const _float3& vPos, const _float3& vLook)
 {
 	/*
@@ -180,6 +246,9 @@ void CEffect_Manager::Create_Effect(const _wstring& strBulletTag, _uint iLayerLe
 
 	for (auto& pEffect : Effects->second)
 	{
+		if (pEffect->Get_Frame() == 0.f && pEffect->isDead() == true)
+			pEffect->Set_Dead(false);
+
 		if (pEffect->Get_Frame() == 0.f && pEffect->isDead() == false)
 		{
 			pEffect->Set_Pos(vPos);
@@ -188,10 +257,6 @@ void CEffect_Manager::Create_Effect(const _wstring& strBulletTag, _uint iLayerLe
 			Safe_AddRef(pEffect);
 			m_pGameInstance->Add_Clone_ToLayer(pEffect, iLayerLevelIndex, strLayerTag);
 			break;
-		}
-		else
-		{
-			pEffect->Set_Dead(false);
 		}
 	}
 }

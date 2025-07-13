@@ -28,6 +28,7 @@ public:
 		_float	fFrame = {};
 		EFFECT_TYPE eType = {};
 		_float  fNumFrame = {};
+		_float	fTextureNum = {};
 	} EFFECT_DESC;
 
 protected:
