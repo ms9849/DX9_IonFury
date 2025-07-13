@@ -44,7 +44,7 @@ void CLever::Update(_float fTimeDelta)
 		dynamic_cast<CMapElevator*>(
 			m_pGameInstance->Get_GameObject_By_ID(
 				m_pObjectDesc.iLayerLevel,
-				TEXT("Layer_Map_Objects_Ride"),
+				TEXT("Layer_Map_Objects_AABB_Ride"),
 				m_iTargetID))->Get_Elevator_End())
 	{
 		Lever_Control(fTimeDelta);
@@ -96,7 +96,7 @@ void CLever::Lever_Control(_float fTimeDelta)
 		dynamic_cast<CMapElevator*>(
 			m_pGameInstance->Get_GameObject_By_ID(
 				m_pObjectDesc.iLayerLevel,
-				TEXT("Layer_Map_Objects_Ride"),
+				TEXT("Layer_Map_Objects_AABB_Ride"),
 				m_iTargetID))->Set_Elevator_Active(true);
 	}
 }

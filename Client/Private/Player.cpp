@@ -41,8 +41,17 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 	m_bRideCube = true;
 	CLandObject::LANDOBJECT_DESC			Desc{};
-	Desc.pLandTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(m_pObjectDesc.iLayerLevel, TEXT("Layer_BackGround"), TEXT("Com_Transform")));
-	Desc.pLandVIBuffer = static_cast<CVIBuffer*>(m_pGameInstance->Get_Component(m_pObjectDesc.iLayerLevel, TEXT("Layer_BackGround"), TEXT("Com_VIBuffer")));
+
+	if (m_pObjectDesc.iLayerLevel == ENUM_CLASS(LEVEL::JUSIN))
+	{
+		Desc.pLandTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(m_pObjectDesc.iLayerLevel, TEXT("Layer_Map_Objects_Ride"), TEXT("Com_Transform")));
+		Desc.pLandVIBuffer = static_cast<CVIBuffer*>(m_pGameInstance->Get_Component(m_pObjectDesc.iLayerLevel, TEXT("Layer_Map_Objects_Ride"), TEXT("Com_VIBuffer")));
+	}
+	else
+	{
+		Desc.pLandTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(m_pObjectDesc.iLayerLevel, TEXT("Layer_BackGround"), TEXT("Com_Transform")));
+		Desc.pLandVIBuffer = static_cast<CVIBuffer*>(m_pGameInstance->Get_Component(m_pObjectDesc.iLayerLevel, TEXT("Layer_BackGround"), TEXT("Com_VIBuffer")));
+	}
 
 	if (FAILED(__super::Initialize(&Desc)))
 		return E_FAIL;
@@ -63,6 +72,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 	//m_pTransformCom->Set_State(STATE::POSITION, _float3(35.f, 1.f, 45.f));
 	//m_pTransformCom->Set_State(STATE::POSITION, _float3(30.f, 1.f, 35.f));
+	//m_pTransformCom->Set_State(STATE::POSITION, _float3(15.f, 1.f, 95.f)); // 엘베 앞
 
 	// 오른손
 	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(m_pObjectDesc.iProtoLevel, TEXT("Prototype_GameObject_Player_RightHand"),
@@ -439,7 +449,7 @@ void CPlayer::Update(_float fTimeDelta)
 	m_pLeftHand->Set_Current_Animation(Set_FrameKey(m_tInfo.strItem, m_tInfo.strItemAction));
 
 	/* Priority에서 한번 바뀜*/
-	SetUp_OnTerrain(m_pTransformCom, 0.5f, &m_bJump);
+	SetUp_OnTerrain(m_pTransformCom, 1.f, &m_bJump);
 
 	m_pRightHand->Set_Player_Transform(m_pTransformCom);
 	m_pLeftHand->Set_Player_Transform(m_pTransformCom);
@@ -774,8 +784,7 @@ void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 			if (pDst->Get_Desc().iObjectID == 2)
 			{
 				m_pLever = dynamic_cast<CLever*>(pDst);
-				m_pLever->Set_TargetID(0);
-				Safe_AddRef(m_pLever);
+				m_pLever->Set_TargetID(11);
 			}
 
 			m_bCanActiveElevator = true;

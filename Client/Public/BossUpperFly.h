@@ -14,10 +14,6 @@ NS_BEGIN(Client)
 
 class CBossUpperFly final : public CGameObject
 {
-public:
-	typedef struct tagFlyDesc {
-		CTransform* pTransform;
-	}Fly_DESC;
 private:
 	CBossUpperFly(LPDIRECT3DDEVICE9 pGraphic_Device);
 	CBossUpperFly(const CBossUpperFly& Prototype);
@@ -42,11 +38,11 @@ public:
 	virtual void RotateToPlayer(CTransform* pTranform);
 
 private:
-	_bool m_isLeft = false;
 	_wstring m_strFrameKey = TEXT("Boss_FlyLeft");
-	Fly_DESC m_Desc = {};
+	//Fly_DESC m_Desc = {};
 	CTransform* m_pTransformUpperBody = { nullptr };
 	CTransform* m_pTransformCom = { nullptr };
+	CTransform* m_pPlayerTransform = { nullptr };
 	CAnimation* m_pAnimationCom = { nullptr };
 	CVIBuffer_Rect* m_pVIBufferCom = { nullptr };
 	map<const _wstring, CTexture*> m_pTextureComs;

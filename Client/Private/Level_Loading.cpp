@@ -5,6 +5,7 @@
 
 #include "Level_Logo.h"
 #include "Level_GamePlay.h"
+#include "Level_Jusin.h"
 #include "Level_BossFight.h"
 
 CLevel_Loading::CLevel_Loading(LPDIRECT3DDEVICE9 pGraphic_Device, LEVEL eLevelID)
@@ -46,6 +47,9 @@ void CLevel_Loading::Update(_float fTimeDelta)
 			break;
 		case LEVEL::GAMEPLAY:
 			pNewLevel = CLevel_GamePlay::Create(m_pGraphic_Device, m_eNextLevelID);
+			break;
+		case LEVEL::JUSIN:
+			pNewLevel = CLevel_Jusin::Create(m_pGraphic_Device, m_eNextLevelID, &m_tPlayerInfo);
 			break;
 		case LEVEL::BOSSFIGHT:
 			pNewLevel = CLevel_BossFight::Create(m_pGraphic_Device, m_eNextLevelID, &m_tPlayerInfo);
