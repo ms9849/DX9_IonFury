@@ -23,6 +23,11 @@ HRESULT CFile_Manager::Load_Layers(LEVEL iLevel)
         hFile = CreateFileW(TEXT("../../Data/LevelGamePlay.json"),
             GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
     }
+    else if (iLevel == LEVEL::JUSIN)
+    {
+        hFile = CreateFileW(TEXT("../../Data/LevelJusin.json"),
+            GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+    }
     else if (iLevel == LEVEL::BOSSFIGHT)
     {
         hFile = CreateFileW(TEXT("../../Data/LevelBossFight.json"),
