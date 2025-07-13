@@ -52,6 +52,8 @@ private:
 	_bool isLowerLive = true;
 	_float m_fResurrectionTime = 10.f;
 	_float m_fSumResurrectionTime = 0.f;
+	_float m_fMaxHp = 200.f;
+	_float m_fCurHp = 0.f;
 
 public:
 	static CBoss* Create(LPDIRECT3DDEVICE9 pGraphic_Device);
