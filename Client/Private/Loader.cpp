@@ -152,7 +152,7 @@ HRESULT CLoader::Loading_For_GamePlay()
 	m_strMessage = TEXT("텍스쳐를(을) 로딩 중 입니다.");
 	/* For.Prototype_Component_Texture_Terrain */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Terrain"),
-		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Terrain/Tile_%d.png"), 5))))
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Terrain/Tile_%d.png"), 6))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Sky */
@@ -255,7 +255,7 @@ HRESULT CLoader::Loading_For_GamePlay()
 
 	/* For.Prototype_Component_Texture_Map_Wall */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Map_Wall"),
-		CTexture::Create(m_pGraphic_Device, TEXTURE::CUBE, TEXT("../Bin/Resources/Textures/MapObject/Wall/Wall_%d.dds"), 5))))
+		CTexture::Create(m_pGraphic_Device, TEXTURE::CUBE, TEXT("../Bin/Resources/Textures/MapObject/Wall/Wall_%d.dds"), 7))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Map_Box */
@@ -270,7 +270,7 @@ HRESULT CLoader::Loading_For_GamePlay()
 
 	/* For.Prototype_Component_Texture_Map_Desk */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Map_Desk"),
-		CTexture::Create(m_pGraphic_Device, TEXTURE::CUBE, TEXT("../Bin/Resources/Textures/MapObject/Desk/Desk_%d.dds"), 4))))
+		CTexture::Create(m_pGraphic_Device, TEXTURE::CUBE, TEXT("../Bin/Resources/Textures/MapObject/Desk/Desk_%d.dds"), 6))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Map_Deco */
@@ -601,7 +601,7 @@ HRESULT CLoader::Loading_For_Jusin()
 	m_strMessage = TEXT("텍스쳐를(을) 로딩 중 입니다.");
 	/* For.Prototype_Component_Texture_Terrain */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_Component_Texture_Terrain"),
-		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Terrain/Tile_%d.png"), 5))))
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Terrain/Tile_%d.png"), 6))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Sky */
@@ -704,7 +704,7 @@ HRESULT CLoader::Loading_For_Jusin()
 
 	/* For.Prototype_Component_Texture_Map_Wall */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_Component_Texture_Map_Wall"),
-		CTexture::Create(m_pGraphic_Device, TEXTURE::CUBE, TEXT("../Bin/Resources/Textures/MapObject/Wall/Wall_%d.dds"), 5))))
+		CTexture::Create(m_pGraphic_Device, TEXTURE::CUBE, TEXT("../Bin/Resources/Textures/MapObject/Wall/Wall_%d.dds"), 7))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Map_Box */
@@ -719,7 +719,7 @@ HRESULT CLoader::Loading_For_Jusin()
 
 	/* For.Prototype_Component_Texture_Map_Desk */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_Component_Texture_Map_Desk"),
-		CTexture::Create(m_pGraphic_Device, TEXTURE::CUBE, TEXT("../Bin/Resources/Textures/MapObject/Desk/Desk_%d.dds"), 4))))
+		CTexture::Create(m_pGraphic_Device, TEXTURE::CUBE, TEXT("../Bin/Resources/Textures/MapObject/Desk/Desk_%d.dds"), 6))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Map_Deco */
@@ -1050,7 +1050,7 @@ HRESULT CLoader::Loading_For_BossFight()
 	m_strMessage = TEXT("텍스쳐를(을) 로딩 중 입니다.");
 	/* For.Prototype_Component_Texture_Terrain */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_Component_Texture_Terrain"),
-		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Terrain/Tile_%d.png"), 5))))
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Terrain/Tile_%d.png"), 6))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Sky */
@@ -1164,7 +1164,7 @@ HRESULT CLoader::Loading_For_BossFight()
 
 	/* For.Prototype_Component_Texture_Map_Wall */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_Component_Texture_Map_Wall"),
-		CTexture::Create(m_pGraphic_Device, TEXTURE::CUBE, TEXT("../Bin/Resources/Textures/MapObject/Wall/Wall_%d.dds"), 5))))
+		CTexture::Create(m_pGraphic_Device, TEXTURE::CUBE, TEXT("../Bin/Resources/Textures/MapObject/Wall/Wall_%d.dds"), 7))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Map_Box */
@@ -1179,7 +1179,7 @@ HRESULT CLoader::Loading_For_BossFight()
 
 	/* For.Prototype_Component_Texture_Map_Desk */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_Component_Texture_Map_Desk"),
-		CTexture::Create(m_pGraphic_Device, TEXTURE::CUBE, TEXT("../Bin/Resources/Textures/MapObject/Desk/Desk_%d.dds"), 4))))
+		CTexture::Create(m_pGraphic_Device, TEXTURE::CUBE, TEXT("../Bin/Resources/Textures/MapObject/Desk/Desk_%d.dds"), 6))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Map_Deco */
