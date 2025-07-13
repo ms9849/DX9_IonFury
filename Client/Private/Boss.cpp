@@ -38,7 +38,9 @@ HRESULT CBoss::Initialize(void* pArg)
 		0.f,
 		m_pGameInstance->Random(63.5f, 63.5f)));
 
-	m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_GameObject_Monster_Boss_Upper"), ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Layer_Boss1_Upper"), m_pTransformCom);
+	UPPER_DESC desc;
+	desc.pCoreTransform = m_pTransformCom;
+	m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_GameObject_Monster_Boss_Upper"), ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Layer_Boss1_Upper"), &desc);
 	m_pBossUpperBody = dynamic_cast<CBossUpperBody*>(m_pGameInstance->Find_GameObject_ToLayer(
 		ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Layer_Boss1_Upper")));
 	Safe_AddRef(m_pBossUpperBody);
@@ -75,28 +77,47 @@ void CBoss::Priority_Update(_float fTimeDelta)
 
 void CBoss::Update(_float fTimeDelta)
 {
-	if (!isUpperLive)
+	/*_float3 vPos = m_pTransformCom->Get_State(STATE::POSITION);
+
+	wchar_t szBuffer[128];
+	swprintf_s(szBuffer, 128, L"[디버그] 코어 위치: X: %.3f, Y: %.3f, Z: %.3f\n", vPos.x, vPos.y, vPos.z);
+	OutputDebugStringW(szBuffer);*/
+	//if (!isUpperLive)								// 상체 죽었으면 시간 누적
+	if(m_pBossUpperBody->isDead())
 	{
 		m_fSumResurrectionTime += fTimeDelta;
-		m_pBossLowerBody->Set_BodyLive(false);
+		isUpperLive = false;
+		//OutputDebugStringA("디버그 메시지: 상체 사망 상태\n");
+		m_pBossLowerBody->Set_BodyLive(false);		// 하체한테 상체 죽음 알림
 	}
 
-	if (m_fSumResurrectionTime >= m_fResurrectionTime)
+	if (m_pBossLowerBody->isDead())		// 
 	{
-		Resurrection();
-		m_fSumResurrectionTime = 0.f;
-		isUpperLive = true;
-		m_pBossLowerBody->Set_BodyLive(true);
-	}
-
-	if (m_pBossLowerBody->isDead() && isLowerLive)
-	{
+		//isLowerLive = false;
 		isLowerLive = false;
-		m_pBossUpperBody->Set_LowerDead();
+		//OutputDebugStringA("디버그 메시지: 하체 사망 상태\n");
+		m_pBossUpperBody->Set_LowerDead();			// 상체한테 하체 죽음 알림
 	}
 
-	if (m_pBossUpperBody->isDead() && m_pBossLowerBody->isDead())
+	if (m_fSumResurrectionTime >= m_fResurrectionTime)	// 부활 시간 지났으면
 	{
+		//OutputDebugStringA("디버그 메시지: 상체 부활\n");
+		Resurrection();									// 부활 시전
+		m_fSumResurrectionTime = 0.f;					// 부활 누적 시간 0으로 초기화
+		isUpperLive = true;								// 상체 살아있음으로 상태 변경
+		m_pBossLowerBody->Set_BodyLive(true);			// 하체에 상체 살아났음을 알려줌
+	}
+
+	//if (m_pBossLowerBody->isDead() && isLowerLive)		// 
+	//{
+	//	isLowerLive = false;
+	//	m_pBossUpperBody->Set_LowerDead();
+	//}
+
+	if (m_pBossUpperBody->isDead() && m_pBossLowerBody->isDead())			// 둘다 죽었으면 완전 사망
+	//if (!isUpperLive && !isLowerLive)
+	{
+		//OutputDebugStringA("디버그 메시지: 둘 다 사망 상태\n");
 		m_isDead = true;
 
 		m_pGameInstance->PlaySoundOnce(TEXT("Boss1_Die.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
@@ -104,14 +125,23 @@ void CBoss::Update(_float fTimeDelta)
 			m_pTransformCom->Get_State(STATE::POSITION));*/
 	}
 
-	if (m_pBossUpperBody->isDead())
-	{
-		// bool 변수 하나 체크 시킨다음 부활시간 증가
-		// 부활 시간이 다 차면 새로운 상체 클론해서 붙이기
-		// 아니면 특정 위치로 가서 하게 해도 될듯
-		//Safe_Release(m_pBossUpperBody);
-		isUpperLive = false;
-	}
+	//if (m_pBossUpperBody->isDead())						// 상체 죽었으면
+	//{
+	//	// bool 변수 하나 체크 시킨다음 부활시간 증가
+	//	// 부활 시간이 다 차면 새로운 상체 클론해서 붙이기
+	//	// 아니면 특정 위치로 가서 하게 해도 될듯
+	//	//Safe_Release(m_pBossUpperBody);
+	//	isUpperLive = false;							// 상체 죽은거 체크
+	//}
+
+	//if (m_pBossLowerBody->isDead())						// 하체 죽었으면
+	//{
+	//	// bool 변수 하나 체크 시킨다음 부활시간 증가
+	//	// 부활 시간이 다 차면 새로운 상체 클론해서 붙이기
+	//	// 아니면 특정 위치로 가서 하게 해도 될듯
+	//	//Safe_Release(m_pBossUpperBody);
+	//	isLowerLive = false;							// 하체 죽은거 체크
+	//}
 }
 
 void CBoss::Late_Update(_float fTimeDelta)
@@ -126,11 +156,13 @@ HRESULT CBoss::Render()
 
 void CBoss::Resurrection()
 {
-	m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_GameObject_Monster_Boss_Upper"), ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Layer_Boss1_Upper"), m_pTransformCom);
+	UPPER_DESC desc;
+	desc.pCoreTransform = m_pTransformCom;
+	desc.isRegenerate = true;
+	m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_GameObject_Monster_Boss_Upper"), ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Layer_Boss1_Upper"), &desc);
 	Safe_Release(m_pBossUpperBody);
 	m_pBossUpperBody = dynamic_cast<CBossUpperBody*>(m_pGameInstance->Find_GameObject_ToLayer(
 		ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Layer_Boss1_Upper")));
-
 	Safe_AddRef(m_pBossUpperBody);
 }
 
