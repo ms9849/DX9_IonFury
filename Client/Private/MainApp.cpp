@@ -14,6 +14,7 @@
 #include "YellowDust.h"
 #include "Effect.h"
 #include "Effect_Pistol_Fire.h"
+#include "Effect_Screen_Blur.h"
 #include "Bullet_Wound.h"
 #include "Bullet.h"
 
@@ -729,6 +730,16 @@ HRESULT CMainApp::Ready_Prototypes()
 	/* For.Prototype_Component_Texture_Effect_Bullet_Wound */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Effect_Bullet_Wound"),
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Effect/Bullet_Wound/Bullet_Wound_%d.png"), 1))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Effect_Screen_Blur */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Effect_Screen_Blur"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Effect/Screen_Blur/Screen_Blur_%d.png"), 3))))
+		return E_FAIL;
+	
+	/* For.Prototype_GameObject_Effect_Screen_Blur */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Effect_Screen_Blur"),
+		CEffect_Screen_Blur::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_Effect_Pistol_Fire */

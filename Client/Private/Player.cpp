@@ -802,6 +802,7 @@ void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 		{
 			m_tInfo.iHp -= 2;
 			m_pGameInstance->PlaySoundOnce(TEXT("hurt02.ogg"), CHANNELID::SOUND_EFFECT, 0.4f);
+			CEffect_Manager::GetInstance()->Create_Effect(TEXT("Effect_Screen_Blur_Hit"), m_pObjectDesc.iLayerLevel, TEXT("Layer_Effect"), { 0.f, 0.f, 0.f });
 		}
 	}
 }

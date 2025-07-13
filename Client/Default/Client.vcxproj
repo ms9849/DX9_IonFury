@@ -153,6 +153,7 @@
     <ClInclude Include="..\public\BossUpperFly.h" />
     <ClInclude Include="..\Public\Bullet_Wound.h" />
     <ClInclude Include="..\Public\CFile_Manager.h" />
+    <ClInclude Include="..\Public\Effect_Screen_Blur.h" />
     <ClInclude Include="..\Public\ItemMachineGun.h" />
     <ClInclude Include="..\Public\ItemShootGun.h" />
     <ClInclude Include="..\public\Level_BossFight.h" />
@@ -231,6 +232,7 @@
     <ClCompile Include="..\Private\CFile_Manager.cpp" />
     <ClCompile Include="..\Private\BossLowerBody.cpp" />
     <ClCompile Include="..\Private\BossUpperBody.cpp" />
+    <ClCompile Include="..\Private\Effect_Screen_Blur.cpp" />
     <ClCompile Include="..\Private\ItemMachineGun.cpp" />
     <ClCompile Include="..\Private\ItemShootGun.cpp" />
     <ClCompile Include="..\private\Level_BossFight.cpp" />

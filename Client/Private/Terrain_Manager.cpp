@@ -83,25 +83,34 @@ void CTerrain_Manager::Add_Cube(LEVEL eLevelID)
     list<CGameObject*> GameObjects = m_pGameInstance->Get_GameObjects_inLayer(ENUM_CLASS(eLevelID), TEXT("Layer_Map_Objects_AABB_Ride"));
 
     /* Cube 담기 */
-    for (auto& iter : GameObjects)
+    if (!GameObjects.empty())
     {
-        m_CubeObjects.push_back(reinterpret_cast<CCubeObject*>(iter));
+        for (auto& iter : GameObjects)
+        {
+            m_CubeObjects.push_back(reinterpret_cast<CCubeObject*>(iter));
+        }
     }
 
     GameObjects = m_pGameInstance->Get_GameObjects_inLayer(ENUM_CLASS(eLevelID), TEXT("Layer_Map_Objects_Ride"));
 
     /* Cube 담기 */
-    for (auto& iter : GameObjects)
+    if (!GameObjects.empty())
     {
-        m_CubeObjects.push_back(reinterpret_cast<CCubeObject*>(iter));
+        for (auto& iter : GameObjects)
+        {
+            m_CubeObjects.push_back(reinterpret_cast<CCubeObject*>(iter));
+        }
     }
 
     GameObjects = m_pGameInstance->Get_GameObjects_inLayer(ENUM_CLASS(eLevelID), TEXT("Layer_Map_Objects_OBB_Ride"));
 
     /* Cube 담기 */
-    for (auto& iter : GameObjects)
+    if (!GameObjects.empty())
     {
-        m_CubeObjects.push_back(reinterpret_cast<CCubeObject*>(iter));
+        for (auto& iter : GameObjects)
+        {
+            m_CubeObjects.push_back(reinterpret_cast<CCubeObject*>(iter));
+        }
     }
 }
 

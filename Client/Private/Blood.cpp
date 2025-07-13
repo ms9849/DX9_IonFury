@@ -115,7 +115,7 @@ void CBlood::ResetParticle(PARTICLE_ATTRIBUTE* attribute)
 {
 	for (auto& attribute : m_Particles)
 	{
-		attribute.vPosition = { 0.f, 0.2f, 0.f };
+		attribute.vPosition = { 0.f, 0.0f, 0.f };
 	}
 
 	attribute->bisAlive = true;

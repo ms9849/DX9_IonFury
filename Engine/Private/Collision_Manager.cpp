@@ -162,6 +162,37 @@ void CCollision_Manager::Check_RayToAABBCollision(const _wstring& strLayerTagRay
     }
 }
 
+void CCollision_Manager::Check_RayToOBBCollision(const _wstring& strLayerTagRay, const _wstring& strLayerTagAABB, _uint iLayerLevel, _float fTimeDelta, _float3* vColisionPos)
+{
+    CLayer* pRayLayer = m_pGameInstance->Find_Layer(iLayerLevel, strLayerTagRay);
+    CLayer* pOBBLayer = m_pGameInstance->Find_Layer(iLayerLevel, strLayerTagAABB);
+
+    if (pRayLayer == nullptr || pOBBLayer == nullptr)
+        return;
+
+    list<CGameObject*> GameObjectRay = pRayLayer->Get_GameObjects();
+    list<CGameObject*> GameObjectOBB = pOBBLayer->Get_GameObjects();
+
+    if (GameObjectRay.empty() || GameObjectOBB.empty())
+        return;
+
+    _float3 vPos = {};
+    _float3 vPlaneNormal = {};
+    CComponent* pCollider = {};
+
+    for (auto& pSrc : GameObjectRay)
+    {
+        for (auto& pDst : GameObjectOBB)
+        {
+            if (RayToOBB_Collision(pSrc, pDst, &vPos, &pCollider, fTimeDelta, &vPlaneNormal))
+            {
+                pSrc->OnCollision(pDst, COLLISION::RAY, fTimeDelta, pCollider, vPos, vPlaneNormal);
+                pDst->OnCollision(pSrc, COLLISION::RAY, fTimeDelta, pCollider, vPos);
+            }
+        }
+    }
+}
+
 _bool CCollision_Manager::Sphere_Collision(CGameObject* pSrc, CGameObject* pDst)
 {
     COLLISION_DESC DescSrc = pSrc->Get_CollisionDesc(COLLISION::SPHERE);
@@ -562,6 +593,37 @@ _bool CCollision_Manager::RayToAABB_Collision(CGameObject* pRay, CGameObject* pA
         D3DXVec3Cross(vPlaneNormal, &vFirst, &vSecond);
         return true;
     }
+
+    return false;
+}
+
+_bool CCollision_Manager::RayToOBB_Collision(CGameObject* pRay, CGameObject* pOBB, _float3* vPos, CComponent** pCollider, _float fTimeDelta, _float3* vPlaneNormal)
+{
+    /*
+    면 6개를 통과하는지 체크해야 할 것.
+    */
+
+    RAY_DESC RayDesc = pRay->Get_RayDesc();
+    _float3 vRayDir = RayDesc.vDir;
+    _float3 vRayPos = RayDesc.vPos;
+    _float3 vRayPosAfter = vRayPos + vRayDir * RayDesc.fSpeed * fTimeDelta;
+    // 정규화된 상태니까, 스피드까지 곱해줘서 처리해버리자
+    // -> 스피드 곱해버리니까 너무 빠름, 그냥 짧게 쏘자.
+
+    /*
+    OBB 충돌체 정보 가져오기.
+    */
+    COLLISION_DESC CollisionDesc = pOBB->Get_CollisionDesc(COLLISION::BOX);
+    CTransform* pColliderTransform = CollisionDesc.pTransform;
+    CBoxCollider* pColliderBox = static_cast<CBoxCollider*>(CollisionDesc.pCollider);
+    _float3 vPosDst = pColliderTransform->Get_State(STATE::POSITION);
+
+    _float3 vColliderMin, vColliderMax;
+
+    _float3 vOBBPoints[8] = {
+        
+    };
+
 
     return false;
 }
