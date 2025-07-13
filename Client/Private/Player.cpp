@@ -72,7 +72,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 	//m_pTransformCom->Set_State(STATE::POSITION, _float3(35.f, 1.f, 45.f));
 	//m_pTransformCom->Set_State(STATE::POSITION, _float3(30.f, 1.f, 35.f));
-	m_pTransformCom->Set_State(STATE::POSITION, _float3(15.f, 1.f, 95.f));
+	//m_pTransformCom->Set_State(STATE::POSITION, _float3(15.f, 1.f, 95.f)); // 엘베 앞
 
 	// 오른손
 	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(m_pObjectDesc.iProtoLevel, TEXT("Prototype_GameObject_Player_RightHand"),
