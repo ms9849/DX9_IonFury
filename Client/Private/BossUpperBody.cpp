@@ -100,6 +100,7 @@ HRESULT CBossUpperBody::Initialize(void* pArg)
 	m_fFirstY = 3.9f;
 	m_fMoveCoolTime = 0.07f;
 	m_fSumMoveCoolTime = 0.f;
+	m_fCurHp = m_fMaxHp;
 
 	return S_OK;
 }
@@ -187,7 +188,7 @@ void CBossUpperBody::Update(_float fTimeDelta)
 		m_fAttackFailTime = 0.f;
 	}
 
-	if (m_fHp <= 0)
+	if (m_fCurHp <= 0)
 	{
 		m_pGameInstance->PlaySoundOnce(TEXT("Boss_lost.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
 		m_bAnimationLock = true;
@@ -513,7 +514,7 @@ void CBossUpperBody::OnCollision(CGameObject* pDst, COLLISION eColType, _float f
 		CBullet* pBullet = dynamic_cast<CBullet*>(pDst);
 		if (pBullet != nullptr)
 		{
-			if ((m_fHp -= (pBullet->Get_Damage())) > 0)
+			if ((m_fCurHp -= (pBullet->Get_Damage())) > 0)
 			{
 				// 보스는 피격 사운드 넣는게 애매해서 일단 보류
 				//m_pGameInstance->PlaySoundOnce(TEXT("Spider_Hit.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
@@ -542,16 +543,13 @@ void CBossUpperBody::OnCollision(CGameObject* pDst, COLLISION eColType, _float f
 		CBullet* pBullet = dynamic_cast<CBullet*>(pDst);
 		if (pBullet != nullptr)
 		{
-			if ((m_fHp -= (pBullet->Get_Damage())) > 0)
+			if ((m_fCurHp -= (pBullet->Get_Damage())) > 0)
 			{
 				m_pGameInstance->PlaySoundOnce(TEXT("Boss1_hit1.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
 			}
 			else
 			{
-				if (pCollider == m_pBoxColliderHead)
-				{
-					m_isHead = true;
-				}
+				m_fCurHp = 0.f;
 			}
 		}
 	}

@@ -216,7 +216,7 @@ void CZombie::Update(_float fTimeDelta)
 		}
 	}
 
-	if (m_fHp <= 0)
+	if (m_fCurHp <= 0)
 	{
 		if (m_isHead)
 			m_strFrameKey = TEXT("Zombie_Die_HeadShot");
@@ -656,7 +656,7 @@ void CZombie::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 		CBullet* pBullet = dynamic_cast<CBullet*>(pDst);
 		if (pBullet != nullptr)
 		{
-			if ((m_fHp -= (pBullet->Get_Damage())) > 0)
+			if ((m_fCurHp -= (pBullet->Get_Damage())) > 0)
 			{
 				m_pGameInstance->PlaySoundOnce(TEXT("zombie_hit_1.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
 

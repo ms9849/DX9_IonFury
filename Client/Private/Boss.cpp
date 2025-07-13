@@ -51,6 +51,7 @@ HRESULT CBoss::Initialize(void* pArg)
 	Safe_AddRef(m_pBossLowerBody);
 
 	m_pObjectDesc.iLayerLevel = ENUM_CLASS(LEVEL::BOSSFIGHT);
+	m_fCurHp = m_fMaxHp;
 
 	//m_pTerrain_Manager = CTerrain_Manager::Create();
 	//m_pTerrain_Manager->Add_LandObject_One(m_pBossLowerBody);
@@ -83,6 +84,10 @@ void CBoss::Update(_float fTimeDelta)
 	swprintf_s(szBuffer, 128, L"[디버그] 코어 위치: X: %.3f, Y: %.3f, Z: %.3f\n", vPos.x, vPos.y, vPos.z);
 	OutputDebugStringW(szBuffer);*/
 	//if (!isUpperLive)								// 상체 죽었으면 시간 누적
+	m_fCurHp = m_pBossLowerBody->Get_Hp() + m_pBossUpperBody->Get_Hp();
+	wchar_t szBuffer[128];
+	swprintf_s(szBuffer, 128, L"[디버그] 보스 전체 체력: %.3f\n",m_fCurHp);
+	OutputDebugStringW(szBuffer);
 	if(m_pBossUpperBody->isDead())
 	{
 		m_fSumResurrectionTime += fTimeDelta;
@@ -114,8 +119,9 @@ void CBoss::Update(_float fTimeDelta)
 	//	m_pBossUpperBody->Set_LowerDead();
 	//}
 
-	if (m_pBossUpperBody->isDead() && m_pBossLowerBody->isDead())			// 둘다 죽었으면 완전 사망
+	//if (m_pBossUpperBody->isDead() && m_pBossLowerBody->isDead())			// 둘다 죽었으면 완전 사망
 	//if (!isUpperLive && !isLowerLive)
+	if (m_fCurHp <= 0)
 	{
 		//OutputDebugStringA("디버그 메시지: 둘 다 사망 상태\n");
 		m_isDead = true;

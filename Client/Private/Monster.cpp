@@ -59,6 +59,16 @@ HRESULT CMonster::Render()
 	return S_OK;
 }
 
+void CMonster::RecoveryHp()
+{
+	m_fCurHp = m_fMaxHp;
+}
+
+_float CMonster::Get_Hp()
+{
+	return m_fCurHp;
+}
+
 
 HRESULT CMonster::Ready_Animations()
 {
