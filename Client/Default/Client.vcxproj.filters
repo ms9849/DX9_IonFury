@@ -217,6 +217,9 @@
     <Filter Include="02.GameObjects\Effect\Bullet_Wound">
       <UniqueIdentifier>{08ac39b3-eb1b-4888-9f36-ed6bce1e49c0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\Effect\Screen_Blur">
+      <UniqueIdentifier>{0ceb665b-8c8f-4ed4-9fbc-aca5b8f5810e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -459,6 +462,9 @@
     <ClInclude Include="..\Public\Bullet_Wound.h">
       <Filter>02.GameObjects\Effect\Bullet_Wound</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Effect_Screen_Blur.h">
+      <Filter>02.GameObjects\Effect\Screen_Blur</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -695,6 +701,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Bullet_Wound.cpp">
       <Filter>02.GameObjects\Effect\Bullet_Wound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect_Screen_Blur.cpp">
+      <Filter>02.GameObjects\Effect\Screen_Blur</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

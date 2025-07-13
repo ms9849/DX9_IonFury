@@ -75,8 +75,8 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(Ready_Layer_Map_Objects_OBB_Ride(TEXT("Layer_Map_Objects_OBB_Ride")))) // È¸Àü ÇÑ Å» ¼ö ÀÖ´Â Å¥ºê
 		return E_FAIL;
 
-	if (FAILED(Ready_Layer_Map_Objects_Ride(TEXT("Layer_Map_Objects_Ride")))) // ¿¤º£
-		return E_FAIL;
+	// if (FAILED(Ready_Layer_Map_Objects_Ride(TEXT("Layer_Map_Objects_Ride")))) // ¿¤º£
+	// 	return E_FAIL;
 
 	if (FAILED(Ready_Layer_Map_Objects_Gate(TEXT("Layer_Map_Objects_Gate")))) // ¹®
 		return E_FAIL;
@@ -94,6 +94,7 @@ HRESULT CLevel_GamePlay::Initialize()
 		return E_FAIL;
 
 	m_pTerrain_Manager->Add_Terrian(LEVEL::GAMEPLAY);
+	m_pTerrain_Manager->Add_Cube(LEVEL::GAMEPLAY);
 
 	return S_OK;
 }
@@ -986,7 +987,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Map_Objects_Ride(const _wstring& strLayerTa
 			)->Set_State(STATE::POSITION, iter.matWorld.m[3]);
 	}
 
-	m_pTerrain_Manager->Add_Cube(LEVEL::GAMEPLAY);
+	//m_pTerrain_Manager->Add_Cube(LEVEL::GAMEPLAY);
 
 	return S_OK;
 }

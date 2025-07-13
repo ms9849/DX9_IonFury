@@ -1,5 +1,6 @@
 #include "ItemPistolBullet.h"
 #include "GameInstance.h"
+#include "Effect_Manager.h"
 
 CItemPistolBullet::CItemPistolBullet(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CItem{ pGraphic_Device }
@@ -131,6 +132,8 @@ void CItemPistolBullet::OnCollision(CGameObject* pDst, COLLISION eColType, _floa
 	{
 		m_isDead = true;
 		m_pGameInstance->PlaySoundOnce(TEXT("Get_Item.ogg"), CHANNELID::SOUND_EFFECT, 0.3f);
+		//CEffect_Manager::GetInstance()->Create_Effect(TEXT("Effect_Screen_Blur_Heal"), m_pObjectDesc.iLayerLevel, TEXT("Layer_Effect"), { 0.f, 0.f, 0.f });
+		CEffect_Manager::GetInstance()->Create_Effect(TEXT("Effect_Screen_Blur_Blue"), m_pObjectDesc.iLayerLevel, TEXT("Layer_Effect"), { 0.f, 0.f, 0.f });
 	}
 
 }

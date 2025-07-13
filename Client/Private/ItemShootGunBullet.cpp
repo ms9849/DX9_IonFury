@@ -127,7 +127,7 @@ HRESULT CItemShootGunBullet::End_RenderState()
 
 void CItemShootGunBullet::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta)
 {
-	if (eColType == COLLISION::BOX)
+	if (eColType == COLLISION::SPHERE)
 	{
 		m_isDead = true;
 		m_pGameInstance->PlaySoundOnce(TEXT("Get_Item.ogg"), CHANNELID::SOUND_EFFECT, 0.5f);
