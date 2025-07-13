@@ -44,8 +44,13 @@ void CMapElevator::Elevator_Animation(_float fTimeDelta)
 			m_bEnd = true;
 		}
 
-		if(m_fTimeStack >= 1.f)
+		if(m_pObjectDesc.iLayerLevel == ENUM_CLASS(LEVEL::JUSIN))
 			vPos.y += (fTimeDelta * 5);
+		else
+		{
+			if(m_fTimeStack >= 1.f)
+				vPos.y += (fTimeDelta * 5);
+		}
 	}
 	else
 	{
@@ -79,6 +84,9 @@ HRESULT CMapElevator::Initialize(void* pArg)
 
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
+
+	if (m_pObjectDesc.iLayerLevel == ENUM_CLASS(LEVEL::JUSIN))
+		m_bActive = true;
 
 	return S_OK;
 }

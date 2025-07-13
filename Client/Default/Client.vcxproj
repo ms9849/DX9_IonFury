@@ -157,6 +157,7 @@
     <ClInclude Include="..\Public\ItemMachineGun.h" />
     <ClInclude Include="..\Public\ItemShootGun.h" />
     <ClInclude Include="..\public\Level_BossFight.h" />
+    <ClInclude Include="..\public\Level_Jusin.h" />
     <ClInclude Include="..\public\MapMachineGunBulletBox.h" />
     <ClInclude Include="..\public\Lever.h" />
     <ClInclude Include="..\public\MapDeco.h" />
@@ -236,6 +237,7 @@
     <ClCompile Include="..\Private\ItemMachineGun.cpp" />
     <ClCompile Include="..\Private\ItemShootGun.cpp" />
     <ClCompile Include="..\private\Level_BossFight.cpp" />
+    <ClCompile Include="..\private\Level_Jusin.cpp" />
     <ClCompile Include="..\private\MapMachineGunBulletBox.cpp" />
     <ClCompile Include="..\private\Lever.cpp" />
     <ClCompile Include="..\private\MapDeco.cpp" />

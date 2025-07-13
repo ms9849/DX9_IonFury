@@ -220,6 +220,9 @@
     <Filter Include="02.GameObjects\Effect\Screen_Blur">
       <UniqueIdentifier>{0ceb665b-8c8f-4ed4-9fbc-aca5b8f5810e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Levels\Jusin">
+      <UniqueIdentifier>{cf9b5d39-5659-4a7a-9d1a-ed9e2f27ecb9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -465,6 +468,9 @@
     <ClInclude Include="..\Public\Effect_Screen_Blur.h">
       <Filter>02.GameObjects\Effect\Screen_Blur</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Level_Jusin.h">
+      <Filter>01.Levels\Jusin</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -704,6 +710,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Effect_Screen_Blur.cpp">
       <Filter>02.GameObjects\Effect\Screen_Blur</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Level_Jusin.cpp">
+      <Filter>01.Levels\Jusin</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
