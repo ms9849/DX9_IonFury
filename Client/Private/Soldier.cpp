@@ -150,7 +150,7 @@ void CSoldier::Update(_float fTimeDelta)
 		m_isMove = false;
 	}
 
-	if (m_fHp <= 0)
+	if (m_fCurHp <= 0)
 	{
 		if (m_isHead)
 			m_strFrameKey = TEXT("Soldier_Die_HeadShot");
@@ -397,7 +397,7 @@ void CSoldier::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDe
 			m_pTransformCom->Turn({0.f, 1.0f, 0.f}, fTimeDelta);
 			m_pTransformCom->LookAt(m_pPlayerTransform->Get_State(STATE::POSITION));
 
-			if ((m_fHp -= (pBullet->Get_Damage())) > 0)
+			if ((m_fCurHp -= (pBullet->Get_Damage())) > 0)
 			{
 				m_pGameInstance->PlaySoundOnce(TEXT("Soldier_Pain01.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
 
