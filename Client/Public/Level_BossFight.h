@@ -59,6 +59,9 @@ private:
 	class CUIInteraction* m_pUIInteraction{ nullptr };
 	class CUIAim* m_pUIAim{ nullptr };
 	class CUICardKey* m_pUICardKey{ nullptr };
+	class CUIBossHpBar* m_pUIBossHpBar = { nullptr };
+	class CUIBossHpFill* m_pUIBossHpFill = { nullptr };
+	class CUIBossName* m_pUIBossName = { nullptr };
 
 	CCamera::CAMERA_CONFIG m_CameraSettings;
 	vector<class CUIItemQueue*> m_pUIItemQueues{};
