@@ -63,6 +63,9 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(Ready_Layer_Items(TEXT("Layer_Items"))))
 		return E_FAIL;
 
+	if (FAILED(Ready_Layer_EventBox(TEXT("Layer_EventBox"))))
+		return E_FAIL;
+
 	if (FAILED(Ready_Layer_Map_Objects_AABB(TEXT("Layer_Map_Objects_AABB")))) // 벽 같이 회전 안한 큐브
 		return E_FAIL;
 
@@ -170,11 +173,14 @@ void CLevel_GamePlay::Update(_float fTimeDelta)
 	m_pGameInstance->Check_OBBCollision(TEXT("Layer_Map_Objects_OBB_Ride"), TEXT("Layer_Monster"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta);
 
 	m_pGameInstance->Check_AABBCollision(TEXT("Layer_Player"), TEXT("Layer_Spawner"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta);
+
 	m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_PlayerBullet"), TEXT("Layer_Map_Objects_AABB"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta, nullptr);
 	m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_PlayerBullet"), TEXT("Layer_Map_Objects_AABB_Ride"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta, nullptr);
 	m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_PlayerBullet"), TEXT("Layer_Map_Objects_Ray"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta, nullptr);
-	m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_PlayerBullet"), TEXT("Layer_Monster"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta, nullptr);
+	m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_PlayerBullet"), TEXT("Layer_Monster"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta, nullptr);	
 	m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_Monster_Bullet"), TEXT("Layer_Player"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta, nullptr);
+
+	m_pGameInstance->Check_RayToOBBCollision(TEXT("Layer_PlayerBullet"), TEXT("Layer_Map_Objects_OBB_Ride"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta, nullptr);
 
 	m_pTerrain_Manager->Check_Landing();
 
@@ -192,6 +198,8 @@ void CLevel_GamePlay::Update(_float fTimeDelta)
 	//m_pTerrain_Manager->Check_Landing();
 
 	m_fTimeDelta = fTimeDelta;
+
+	m_pGameInstance->Check_AABBCollision(TEXT("Layer_Player"), TEXT("Layer_EventBox"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta);
 
 	if (m_pGameInstance->Key_Down(VK_F9))
 	{
@@ -777,9 +785,18 @@ HRESULT CLevel_GamePlay::Ready_Layer_Items(const _wstring& strLayerTag)
 	//	ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag)))
 	//	return E_FAIL;
 	//
-	/*if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Item_CardKey"),
+	//if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Item_CardKey"),
+	//	ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag)))
+	//	return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLevel_GamePlay::Ready_Layer_EventBox(const _wstring& strLayerTag)
+{
+	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_EventBox"),
 		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag)))
-		return E_FAIL;*/
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -920,7 +937,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Map_Objects_OBB_Ride(const _wstring& strLay
 			)->Set_State(STATE::POSITION, iter.matWorld.m[3]);
 
 		CBoxCollider* pCollider = dynamic_cast<CBoxCollider*>(m_pGameInstance->Get_Component(ENUM_CLASS(iter.iLayerLevel), iter.strLayer, TEXT("Com_BoxCollider"), iter.iObjectID));
-		pCollider->Set_Scale({ 0.9f, 0.9f, 0.9f });
+		pCollider->Set_Scale({ 1.0f, 1.0f, 1.0f });
 	}
 
 	return S_OK;

@@ -24,7 +24,7 @@ public:
 	typedef struct tagWeapon
 	{
 		_uint iBulletsMax{}, iCanShootBullets{}, iCurrentBullets{}, iShootBullets{};
-		_bool bUseable{ false };
+		_bool bUseable{ true };
 	}WEAPON_INFO;
 
 	typedef struct tagPlayerInfo

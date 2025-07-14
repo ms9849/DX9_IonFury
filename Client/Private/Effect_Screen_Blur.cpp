@@ -164,4 +164,5 @@ CGameObject* CEffect_Screen_Blur::Clone(void* pArg)
 
 void CEffect_Screen_Blur::Free()
 {
+    __super::Free();
 }
