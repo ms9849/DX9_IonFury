@@ -110,7 +110,7 @@ void CPlayer::Update(_float fTimeDelta)
 	/* 점프 로직*/
 	if (!m_bJump && m_pGameInstance->Key_Down(VK_SPACE))
 	{
-		m_bJump = true;
+  		m_bJump = true;
 		m_fTime = 0.f;
 	}
 
@@ -449,7 +449,7 @@ void CPlayer::Update(_float fTimeDelta)
 	m_pLeftHand->Set_Current_Animation(Set_FrameKey(m_tInfo.strItem, m_tInfo.strItemAction));
 
 	/* Priority에서 한번 바뀜*/
-	SetUp_OnTerrain(m_pTransformCom, 1.f, &m_bJump);
+	SetUp_OnTerrain(m_pTransformCom, 1.0f, &m_bJump);
 
 	m_pRightHand->Set_Player_Transform(m_pTransformCom);
 	m_pLeftHand->Set_Player_Transform(m_pTransformCom);

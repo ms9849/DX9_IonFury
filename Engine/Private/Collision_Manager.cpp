@@ -131,7 +131,7 @@ void CCollision_Manager::Check_RayCollision(const _float3& vPos, const _float3& 
     }
 }
 
-void CCollision_Manager::Check_RayToAABBCollision(const _wstring& strLayerTagRay, const _wstring& strLayerTagAABB, _uint iLayerLevel, _float fTimeDelta, _float3* vColisionPos)
+void CCollision_Manager::Check_RayToAABBCollision(const _wstring& strLayerTagRay, const _wstring& strLayerTagAABB, _uint iLayerLevel, _float fTimeDelta, _float3* vCollisionPos)
 {
     CLayer* pRayLayer = m_pGameInstance->Find_Layer(iLayerLevel, strLayerTagRay);
     CLayer* pAABBLayer = m_pGameInstance->Find_Layer(iLayerLevel, strLayerTagAABB);
@@ -162,7 +162,7 @@ void CCollision_Manager::Check_RayToAABBCollision(const _wstring& strLayerTagRay
     }
 }
 
-void CCollision_Manager::Check_RayToOBBCollision(const _wstring& strLayerTagRay, const _wstring& strLayerTagAABB, _uint iLayerLevel, _float fTimeDelta, _float3* vColisionPos)
+void CCollision_Manager::Check_RayToOBBCollision(const _wstring& strLayerTagRay, const _wstring& strLayerTagAABB, _uint iLayerLevel, _float fTimeDelta, _float3* vCollisionPos)
 {
     CLayer* pRayLayer = m_pGameInstance->Find_Layer(iLayerLevel, strLayerTagRay);
     CLayer* pOBBLayer = m_pGameInstance->Find_Layer(iLayerLevel, strLayerTagAABB);
@@ -549,43 +549,43 @@ _bool CCollision_Manager::RayToAABB_Collision(CGameObject* pRay, CGameObject* pA
         /* 면 1번 0,1,2  */
         if (vPos->z == vColliderMin.z)
         {
-            vFirst = vAABBPoints[0] - vAABBPoints[1];
-            vSecond = vAABBPoints[1] - vAABBPoints[2];
+            vFirst = vAABBPoints[1] - vAABBPoints[0];
+            vSecond = vAABBPoints[2] - vAABBPoints[1];
         }
 
         /* 면 2번 1,5,6 */
         else if (vPos->x == vColliderMax.x)
         {
-            vFirst = vAABBPoints[1] - vAABBPoints[5];
-            vSecond = vAABBPoints[5] - vAABBPoints[6];
+            vFirst = vAABBPoints[5] - vAABBPoints[1];
+            vSecond = vAABBPoints[6] - vAABBPoints[5];
         }
 
         /* 면 3번 2,6,7 */
         else if (vPos->y == vColliderMin.y)
         {
-            vFirst = vAABBPoints[2] - vAABBPoints[6];
-            vSecond = vAABBPoints[6] - vAABBPoints[7];
+            vFirst = vAABBPoints[6] - vAABBPoints[2];
+            vSecond = vAABBPoints[7] - vAABBPoints[6];
         }
 
         /* 면 4번 7,4,0, */
         else if (vPos->x == vColliderMin.x)
         {
-            vFirst = vAABBPoints[7] - vAABBPoints[4];
-            vSecond = vAABBPoints[4] - vAABBPoints[0];
+            vFirst = vAABBPoints[4] - vAABBPoints[7];
+            vSecond = vAABBPoints[0] - vAABBPoints[4];
         }
 
         /* 면 5번 6,5,4 */
         else if (vPos->z == vColliderMax.z)
         {
-            vFirst = vAABBPoints[6] - vAABBPoints[5];
-            vSecond = vAABBPoints[5] - vAABBPoints[4];
+            vFirst = vAABBPoints[5] - vAABBPoints[6];
+            vSecond = vAABBPoints[4] - vAABBPoints[5];
         }
 
         /* 면 6번 4,5,1 */
         else if (vPos->y == vColliderMax.y)
         {
-            vFirst = vAABBPoints[4] - vAABBPoints[5];
-            vSecond = vAABBPoints[5] - vAABBPoints[1];
+            vFirst = vAABBPoints[1] - vAABBPoints[5];
+            vSecond = vAABBPoints[5] - vAABBPoints[4];
         }
 
         //평면의 법선을 구해냈다. 
@@ -606,7 +606,6 @@ _bool CCollision_Manager::RayToOBB_Collision(CGameObject* pRay, CGameObject* pOB
     RAY_DESC RayDesc = pRay->Get_RayDesc();
     _float3 vRayDir = RayDesc.vDir;
     _float3 vRayPos = RayDesc.vPos;
-    _float3 vRayPosAfter = vRayPos + vRayDir * RayDesc.fSpeed * fTimeDelta;
     // 정규화된 상태니까, 스피드까지 곱해줘서 처리해버리자
     // -> 스피드 곱해버리니까 너무 빠름, 그냥 짧게 쏘자.
 
@@ -617,12 +616,46 @@ _bool CCollision_Manager::RayToOBB_Collision(CGameObject* pRay, CGameObject* pOB
     CTransform* pColliderTransform = CollisionDesc.pTransform;
     CBoxCollider* pColliderBox = static_cast<CBoxCollider*>(CollisionDesc.pCollider);
     _float3 vPosDst = pColliderTransform->Get_State(STATE::POSITION);
+    _float3 vOBBPoints[8];
+    _float3 vDst;
 
-    _float3 vColliderMin, vColliderMax;
-
-    _float3 vOBBPoints[8] = {
-        
+    _int iIdx[36] = {
+        0,1,2, 0,2,3,
+        1,5,6, 1,6,2,
+        2,6,7, 2,7,3,
+        7,4,0, 7,0,3,
+        6,5,4, 6,4,7,
+        4,5,1, 4,1,0
     };
+
+    for(_int i=0; i < 8; ++i)
+    {
+        D3DXVec3TransformCoord(&vDst, &pColliderBox->Get_LocalPos(i), pColliderTransform->Get_WorldMatrixPtr());
+        vOBBPoints[i] = vDst;
+    }
+    // 삼각형 12개를 체크해야 한다
+    /* 면 1번 0,1,2 // 0,2,3 */
+    /* 면 2번 1,5,6 // 1,6,2 */
+    /* 면 3번 2,6,7 // 2,7,3 */
+    /* 면 4번 7,4,0 // 7,0,3 */
+    /* 면 5번 6,5,4 // 6,4,7 */
+    /* 면 6번 4,5,1 // 4,1,0  */
+
+
+    _float fDist;
+    _float3 vFirst, vSecond = {};
+
+    for (_int i = 0; i < 12; ++i)
+    {
+        if (D3DXIntersectTri(&vOBBPoints[iIdx[i*3]], &vOBBPoints[iIdx[i*3+1]], &vOBBPoints[iIdx[i*3+2]], &vRayPos, &vRayDir, nullptr, nullptr, &fDist) && fDist < 0.5f)
+        {
+            *vPos = vRayPos + vRayDir * fDist;
+            vFirst = vOBBPoints[iIdx[i * 3]] - vOBBPoints[iIdx[i * 3 + 1]];
+            vSecond = vOBBPoints[iIdx[i * 3 + 1]] - vOBBPoints[iIdx[i * 3 + 2]];
+            D3DXVec3Cross(vPlaneNormal, &vFirst, &vSecond);
+            return true;
+        }
+    }
 
 
     return false;

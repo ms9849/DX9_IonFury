@@ -1006,7 +1006,7 @@ void CBossUpperBody::SummonMonster()				// 추후 필요하면 인덱스 받을 수 있도록 �
 	{
 		CGameObject* pClone = nullptr;
 		pClone = static_cast<CGameObject*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::BOSSFIGHT),
-			m_MonsterKeys[0], m_pTransformCom->Get_State(STATE::POSITION)));
+			m_MonsterKeys[0], &m_pObjectDesc));
 
 		m_pGameInstance->Add_Clone_ToLayer(pClone, ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Layer_Monster"));
 

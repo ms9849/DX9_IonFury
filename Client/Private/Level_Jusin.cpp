@@ -98,6 +98,7 @@ HRESULT CLevel_Jusin::Initialize(void* pArg)
 		return E_FAIL;
 
 	m_pTerrain_Manager->Add_Terrian(LEVEL::JUSIN);
+	m_pTerrain_Manager->Add_Cube(LEVEL::JUSIN);
 
 	return S_OK;
 }
