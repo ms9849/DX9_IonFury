@@ -72,7 +72,7 @@ HRESULT CZombie::Initialize(void* pArg)
 	m_pTransformCom->Set_State(STATE::UP, m_pObjectDesc.matWorld.m[1]);
 	m_pTransformCom->Set_State(STATE::LOOK, m_pObjectDesc.matWorld.m[2]);
 	m_pTransformCom->Set_State(STATE::POSITION, m_pObjectDesc.matWorld.m[3]);
-	m_pTransformCom->Set_Scale(_float3{ 2.f, 2.f, 2.f });
+	//m_pTransformCom->Set_Scale(_float3{ 2.f, 2.f, 2.f });
 
 	if (m_pObjectDesc.iObjectID >= 12 || m_pObjectDesc.iObjectID <= 51)
 	{
@@ -598,11 +598,11 @@ void CZombie::TargetMove(_float fTimeDelta, _float3 vPos)		// 정해져 있는 장소로
 		if (m_isLeft)
 		{
 			//0.5
-			m_pTransformCom->Turn(_float3(0.f, -1.f, 0.f), fTimeDelta * 0.4f);
+			m_pTransformCom->Turn(_float3(0.f, -1.f, 0.f), fTimeDelta * 0.8f);
 		}
 		else
 		{
-			m_pTransformCom->Turn(_float3(0.f, 1.f, 0.f), fTimeDelta * 0.4f);
+			m_pTransformCom->Turn(_float3(0.f, 1.f, 0.f), fTimeDelta * 0.8f);
 		}
 		
 		_float3 vLook = m_pTransformCom->Get_State(STATE::LOOK);
@@ -612,7 +612,7 @@ void CZombie::TargetMove(_float fTimeDelta, _float3 vPos)		// 정해져 있는 장소로
 		m_pTransformCom->Set_State(STATE::LOOK, vLook);
 
 		m_fSumTime += fTimeDelta;
-		m_pTransformCom->Go_Straight(fTimeDelta);
+		m_pTransformCom->Go_Straight(fTimeDelta * 2.f);
 
 		if (m_fSumTime >= 5.f)
 		{

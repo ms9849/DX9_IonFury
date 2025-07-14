@@ -120,6 +120,10 @@ void CPlayer::Update(_float fTimeDelta)
 	//{
 	//	m_pTransformCom->Set_State(STATE::POSITION, _float3(72.f, 26.f, 67.75f)); // 자습실 카드키 앞
 	//}
+	if (m_pGameInstance->Key_Down('8'))
+	{
+		m_pTransformCom->Set_State(STATE::POSITION, _float3(35.f, 6.f, 45.f));
+	}
 
 	/* 점프 로직*/
 	if (!m_bJump && m_pGameInstance->Key_Down(VK_SPACE))
@@ -718,11 +722,17 @@ void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 		if (dynamic_cast<CItemArmor*>(pDst))
 		{
 			m_tInfo.iArmor += 10;
+			if (m_tInfo.iArmor >= 100)
+				m_tInfo.iArmor = 100;
+
 			Insert_ItemDesc(TEXT("Get Armor [Armor+10]"));
 		}
 		if (dynamic_cast<CItemHealpack*>(pDst))
 		{
 			m_tInfo.iHp += 10;
+			if (m_tInfo.iHp >= 100)
+				m_tInfo.iHp = 100;
+
 			Insert_ItemDesc(TEXT("Get Healpack [HP+10]"));
 		}
 		if (dynamic_cast<CItemPistolBullet*>(pDst))
