@@ -73,26 +73,30 @@ HRESULT CZombie::Initialize(void* pArg)
 	m_pTransformCom->Set_State(STATE::LOOK, m_pObjectDesc.matWorld.m[2]);
 	m_pTransformCom->Set_State(STATE::POSITION, m_pObjectDesc.matWorld.m[3]);
 	//m_pTransformCom->Set_Scale(_float3{ 2.f, 2.f, 1.f});
-
-	if (m_pObjectDesc.iObjectID >= 12 || m_pObjectDesc.iObjectID <= 51)
+	
+	// 게임 플레이에서만 동작하게
+	if (m_pObjectDesc.iLayerLevel == ENUM_CLASS(LEVEL::GAMEPLAY))
 	{
-		m_isTarget = true;
-		if (m_pTransformCom->Get_State(STATE::POSITION).z >= 45.f)
+		if (m_pObjectDesc.iObjectID >= 12 || m_pObjectDesc.iObjectID <= 51)
 		{
-			m_isLeft = true;
-			m_vPos = { 31.5f, 1.f, 63.5f };
+			m_isTarget = true;
+			if (m_pTransformCom->Get_State(STATE::POSITION).z >= 45.f)
+			{
+				m_isLeft = true;
+				m_vPos = { 31.5f, 1.f, 63.5f };
+			}
+			else
+			{
+				m_isLeft = false;
+				m_vPos = { 31.5f, 1.f, 28.5f };
+			}
 		}
 		else
 		{
-			m_isLeft = false;
-			m_vPos = { 31.5f, 1.f, 28.5f };
+			m_isTarget = false;
+			// 일어나는 연출 필요할 경우
+			//m_isAwake = true;
 		}
-	}
-	else
-	{
-		m_isTarget = false;
-		// 일어나는 연출 필요할 경우
-		//m_isAwake = true;
 	}
 
 	/* 스포너 관련
