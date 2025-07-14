@@ -152,6 +152,7 @@
     <ClInclude Include="..\Public\BossUpperBody.h" />
     <ClInclude Include="..\public\BossUpperFly.h" />
     <ClInclude Include="..\Public\Bullet_Wound.h" />
+    <ClInclude Include="..\public\Button.h" />
     <ClInclude Include="..\Public\CFile_Manager.h" />
     <ClInclude Include="..\Public\Effect_Screen_Blur.h" />
     <ClInclude Include="..\Public\EventBox.h" />
@@ -159,6 +160,7 @@
     <ClInclude Include="..\Public\ItemShootGun.h" />
     <ClInclude Include="..\public\Level_BossFight.h" />
     <ClInclude Include="..\public\Level_Jusin.h" />
+    <ClInclude Include="..\public\MapDoor.h" />
     <ClInclude Include="..\public\MapMachineGunBulletBox.h" />
     <ClInclude Include="..\public\Lever.h" />
     <ClInclude Include="..\public\MapDeco.h" />
@@ -235,6 +237,7 @@
     <ClCompile Include="..\Private\BossGrenade.cpp" />
     <ClCompile Include="..\private\BossUpperFly.cpp" />
     <ClCompile Include="..\Private\Bullet_Wound.cpp" />
+    <ClCompile Include="..\private\Button.cpp" />
     <ClCompile Include="..\Private\CFile_Manager.cpp" />
     <ClCompile Include="..\Private\BossLowerBody.cpp" />
     <ClCompile Include="..\Private\BossUpperBody.cpp" />
@@ -244,6 +247,7 @@
     <ClCompile Include="..\Private\ItemShootGun.cpp" />
     <ClCompile Include="..\private\Level_BossFight.cpp" />
     <ClCompile Include="..\private\Level_Jusin.cpp" />
+    <ClCompile Include="..\private\MapDoor.cpp" />
     <ClCompile Include="..\private\MapMachineGunBulletBox.cpp" />
     <ClCompile Include="..\private\Lever.cpp" />
     <ClCompile Include="..\private\MapDeco.cpp" />

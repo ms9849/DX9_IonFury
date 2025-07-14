@@ -27,6 +27,13 @@ HRESULT CSoldier::Initialize(void* pArg)
 
 	m_pPlayerTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(m_pObjectDesc.iLayerLevel, TEXT("Layer_Player"), TEXT("Com_Transform")));
 	Safe_AddRef(m_pPlayerTransform);
+
+	m_fAttackRange = 15.f;
+	m_fDamage = 30.f;
+	m_fAttackCoolTime = 3.f;
+	m_fChaseRange = 20.f;
+	m_fMaxRange = 15.f;
+
 	//if (pArg != nullptr)				// 스포너의 위치를 받아온다
 	//{
 	//	m_vPos = static_cast<_float3*>(pArg);
@@ -64,12 +71,7 @@ HRESULT CSoldier::Initialize(void* pArg)
 	m_pTransformCom->Set_State(STATE::UP, m_pObjectDesc.matWorld.m[1]);
 	m_pTransformCom->Set_State(STATE::LOOK, m_pObjectDesc.matWorld.m[2]);
 	m_pTransformCom->Set_State(STATE::POSITION, m_pObjectDesc.matWorld.m[3]);
-
-	m_fAttackRange = 4.f;
-	m_fDamage = 30.f;
-	m_fAttackCoolTime = 5.f;
-	m_fChaseRange = 7.f;
-	m_fMaxRange = 10.f;
+	m_pTransformCom->Set_Scale(_float3{2.0f, 2.0f, 1.f});
 
 	return S_OK;
 }
@@ -92,7 +94,7 @@ void CSoldier::Update(_float fTimeDelta)
 
 	if (m_bDying)
 	{
-		SetUp_OnTerrain(m_pTransformCom, 0.7f, &m_bJump);
+		SetUp_OnTerrain(m_pTransformCom, 1.f, &m_bJump);
 		return;
 	}
 
@@ -465,7 +467,7 @@ HRESULT CSoldier::Ready_Components()
 		return E_FAIL;
 
 	/* Com_Sight */
-	CSight::SIGHT_DESC		SightDesc{ 5.f, D3DXToRadian(90.0f), m_pPlayerTransform, m_pTransformCom };
+	CSight::SIGHT_DESC		SightDesc{ m_fChaseRange, D3DXToRadian(90.0f), m_pPlayerTransform, m_pTransformCom };
 	if (FAILED(__super::Add_Component(m_pObjectDesc.iLayerLevel, TEXT("Prototype_Component_Sight"),
 		TEXT("Com_Sight"), reinterpret_cast<CComponent**>(&m_pSightCom), &SightDesc)))
 		return E_FAIL;

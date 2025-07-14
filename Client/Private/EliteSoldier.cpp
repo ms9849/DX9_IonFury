@@ -28,6 +28,12 @@ HRESULT CEliteSoldier::Initialize(void* pArg)
 
 	m_pPlayerTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(m_pObjectDesc.iLayerLevel, TEXT("Layer_Player"), TEXT("Com_Transform")));
 	Safe_AddRef(m_pPlayerTransform);
+
+	m_fAttackRange = 18.f;
+	m_fChaseRange = 23.f;
+	m_fMaxRange = 15.f;
+	m_fAttackCoolTime = 3.f;
+
 	//if (pArg != nullptr)				// 스포너의 위치를 받아온다
 	//{
 	//	m_vPos = static_cast<_float3*>(pArg);
@@ -50,6 +56,7 @@ HRESULT CEliteSoldier::Initialize(void* pArg)
 	m_pTransformCom->Set_State(STATE::UP, m_pObjectDesc.matWorld.m[1]);
 	m_pTransformCom->Set_State(STATE::LOOK, m_pObjectDesc.matWorld.m[2]);
 	m_pTransformCom->Set_State(STATE::POSITION, m_pObjectDesc.matWorld.m[3]);
+	m_pTransformCom->Set_Scale(_float3{ 3.f, 3.f, 1.f });
 
 	/*if (m_vPos != nullptr)
 	{
@@ -65,10 +72,6 @@ HRESULT CEliteSoldier::Initialize(void* pArg)
 			0.f,
 			m_pGameInstance->Random(0.f, 2.f)));
 	}*/
-
-	m_fAttackRange = 5.f;
-	m_fChaseRange = 15.f;
-	m_fMaxRange = 10.f;
 
 	return S_OK;
 }
@@ -91,7 +94,7 @@ void CEliteSoldier::Update(_float fTimeDelta)
 
 	if (m_bDying)
 	{
-		SetUp_OnTerrain(m_pTransformCom, 0.55f, &m_bJump);
+		SetUp_OnTerrain(m_pTransformCom, 1.5f, &m_bJump);
 		return;
 	}
 
@@ -455,7 +458,7 @@ HRESULT CEliteSoldier::Ready_Components()
 		return E_FAIL;
 
 	/* Com_Sight */
-	CSight::SIGHT_DESC		SightDesc{ 15.f, D3DXToRadian(120.0f), m_pPlayerTransform, m_pTransformCom};
+	CSight::SIGHT_DESC		SightDesc{ m_fChaseRange, D3DXToRadian(120.0f), m_pPlayerTransform, m_pTransformCom};
 	if (FAILED(__super::Add_Component(m_pObjectDesc.iLayerLevel, TEXT("Prototype_Component_Sight"),
 		TEXT("Com_Sight"), reinterpret_cast<CComponent**>(&m_pSightCom), &SightDesc)))
 		return E_FAIL;
