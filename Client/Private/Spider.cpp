@@ -51,6 +51,7 @@ HRESULT CSpider::Initialize(void* pArg)
 	m_pTransformCom->Set_State(STATE::UP, m_pObjectDesc.matWorld.m[1]);
 	m_pTransformCom->Set_State(STATE::LOOK, m_pObjectDesc.matWorld.m[2]);
 	m_pTransformCom->Set_State(STATE::POSITION, m_pObjectDesc.matWorld.m[3]);
+	m_pTransformCom->Set_Scale(_float3{ 1.f, 1.f, 1.f });
 
 	/*if (m_vPos != nullptr)
 	{
@@ -95,7 +96,7 @@ void CSpider::Update(_float fTimeDelta)
 
 	if (m_bDying)
 	{
-		SetUp_OnTerrain(m_pTransformCom, 0.2f, &m_bJump);
+		SetUp_OnTerrain(m_pTransformCom, 0.6f, &m_bJump);
 		return;
 	}
 
@@ -184,7 +185,7 @@ void CSpider::Update(_float fTimeDelta)
 	}
 
 	Jump(fTimeDelta, m_fJumpPower);
-	SetUp_OnTerrain(m_pTransformCom, 0.25f, &m_bJump);
+	SetUp_OnTerrain(m_pTransformCom, 0.5f, &m_bJump);
 }
 
 void CSpider::Late_Update(_float fTimeDelta)
@@ -389,7 +390,7 @@ HRESULT CSpider::Ready_Components()
 		return E_FAIL;
 
 	/* Com_Sight */
-	CSight::SIGHT_DESC		SightDesc{ 5.f, D3DXToRadian(90.0f), m_pPlayerTransform, m_pTransformCom, true };
+	CSight::SIGHT_DESC		SightDesc{ m_fChaseRange, D3DXToRadian(90.0f), m_pPlayerTransform, m_pTransformCom, true };
 	if (FAILED(__super::Add_Component(m_pObjectDesc.iLayerLevel, TEXT("Prototype_Component_Sight"),
 		TEXT("Com_Sight"), reinterpret_cast<CComponent**>(&m_pSightCom), &SightDesc)))
 		return E_FAIL;
