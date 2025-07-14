@@ -54,8 +54,8 @@ HRESULT CLevel_Jusin::Initialize(void* pArg)
 	// if (FAILED(Ready_Layer_Spawner(TEXT("Layer_Spawner"))))
 	// 	return E_FAIL;
 
-	// if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"))))
-	// 	return E_FAIL;
+	 if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"))))
+	 	return E_FAIL;
 
 	if (FAILED(Ready_Layer_UI(TEXT("Layer_UI"))))
 		return E_FAIL;
@@ -66,9 +66,9 @@ HRESULT CLevel_Jusin::Initialize(void* pArg)
 	if (FAILED(Ready_Layer_Particle(TEXT("Layer_Particle"))))
 		return E_FAIL;
 
-	// if (FAILED(Ready_Layer_Items(TEXT("Layer_Items"))))
-	// 	return E_FAIL;
-	// 
+	 if (FAILED(Ready_Layer_Items(TEXT("Layer_Items"))))
+	 	return E_FAIL;
+	 
 	if (FAILED(Ready_Layer_Map_Objects_AABB(TEXT("Layer_Map_Objects_AABB")))) // 벽 같이 회전 안한 큐브
 		return E_FAIL;
 
@@ -91,8 +91,8 @@ HRESULT CLevel_Jusin::Initialize(void* pArg)
 	if (FAILED(Ready_Layer_Map_Objects_Deco(TEXT("Layer_Map_Objects_Deco")))) // 데코레이션
 		return E_FAIL;
 	
-	// if (FAILED(Ready_Layer_Interaction_Objects(TEXT("Layer_Interaction_Objects"))))
-	// 	return E_FAIL;
+	if (FAILED(Ready_Layer_Interaction_Objects(TEXT("Layer_Interaction_Objects"))))
+		return E_FAIL;
 
 	if (FAILED(Ready_Layer_Bullet(TEXT("Layer_Bullet"))))
 		return E_FAIL;
@@ -792,6 +792,39 @@ HRESULT CLevel_Jusin::Ready_Layer_Items(const _wstring& strLayerTag)
 			/*if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_GameObject_Item_CardKey"),
 				ENUM_CLASS(LEVEL::JUSIN), strLayerTag)))
 				return E_FAIL;*/
+
+	return S_OK;
+}
+
+HRESULT CLevel_Jusin::Ready_Layer_EventBox(const _wstring& strLayerTag)
+{
+	for (auto& iter : m_ObjectDescs->find(strLayerTag)->second)
+	{
+		if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(iter.iProtoLevel), iter.strProto,
+			ENUM_CLASS(iter.iLayerLevel), iter.strLayer, &iter)))
+			return E_FAIL;
+
+		dynamic_cast<CTransform*>(
+			m_pGameInstance->Get_Component(
+				ENUM_CLASS(iter.iLayerLevel), iter.strLayer, TEXT("Com_Transform"), iter.iObjectID)
+			)->Set_State(STATE::RIGHT, iter.matWorld.m[0]);
+		dynamic_cast<CTransform*>(
+			m_pGameInstance->Get_Component(
+				ENUM_CLASS(iter.iLayerLevel), iter.strLayer, TEXT("Com_Transform"), iter.iObjectID)
+			)->Set_State(STATE::UP, iter.matWorld.m[1]);
+		dynamic_cast<CTransform*>(
+			m_pGameInstance->Get_Component(
+				ENUM_CLASS(iter.iLayerLevel), iter.strLayer, TEXT("Com_Transform"), iter.iObjectID)
+			)->Set_State(STATE::LOOK, iter.matWorld.m[2]);
+		dynamic_cast<CTransform*>(
+			m_pGameInstance->Get_Component(
+				ENUM_CLASS(iter.iLayerLevel), iter.strLayer, TEXT("Com_Transform"), iter.iObjectID)
+			)->Set_State(STATE::POSITION, iter.matWorld.m[3]);
+
+		///* 콜라이더 꺼내와서 세팅 */
+		//CBoxCollider* pCollider = dynamic_cast<CBoxCollider*>(m_pGameInstance->Get_Component(ENUM_CLASS(iter.iLayerLevel), iter.strLayer, TEXT("Com_BoxCollider"), iter.iObjectID));
+		//pCollider->Set_Matrix(iter.matWorld);
+	}
 
 	return S_OK;
 }

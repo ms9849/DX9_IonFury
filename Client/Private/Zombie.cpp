@@ -139,7 +139,7 @@ void CZombie::Update(_float fTimeDelta)
 
 	if (m_bDying)
 	{
-		SetUp_OnTerrain(m_pTransformCom, 0.45f, &m_bJump);
+		SetUp_OnTerrain(m_pTransformCom, 0.9f, &m_bJump);
 		return;
 	}
 
@@ -197,7 +197,7 @@ void CZombie::Update(_float fTimeDelta)
 	if (m_isAwake)
 	{
 		__super::Jump(fTimeDelta);
-		SetUp_OnTerrain(m_pTransformCom, 0.45f, &m_bJump);
+		SetUp_OnTerrain(m_pTransformCom, 0.9f, &m_bJump);
 		return;
 	}
 	else if (m_isTarget)
@@ -262,7 +262,7 @@ void CZombie::Update(_float fTimeDelta)
 	}
 
 	__super::Jump(fTimeDelta);
-	SetUp_OnTerrain(m_pTransformCom, 0.5f, &m_bJump);
+	SetUp_OnTerrain(m_pTransformCom, 1.f, &m_bJump);
 }
 
 void CZombie::Late_Update(_float fTimeDelta)

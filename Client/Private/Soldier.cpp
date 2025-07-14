@@ -92,7 +92,7 @@ void CSoldier::Update(_float fTimeDelta)
 
 	if (m_bDying)
 	{
-		SetUp_OnTerrain(m_pTransformCom, 0.35f, &m_bJump);
+		SetUp_OnTerrain(m_pTransformCom, 0.7f, &m_bJump);
 		return;
 	}
 
@@ -191,7 +191,7 @@ void CSoldier::Update(_float fTimeDelta)
 		}
 	}
 
-	SetUp_OnTerrain(m_pTransformCom, 0.35f, &m_bJump);
+	SetUp_OnTerrain(m_pTransformCom, 1.f, &m_bJump);
 }
 
 void CSoldier::Late_Update(_float fTimeDelta)
