@@ -87,6 +87,7 @@ private:
 	class CPlayer_LeftHand*		m_pLeftHand{ nullptr };
 	class CDoorLock* m_pDoorLock{nullptr};
 	class CLever* m_pLever{nullptr};
+	class CButton* m_pButton{nullptr};
 
 	_wstring		m_strNextWeapon{};
 	deque<ITEM_DESC> m_ItemQueues{};
@@ -100,6 +101,7 @@ private:
 
 	_bool			m_bActiveElevator{ false };
 	_bool			m_bCanActiveElevator{ false };
+	_bool			m_bCanActiveDoor{ false };
 
 	_bool			m_bMachinGunBulletCharge{ false };
 	_bool			m_bMachinGunShootEnd{ false };

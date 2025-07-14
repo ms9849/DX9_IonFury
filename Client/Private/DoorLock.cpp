@@ -2,6 +2,7 @@
 
 #include "GameInstance.h"
 #include "MapGate.h"
+#include "MapDoor.h"
 #include "Lever.h"
 
 CDoorLock::CDoorLock(LPDIRECT3DDEVICE9 pGraphic_Device)
@@ -52,11 +53,22 @@ void CDoorLock::Late_Update(_float fTimeDelta)
 	if (m_pAnimationCom->Check_Animation_Finish(TEXT("DoorLock_Unlock")))
 	{
 		m_bOpen = true;
-		dynamic_cast<CMapGate*>(
-			m_pGameInstance->Get_GameObject_By_ID(
-				m_pObjectDesc.iLayerLevel,
-				TEXT("Layer_Map_Objects_Gate"),
-				m_iTargetID))->Set_Open(true);
+		if (m_pObjectDesc.iLayerLevel == ENUM_CLASS(LEVEL::GAMEPLAY))
+		{
+			dynamic_cast<CMapGate*>(
+				m_pGameInstance->Get_GameObject_By_ID(
+					m_pObjectDesc.iLayerLevel,
+					TEXT("Layer_Map_Objects_Gate"),
+					m_iTargetID))->Set_Open(true);
+		}
+		else if (m_pObjectDesc.iLayerLevel == ENUM_CLASS(LEVEL::JUSIN))
+		{
+			dynamic_cast<CMapDoor*>(
+				m_pGameInstance->Get_GameObject_By_ID(
+					m_pObjectDesc.iLayerLevel,
+					TEXT("Layer_Map_Objects_Gate"),
+					m_iTargetID))->Set_Door_Open(true);
+		}
 		m_strFrameKey = TEXT("DoorLock_Open");
 	}
 

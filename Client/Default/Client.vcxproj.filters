@@ -229,6 +229,12 @@
     <Filter Include="03.MapObjects\VenMachine">
       <UniqueIdentifier>{6d06be78-886e-4143-b85e-9252c6f2b778}</UniqueIdentifier>
     </Filter>
+    <Filter Include="04.InteractionObjects\Button">
+      <UniqueIdentifier>{7914e65b-04f5-496a-a037-5d712e216af5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.MapObjects\Door">
+      <UniqueIdentifier>{5d3bb9d5-375a-479f-8cc0-32305ab6cfa0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -492,6 +498,12 @@
     <ClInclude Include="..\Public\MapVenMachine.h">
       <Filter>03.MapObjects\VenMachine</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Button.h">
+      <Filter>04.InteractionObjects\Button</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\MapDoor.h">
+      <Filter>03.MapObjects\Door</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -749,6 +761,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\MapVenMachine.cpp">
       <Filter>03.MapObjects\VenMachine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Button.cpp">
+      <Filter>04.InteractionObjects\Button</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\MapDoor.cpp">
+      <Filter>03.MapObjects\Door</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

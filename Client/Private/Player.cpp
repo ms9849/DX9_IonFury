@@ -11,6 +11,7 @@
 #include "ItemMachineGun.h"
 #include "DoorLock.h"
 #include "Lever.h"
+#include "Button.h"
 #include "MapElevator.h"
 #include "MapGate.h"
 #include "Player_RightHand.h"
@@ -73,6 +74,9 @@ HRESULT CPlayer::Initialize(void* pArg)
 	//m_pTransformCom->Set_State(STATE::POSITION, _float3(35.f, 1.f, 45.f));
 	//m_pTransformCom->Set_State(STATE::POSITION, _float3(30.f, 1.f, 35.f));
 	//m_pTransformCom->Set_State(STATE::POSITION, _float3(15.f, 1.f, 95.f)); // 엘베 앞
+	//m_pTransformCom->Set_State(STATE::POSITION, _float3(14.f, 26.f, 25.75f)); // 버튼 앞
+	//m_pTransformCom->Set_State(STATE::POSITION, _float3(72.f, 26.f, 67.75f)); // 자습실 카드키 앞
+	
 
 	// 오른손
 	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(m_pObjectDesc.iProtoLevel, TEXT("Prototype_GameObject_Player_RightHand"),
@@ -107,6 +111,12 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 
 void CPlayer::Update(_float fTimeDelta)
 {
+	/*치트*/
+	//if (m_pGameInstance->Key_Down('0'))
+	//{
+	//	m_pTransformCom->Set_State(STATE::POSITION, _float3(14.f, 26.f, 178.f)); // 아지트 앞
+	//}
+
 	/* 점프 로직*/
 	if (!m_bJump && m_pGameInstance->Key_Down(VK_SPACE))
 	{
@@ -192,6 +202,12 @@ void CPlayer::Update(_float fTimeDelta)
 				Insert_ItemDesc(TEXT("Get MachineGun Bullets [Bullet+20]"));
 				m_pGameInstance->PlaySoundOnce(TEXT("Get_Item.ogg"), CHANNELID::SOUND_EFFECT, 0.3f);
 				m_bMachinGunBulletCharge = false;
+			}
+
+			if (m_bCanActiveDoor)
+			{
+				m_pButton->Set_Active(true);
+				m_bCanActiveDoor = false;
 			}
 		}
 	}
@@ -666,7 +682,6 @@ void CPlayer::Insert_ItemDesc(const _wstring strItemText)
 
 void CPlayer::Pop_ItemDesc(_float fTimeDelta)
 {
-	// 생성된 순서대로 챠라라락 안사라지고 하나하나 다 3초씩 걸려야 사라짐
 	for (auto& item : m_ItemQueues)
 		item.fCreateTime += fTimeDelta;
 
@@ -674,15 +689,6 @@ void CPlayer::Pop_ItemDesc(_float fTimeDelta)
 	{
 		m_ItemQueues.pop_back();
 	}
-
-	/*for (size_t i = 0; i < m_ItemQueues.size(); ++i)
-	{
-		if (m_fTimeStack > 2.f)
-		{
-			m_fTimeStack = 0.f;
-			m_ItemQueues.pop_back();
-		}
-	}*/
 }
 
 _wstring CPlayer::Set_FrameKey(_wstring strDst, _wstring strSrc)
@@ -765,15 +771,26 @@ void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 		}
 		if (dynamic_cast<CDoorLock*>(pDst) && m_bCanUseCardKey)
 		{
-			if (pDst->Get_Desc().iObjectID == 0)
+			if (m_pObjectDesc.iLayerLevel == ENUM_CLASS(LEVEL::GAMEPLAY))
 			{
-				m_pDoorLock = dynamic_cast<CDoorLock*>(pDst);
-				m_pDoorLock->Set_TargetID(0);
+				if (pDst->Get_Desc().iObjectID == 0)
+				{
+					m_pDoorLock = dynamic_cast<CDoorLock*>(pDst);
+					m_pDoorLock->Set_TargetID(0);
+				}
+				if (pDst->Get_Desc().iObjectID == 1)
+				{
+					m_pDoorLock = dynamic_cast<CDoorLock*>(pDst);
+					m_pDoorLock->Set_TargetID(1);
+				}
 			}
-			if (pDst->Get_Desc().iObjectID == 1)
+			else if (m_pObjectDesc.iLayerLevel == ENUM_CLASS(LEVEL::JUSIN))
 			{
-				m_pDoorLock = dynamic_cast<CDoorLock*>(pDst);
-				m_pDoorLock->Set_TargetID(1);
+				if (pDst->Get_Desc().iObjectID == 0)
+				{
+					m_pDoorLock = dynamic_cast<CDoorLock*>(pDst);
+					m_pDoorLock->Set_TargetID(1);
+				}
 			}
 
 			m_bCanOpenDoor = true;
@@ -788,6 +805,16 @@ void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 			}
 
 			m_bCanActiveElevator = true;
+		}
+		if (dynamic_cast<CButton*>(pDst))
+		{
+			if (pDst->Get_Desc().iObjectID == 1)
+			{
+				m_pButton = dynamic_cast<CButton*>(pDst);
+				m_pButton->Set_TargetID(0);
+			}
+
+			m_bCanActiveDoor = true;
 		}
 	}
 
