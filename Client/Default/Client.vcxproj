@@ -189,6 +189,9 @@
     <ClInclude Include="..\Public\MeleeAttack.h" />
     <ClInclude Include="..\public\Player_LeftHand.h" />
     <ClInclude Include="..\Public\MapTrashBox.h" />
+    <ClInclude Include="..\Public\UIBossHpBar.h" />
+    <ClInclude Include="..\Public\UIBossHpFill.h" />
+    <ClInclude Include="..\Public\UIBossName.h" />
     <ClInclude Include="..\public\UICardKey.h" />
     <ClInclude Include="..\public\UIItemQueue.h" />
     <ClInclude Include="..\public\Item.h" />
@@ -264,6 +267,9 @@
     <ClCompile Include="..\Private\Particle_Manager.cpp" />
     <ClCompile Include="..\Private\Snow.cpp" />
     <ClCompile Include="..\Private\MapTrashBox.cpp" />
+    <ClCompile Include="..\Private\UIBossHpBar.cpp" />
+    <ClCompile Include="..\Private\UIBossHpFill.cpp" />
+    <ClCompile Include="..\Private\UIBossName.cpp" />
     <ClCompile Include="..\private\UICardKey.cpp" />
     <ClCompile Include="..\private\ItemArmor.cpp" />
     <ClCompile Include="..\Private\CubeObject.cpp" />

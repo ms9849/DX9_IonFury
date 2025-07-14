@@ -32,6 +32,9 @@
 #include "BossUpperBody.h"
 #include "BossLowerBody.h"
 #include "BossUpperFly.h"
+#include "UIBossHpBar.h"
+#include "UIBossHpFill.h"
+#include "UIBossName.h"
 #include "MeleeAttack.h"
 #include "DoorLock.h"
 #include "Lever.h"
@@ -471,6 +474,7 @@ HRESULT CLoader::Loading_For_GamePlay()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_UICardKey"),
 		CUICardKey::Create(m_pGraphic_Device))))
 		return E_FAIL;
+
 #pragma endregion	
 
 #pragma region 아이템
@@ -1083,6 +1087,18 @@ HRESULT CLoader::Loading_For_BossFight()
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/UI/CardKey/CardKey.png"), 1))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Monster_Boss_HpBar"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Monster/Boss/HpBar_%d.png"), 1))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Monster_Boss_HpFill"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Monster/Boss/HpFill_%d.png"), 1))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Monster_Boss_Name"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Monster/Boss/Name_%d.png"), 1))))
+		return E_FAIL;
+
 #pragma region 이펙트, 파티클
 	/* For. Prototype_Component_Texture_Snow */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_Component_Texture_Snow"),
@@ -1341,6 +1357,21 @@ HRESULT CLoader::Loading_For_BossFight()
 
 
 #pragma region UI
+	/* For.Prototype_GameObject_UIBossHpBar */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_GameObject_UIBossHpBar"),
+		CUIBossHpBar::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UIBossHpFill */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_GameObject_UIBossHpFill"),
+		CUIBossHpFill::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UIBossName */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_GameObject_UIBossName"),
+		CUIBossName::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
 	/* For.Prototype_GameObject_UIHp */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_GameObject_UIHp"),
 		CUIHp::Create(m_pGraphic_Device))))

@@ -13,6 +13,9 @@
 #include "ParticleSystem.h"
 #include "MapTrashBox.h"
 #include "Spawner.h"
+#include "UIBossHpBar.h"
+#include "UIBossHpFill.h"
+#include "UIBossName.h"
 
 #include "Particle_Manager.h"
 #include "Bullet_Manager.h"
@@ -361,6 +364,61 @@ HRESULT CLevel_BossFight::Ready_Layer_Boss(const _wstring& strLayerTag)
 HRESULT CLevel_BossFight::Ready_Layer_UI(const _wstring& strLayerTag)
 {
 	_wstring ws{};
+
+	/* 보스 체력 */
+	CUIObject::UIOBJECT_DESC Desc_BossHpBar{};
+	//Desc_Hp.iTextLength = 3;
+	Desc_BossHpBar.fSizeX = 1000.f;
+	Desc_BossHpBar.fSizeY = 400.f;
+	Desc_BossHpBar.fX = g_iWinSizeX * 0.5f;
+	Desc_BossHpBar.fY = 65.f;
+	Desc_BossHpBar.iLayerLevelIndex = ENUM_CLASS(LEVEL::BOSSFIGHT);
+	Desc_BossHpBar.strLayerTag = strLayerTag;
+	//Desc_Hp.strFontType = TEXT("Default");
+
+	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_GameObject_UIBossHpBar"),
+		ENUM_CLASS(LEVEL::BOSSFIGHT), Desc_BossHpBar.strLayerTag, &Desc_BossHpBar)))
+		return E_FAIL;
+
+	m_pUIBossHpBar = dynamic_cast<CUIBossHpBar*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::BOSSFIGHT), Desc_BossHpBar.strLayerTag));
+	Safe_AddRef(m_pUIBossHpBar);
+
+	/* 보스 체력 필 */
+	CUIObject::UIOBJECT_DESC Desc_BossHpFill{};
+	//Desc_Hp.iTextLength = 3;
+	Desc_BossHpFill.fSizeX = 2018.f;
+	Desc_BossHpFill.fSizeY = 600.f;
+	//Desc_BossHpFill.fX = g_iWinSizeX * 0.5f - 11.f;
+	Desc_BossHpFill.fX = g_iWinSizeX - 25.f;
+	Desc_BossHpFill.fY = 82.f;
+	Desc_BossHpFill.iLayerLevelIndex = ENUM_CLASS(LEVEL::BOSSFIGHT);
+	Desc_BossHpFill.strLayerTag = strLayerTag;
+	//Desc_Hp.strFontType = TEXT("Default");
+
+	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_GameObject_UIBossHpFill"),
+		ENUM_CLASS(LEVEL::BOSSFIGHT), Desc_BossHpFill.strLayerTag, &Desc_BossHpFill)))
+		return E_FAIL;
+
+	m_pUIBossHpFill = dynamic_cast<CUIBossHpFill*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::BOSSFIGHT), Desc_BossHpBar.strLayerTag));
+	Safe_AddRef(m_pUIBossHpFill);
+
+	/* 보스 이름 */
+	CUIObject::UIOBJECT_DESC Desc_BossName{};
+	//Desc_Hp.iTextLength = 3;
+	Desc_BossName.fSizeX = 400.f;
+	Desc_BossName.fSizeY = 250.f;
+	Desc_BossName.fX = g_iWinSizeX * 0.5f;
+	Desc_BossName.fY = 42.f;
+	Desc_BossName.iLayerLevelIndex = ENUM_CLASS(LEVEL::BOSSFIGHT);
+	Desc_BossName.strLayerTag = strLayerTag;
+	//Desc_Hp.strFontType = TEXT("Default");
+
+	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_GameObject_UIBossName"),
+		ENUM_CLASS(LEVEL::BOSSFIGHT), Desc_BossName.strLayerTag, &Desc_BossName)))
+		return E_FAIL;
+
+	m_pUIBossName = dynamic_cast<CUIBossName*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::BOSSFIGHT), Desc_BossHpBar.strLayerTag));
+	Safe_AddRef(m_pUIBossName);
 
 	/* 체력 */
 	CUIObject::UIOBJECT_DESC Desc_Hp{};
@@ -883,6 +941,9 @@ void CLevel_BossFight::Free()
 	Safe_Release(m_pUIAim);
 	Safe_Release(m_pUICardKey);
 	Safe_Release(m_pFileMgr);
+	Safe_Release(m_pUIBossHpBar);
+	Safe_Release(m_pUIBossHpFill);
+	Safe_Release(m_pUIBossName);
 
 	Safe_Release(m_pEffect_Manager);
 	m_pEffect_Manager->Release_Effect_Manager();

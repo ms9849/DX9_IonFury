@@ -30,7 +30,8 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 	void Resurrection();
-	;
+	_float Get_Hp();
+	_float Get_MaxHp();
 	virtual void OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta) override { return; };
 	virtual const COLLISION_DESC& Get_CollisionDesc(COLLISION eColType) override {
 		COLLISION_DESC temp = {};

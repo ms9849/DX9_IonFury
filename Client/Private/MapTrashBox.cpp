@@ -88,7 +88,6 @@ HRESULT CMapTrashBox::Initialize(void* pArg)
 void CMapTrashBox::Priority_Update(_float fTimeDelta)
 {
 	//테스트용 추후 발견하시면 지워버리셔도 됩니다
-	int a = 10;
 }
 
 void CMapTrashBox::Update(_float fTimeDelta)
