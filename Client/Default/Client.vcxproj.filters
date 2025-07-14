@@ -226,6 +226,9 @@
     <Filter Include="02.GameObjects\Monster\Boss">
       <UniqueIdentifier>{5c706583-e0a5-49b2-9a1a-1fe76cb935af}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03.MapObjects\VenMachine">
+      <UniqueIdentifier>{6d06be78-886e-4143-b85e-9252c6f2b778}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -486,6 +489,9 @@
     <ClInclude Include="..\Public\EventBox.h">
       <Filter>02.GameObjects\EventBox</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\MapVenMachine.h">
+      <Filter>03.MapObjects\VenMachine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -740,6 +746,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\EventBox.cpp">
       <Filter>02.GameObjects\EventBox</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MapVenMachine.cpp">
+      <Filter>03.MapObjects\VenMachine</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

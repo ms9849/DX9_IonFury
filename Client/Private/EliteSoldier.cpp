@@ -197,7 +197,7 @@ void CEliteSoldier::Update(_float fTimeDelta)
 		}
 	}
 
-	SetUp_OnTerrain(m_pTransformCom, 0.5f, &m_bJump);
+	SetUp_OnTerrain(m_pTransformCom, 1.5f, &m_bJump);
 }
 
 void CEliteSoldier::Late_Update(_float fTimeDelta)
