@@ -51,7 +51,7 @@ void CSound_Manager::PlaySoundOnce(const _wstring& pSoundKey, CHANNELID eID, flo
 
 	_bool bPlay = FALSE;
 
-	m_pSystem->playSound(iter->second, nullptr, FALSE, nullptr);
+	m_pSystem->playSound(iter->second, nullptr, FALSE, &m_pChannelArr[ENUM_CLASS(eID)]);
 	m_pChannelArr[ENUM_CLASS(eID)]->setVolume(fVolume);
 	m_pSystem->update();
 }
@@ -98,12 +98,14 @@ void CSound_Manager::PlayBGM(const _wstring& pSoundKey, float fVolume)
 void CSound_Manager::StopSound(CHANNELID eID)
 {
 	m_pChannelArr[ENUM_CLASS(eID)]->stop();
+	m_pSystem->update();
 }
 
 void CSound_Manager::StopAll()
 {
 	for (int i = 0; i < ENUM_CLASS(CHANNELID::SOUND_END); ++i)
 		m_pChannelArr[i]->stop();
+	m_pSystem->update();
 }
 
 void CSound_Manager::SetChannelVolume(CHANNELID eID, float fVolume)

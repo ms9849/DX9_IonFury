@@ -137,6 +137,7 @@ void CBossUpperBody::Update(_float fTimeDelta)
 				m_fSumMoveCoolTime = 0.f;
 				TurnOffBooster();
 				m_isLanding = true;
+				m_pGameInstance->PlaySoundOnce(TEXT("BossLanding.wav"), CHANNELID::SOUND_EFFECT, 0.7f);
 			}
 
 			/*if (fabsf(m_pTransformCom->Get_State(STATE::POSITION).y - m_pCoreTranform->Get_State(STATE::POSITION).y) <= 2.0f)
@@ -230,10 +231,9 @@ void CBossUpperBody::Update(_float fTimeDelta)
 
 			Attack(fTimeDelta, m_eState);
 			m_uTempNum++;
-			/*if (m_uTempNum > 2)
-				m_uTempNum = 0;*/
-			if (m_uTempNum > 1)
+			if (m_uTempNum > 2)
 				m_uTempNum = 0;
+
 		}
 	}
 
@@ -325,6 +325,8 @@ void CBossUpperBody::UseBooster()
 		ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Layer_Boss_UpperLeft")));
 	Safe_AddRef(m_pWing);
 
+	m_pGameInstance->PlaySoundOnce(TEXT("BoosterSound.wav"), CHANNELID::SOUND_BOOSTER, 0.7f);
+
 	return;
 }
 
@@ -332,6 +334,7 @@ void CBossUpperBody::TurnOffBooster()
 {
 	m_pWing->Set_Dead(true);
 	Safe_Release(m_pWing);
+	m_pGameInstance->SetChannelVolume(CHANNELID::SOUND_BOOSTER, 0.f);
 
 	return;
 }
@@ -823,7 +826,7 @@ void CBossUpperBody::Attack(_float fTimeDelta, BossAttackState state)
 	}
 	else if (m_eState == BossAttackState::SUMMON)
 	{
-		//SummonMonster();
+		SummonMonster();
 
 		m_uCurBullets = 0;								// 총알 수 0으로 초기화
 		m_uCurExplosionBullets = 0;						// 유탄 수 0으로 초기화
