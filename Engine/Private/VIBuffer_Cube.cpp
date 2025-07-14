@@ -196,7 +196,7 @@ _float CVIBuffer_Cube::Compute_Height(const _float3& vLocalPos, CTransform* pTra
 		return fResult.y;
 
 	else
-		return vWorldPos.y - 0.5f;
+		return vWorldPos.y - 1.0f;
 }
 
 //_float CVIBuffer_Cube::Compute_Height(const _float3& vLocalPos, const _float4x4* vWorldMatInv)

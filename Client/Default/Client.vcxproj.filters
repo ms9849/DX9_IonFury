@@ -223,6 +223,9 @@
     <Filter Include="01.Levels\Jusin">
       <UniqueIdentifier>{cf9b5d39-5659-4a7a-9d1a-ed9e2f27ecb9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\EventBox">
+      <UniqueIdentifier>{259753ed-deaa-4250-af6f-d1a10a7e4396}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -471,6 +474,9 @@
     <ClInclude Include="..\public\Level_Jusin.h">
       <Filter>01.Levels\Jusin</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\EventBox.h">
+      <Filter>02.GameObjects\EventBox</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -713,6 +719,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Level_Jusin.cpp">
       <Filter>01.Levels\Jusin</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\EventBox.cpp">
+      <Filter>02.GameObjects\EventBox</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
