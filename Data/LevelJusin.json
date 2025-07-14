@@ -4505,6 +4505,77 @@
         ]
     },
     {
+        "Layer": "Layer_Map_Objects_Gate",
+        "Objects": [
+            {
+                "ID": 0,
+                "LayerLevel": 4,
+                "Matrix": [
+                    [
+                        -1.2020632311759982e-07,
+                        0.0,
+                        -2.75,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        4.0,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        1.0,
+                        0.0,
+                        -4.371138828673793e-08,
+                        0.0
+                    ],
+                    [
+                        20.0,
+                        27.0,
+                        28.25,
+                        1.0
+                    ]
+                ],
+                "Proto": "Prototype_GameObject_Map_Door",
+                "ProtoLevel": 4,
+                "TextureIndex": 0
+            },
+            {
+                "ID": 1,
+                "LayerLevel": 4,
+                "Matrix": [
+                    [
+                        -1.9670125084303436e-07,
+                        0.0,
+                        -4.5,
+                        0.0
+                    ],
+                    [
+                        0.0,
+                        3.999999761581421,
+                        0.0,
+                        0.0
+                    ],
+                    [
+                        1.0,
+                        0.0,
+                        -4.371138828673793e-08,
+                        0.0
+                    ],
+                    [
+                        15.0,
+                        27.0,
+                        181.5,
+                        1.0
+                    ]
+                ],
+                "Proto": "Prototype_GameObject_Map_Door",
+                "ProtoLevel": 4,
+                "TextureIndex": 0
+            }
+        ]
+    },
+    {
         "Layer": "Layer_Map_Objects_Ride",
         "Objects": [
             {
