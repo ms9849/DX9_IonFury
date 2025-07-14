@@ -28,6 +28,13 @@ HRESULT CZombie::Initialize(void* pArg)
 
 	m_pPlayerTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(m_pObjectDesc.iLayerLevel, TEXT("Layer_Player"), TEXT("Com_Transform")));
 	Safe_AddRef(m_pPlayerTransform);
+
+	m_fDamage = 30.f;
+	m_fAttackRange = 1.5f;
+	m_fAttackCoolTime = 4.f;
+	m_fChaseRange = 10.f;
+	m_fMaxRange = 20.f;
+
 	// 스포너 관련
 	//if (pArg != nullptr)				// 스포너의 위치를 받아온다
 	//{
@@ -65,6 +72,7 @@ HRESULT CZombie::Initialize(void* pArg)
 	m_pTransformCom->Set_State(STATE::UP, m_pObjectDesc.matWorld.m[1]);
 	m_pTransformCom->Set_State(STATE::LOOK, m_pObjectDesc.matWorld.m[2]);
 	m_pTransformCom->Set_State(STATE::POSITION, m_pObjectDesc.matWorld.m[3]);
+	m_pTransformCom->Set_Scale(_float3{ 2.f, 2.f, 2.f });
 
 	if (m_pObjectDesc.iObjectID >= 12 || m_pObjectDesc.iObjectID <= 51)
 	{
@@ -103,11 +111,6 @@ HRESULT CZombie::Initialize(void* pArg)
 			m_pGameInstance->Random(0.f, 2.f)));
 	}*/
 
-	m_fDamage = 30.f;
-	m_fAttackRange = 1.5f;
-	m_fAttackCoolTime = 5.f;
-	m_fChaseRange = 10.f;
-	m_fMaxRange = 10.f;
 	//m_AttackfCoolTime = 1.f;
 	//SetUp_OnTerrain(m_pTransformCom, 0.5f, &m_bJump);
 
@@ -139,7 +142,7 @@ void CZombie::Update(_float fTimeDelta)
 
 	if (m_bDying)
 	{
-		SetUp_OnTerrain(m_pTransformCom, 0.9f, &m_bJump);
+		SetUp_OnTerrain(m_pTransformCom, 1.f, &m_bJump);
 		return;
 	}
 
@@ -197,7 +200,7 @@ void CZombie::Update(_float fTimeDelta)
 	if (m_isAwake)
 	{
 		__super::Jump(fTimeDelta);
-		SetUp_OnTerrain(m_pTransformCom, 0.9f, &m_bJump);
+		SetUp_OnTerrain(m_pTransformCom, 1.f, &m_bJump);
 		return;
 	}
 	else if (m_isTarget)
@@ -463,7 +466,7 @@ HRESULT CZombie::Ready_Components()
 		return E_FAIL;
 
 	/* Com_Sight */
-	CSight::SIGHT_DESC		SightDesc{ 5.f, D3DXToRadian(90.0f), m_pPlayerTransform, m_pTransformCom, true };
+	CSight::SIGHT_DESC		SightDesc{ m_fChaseRange, D3DXToRadian(90.0f), m_pPlayerTransform, m_pTransformCom, true };
 	if (FAILED(__super::Add_Component(m_pObjectDesc.iLayerLevel, TEXT("Prototype_Component_Sight"),
 		TEXT("Com_Sight"), reinterpret_cast<CComponent**>(&m_pSightCom), &SightDesc)))
 		return E_FAIL;
