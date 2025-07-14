@@ -38,9 +38,11 @@
 #include "MeleeAttack.h"
 #include "DoorLock.h"
 #include "Lever.h"
+#include "Button.h"
 #include "BossGrenade.h"
 #include "Effect_Pistol_Fire.h"
 #include "MapGate.h"
+#include "MapDoor.h"
 #include "MapBuilding.h"
 #include "MapWall.h"
 #include "MapBox.h"
@@ -242,6 +244,11 @@ HRESULT CLoader::Loading_For_GamePlay()
 	/* For.Prototype_Component_Texture_Interaction_Lever */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Interaction_Default_Lever"),
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/InteractionObject/Lever/Default_Lever_%d.png"), 5))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Interaction_Button */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Interaction_Button"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/InteractionObject/Button/Button_%d.png"), 3))))
 		return E_FAIL;
 
 #pragma endregion
@@ -525,6 +532,11 @@ HRESULT CLoader::Loading_For_GamePlay()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Interaction_Lever"),
 		CLever::Create(m_pGraphic_Device))))
 		return E_FAIL;
+
+	/* For.Prototype_GameObject_Interaction_Button */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Interaction_Button"),
+		CButton::Create(m_pGraphic_Device))))
+		return E_FAIL;
 #pragma endregion
 
 #pragma region ¸Ê ¿ÀºêÁ§Æ®
@@ -694,12 +706,22 @@ HRESULT CLoader::Loading_For_Jusin()
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/InteractionObject/Lever/Default_Lever_%d.png"), 5))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Texture_Interaction_Button */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_Component_Texture_Interaction_Button"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/InteractionObject/Button/Button_%d.png"), 3))))
+		return E_FAIL;
+
 #pragma endregion
 
 #pragma region ¸Ê ¿ÀºêÁ§Æ®
 	/* For.Prototype_Component_Texture_Map_Gate */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_Component_Texture_Map_Gate"),
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/MapObject/Gate/Gate_%d.png"), 2))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Map_Door */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_Component_Texture_Map_Door"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/MapObject/Door/Door_%d.png"), 1))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Map_Building */
@@ -979,12 +1001,22 @@ HRESULT CLoader::Loading_For_Jusin()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_GameObject_Interaction_Lever"),
 		CLever::Create(m_pGraphic_Device))))
 		return E_FAIL;
+
+	/* For.Prototype_GameObject_Interaction_Button */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_GameObject_Interaction_Button"),
+		CButton::Create(m_pGraphic_Device))))
+		return E_FAIL;
 #pragma endregion
 
 #pragma region ¸Ê ¿ÀºêÁ§Æ®
 	/* For.Prototype_GameObject_Map_Gate */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_GameObject_Map_Gate"),
 		CMapGate::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Map_Door */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_GameObject_Map_Door"),
+		CMapDoor::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_Map_Building */

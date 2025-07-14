@@ -87,6 +87,10 @@ private:
 	class CPlayer_LeftHand*		m_pLeftHand{ nullptr };
 	class CDoorLock* m_pDoorLock{nullptr};
 	class CLever* m_pLever{nullptr};
+	class CButton* m_pButton{nullptr};
+
+	_float			m_fSpeed{ 1.f };
+	_bool			m_bSpeedUp{ false };
 
 	_wstring		m_strNextWeapon{};
 	deque<ITEM_DESC> m_ItemQueues{};
@@ -100,10 +104,12 @@ private:
 
 	_bool			m_bActiveElevator{ false };
 	_bool			m_bCanActiveElevator{ false };
+	_bool			m_bCanActiveDoor{ false };
 
 	_bool			m_bMachinGunBulletCharge{ false };
 	_bool			m_bMachinGunShootEnd{ false };
 	_float			m_fMachinGunSoundCoolDown = { 0.f };
+
 public:
 	virtual void OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta) override;
 	virtual void OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta, CComponent* pCollider, const _float3& vPos) override;
