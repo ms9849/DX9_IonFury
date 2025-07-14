@@ -153,6 +153,7 @@ HRESULT CMainApp::Ready_Prototypes()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Fonts_Primary"),
 		CFonts::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Fonts/Primary/Text_%d.png"), PrimaryFontSet, 94))))
 		return E_FAIL;
+
 #pragma endregion
 
 #pragma region 플레이어 애니메이션 텍스처
@@ -265,6 +266,20 @@ HRESULT CMainApp::Ready_Prototypes()
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Player/CardKey/Idle_0.png"), 1))))
 		return E_FAIL;
 #pragma endregion
+
+//#pragma region 보스 UI 텍스처
+//	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Monster_Boss_HpBar"),
+//		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Monster/Boss/HpBar_%d.png"), 1))))
+//		return E_FAIL;
+//
+//	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Monster_Boss_HpFill"),
+//		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Monster/Boss/HpFill_%d.png"), 1))))
+//		return E_FAIL;
+//
+//	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Monster_Boss_Name"),
+//		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Monster/Boss/Name_%d.png"), 1))))
+//		return E_FAIL;
+//#pragma endregion
 
 #pragma region 몬스터 애니메이션 텍스처
 	/* For.Prototype_Component_Texture_Monster */

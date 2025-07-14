@@ -474,6 +474,15 @@
     <ClInclude Include="..\public\Level_Jusin.h">
       <Filter>01.Levels\Jusin</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UIBossHpBar.h">
+      <Filter>02.GameObjects\UI\UIHp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIBossHpFill.h">
+      <Filter>02.GameObjects\UI\UIHp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIBossName.h">
+      <Filter>02.GameObjects\UI\UIText</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\EventBox.h">
       <Filter>02.GameObjects\EventBox</Filter>
     </ClInclude>
@@ -719,6 +728,15 @@
     </ClCompile>
     <ClCompile Include="..\private\Level_Jusin.cpp">
       <Filter>01.Levels\Jusin</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIBossHpBar.cpp">
+      <Filter>02.GameObjects\UI\UIHp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIBossHpFill.cpp">
+      <Filter>02.GameObjects\UI\UIHp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIBossName.cpp">
+      <Filter>02.GameObjects\UI\UIText</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\EventBox.cpp">
       <Filter>02.GameObjects\EventBox</Filter>

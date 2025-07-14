@@ -172,6 +172,16 @@ void CBoss::Resurrection()
 	Safe_AddRef(m_pBossUpperBody);
 }
 
+_float CBoss::Get_Hp()
+{
+	return m_fCurHp;
+}
+
+_float CBoss::Get_MaxHp()
+{
+	return m_fMaxHp;
+}
+
 CBoss* CBoss::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 {
 	CBoss* pInstance = new CBoss(pGraphic_Device);
