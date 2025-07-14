@@ -212,7 +212,7 @@ void CCamera::Chase_Target(_float3 vLimitDistance, bool isSyncLook, bool isCanTu
 	}
 
 	m_pTransformCom->Set_State(STATE::POSITION,
-		m_pTargetTransformCom->Get_State(STATE::POSITION) + _float3{0.f, 0.015f, 0.f});
+		m_pTargetTransformCom->Get_State(STATE::POSITION) + vLimitDistance);
 }
 
 HRESULT CCamera::Ready_Components(void* pArg)

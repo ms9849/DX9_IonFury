@@ -116,6 +116,10 @@ void CPlayer::Update(_float fTimeDelta)
 	//{
 	//	m_pTransformCom->Set_State(STATE::POSITION, _float3(14.f, 26.f, 178.f)); // 아지트 앞
 	//}
+	//if (m_pGameInstance->Key_Down('9'))
+	//{
+	//	m_pTransformCom->Set_State(STATE::POSITION, _float3(72.f, 26.f, 67.75f)); // 자습실 카드키 앞
+	//}
 
 	/* 점프 로직*/
 	if (!m_bJump && m_pGameInstance->Key_Down(VK_SPACE))
@@ -278,27 +282,36 @@ void CPlayer::Update(_float fTimeDelta)
 		// 이동
 		if (m_pGameInstance->Key_Pressing('W'))
 		{
-			m_pTransformCom->Go_Direction(vLook, fTimeDelta);
+			m_pTransformCom->Go_Direction(vLook, fTimeDelta * m_fSpeed);
 			if (m_tInfo.strAction == TEXT("Idle"))
 				m_tInfo.strAction = TEXT("Walk");
 		}
 		if (m_pGameInstance->Key_Pressing('S'))
 		{
-			m_pTransformCom->Go_Direction(-1.f * vLook, fTimeDelta);
+			m_pTransformCom->Go_Direction(-1.f * vLook, fTimeDelta * m_fSpeed);
 			if (m_tInfo.strAction == TEXT("Idle"))
 				m_tInfo.strAction = TEXT("Walk");
 		}
 		if (m_pGameInstance->Key_Pressing('A'))
 		{
-			m_pTransformCom->Go_Direction(-1.f * vRight, fTimeDelta);
+			m_pTransformCom->Go_Direction(-1.f * vRight, fTimeDelta * m_fSpeed);
 			if (m_tInfo.strAction == TEXT("Idle"))
 				m_tInfo.strAction = TEXT("Walk");
 		}
 		if (m_pGameInstance->Key_Pressing('D'))
 		{
-			m_pTransformCom->Go_Direction(vRight, fTimeDelta);
+			m_pTransformCom->Go_Direction(vRight, fTimeDelta * m_fSpeed);
 			if (m_tInfo.strAction == TEXT("Idle"))
 				m_tInfo.strAction = TEXT("Walk");
+		}
+
+		if (m_pGameInstance->Key_Down(VK_LSHIFT))
+		{
+			m_bSpeedUp = !m_bSpeedUp;
+			if (m_bSpeedUp)
+				m_fSpeed = 2.f;
+			else
+				m_fSpeed = 1.f;
 		}
 
 		// 장전
