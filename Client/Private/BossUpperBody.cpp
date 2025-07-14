@@ -551,6 +551,9 @@ void CBossUpperBody::OnCollision(CGameObject* pDst, COLLISION eColType, _float f
 			{
 				m_fCurHp = 0.f;
 			}
+
+			CParticle_Manager::GetInstance()->Create_Particle(TEXT("Particle_YellowDust"), m_pObjectDesc.iLayerLevel,
+				TEXT("Layer_Particle"), vPos);
 		}
 	}
 }

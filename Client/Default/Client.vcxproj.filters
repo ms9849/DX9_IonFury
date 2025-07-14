@@ -28,9 +28,6 @@
     <Filter Include="02.GameObjects\Terrain">
       <UniqueIdentifier>{54b7a8ab-69a7-4ce7-9671-37f6680f90c5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\Monster">
-      <UniqueIdentifier>{9ecd6a7a-b57c-4bf7-8ec0-6475d3c58ddb}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\Sky">
       <UniqueIdentifier>{a0c4209e-6e1c-405f-86ac-aed8eda70026}</UniqueIdentifier>
     </Filter>
@@ -76,9 +73,6 @@
     <Filter Include="02.GameObjects\Item\ItemHealpack">
       <UniqueIdentifier>{50880e45-07e6-4c6a-8b6d-d54276bffa13}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\Monster\BehaviorTree">
-      <UniqueIdentifier>{31f75f59-c90a-49cb-bc56-c1160a97b071}</UniqueIdentifier>
-    </Filter>
     <Filter Include="98.Default">
       <UniqueIdentifier>{f37c9b44-d000-4dd3-a7dc-d0a7064abf65}</UniqueIdentifier>
     </Filter>
@@ -102,18 +96,6 @@
     </Filter>
     <Filter Include="02.GameObjects\Player">
       <UniqueIdentifier>{704f75c8-f626-4c7b-aff3-fbd9102c05f9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\Monster\Melee">
-      <UniqueIdentifier>{69794553-4677-457c-b4d3-6c02b68febe8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\Monster\Range">
-      <UniqueIdentifier>{7101d18f-77b1-4167-84f4-cca17bf2a3ee}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\Monster\Melee\Attack">
-      <UniqueIdentifier>{73ce83fd-65ee-47b9-9a1b-16e041f00828}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\Monster\Boss">
-      <UniqueIdentifier>{5c706583-e0a5-49b2-9a1a-1fe76cb935af}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\Player\Player_RightHand">
       <UniqueIdentifier>{6b2efc96-1da8-47e3-a7fa-8fdb2ab53f72}</UniqueIdentifier>
@@ -225,6 +207,24 @@
     </Filter>
     <Filter Include="02.GameObjects\EventBox">
       <UniqueIdentifier>{259753ed-deaa-4250-af6f-d1a10a7e4396}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Monster">
+      <UniqueIdentifier>{9ecd6a7a-b57c-4bf7-8ec0-6475d3c58ddb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Monster\BehaviorTree">
+      <UniqueIdentifier>{31f75f59-c90a-49cb-bc56-c1160a97b071}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Monster\Melee">
+      <UniqueIdentifier>{69794553-4677-457c-b4d3-6c02b68febe8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Monster\Melee\Attack">
+      <UniqueIdentifier>{73ce83fd-65ee-47b9-9a1b-16e041f00828}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Monster\Range">
+      <UniqueIdentifier>{7101d18f-77b1-4167-84f4-cca17bf2a3ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Monster\Boss">
+      <UniqueIdentifier>{5c706583-e0a5-49b2-9a1a-1fe76cb935af}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
