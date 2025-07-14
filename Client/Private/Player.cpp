@@ -19,6 +19,7 @@
 #include "Effect_Manager.h"
 #include "Bullet_Manager.h"
 #include "MapMachineGunBulletBox.h"
+#include "Zombie.h"
 
 CPlayer::CPlayer(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CLandObject{ pGraphic_Device }
@@ -780,6 +781,16 @@ void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 					m_pObjectDesc.iLayerLevel,
 					TEXT("Layer_Map_Objects_Gate"),
 					3))->Set_Dead(true);
+
+			for (size_t i = 12; i < 52; ++i)
+			{
+				dynamic_cast<CZombie*>(
+					m_pGameInstance->Get_GameObject_By_ID(
+						m_pObjectDesc.iLayerLevel,
+						TEXT("Layer_Monster"), i))->Set_TargetMove(true);
+			}
+
+			Insert_ItemDesc(TEXT("Get ShotGun"));
 
 		}
 		if (dynamic_cast<CItemMachineGun*>(pDst))
