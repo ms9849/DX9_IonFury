@@ -2,8 +2,9 @@
 
 #include "GameInstance.h"
 #include "Effect_Pistol_Fire.h"
-#include "BUllet_Wound.h"
+#include "Effect_ShootGun_Fire.h"
 #include "Effect_Screen_Blur.h"
+#include "BUllet_Wound.h"
 
 IMPLEMENT_SINGLETON(CEffect_Manager);
 
@@ -22,6 +23,9 @@ HRESULT CEffect_Manager::Initialize(LEVEL eLevelID)
 	수업 코드의 GameInstance에 존재하던 Clone Prototype을 통해 이펙트를 받아온다. 
 	*/
 	if(FAILED(Ready_Pistol_Fire(eLevelID)))
+		return E_FAIL;
+
+	if (FAILED(Ready_ShootGun_Fire(eLevelID)))
 		return E_FAIL;
 
 	if (FAILED(Ready_Boss_Die(eLevelID)))
@@ -54,7 +58,7 @@ HRESULT CEffect_Manager::Ready_Pistol_Fire(LEVEL eLevelID)
 
 	list<class CEffect*> Effects = {};
 
-	for (int i = 0; i < 20; ++i)
+	for (int i = 0; i < 30; ++i)
 	{
 
 		Effects.push_back(
@@ -65,6 +69,29 @@ HRESULT CEffect_Manager::Ready_Pistol_Fire(LEVEL eLevelID)
 	}
 
 	m_Effects.emplace(TEXT("Effect_Pistol_Fire"), Effects);
+
+	return S_OK;
+}
+
+HRESULT CEffect_Manager::Ready_ShootGun_Fire(LEVEL eLevelID)
+{
+	auto iter = m_Effects.find(TEXT("Effect_ShootGun_Fire"));
+
+	if (iter != m_Effects.end())
+		return S_OK;
+
+	list<class CEffect*> Effects = {};
+
+	for (int i = 0; i < 30; ++i)
+	{
+		Effects.push_back(
+			static_cast<CEffect*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC),
+				TEXT("Prototype_GameObject_Effect_ShootGun_Fire"),
+				nullptr))
+		);
+	}
+
+	m_Effects.emplace(TEXT("Effect_ShootGun_Fire"), Effects);
 
 	return S_OK;
 }

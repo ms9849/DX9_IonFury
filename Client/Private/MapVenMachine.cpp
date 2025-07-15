@@ -46,7 +46,7 @@ void CMapVenMachine::Priority_Update(_float fTimeDelta)
 
 void CMapVenMachine::Update(_float fTimeDelta)
 {
-	if (m_fTimeAcc <= 2.0f && m_bBroken)
+	if (m_fTimeAcc <= 3.5f && m_bBroken)
 		Item_Dispense(fTimeDelta);
 }
 
@@ -101,9 +101,9 @@ void CMapVenMachine::Item_Dispense(_float fTimeDelta)
 	m_fTimeAcc += fTimeDelta;
 	m_fItemCoolDown += fTimeDelta;
 
-	if (m_fItemCoolDown >= 0.07f)
+	if (m_fItemCoolDown >= 0.06f)
 	{
-		_int iRandomNum = static_cast<_int>(m_pGameInstance->Random(0.f, 4.0f));
+		_int iRandomNum = static_cast<_int>(m_pGameInstance->Random(0.f, 6.0f));
 		CItem* pItem;
 		
 		switch (iRandomNum)
@@ -122,11 +122,19 @@ void CMapVenMachine::Item_Dispense(_float fTimeDelta)
 			break;
 		case 3:
 			pItem = static_cast<CItem*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, m_pObjectDesc.iLayerLevel,
-				TEXT("Prototype_GameObject_Item_HealPack"), &m_pObjectDesc));
+				TEXT("Prototype_GameObject_Item_ArmorPack"), &m_pObjectDesc));
+			break;
+		case 4:
+			pItem = static_cast<CItem*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, m_pObjectDesc.iLayerLevel,
+				TEXT("Prototype_GameObject_Item_Burger"), &m_pObjectDesc));
+			break;
+		case 5:
+			pItem = static_cast<CItem*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, m_pObjectDesc.iLayerLevel,
+				TEXT("Prototype_GameObject_Item_Coffee"), &m_pObjectDesc));
 			break;
 		default:
 			pItem = static_cast<CItem*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, m_pObjectDesc.iLayerLevel,
-				TEXT("Prototype_GameObject_Item_HealPack"), &m_pObjectDesc));
+				TEXT("Prototype_GameObject_Item_Burger"), &m_pObjectDesc));
 			break;
 		}
 
