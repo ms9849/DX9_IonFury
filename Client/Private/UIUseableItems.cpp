@@ -1,26 +1,26 @@
-#include "UIArmor.h"
+#include "UIUseableItems.h"
 
 #include "GameInstance.h"
 #include "UIFont.h"
 #include "UIText.h"
 #include "Player.h"
 
-CUIArmor::CUIArmor(LPDIRECT3DDEVICE9 pGraphic_Device)
+CUIUseableItems::CUIUseableItems(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CUIObject{ pGraphic_Device }
 {
 }
 
-CUIArmor::CUIArmor(const CUIArmor& Prototype)
+CUIUseableItems::CUIUseableItems(const CUIUseableItems& Prototype)
 	: CUIObject(Prototype)
 {
 }
 
-HRESULT CUIArmor::Initialize_Prototype()
+HRESULT CUIUseableItems::Initialize_Prototype()
 {
 	return S_OK;
 }
 
-HRESULT CUIArmor::Initialize(void* pArg)
+HRESULT CUIUseableItems::Initialize(void* pArg)
 {
 	UIOBJECT_DESC* pTemp = static_cast<UIOBJECT_DESC*>(pArg);
 
@@ -43,8 +43,8 @@ HRESULT CUIArmor::Initialize(void* pArg)
 	// 전체 체력 텍스트 크기 및 위치
 	UIOBJECT_DESC Desc{};
 
-	Desc.fSizeX = 40.f;
-	Desc.fSizeY = 40.f;
+	Desc.fSizeX = 30.f;
+	Desc.fSizeY = 30.f;
 	Desc.fX = m_tagDesc.fX + 20.f;
 	Desc.fY = m_tagDesc.fY - (Desc.fSizeY * 0.5f);
 	Desc.iTextLength = m_tagDesc.iTextLength;
@@ -65,21 +65,21 @@ HRESULT CUIArmor::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CUIArmor::Priority_Update(_float fTimeDelta)
+void CUIUseableItems::Priority_Update(_float fTimeDelta)
 {
 }
 
-void CUIArmor::Update(_float fTimeDelta)
+void CUIUseableItems::Update(_float fTimeDelta)
 {
 	__super::Update_Transform(m_pTransformCom);
 }
 
-void CUIArmor::Late_Update(_float fTimeDelta)
+void CUIUseableItems::Late_Update(_float fTimeDelta)
 {
 	m_pGameInstance->Add_RenderGroup(RENDER::UI, this);
 }
 
-HRESULT CUIArmor::Render()
+HRESULT CUIUseableItems::Render()
 {
 	m_pTransformCom->Set_Transform();
 
@@ -92,7 +92,7 @@ HRESULT CUIArmor::Render()
 
 	__super::Begin();
 
-	if(m_pPlayer->Get_Player_Info().bArmor)
+	if (m_pPlayer->Get_Player_Info().iHealpacks > 0)
 		m_pVIBufferCom->Render();
 
 	__super::End();
@@ -102,21 +102,21 @@ HRESULT CUIArmor::Render()
 	return S_OK;
 }
 
-void CUIArmor::Set_Armor()
+void CUIUseableItems::Set_UseableItems()
 {
-	m_iArmor = m_pPlayer->Get_Player_Info().iArmor;
+	m_iUseableItems = m_pPlayer->Get_Player_Info().iHealpacks;
 
 	_tchar ws[10];
 
-	if(m_pPlayer->Get_Player_Info().bArmor)
-		swprintf(ws, 10, L"%03d", m_iArmor);
+	if (m_pPlayer->Get_Player_Info().iHealpacks > 0)
+		swprintf(ws, 10, L"X%02d", m_iUseableItems);
 	else
 		swprintf(ws, 10, L" ");
 
 	m_pText->Set_Text(ws);
 }
 
-HRESULT CUIArmor::Ready_Components()
+HRESULT CUIUseableItems::Ready_Components()
 {
 	/* Com_Transform */
 	CTransform::TRANSFORM_DESC		TransformDesc{ 5.f, D3DXToRadian(90.0f) };
@@ -129,16 +129,16 @@ HRESULT CUIArmor::Ready_Components()
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
 		return E_FAIL;
 	/* Com_Texture */
-	if (FAILED(__super::Add_Component(m_tagDesc.iLayerLevelIndex, TEXT("Prototype_Component_Texture_UI_Armor"),
+	if (FAILED(__super::Add_Component(m_tagDesc.iLayerLevelIndex, TEXT("Prototype_Component_Texture_UI_UseableItems"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-CUIArmor* CUIArmor::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
+CUIUseableItems* CUIUseableItems::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 {
-	CUIArmor* pInstance = new CUIArmor(pGraphic_Device);
+	CUIUseableItems* pInstance = new CUIUseableItems(pGraphic_Device);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
@@ -149,20 +149,20 @@ CUIArmor* CUIArmor::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 	return pInstance;
 }
 
-CGameObject* CUIArmor::Clone(void* pArg)
+CGameObject* CUIUseableItems::Clone(void* pArg)
 {
-	CUIArmor* pInstance = new CUIArmor(*this);
+	CUIUseableItems* pInstance = new CUIUseableItems(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Cloned : CUIArmor");
+		MSG_BOX("Failed to Cloned : CUIUseableItems");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CUIArmor::Free()
+void CUIUseableItems::Free()
 {
 	__super::Free();
 

@@ -69,8 +69,9 @@ HRESULT CPlayer::Initialize(void* pArg)
 	if (FAILED(Ready_Weapons()))
 		return E_FAIL;
 
-	m_tInfo.iHp = 100;
-	m_tInfo.iArmor = 100;
+	m_tInfo.iHp = 80;
+	m_tInfo.iArmor = 0;
+	m_tInfo.iHealpacks = 12;
 
 	auto iter = m_tInfo.Weapons.find(m_tInfo.strWeapon);
 
@@ -126,7 +127,7 @@ void CPlayer::Update(_float fTimeDelta)
 	}
 	if (m_pGameInstance->Key_Down('9'))
 	{
-		m_pTransformCom->Set_State(STATE::POSITION, _float3(72.f, 26.f, 67.75f)); // 자습실 카드키 앞
+		m_pTransformCom->Set_State(STATE::POSITION, _float3(70.f, 26.f, 67.75f)); // 자습실 카드키 앞
 	}
 	if (m_pGameInstance->Key_Down('8'))
 	{
@@ -148,6 +149,18 @@ void CPlayer::Update(_float fTimeDelta)
 
 	/* 애니메이션 제어 */
 	auto iter = m_tInfo.Weapons.find(m_tInfo.strWeapon);
+
+	if (m_pGameInstance->Key_Down(VK_LCONTROL))
+	{
+		if (m_tInfo.iHealpacks > 0)
+		{
+			m_tInfo.iHp += 30;
+			if (m_tInfo.iHp >= 100)
+				m_tInfo.iHp = 100;
+			m_tInfo.iHealpacks -= 1;
+			CEffect_Manager::GetInstance()->Create_Effect(TEXT("Effect_Screen_Blur_Heal"), m_pObjectDesc.iLayerLevel, TEXT("Layer_Effect"), { 0.f, 0.f, 0.f });
+		}
+	}
 
 	if (m_tInfo.strAction.compare(TEXT("Reload")) != 0 && !m_bWeaponChange && !m_bUseCardKey)
 	{
@@ -758,11 +771,9 @@ void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 		}
 		if (dynamic_cast<CItemArmor*>(pDst))
 		{
-			m_tInfo.iArmor += 10;
-			if (m_tInfo.iArmor >= 100)
-				m_tInfo.iArmor = 100;
-
-			Insert_ItemDesc(TEXT("Get Armor [Armor+10]"));
+			m_tInfo.iArmor = 100;
+			m_tInfo.bArmor = true;
+			Insert_ItemDesc(TEXT("Get Armor [Armor+100]"));
 		}
 		if (dynamic_cast<CItemArmorPack*>(pDst))
 		{
@@ -798,7 +809,7 @@ void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 		}
 		if (dynamic_cast<CItemPortableHealPack*>(pDst))
 		{
-			/* 들고 다닐 수 있는 회복 아이템 충돌 처리 해주시면 됩니다 */
+			m_tInfo.iHealpacks += 1;
 		}
 		if (dynamic_cast<CItemPistolBullet*>(pDst))
 		{

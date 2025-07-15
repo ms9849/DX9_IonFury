@@ -62,6 +62,7 @@ private:
 	class CUIBossHpBar* m_pUIBossHpBar = { nullptr };
 	class CUIBossHpFill* m_pUIBossHpFill = { nullptr };
 	class CUIBossName* m_pUIBossName = { nullptr };
+	class CUIUseableItems* m_pUIUseableItems{ nullptr };
 
 	CCamera::CAMERA_CONFIG m_CameraSettings;
 	vector<class CUIItemQueue*> m_pUIItemQueues{};
