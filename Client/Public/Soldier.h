@@ -40,10 +40,14 @@ public:
 	virtual void Attack() override;
 	void Move(_float fTimeDelta);
 	virtual void Move() override;
+	void MoveAnimationCheck(_bool isRandom);
 
 private:
 	_bool m_bAnimationLock = false;
+	_bool m_isRandomMove = false;
 	_float3* m_vPos = {};
+	_float m_fRandomMoveTime = 0.f;
+	_float m_fSightFailTime = 0.f;
 
 public:
 	static CSoldier* Create(LPDIRECT3DDEVICE9 pGraphic_Device);

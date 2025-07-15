@@ -78,7 +78,7 @@ HRESULT CBossUpperBody::Initialize(void* pArg)
 	{
 		m_isFlying = true;
 		m_pTransformCom->Set_State(STATE::POSITION, m_pCoreTranform->Get_State(STATE::POSITION) + _float3{ 10.f, 35.f, 10.f });
-		UseBooster();
+		UseBooster(CHANNELID::SOUND_BOOSTER_EFFECT);
 		m_isFlying = false;
 	}
 
@@ -137,7 +137,7 @@ void CBossUpperBody::Update(_float fTimeDelta)
 			{
 				m_pTransformCom->Chase(m_pCoreTranform->Get_State(STATE::POSITION), fTimeDelta);
 				m_fSumMoveCoolTime = 0.f;
-				TurnOffBooster();
+				TurnOffBooster(CHANNELID::SOUND_BOOSTER_EFFECT);
 				m_isLanding = true;
 				m_pGameInstance->PlaySoundOnce(TEXT("BossLanding.wav"), CHANNELID::SOUND_EFFECT, 0.7f);
 			}
@@ -159,7 +159,7 @@ void CBossUpperBody::Update(_float fTimeDelta)
 
 	if (m_isLowerDead && !m_bUseBooster)
 	{
-		UseBooster();
+		UseBooster(CHANNELID::SOUND_BOOSTER_BGM);
 		m_bUseBooster = true;
 	}
 
@@ -197,7 +197,11 @@ void CBossUpperBody::Update(_float fTimeDelta)
 		m_bAnimationLock = true;
 		m_isDead = true;
 		if (m_pWing != nullptr)
+		{
 			m_pWing->Set_Dead(true);
+			//TurnOffBooster(CHANNELID::SOUND_BOOSTER_EFFECT);
+			TurnOffBooster(CHANNELID::SOUND_BOOSTER_BGM);
+		}
 
 		CEffect_Manager::GetInstance()->Create_Effect(TEXT("Effect_Grenade_Explosion"), ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Layer_Effect"),
 			m_pTransformCom->Get_State(STATE::POSITION));
@@ -321,7 +325,7 @@ HRESULT CBossUpperBody::End_RenderTestState()
 	return S_OK;
 }
 
-void CBossUpperBody::UseBooster()
+void CBossUpperBody::UseBooster(CHANNELID _eId)
 {
 	//desc.pTransform = m_pTransformCom;
 	
@@ -330,16 +334,26 @@ void CBossUpperBody::UseBooster()
 		ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Layer_Boss_UpperLeft")));
 	Safe_AddRef(m_pWing);
 
-	m_pGameInstance->PlaySoundOnce(TEXT("BoosterSound.wav"), CHANNELID::SOUND_BOOSTER, 0.7f);
+	if (_eId == CHANNELID::SOUND_BOOSTER_BGM)
+		m_pGameInstance->PlaySoundLoop(TEXT("BoosterSound.wav"), _eId, 0.7f);
+	else
+		m_pGameInstance->PlaySoundOnce(TEXT("BoosterSound.wav"), _eId, 0.7f);
+
+	//m_pGameInstance->PlaySoundOnce(TEXT("BoosterSound.wav"), CHANNELID::SOUND_BOOSTER, 0.7f);
 
 	return;
 }
 
-void CBossUpperBody::TurnOffBooster()
+void CBossUpperBody::TurnOffBooster(CHANNELID _eId)
 {
 	m_pWing->Set_Dead(true);
 	Safe_Release(m_pWing);
-	m_pGameInstance->SetChannelVolume(CHANNELID::SOUND_BOOSTER, 0.f);
+	//m_pGameInstance->SetChannelVolume(CHANNELID::SOUND_BOOSTER, 0.f);
+	/*if (_eId == CHANNELID::SOUND_BOOSTER_BGM)
+		m_pGameInstance->PlayBGM(TEXT("BoosterSound.wav"), 0.7f);
+	else
+		m_pGameInstance->PlaySoundOnce(TEXT("BoosterSound.wav"), _eId, 0.7f);*/
+	m_pGameInstance->StopSound(_eId);
 
 	return;
 }
@@ -806,7 +820,7 @@ void CBossUpperBody::Attack(_float fTimeDelta, BossAttackState state)
 			Desc.vPlayerPos = m_pPlayerTransform->Get_State(STATE::POSITION);
 			Desc.isPlayerBullet = false;
 			Desc.fBulletSpeed = 10.f;
-			Desc.vBulletScale = { 0.1f, 0.1f, 0.1f };
+			Desc.vBulletScale = { 0.5f, 0.5f, 0.5f };
 			Desc.pPlayerTransform = m_pPlayerTransform;
 			Desc.fDuration = 7.f;
 			m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_GameObject_BossGrenade"), ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Layer_Monster_Bullet"), &Desc);
