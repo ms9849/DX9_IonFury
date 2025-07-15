@@ -49,6 +49,7 @@ public:
 	void Move(_float fTimeDelta);
 	void TargetMove(_float fTimeDelta, _float3 vPos);
 	virtual void Move() override;
+	void Set_TargetMove(_float bTarget);
 
 private:
 	_bool m_bAnimationLock = false;

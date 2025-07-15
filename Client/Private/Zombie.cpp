@@ -72,27 +72,31 @@ HRESULT CZombie::Initialize(void* pArg)
 	m_pTransformCom->Set_State(STATE::UP, m_pObjectDesc.matWorld.m[1]);
 	m_pTransformCom->Set_State(STATE::LOOK, m_pObjectDesc.matWorld.m[2]);
 	m_pTransformCom->Set_State(STATE::POSITION, m_pObjectDesc.matWorld.m[3]);
-	m_pTransformCom->Set_Scale(_float3{ 2.f, 2.f, 2.f });
-
-	if (m_pObjectDesc.iObjectID >= 12 || m_pObjectDesc.iObjectID <= 51)
+	//m_pTransformCom->Set_Scale(_float3{ 2.f, 2.f, 1.f});
+	
+	// 게임 플레이에서만 동작하게
+	if (m_pObjectDesc.iLayerLevel == ENUM_CLASS(LEVEL::GAMEPLAY))
 	{
-		m_isTarget = true;
-		if (m_pTransformCom->Get_State(STATE::POSITION).z >= 45.f)
+		if (m_pObjectDesc.iObjectID >= 12 || m_pObjectDesc.iObjectID <= 51)
 		{
-			m_isLeft = true;
-			m_vPos = { 31.5f, 1.f, 63.5f };
+			//m_isTarget = true;
+			if (m_pTransformCom->Get_State(STATE::POSITION).z >= 45.f)
+			{
+				m_isLeft = true;
+				m_vPos = { 30.5f, 1.f, 58.5f };
+			}
+			else
+			{
+				m_isLeft = false;
+				m_vPos = { 30.5f, 1.f, 33.5f };
+			}
 		}
 		else
 		{
-			m_isLeft = false;
-			m_vPos = { 31.5f, 1.f, 28.5f };
+			m_isTarget = false;
+			// 일어나는 연출 필요할 경우
+			//m_isAwake = true;
 		}
-	}
-	else
-	{
-		m_isTarget = false;
-		// 일어나는 연출 필요할 경우
-		//m_isAwake = true;
 	}
 
 	/* 스포너 관련
@@ -598,11 +602,11 @@ void CZombie::TargetMove(_float fTimeDelta, _float3 vPos)		// 정해져 있는 장소로
 		if (m_isLeft)
 		{
 			//0.5
-			m_pTransformCom->Turn(_float3(0.f, -1.f, 0.f), fTimeDelta * 0.4f);
+			m_pTransformCom->Turn(_float3(0.f, -1.f, 0.f), fTimeDelta * 1.2f);
 		}
 		else
 		{
-			m_pTransformCom->Turn(_float3(0.f, 1.f, 0.f), fTimeDelta * 0.4f);
+			m_pTransformCom->Turn(_float3(0.f, 1.f, 0.f), fTimeDelta * 1.2f);
 		}
 		
 		_float3 vLook = m_pTransformCom->Get_State(STATE::LOOK);
@@ -612,7 +616,7 @@ void CZombie::TargetMove(_float fTimeDelta, _float3 vPos)		// 정해져 있는 장소로
 		m_pTransformCom->Set_State(STATE::LOOK, vLook);
 
 		m_fSumTime += fTimeDelta;
-		m_pTransformCom->Go_Straight(fTimeDelta);
+		m_pTransformCom->Go_Straight(fTimeDelta * 3.f);
 
 		if (m_fSumTime >= 5.f)
 		{
@@ -629,7 +633,7 @@ void CZombie::TargetMove(_float fTimeDelta, _float3 vPos)		// 정해져 있는 장소로
 
 	D3DXVec3Normalize(&vDir, &vDir);
 	m_pTransformCom->Set_State(STATE::LOOK, vDir);
-	m_pTransformCom->Go_Straight(fTimeDelta);
+	m_pTransformCom->Go_Straight(fTimeDelta * 5.f);
 
 	if (fDistance <= 1.5f)
 	{
@@ -641,6 +645,11 @@ void CZombie::Move()
 {
 	//m_pTransformCom->R
 	m_pTransformCom->Get_State(STATE::POSITION);
+}
+
+void CZombie::Set_TargetMove(_float bTarget)
+{
+	m_isTarget = true;
 }
 
 void CZombie::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta)

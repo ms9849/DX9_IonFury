@@ -48,9 +48,9 @@ void CPlayer_RightHand::Priority_Update(_float fTimeDelta)
 	if (strWeapon.compare(TEXT("Pistol")) == 0)
 	{
 		if(strAction.compare(TEXT("Up")) == 0)
-			vHandPos = { 0.75f, -1.4f, 1.5f };
+			vHandPos = { 0.75f, -1.5f, 1.5f };
 		else
-			vHandPos = { 0.75f, -0.5f, 1.5f };
+			vHandPos = { 0.75f, -0.6f, 1.5f };
 	}
 	else if (strWeapon.compare(TEXT("ShootGun")) == 0)
 	{
@@ -62,9 +62,9 @@ void CPlayer_RightHand::Priority_Update(_float fTimeDelta)
 	else if (strWeapon.compare(TEXT("MachineGun")) == 0)
 	{
 		if (strAction.compare(TEXT("Up")) == 0)
-			vHandPos = { 0.3f, -1.4f, 1.5f };
+			vHandPos = { 0.2f, -1.4f, 1.5f };
 		else
-			vHandPos = { 0.3f, -0.5f, 1.5f };
+			vHandPos = { 0.2f, -0.5f, 1.5f };
 	}
 
 	if (m_pAnimationCom->Get_Frame_Desc(m_strFrameKey)->Poses.size() > 1)
@@ -87,15 +87,15 @@ void CPlayer_RightHand::Priority_Update(_float fTimeDelta)
 
 	if (strWeapon.compare(TEXT("Pistol")) == 0)
 	{
-		m_pTransformCom->Set_Scale(_float3{ 1.f, 1.f, 1.f });
+		m_pTransformCom->Set_Scale(_float3{ 1.125f, 1.125f, 1.f });
 	}
 	else if (strWeapon.compare(TEXT("ShootGun")) == 0)
 	{
-		m_pTransformCom->Set_Scale(_float3{ 1.75f, 1.f, 1.f });
+		m_pTransformCom->Set_Scale(_float3{ 1.75f, 1.125f, 1.f });
 	}
 	else if (strWeapon.compare(TEXT("MachineGun")) == 0)
 	{
-		m_pTransformCom->Set_Scale(_float3{ 2.f, 1.f, 1.f });
+		m_pTransformCom->Set_Scale(_float3{ 2.25f, 1.5f, 1.f });
 	}
 
 	m_pAnimationCom->Play_Animation(m_strFrameKey, m_fPlayerTimeDelta);
