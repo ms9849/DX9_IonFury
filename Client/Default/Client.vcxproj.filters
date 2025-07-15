@@ -208,6 +208,12 @@
     <Filter Include="02.GameObjects\EventBox">
       <UniqueIdentifier>{259753ed-deaa-4250-af6f-d1a10a7e4396}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\Item\ItemArmorPack">
+      <UniqueIdentifier>{1d31b7ad-6d6d-495b-8f33-e3765d11e943}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Item\ItemPortableHealPack">
+      <UniqueIdentifier>{52e699f3-c2a3-4717-9e33-4b623185d598}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObjects\Monster">
       <UniqueIdentifier>{9ecd6a7a-b57c-4bf7-8ec0-6475d3c58ddb}</UniqueIdentifier>
     </Filter>
@@ -495,6 +501,12 @@
     <ClInclude Include="..\Public\EventBox.h">
       <Filter>02.GameObjects\EventBox</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\ItemArmorPack.h">
+      <Filter>02.GameObjects\Item\ItemArmorPack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ItemPortableHealPack.h">
+      <Filter>02.GameObjects\Item\ItemPortableHealPack</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\MapVenMachine.h">
       <Filter>03.MapObjects\VenMachine</Filter>
     </ClInclude>
@@ -758,6 +770,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\EventBox.cpp">
       <Filter>02.GameObjects\EventBox</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ItemArmorPack.cpp">
+      <Filter>02.GameObjects\Item\ItemArmorPack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ItemPortableHealPack.cpp">
+      <Filter>02.GameObjects\Item\ItemPortableHealPack</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\MapVenMachine.cpp">
       <Filter>03.MapObjects\VenMachine</Filter>

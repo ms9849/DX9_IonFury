@@ -19,6 +19,9 @@
 #include "Effect_Manager.h"
 #include "Bullet_Manager.h"
 #include "MapMachineGunBulletBox.h"
+#include "ItemArmorPack.h"
+#include "ItemPortableHealPack.h"
+#include "MeleeAttack.h"
 #include "Zombie.h"
 
 CPlayer::CPlayer(LPDIRECT3DDEVICE9 pGraphic_Device)
@@ -78,6 +81,8 @@ HRESULT CPlayer::Initialize(void* pArg)
 	//m_pTransformCom->Set_State(STATE::POSITION, _float3(14.f, 26.f, 25.75f)); // 버튼 앞
 	//m_pTransformCom->Set_State(STATE::POSITION, _float3(72.f, 26.f, 67.75f)); // 자습실 카드키 앞
 	
+
+	//m_pTransformCom->Set_State(STATE::POSITION, _float3(40.f, 26.5f, 197.f)); // 카페 근처
 
 	// 오른손
 	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(m_pObjectDesc.iProtoLevel, TEXT("Prototype_GameObject_Player_RightHand"),
@@ -375,7 +380,7 @@ void CPlayer::Update(_float fTimeDelta)
 					CBullet::BULLET_DESC Desc;
 					Desc.vDir = vDir;
 					Desc.vPos = vPos + vOffset;
-					Desc.vBulletScale = { 0.005f, 0.005f, 0.1f };
+					Desc.vBulletScale = { 0.005f, 0.005f, 0.05f };
 					Desc.isPlayerBullet = true;
 					Desc.fDuration = 1.5f;
 
@@ -720,6 +725,15 @@ void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 {
 	if (eColType == COLLISION::SPHERE)
 	{
+		if (dynamic_cast<CMeleeAttack*>(pDst))
+		{
+			if (m_tInfo.iHp >= 4)
+			{
+				m_tInfo.iHp -= 3.f;
+				m_pGameInstance->PlaySoundOnce(TEXT("hurt02.ogg"), CHANNELID::SOUND_EFFECT, 0.4f);
+				CEffect_Manager::GetInstance()->Create_Effect(TEXT("Effect_Screen_Blur_Hit"), m_pObjectDesc.iLayerLevel, TEXT("Layer_Effect"), { 0.f, 0.f, 0.f });
+			}
+		}
 		if (dynamic_cast<CItemArmor*>(pDst))
 		{
 			m_tInfo.iArmor += 10;
@@ -728,6 +742,11 @@ void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 
 			Insert_ItemDesc(TEXT("Get Armor [Armor+10]"));
 		}
+		if (dynamic_cast<CItemArmorPack*>(pDst))
+		{
+			m_tInfo.iArmor += 1;
+			Insert_ItemDesc(TEXT("Get Armor Fragment [Armor+1]"));
+		}
 		if (dynamic_cast<CItemHealpack*>(pDst))
 		{
 			m_tInfo.iHp += 10;
@@ -735,6 +754,10 @@ void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 				m_tInfo.iHp = 100;
 
 			Insert_ItemDesc(TEXT("Get Healpack [HP+10]"));
+		}
+		if (dynamic_cast<CItemPortableHealPack*>(pDst))
+		{
+			/* 들고 다닐 수 있는 회복 아이템 충돌 처리 해주시면 됩니다 */
 		}
 		if (dynamic_cast<CItemPistolBullet*>(pDst))
 		{

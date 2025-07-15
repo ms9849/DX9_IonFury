@@ -22,11 +22,20 @@ public:
 
 public:
 	virtual void OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta) override;
+	virtual void OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta, CComponent* pCollider, const _float3& vPos);
+
 	virtual const COLLISION_DESC& Get_CollisionDesc(COLLISION eColType);
 
 private:
-	virtual HRESULT Ready_Components() override;
+	_int m_iHp = { 100 };
+	_int m_iTextureNum = { 0 };
+	_bool m_bBroken = { false };
+	_float m_fTimeAcc = {};
+	_float m_fItemCoolDown = {};
 
+private:
+	virtual HRESULT Ready_Components() override;
+	virtual void Item_Dispense(_float fTimeDelta); 
 
 public:
 	static CMapVenMachine* Create(LPDIRECT3DDEVICE9 pGraphic_Device);

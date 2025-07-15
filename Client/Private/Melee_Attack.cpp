@@ -24,6 +24,8 @@ HRESULT CMeleeAttack::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
+	m_pTransformCom->Set_State(STATE::POSITION, *(_float3*)&m_pObjectDesc.matWorld.m[3][0]);
+
 	return S_OK;
 }
 
@@ -93,7 +95,7 @@ HRESULT CMeleeAttack::Ready_Components()
 		TEXT("Com_SphereCollider"), reinterpret_cast<CComponent**>(&m_pSphereColliderCom))))
 		return E_FAIL;
 
-	return S_OK;
+ 	return S_OK;
 }
 
 CMeleeAttack* CMeleeAttack::Create(LPDIRECT3DDEVICE9 pGraphicDev)
@@ -103,7 +105,7 @@ CMeleeAttack* CMeleeAttack::Create(LPDIRECT3DDEVICE9 pGraphicDev)
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
 		Safe_Release(pInstance);
-		MSG_BOX("CREATE FAILED: Prototype_Bullet");
+		MSG_BOX("CREATE FAILED: CMeleeAttack");
 	}
 
 	return pInstance;
