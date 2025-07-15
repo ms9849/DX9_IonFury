@@ -71,7 +71,7 @@ HRESULT CSoldier::Initialize(void* pArg)
 	m_pTransformCom->Set_State(STATE::UP, m_pObjectDesc.matWorld.m[1]);
 	m_pTransformCom->Set_State(STATE::LOOK, m_pObjectDesc.matWorld.m[2]);
 	m_pTransformCom->Set_State(STATE::POSITION, m_pObjectDesc.matWorld.m[3]);
-	//m_pTransformCom->Set_Scale(_float3{2.0f, 2.0f, 1.f});
+	m_pTransformCom->Set_Scale(_float3{1.5f, 1.5f, 1.f});
 
 	return S_OK;
 }
@@ -94,7 +94,7 @@ void CSoldier::Update(_float fTimeDelta)
 
 	if (m_bDying)
 	{
-		SetUp_OnTerrain(m_pTransformCom, 1.f, &m_bJump);
+		SetUp_OnTerrain(m_pTransformCom, 0.75f, &m_bJump);
 		return;
 	}
 
@@ -158,6 +158,11 @@ void CSoldier::Update(_float fTimeDelta)
 			m_strFrameKey = TEXT("Soldier_Die_HeadShot");
 		else
 			m_strFrameKey = TEXT("Soldier_Die_Default");
+
+		m_pBoxColliderCom->Set_Scale({ 1.7f, 0.25f, 1.75f });
+		m_pBoxColliderCom->Set_Pos({ 0.f, -0.5f, 0.f });
+		m_pBoxColliderHead->Set_Scale({ 0.f, 0.f, 0.f });
+
 		m_bAnimationLock = true;
 		m_bDying = true;
 		m_pGameInstance->PlaySoundOnce(TEXT("Soldier_Death01.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
@@ -193,7 +198,7 @@ void CSoldier::Update(_float fTimeDelta)
 		}
 	}
 
-	SetUp_OnTerrain(m_pTransformCom, 1.f, &m_bJump);
+	SetUp_OnTerrain(m_pTransformCom, 0.8f, &m_bJump);
 }
 
 void CSoldier::Late_Update(_float fTimeDelta)
@@ -475,18 +480,18 @@ HRESULT CSoldier::Ready_Components()
 	/* Com_BoxCollider */
 	CBoxCollider::BOXCOLLIDER_DESC Desc;
 	Desc.vPosition = { 0.f, -0.1f, 0.f };
-	Desc.fScaleX = 0.2f;
-	Desc.fScaleZ = 0.2f;
-	Desc.fScaleY = 0.5f;
+	Desc.fScaleX = 0.6f;
+	Desc.fScaleY = 1.22f;
+	Desc.fScaleZ = 0.65f;
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_BoxCollider"),
 		TEXT("Com_BoxCollider"), reinterpret_cast<CComponent**>(&m_pBoxColliderCom), &Desc)))
 		return E_FAIL;
 
 
 	Desc.vPosition = { 0.f, 2.3f, 0.f };
-	Desc.fScaleX = 0.12f;
-	Desc.fScaleZ = 0.12f;
-	Desc.fScaleY = 0.12f;
+	Desc.fScaleX = 0.3f;
+	Desc.fScaleY = 0.28f;
+	Desc.fScaleZ = 0.3f;
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_BoxCollider"),
 		TEXT("Com_BoxCollider_Head"), reinterpret_cast<CComponent**>(&m_pBoxColliderHead), &Desc)))
 		return E_FAIL;
