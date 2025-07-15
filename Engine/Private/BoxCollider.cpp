@@ -90,11 +90,22 @@ void CBoxCollider::Set_Scale(const _float3& vScale)
 {
 	m_vScale = vScale;
 
+	m_vLocalPos[0] = _float3(-0.5f, 0.5f, -0.5f);
+	m_vLocalPos[1] = _float3(0.5f, 0.5f, -0.5f);
+	m_vLocalPos[2] = _float3(0.5f, -0.5f, -0.5f);
+	m_vLocalPos[3] = _float3(-0.5f, -0.5f, -0.5f);
+	m_vLocalPos[4] = _float3(-0.5f, 0.5f, 0.5f);
+	m_vLocalPos[5] = _float3(0.5f, 0.5f, 0.5f);
+	m_vLocalPos[6] = _float3(0.5f, -0.5f, 0.5f);
+	m_vLocalPos[7] = _float3(-0.5f, -0.5f, 0.5f);
+
 	for (_uint i = 0; i < 8; ++i)
 	{
-		m_vLocalPos[i].x *= vScale.x;
-		m_vLocalPos[i].y *= vScale.y;
-		m_vLocalPos[i].z *= vScale.z;
+		m_vLocalPos[i] += m_vPos;
+
+		m_vLocalPos[i].x *= m_vScale.x;
+		m_vLocalPos[i].y *= m_vScale.y;
+		m_vLocalPos[i].z *= m_vScale.z;
 	}
 
 	/* 정점 정보, 즉 크기는 콜라이더마다 다르니까 일단 둔다. */
@@ -154,13 +165,25 @@ void CBoxCollider::Set_Pos(const _float3& vPos)
 {
 	m_vPos += vPos;
 
+	m_vLocalPos[0] = _float3(-0.5f, 0.5f, -0.5f);
+	m_vLocalPos[1] = _float3(0.5f, 0.5f, -0.5f);
+	m_vLocalPos[2] = _float3(0.5f, -0.5f, -0.5f);
+	m_vLocalPos[3] = _float3(-0.5f, -0.5f, -0.5f);
+	m_vLocalPos[4] = _float3(-0.5f, 0.5f, 0.5f);
+	m_vLocalPos[5] = _float3(0.5f, 0.5f, 0.5f);
+	m_vLocalPos[6] = _float3(0.5f, -0.5f, 0.5f);
+	m_vLocalPos[7] = _float3(-0.5f, -0.5f, 0.5f);
+
 	for (_uint i = 0; i < 8; ++i)
 	{
-		m_vLocalPos[i].x += vPos.x;
-		m_vLocalPos[i].y += vPos.y;
-		m_vLocalPos[i].z += vPos.z;
+		m_vLocalPos[i] += m_vPos;
+
+		m_vLocalPos[i].x *= m_vScale.x;
+		m_vLocalPos[i].y *= m_vScale.y;
+		m_vLocalPos[i].z *= m_vScale.z;
 	}
 
+	/* 정점 정보, 즉 크기는 콜라이더마다 다르니까 일단 둔다. */
 	VTXCOLOR* pVertices = { nullptr };
 
 	/* 할당한 공간에 접근하여 값을 기록하낟. */
