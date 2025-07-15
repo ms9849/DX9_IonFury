@@ -99,7 +99,9 @@ HRESULT CBossUpperBody::Initialize(void* pArg)
 	//m_fFirstY = m_pTransformCom->Get_State(STATE::POSITION).y;
 	m_fFirstY = 3.9f;
 	m_fMoveCoolTime = 0.07f;
+	m_fChaseRange = 30.f;
 	m_fSumMoveCoolTime = 0.f;
+	m_fSafeDistance = 5.f;
 	m_fCurHp = m_fMaxHp;
 
 	return S_OK;
@@ -239,8 +241,11 @@ void CBossUpperBody::Update(_float fTimeDelta)
 
 	if (m_isLowerDead)
 	{
+		_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
+
 		Swing(fTimeDelta);
-		if (m_fSumMoveCoolTime >= m_fMoveCoolTime)
+		if ((D3DXVec3Length(&vDiff) <= m_fChaseRange) && (D3DXVec3Length(&vDiff) >= m_fSafeDistance) && (m_fSumMoveCoolTime >= m_fMoveCoolTime))
+		//if (m_fSumMoveCoolTime >= m_fMoveCoolTime)
 		{
 			Move(fTimeDelta);
 			m_fSumMoveCoolTime = 0.f;
@@ -1010,9 +1015,24 @@ void CBossUpperBody::SummonMonster()				// 추후 필요하면 인덱스 받을 수 있도록 �
 {
 	for (size_t i = 0; i < 5; i++)
 	{
+		_float4x4 mat{
+			1.f, 0.f, 0.f, 0.f,
+			0.f, 1.f, 0.f, 0.f,
+			0.f, 0.f, 1.f, 0.f,
+			0.f, 0.f, 0.f, 1.f
+		};
+
+		CGameObject::GAMEOBJECT_DESC Desc{};
+
+		Desc.iLayerLevel = ENUM_CLASS(LEVEL::BOSSFIGHT);
+		Desc.iProtoLevel = ENUM_CLASS(LEVEL::BOSSFIGHT);
+		Desc.strLayer = TEXT("Layer_Monster");
+		Desc.strProto = m_MonsterKeys[3];
+		Desc.matWorld = mat;
+
 		CGameObject* pClone = nullptr;
 		pClone = static_cast<CGameObject*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::BOSSFIGHT),
-			m_MonsterKeys[0], &m_pObjectDesc));
+			m_MonsterKeys[3], &Desc));
 
 		m_pGameInstance->Add_Clone_ToLayer(pClone, ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Layer_Monster"));
 
