@@ -24,6 +24,7 @@ public:
 
 private:
 	HRESULT Ready_Pistol_Fire(LEVEL eLevelID);
+	HRESULT Ready_ShootGun_Fire(LEVEL eLevelID);
 	HRESULT Ready_Boss_Die(LEVEL eLevelID);
 	HRESULT Ready_Grenade_Explosion(LEVEL eLevelID);
 	HRESULT Ready_Bullet_Wound(LEVEL eLevelID);

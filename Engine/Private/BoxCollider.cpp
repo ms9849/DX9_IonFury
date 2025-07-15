@@ -88,6 +88,8 @@ void CBoxCollider::Set_Matrix(const _float4x4& matWorld)
 
 void CBoxCollider::Set_Scale(const _float3& vScale)
 {
+	m_vScale = vScale;
+
 	for (_uint i = 0; i < 8; ++i)
 	{
 		m_vLocalPos[i].x *= vScale.x;
@@ -150,28 +152,13 @@ void CBoxCollider::Set_Scale(const _float3& vScale)
 
 void CBoxCollider::Set_Pos(const _float3& vPos)
 {
-	m_vLocalPos[0] = _float3(-0.5f, 0.5f, -0.5f);
-	m_vLocalPos[1] = _float3(0.5f, 0.5f, -0.5f);
-	m_vLocalPos[2] = _float3(0.5f, -0.5f, -0.5f);
-	m_vLocalPos[3] = _float3(-0.5f, -0.5f, -0.5f);
-	m_vLocalPos[4] = _float3(-0.5f, 0.5f, 0.5f);
-	m_vLocalPos[5] = _float3(0.5f, 0.5f, 0.5f);
-	m_vLocalPos[6] = _float3(0.5f, -0.5f, 0.5f);
-	m_vLocalPos[7] = _float3(-0.5f, -0.5f, 0.5f);
-
-	m_vPos = vPos;
-
+	m_vPos += vPos;
 
 	for (_uint i = 0; i < 8; ++i)
 	{
-		m_vLocalPos[i].x += m_vPos.x;
-		m_vLocalPos[i].x *= m_vScale.x;
-
-		m_vLocalPos[i].y += m_vPos.y;
-		m_vLocalPos[i].y *= m_vScale.y;
-
-		m_vLocalPos[i].z += m_vPos.z;
-		m_vLocalPos[i].z *= m_vScale.z;
+		m_vLocalPos[i].x += vPos.x;
+		m_vLocalPos[i].y += vPos.y;
+		m_vLocalPos[i].z += vPos.z;
 	}
 
 	VTXCOLOR* pVertices = { nullptr };
@@ -204,6 +191,26 @@ void CBoxCollider::Set_Pos(const _float3& vPos)
 	pVertices[7].vColor = D3DCOLOR_ARGB(255, 255, 0, 0);
 
 	m_pVB->Unlock();
+
+	/* vMin 찾기 */
+	_float3 vMin = { FLT_MAX, FLT_MAX, FLT_MAX };
+	_float3 vMax = { FLT_MIN, FLT_MIN, FLT_MIN };
+
+	for (_uint i = 0; i < 8; ++i)
+	{
+		/* 셋 다 작다면 */
+		if (m_vLocalPos[i].x <= vMin.x && m_vLocalPos[i].y <= vMin.y && m_vLocalPos[i].z <= vMin.z)
+		{
+			m_vMin = m_vLocalPos[i];
+			vMin = m_vLocalPos[i];
+		}
+
+		if (m_vLocalPos[i].x >= vMax.x && m_vLocalPos[i].y >= vMax.y && m_vLocalPos[i].z >= vMax.z)
+		{
+			m_vMax = m_vLocalPos[i];
+			vMax = m_vLocalPos[i];
+		}
+	}
 }
 
 HRESULT CBoxCollider::Initialize_Prototype()

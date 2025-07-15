@@ -1,24 +1,24 @@
-#include "Effect_Pistol_Fire.h"
+#include "Effect_ShootGun_Fire.h"
 
 #include "GameInstance.h"
 
-CEffect_Pistol_Fire::CEffect_Pistol_Fire(LPDIRECT3DDEVICE9 pGraphic_Device): 
-    CEffect { pGraphic_Device }
+CEffect_ShootGun_Fire::CEffect_ShootGun_Fire(LPDIRECT3DDEVICE9 pGraphic_Device) :
+    CEffect{ pGraphic_Device }
 {
 }
 
-CEffect_Pistol_Fire::CEffect_Pistol_Fire(const CEffect_Pistol_Fire& Prototype) :
-    CEffect( Prototype )
+CEffect_ShootGun_Fire::CEffect_ShootGun_Fire(const CEffect_ShootGun_Fire& Prototype) :
+    CEffect{ Prototype }
 {
 }
 
-HRESULT CEffect_Pistol_Fire::Initialize_Prototype()
+HRESULT CEffect_ShootGun_Fire::Initialize_Prototype()
 {
-    return S_OK;
+	return S_OK;
 }
 
-HRESULT CEffect_Pistol_Fire::Initialize(void* pArg)
-{	
+HRESULT CEffect_ShootGun_Fire::Initialize(void* pArg)
+{
     if (FAILED(Ready_Components()))
         return E_FAIL;
 
@@ -31,24 +31,24 @@ HRESULT CEffect_Pistol_Fire::Initialize(void* pArg)
     m_fWinSizeY = ViewportDesc.Height;
 
     m_pTransformCom->Set_Scale(_float3(100, 100, 1.f));
-    m_pTransformCom->Set_State(STATE::POSITION, _float3(735 - m_fWinSizeX * 0.5f, -390 + m_fWinSizeY * 0.5f, 0.f));
-   
-    m_fNumFrame = 3.f;
+    m_pTransformCom->Set_State(STATE::POSITION, _float3(725 - m_fWinSizeX * 0.5f, -395 + m_fWinSizeY * 0.5f, 0.f));
+
+    m_fNumFrame = 4.f;
 
     return S_OK;
 }
 
-void CEffect_Pistol_Fire::Priority_Update(_float fTimeDelta)
+void CEffect_ShootGun_Fire::Priority_Update(_float fTimeDelta)
 {
 }
 
-void CEffect_Pistol_Fire::Update(_float fTimeDelta)
+void CEffect_ShootGun_Fire::Update(_float fTimeDelta)
 {
 }
 
-void CEffect_Pistol_Fire::Late_Update(_float fTimeDelta)
+void CEffect_ShootGun_Fire::Late_Update(_float fTimeDelta)
 {
-    m_fFrame += m_fNumFrame * fTimeDelta * 5.f;
+    m_fFrame += m_fNumFrame * fTimeDelta * 7.f;
 
     if (m_fFrame >= m_fNumFrame)
     {
@@ -65,7 +65,7 @@ void CEffect_Pistol_Fire::Late_Update(_float fTimeDelta)
     m_fCamDistance = 0.1f;
 }
 
-HRESULT CEffect_Pistol_Fire::Render()
+HRESULT CEffect_ShootGun_Fire::Render()
 {
     m_pTransformCom->Set_Transform();
 
@@ -76,11 +76,11 @@ HRESULT CEffect_Pistol_Fire::Render()
     m_pVIBufferCom->Render();
 
     End_RenderState();
-    
+
     return S_OK;
 }
 
-HRESULT CEffect_Pistol_Fire::Ready_Components()
+HRESULT CEffect_ShootGun_Fire::Ready_Components()
 {
     /* Com_Transform */
     CTransform::TRANSFORM_DESC		TransformDesc{ 5.f, D3DXToRadian(90.0f) };
@@ -89,7 +89,7 @@ HRESULT CEffect_Pistol_Fire::Ready_Components()
         return E_FAIL;
 
     /* Com_Texture */
-    if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Effect_Pistol_Fire"),
+    if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Effect_ShootGun_Fire"),
         TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
         return E_FAIL;
 
@@ -101,7 +101,7 @@ HRESULT CEffect_Pistol_Fire::Ready_Components()
     return S_OK;
 }
 
-HRESULT CEffect_Pistol_Fire::Begin_RenderState()
+HRESULT CEffect_ShootGun_Fire::Begin_RenderState()
 {
     m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
     m_pGraphic_Device->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
@@ -120,7 +120,7 @@ HRESULT CEffect_Pistol_Fire::Begin_RenderState()
     return S_OK;
 }
 
-HRESULT CEffect_Pistol_Fire::End_RenderState()
+HRESULT CEffect_ShootGun_Fire::End_RenderState()
 {
     m_pGraphic_Device->SetRenderState(D3DRS_ZENABLE, TRUE);
 
@@ -130,38 +130,35 @@ HRESULT CEffect_Pistol_Fire::End_RenderState()
     return S_OK;
 }
 
-void CEffect_Pistol_Fire::Set_Pos(const _float3& vPos)
+void CEffect_ShootGun_Fire::Set_Pos(const _float3& vPos)
 {
-    //직교 이펙트니까 그냥 넘어가게
-    return;
 }
 
-
-CEffect_Pistol_Fire* CEffect_Pistol_Fire::Create(LPDIRECT3DDEVICE9 pGraphicDev)
+CEffect_ShootGun_Fire* CEffect_ShootGun_Fire::Create(LPDIRECT3DDEVICE9 pGraphicDev)
 {
-    CEffect_Pistol_Fire* pInstance = new CEffect_Pistol_Fire(pGraphicDev);
+    CEffect_ShootGun_Fire* pInstance = new CEffect_ShootGun_Fire(pGraphicDev);
 
     if (FAILED(pInstance->Initialize_Prototype()))
     {
-        MSG_BOX("Create Failed : Effect Pistol Fire");
+        MSG_BOX("Create Failed : Effect ShootGun Fire");
         Safe_Release(pInstance);
     }
     return pInstance;
 }
 
-CGameObject* CEffect_Pistol_Fire::Clone(void* pArg)
+CGameObject* CEffect_ShootGun_Fire::Clone(void* pArg)
 {
-    CEffect_Pistol_Fire* pInstance = new CEffect_Pistol_Fire(*this);
+    CEffect_ShootGun_Fire* pInstance = new CEffect_ShootGun_Fire(*this);
 
     if (FAILED(pInstance->Initialize(pArg)))
     {
-        MSG_BOX("Clone Failed : Effect Pistol Fire");
+        MSG_BOX("Clone Failed : Effect ShootGun Fire");
         Safe_Release(pInstance);
     }
     return pInstance;
 }
 
-void CEffect_Pistol_Fire::Free()
+void CEffect_ShootGun_Fire::Free()
 {
     __super::Free();
 }

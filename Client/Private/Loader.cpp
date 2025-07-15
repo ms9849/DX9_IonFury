@@ -58,7 +58,8 @@
 #include "MapMachineGunBulletBox.h"
 #include "MapTrashBox.h"
 #include "MapVenMachine.h"
-
+#include "ItemBurger.h"
+#include "ItemCoffee.h"
 #include "GameInstance.h"
 
 CLoader::CLoader(LPDIRECT3DDEVICE9 pGraphic_Device)
@@ -229,6 +230,16 @@ HRESULT CLoader::Loading_For_GamePlay()
 	/* For.Prototype_Component_Texture_Item_Machinegun */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Item_MachineGun"),
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Item/Item_MachineGun_%d.png"), 1))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Item_Burger */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Item_Burger"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Item/Item_Burger_%d.png"), 1))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Item_Coffee */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Item_Coffee"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Item/Item_Coffee_%d.png"), 1))))
 		return E_FAIL;
 #pragma endregion
 
@@ -537,6 +548,16 @@ HRESULT CLoader::Loading_For_GamePlay()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Item_MachineGun"),
 		CItemMachineGun::Create(m_pGraphic_Device))))
 		return E_FAIL;
+
+	/* For.Prototype_GameObject_Item_Burger */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Item_Burger"),
+		CItemBurger::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Item_Coffee */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Item_Coffee"),
+		CItemCoffee::Create(m_pGraphic_Device))))
+		return E_FAIL;
 #pragma endregion	
 
 #pragma region 상호작용 오브젝트
@@ -704,6 +725,16 @@ HRESULT CLoader::Loading_For_Jusin()
 	/* For.Prototype_Component_Texture_Item_Machinegun */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_Component_Texture_Item_MachineGun"),
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Item/Item_MachineGun_%d.png"), 1))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Item_Burger */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_Component_Texture_Item_Burger"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Item/Item_Burger_%d.png"), 1))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Item_Coffee */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_Component_Texture_Item_Coffee"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Item/Item_Coffee_%d.png"), 1))))
 		return E_FAIL;
 #pragma endregion
 
@@ -1021,6 +1052,16 @@ HRESULT CLoader::Loading_For_Jusin()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_GameObject_Item_MachineGun"),
 		CItemMachineGun::Create(m_pGraphic_Device))))
 		return E_FAIL;
+
+	/* For.Prototype_GameObject_Item_Burger */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_GameObject_Item_Burger"),
+		CItemBurger::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Item_Coffee */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_GameObject_Item_Coffee"),
+		CItemCoffee::Create(m_pGraphic_Device))))
+		return E_FAIL;
 #pragma endregion	
 
 #pragma region 상호작용 오브젝트
@@ -1221,6 +1262,16 @@ HRESULT CLoader::Loading_For_BossFight()
 	/* For.Prototype_Component_Texture_Item_MachineGun */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_Component_Texture_Item_MachineGun"),
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Item/Item_MachineGun_%d.png"), 1))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Item_Burger */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_Component_Texture_Item_Burger"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Item/Item_Burger_%d.png"), 1))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Item_Coffee */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_Component_Texture_Item_Coffee"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Item/Item_Coffee_%d.png"), 1))))
 		return E_FAIL;
 #pragma endregion
 
@@ -1535,14 +1586,25 @@ HRESULT CLoader::Loading_For_BossFight()
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_Item_ShootGun */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Item_ShootGun"),
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_GameObject_Item_ShootGun"),
 		CItemShootGun::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_Item_MachineGun */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Item_MachineGun"),
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_GameObject_Item_MachineGun"),
 		CItemMachineGun::Create(m_pGraphic_Device))))
 		return E_FAIL;
+
+	/* For.Prototype_GameObject_Item_Burger */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_GameObject_Item_Burger"),
+		CItemBurger::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Item_Coffee */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_GameObject_Item_Coffee"),
+		CItemCoffee::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
 #pragma endregion	
 
 #pragma region 상호작용 오브젝트
