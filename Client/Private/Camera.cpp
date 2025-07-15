@@ -77,7 +77,6 @@ void CCamera::Priority_Update(_float fTimeDelta)
 	m_pGraphic_Device->SetTransform(D3DTS_PROJECTION, D3DXMatrixPerspectiveFovLH(&m_ProjMatrix, m_fFov, m_fAspect, m_fNear, m_fFar));
 	m_pGameInstance->Calc_CameraInfo();
 	_float3 vPos = (&m_pGameInstance->Get_CameraWorld()[3]);
-	int a = 10;
 }
 
 void CCamera::Update(_float fTimeDelta)

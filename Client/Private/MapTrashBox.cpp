@@ -7,6 +7,7 @@
 #include "ItemPistolBullet.h"
 #include "ItemShootGunBullet.h"
 #include "ItemPortableHealPack.h"
+#include "ItemCoffee.h"
 
 CMapTrashBox::CMapTrashBox(LPDIRECT3DDEVICE9 pGraphicDev) :
     CGameObject { pGraphicDev }
@@ -32,7 +33,7 @@ void CMapTrashBox::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTi
 
 		if (m_iHp < 0)
 		{
-			CItem* pItem = static_cast<CItem*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, m_pObjectDesc.iLayerLevel, TEXT("Prototype_GameObject_Item_Portable_Healpack"), &m_pObjectDesc));
+			CItem* pItem = static_cast<CItem*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, m_pObjectDesc.iLayerLevel, TEXT("Prototype_GameObject_Item_Coffee"), &m_pObjectDesc));
 			/* 아이템 떨구는 로직도 추가할 것 */
 			m_isDead = true;
 			

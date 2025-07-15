@@ -232,8 +232,8 @@ void CZombie::Update(_float fTimeDelta)
 
 		//m_pBoxColliderCom->Set_Scale({1.f, 0.1f, 1.f});
 		//m_pBoxColliderCom->Set_Scale({ 1.5f, 0.3f, 1.5f });
-		m_pBoxColliderCom->Set_Pos({ 0.f, -2.3f, 0.f });
-		m_pBoxColliderCom->Set_Scale({ 1.7f, 0.25f, 1.75f });
+		m_pBoxColliderCom->Set_Scale(_float3{ 1.7f, 0.25f, 1.75f });
+		m_pBoxColliderCom->Set_Pos(_float3{ 0.f, -0.5f, 0.f });
 		//m_pBoxColliderCom->Set_Scale({ 1.25f, 1.25f, 2.f });
 		m_pBoxColliderHead->Set_Scale({ 0.f, 0.f, 0.f });
 		m_bAnimationLock = true;

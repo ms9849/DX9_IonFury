@@ -23,6 +23,8 @@
 #include "ItemPortableHealPack.h"
 #include "MeleeAttack.h"
 #include "Zombie.h"
+#include "ItemBurger.h"
+#include "ItemCoffee.h"
 
 CPlayer::CPlayer(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CLandObject{ pGraphic_Device }
@@ -129,6 +131,10 @@ void CPlayer::Update(_float fTimeDelta)
 	if (m_pGameInstance->Key_Down('8'))
 	{
 		m_pTransformCom->Set_State(STATE::POSITION, _float3(35.f, 6.f, 45.f));
+	}
+	if (m_pGameInstance->Key_Down('7'))
+	{
+		m_pTransformCom->Set_State(STATE::POSITION, _float3(40.f, 40.f, 197.f));
 	}
 
 	/* 점프 로직*/
@@ -444,6 +450,8 @@ void CPlayer::Update(_float fTimeDelta)
 						&& m_tInfo.strAction != TEXT("Shoot"))
 					{
 						m_pGameInstance->PlaySoundOnce(TEXT("ShotGun_Fire.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
+						CEffect_Manager::GetInstance()->Create_Effect(TEXT("Effect_ShootGun_Fire"), m_pObjectDesc.iLayerLevel, TEXT("Layer_Effect"), { 0.f, 0.f, 0.f });
+
 						CBullet::BULLET_DESC Desc;
 						for (_uint i = 0; i < 7; ++i)
 						{
@@ -754,6 +762,22 @@ void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 				m_tInfo.iHp = 100;
 
 			Insert_ItemDesc(TEXT("Get Healpack [HP+10]"));
+		}
+		if (dynamic_cast<CItemBurger*>(pDst))
+		{
+			m_tInfo.iHp += 5;
+			if (m_tInfo.iHp >= 100)
+				m_tInfo.iHp = 100;
+
+			Insert_ItemDesc(TEXT("Eat Burger [HP+5]"));
+		}
+		if (dynamic_cast<CItemCoffee*>(pDst))
+		{
+			m_tInfo.iHp += 5;
+			if (m_tInfo.iHp >= 100)
+				m_tInfo.iHp = 100;
+
+			Insert_ItemDesc(TEXT("Drink Coffee [HP+5]"));
 		}
 		if (dynamic_cast<CItemPortableHealPack*>(pDst))
 		{
