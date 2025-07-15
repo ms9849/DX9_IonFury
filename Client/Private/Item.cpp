@@ -2,6 +2,7 @@
 
 #include "GameInstance.h"
 #include "Terrain_Manager.h"
+#include "Player.h"
 
 CItem::CItem(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CLandObject{ pGraphic_Device }
@@ -53,6 +54,29 @@ void CItem::Set_Pos(const _float3& vPos)
 	m_pTransformCom->Set_State(STATE::POSITION, vPos);
 }
 
+void CItem::Set_Parabola(_bool bFlag, const _float3& vParabolaDir)
+{
+	m_bParabola = bFlag;
+	m_vParabolaDir = vParabolaDir;
+}
+
+void CItem::Parabola(_float fSpeed, _float fTimeDelta)
+{
+	m_fTimeAcc += fTimeDelta;
+
+	m_pTransformCom->Go_Direction(m_vParabolaDir, fTimeDelta * m_pGameInstance->Random(0.5f, 1.5f));
+	__super::Jump(fTimeDelta);
+
+	_float3 vPos = m_pTransformCom->Get_State(STATE::POSITION);
+
+	if (m_fTimeAcc >= 1.5f || vPos.y <= m_pLandTransform->Get_State(STATE::POSITION).y + 1.0f)
+	{
+		SetUp_OnTerrain(m_pTransformCom, 0.f);
+		m_fItemOriginPosY = m_pTransformCom->Get_State(STATE::POSITION).y - 0.2f;
+		m_bParabola = false;
+	}
+}
+
 HRESULT CItem::Ready_Components()
 {
 	return S_OK;
@@ -74,7 +98,7 @@ void CItem::Item_Animation(_float fTimeDelta)
 	{
 		vItemPos.y += (fTimeDelta / 5);
 
-		if (vItemPos.y > m_fItemOriginPosY + 0.25f)
+		if (vItemPos.y > m_fItemOriginPosY + 0.2f)
 			_isGoUp = false;
 	}
 	else

@@ -95,10 +95,16 @@ void CEventBox::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeD
 			ENUM_CLASS(LEVEL::GAMEPLAY),
 			TEXT("Layer_Player")))->Get_Player_Info();
 
-	if (FAILED(m_pGameInstance->Change_Level(
-		CLevel_Loading::Create(
-			m_pGraphic_Device, LEVEL::LOADING, LEVEL::JUSIN, &Desc))))
-		return;
+	if (m_pGameInstance->Get_CurrentLevelID() == ENUM_CLASS(LEVEL::GAMEPLAY))
+	{
+		m_pGameInstance->Change_Level(CLevel_Loading::Create(
+			m_pGraphic_Device, LEVEL::GAMEPLAY, LEVEL::JUSIN, &Desc));
+	}
+	else if (m_pGameInstance->Get_CurrentLevelID() == ENUM_CLASS(LEVEL::JUSIN))
+	{
+		m_pGameInstance->Change_Level(CLevel_Loading::Create(
+			m_pGraphic_Device, LEVEL::JUSIN, LEVEL::BOSSFIGHT, &Desc));
+	}
 }
 
 const COLLISION_DESC& CEventBox::Get_CollisionDesc(COLLISION eColType)
