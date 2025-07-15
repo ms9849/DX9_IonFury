@@ -44,16 +44,12 @@ void CMeleeAttack::Update(_float fTimeDelta)
 
 void CMeleeAttack::Late_Update(_float fTimeDelta)
 {
-	m_pGameInstance->Add_RenderGroup(RENDER::NONBLEND, this);
+
 }
 
 HRESULT CMeleeAttack::Render()
 {
 	m_pTransformCom->Set_Transform();
-
-	m_pTextureCom->Set_Texture(3);
-
-	m_pVIBufferCom->Render();
 
 	return S_OK;
 }
@@ -78,16 +74,6 @@ HRESULT CMeleeAttack::Ready_Components()
 	CTransform::TRANSFORM_DESC		TransformDesc{ 3.f, D3DXToRadian(90.0f) };
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Transform"),
 		TEXT("Com_Transform"), reinterpret_cast<CComponent**>(&m_pTransformCom), &TransformDesc)))
-		return E_FAIL;
-
-	/* Com_Texture */
-	if (FAILED(__super::Add_Component(m_pObjectDesc.iLayerLevel, TEXT("Prototype_Component_Texture_Sky"),
-		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
-		return E_FAIL;
-
-	/* Com_VIBuffer */
-	if (FAILED(__super::Add_Component(m_pObjectDesc.iLayerLevel, TEXT("Prototype_Component_VIBuffer_Cube"),
-		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
 		return E_FAIL;
 
 	/* Com_SphereCollider */
@@ -128,8 +114,6 @@ void CMeleeAttack::Free()
 {
 	__super::Free();
 
-	Safe_Release(m_pTextureCom);
 	Safe_Release(m_pTransformCom);
-	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pSphereColliderCom);
 }

@@ -148,6 +148,64 @@ void CBoxCollider::Set_Scale(const _float3& vScale)
 	}
 }
 
+void CBoxCollider::Set_Pos(const _float3& vPos)
+{
+	m_vLocalPos[0] = _float3(-0.5f, 0.5f, -0.5f);
+	m_vLocalPos[1] = _float3(0.5f, 0.5f, -0.5f);
+	m_vLocalPos[2] = _float3(0.5f, -0.5f, -0.5f);
+	m_vLocalPos[3] = _float3(-0.5f, -0.5f, -0.5f);
+	m_vLocalPos[4] = _float3(-0.5f, 0.5f, 0.5f);
+	m_vLocalPos[5] = _float3(0.5f, 0.5f, 0.5f);
+	m_vLocalPos[6] = _float3(0.5f, -0.5f, 0.5f);
+	m_vLocalPos[7] = _float3(-0.5f, -0.5f, 0.5f);
+
+	m_vPos = vPos;
+
+
+	for (_uint i = 0; i < 8; ++i)
+	{
+		m_vLocalPos[i].x += m_vPos.x;
+		m_vLocalPos[i].x *= m_vScale.x;
+
+		m_vLocalPos[i].y += m_vPos.y;
+		m_vLocalPos[i].y *= m_vScale.y;
+
+		m_vLocalPos[i].z += m_vPos.z;
+		m_vLocalPos[i].z *= m_vScale.z;
+	}
+
+	VTXCOLOR* pVertices = { nullptr };
+
+	/* 할당한 공간에 접근하여 값을 기록하낟. */
+	m_pVB->Lock(0, 0, reinterpret_cast<void**>(&pVertices), 0);
+
+	pVertices[0].vPosition = m_vLocalPos[0];
+	pVertices[0].vColor = D3DCOLOR_ARGB(255, 255, 0, 0);
+
+	pVertices[1].vPosition = m_vLocalPos[1];
+	pVertices[1].vColor = D3DCOLOR_ARGB(255, 255, 0, 0);
+
+	pVertices[2].vPosition = m_vLocalPos[2];
+	pVertices[2].vColor = D3DCOLOR_ARGB(255, 255, 0, 0);
+
+	pVertices[3].vPosition = m_vLocalPos[3];
+	pVertices[3].vColor = D3DCOLOR_ARGB(255, 255, 0, 0);
+
+	pVertices[4].vPosition = m_vLocalPos[4];
+	pVertices[4].vColor = D3DCOLOR_ARGB(255, 255, 0, 0);
+
+	pVertices[5].vPosition = m_vLocalPos[5];
+	pVertices[5].vColor = D3DCOLOR_ARGB(255, 255, 0, 0);
+
+	pVertices[6].vPosition = m_vLocalPos[6];
+	pVertices[6].vColor = D3DCOLOR_ARGB(255, 255, 0, 0);
+
+	pVertices[7].vPosition = m_vLocalPos[7];
+	pVertices[7].vColor = D3DCOLOR_ARGB(255, 255, 0, 0);
+
+	m_pVB->Unlock();
+}
+
 HRESULT CBoxCollider::Initialize_Prototype()
 {
 	m_iNumVertices = 8;

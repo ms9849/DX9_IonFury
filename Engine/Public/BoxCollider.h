@@ -40,6 +40,8 @@ public:
 
 	void Set_Matrix(const _float4x4& matWorld);
 	void Set_Scale(const _float3& vScale);
+	/* vPos 만큼 콜라이더 이동시키는 함수*/
+	void Set_Pos(const _float3& vPos);
 
 public:
 	virtual HRESULT Initialize_Prototype();
