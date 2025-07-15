@@ -158,6 +158,10 @@ void CSpider::Update(_float fTimeDelta)
 		m_strFrameKey = TEXT("Spider_Die_Default");
 		m_bAnimationLock = true;
 		m_bDying = true;
+
+		m_pBoxColliderCom->Set_Scale({ 1.0f, 0.7f, 1.2f });
+		m_pBoxColliderCom->Set_Pos({ 0.f, -0.15f, 0.f });
+
 		m_pGameInstance->PlaySoundOnce(TEXT("Spider_Die.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
 	}
 	else if (m_pSightCom->Check_Sight(fTimeDelta) && !m_bAnimationLock)

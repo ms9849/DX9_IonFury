@@ -56,7 +56,7 @@ HRESULT CEliteSoldier::Initialize(void* pArg)
 	m_pTransformCom->Set_State(STATE::UP, m_pObjectDesc.matWorld.m[1]);
 	m_pTransformCom->Set_State(STATE::LOOK, m_pObjectDesc.matWorld.m[2]);
 	m_pTransformCom->Set_State(STATE::POSITION, m_pObjectDesc.matWorld.m[3]);
-	//m_pTransformCom->Set_Scale(_float3{ 3.f, 3.f, 1.f });
+	m_pTransformCom->Set_Scale(_float3{ 2.f, 2.f, 1.f });
 
 	/*if (m_vPos != nullptr)
 	{
@@ -94,7 +94,7 @@ void CEliteSoldier::Update(_float fTimeDelta)
 
 	if (m_bDying)
 	{
-		SetUp_OnTerrain(m_pTransformCom, 1.5f, &m_bJump);
+		SetUp_OnTerrain(m_pTransformCom, 1.f, &m_bJump);
 		return;
 	}
 
@@ -157,6 +157,11 @@ void CEliteSoldier::Update(_float fTimeDelta)
 			m_strFrameKey = TEXT("EliteSoldier_Die_HeadShot");
 		else
 			m_strFrameKey = TEXT("EliteSoldier_Die_Default");
+
+		m_pBoxColliderCom->Set_Scale({ 1.75f, 0.22f, 2.f });
+		m_pBoxColliderCom->Set_Pos({ 0.f, -0.6f, 0.f });
+		m_pBoxColliderHead->Set_Scale({ 0.f, 0.f, 0.f });
+
 		m_bAnimationLock = true;
 		m_bDying = true;
 		m_pGameInstance->PlaySoundOnce(TEXT("EliteSoldier_Die.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
@@ -200,7 +205,7 @@ void CEliteSoldier::Update(_float fTimeDelta)
 		}
 	}
 
-	SetUp_OnTerrain(m_pTransformCom, 1.25f, &m_bJump);
+	SetUp_OnTerrain(m_pTransformCom, 1.f, &m_bJump);
 }
 
 void CEliteSoldier::Late_Update(_float fTimeDelta)
@@ -465,18 +470,19 @@ HRESULT CEliteSoldier::Ready_Components()
 
 	/* Com_BoxCollider */
 	CBoxCollider::BOXCOLLIDER_DESC Desc;
-	Desc.vPosition = { -0.1f, -0.07f, -0.1f };
-	Desc.fScaleX = 0.4f;
-	Desc.fScaleZ = 0.4f;
-	Desc.fScaleY = 0.8f;
+	Desc.vPosition = { 0.f, -0.07f, 0.f };
+	Desc.fScaleX = 1.f;
+	Desc.fScaleY = 1.7f;
+	Desc.fScaleZ = 0.8f;
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_BoxCollider"),
 		TEXT("Com_BoxCollider"), reinterpret_cast<CComponent**>(&m_pBoxColliderCom), &Desc)))
 		return E_FAIL;
 
-	Desc.vPosition = { -0.3f, 2.35f, -0.3f };
-	Desc.fScaleX = 0.2f;
-	Desc.fScaleZ = 0.2f;
-	Desc.fScaleY = 0.2f;
+	//Desc.vPosition = { -0.3f, 2.35f, -0.3f };
+	Desc.vPosition = { 0.f, 2.95f, 0.f };					// 머리 정면이랑 뒤 기준으론 맞음
+	Desc.fScaleX = 0.5f;
+	Desc.fScaleY = 0.3f;
+	Desc.fScaleZ = 0.5f;										// 0.4
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_BoxCollider"),
 		TEXT("Com_BoxCollider_Head"), reinterpret_cast<CComponent**>(&m_pBoxColliderHead), &Desc)))
 		return E_FAIL;

@@ -223,19 +223,18 @@ void CZombie::Update(_float fTimeDelta)
 		}
 	}
 
-	if (m_fCurHp <= 0)
+	if (m_fCurHp <= 0 && m_bDying == false)
 	{
 		if (m_isHead)
 			m_strFrameKey = TEXT("Zombie_Die_HeadShot");
 		else
 			m_strFrameKey = TEXT("Zombie_Die_Default");
 
-		//m_pBoxColliderCom->Set_Scale({1.f, 0.1f, 1.f});
-		//m_pBoxColliderCom->Set_Scale({ 1.5f, 0.3f, 1.5f });
-		m_pBoxColliderCom->Set_Scale(_float3{ 1.7f, 0.25f, 1.75f });
-		m_pBoxColliderCom->Set_Pos(_float3{ 0.f, -0.5f, 0.f });
-		//m_pBoxColliderCom->Set_Scale({ 1.25f, 1.25f, 2.f });
+
+		m_pBoxColliderCom->Set_Scale({ 1.7f, 0.25f, 1.75f });
+		m_pBoxColliderCom->Set_Pos({ 0.f, -0.6f, 0.f });
 		m_pBoxColliderHead->Set_Scale({ 0.f, 0.f, 0.f });
+
 		m_bAnimationLock = true;
 		m_bDying = true;
 		m_pGameInstance->PlaySoundOnce(TEXT("zombie_dead_1.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
