@@ -72,7 +72,7 @@ HRESULT CZombie::Initialize(void* pArg)
 	m_pTransformCom->Set_State(STATE::UP, m_pObjectDesc.matWorld.m[1]);
 	m_pTransformCom->Set_State(STATE::LOOK, m_pObjectDesc.matWorld.m[2]);
 	m_pTransformCom->Set_State(STATE::POSITION, m_pObjectDesc.matWorld.m[3]);
-	//m_pTransformCom->Set_Scale(_float3{ 2.f, 2.f, 1.f});
+	m_pTransformCom->Set_Scale(_float3{ 1.75f, 1.75f, 1.f});
 	
 	// 게임 플레이에서만 동작하게
 	if (m_pObjectDesc.iLayerLevel == ENUM_CLASS(LEVEL::GAMEPLAY))
@@ -146,7 +146,7 @@ void CZombie::Update(_float fTimeDelta)
 
 	if (m_bDying)
 	{
-		SetUp_OnTerrain(m_pTransformCom, 1.f, &m_bJump);
+		SetUp_OnTerrain(m_pTransformCom, 0.9f, &m_bJump);
 		return;
 	}
 
@@ -229,6 +229,13 @@ void CZombie::Update(_float fTimeDelta)
 			m_strFrameKey = TEXT("Zombie_Die_HeadShot");
 		else
 			m_strFrameKey = TEXT("Zombie_Die_Default");
+
+		//m_pBoxColliderCom->Set_Scale({1.f, 0.1f, 1.f});
+		//m_pBoxColliderCom->Set_Scale({ 1.5f, 0.3f, 1.5f });
+		m_pBoxColliderCom->Set_Pos({ 0.f, -2.3f, 0.f });
+		m_pBoxColliderCom->Set_Scale({ 1.7f, 0.25f, 1.75f });
+		//m_pBoxColliderCom->Set_Scale({ 1.25f, 1.25f, 2.f });
+		m_pBoxColliderHead->Set_Scale({ 0.f, 0.f, 0.f });
 		m_bAnimationLock = true;
 		m_bDying = true;
 		m_pGameInstance->PlaySoundOnce(TEXT("zombie_dead_1.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
@@ -239,7 +246,7 @@ void CZombie::Update(_float fTimeDelta)
 		SetUp_OnTerrain(m_pTransformCom, 0.45f, &m_bJump);
 		return;
 	}*/
-	else if (m_pSightCom->Check_Sight(fTimeDelta) && !m_bAnimationLock)
+	/*else if (m_pSightCom->Check_Sight(fTimeDelta) && !m_bAnimationLock)
 	{
 		if (!m_bFirstEncounter)
 		{
@@ -266,7 +273,7 @@ void CZombie::Update(_float fTimeDelta)
 				m_fSumMoveCoolTime = 0.f;
 			}
 		}
-	}
+	}*/
 
 	__super::Jump(fTimeDelta);
 	SetUp_OnTerrain(m_pTransformCom, 1.f, &m_bJump);
@@ -348,7 +355,7 @@ HRESULT CZombie::Ready_Animations()
 
 	//Zombie_Die_Default
 	iter = m_pTextureComs.find(TEXT("Zombie_Die_Default"));
-	Desc_1.iFrameSpeed = 12;
+	Desc_1.iFrameSpeed = 8;
 	Desc_1.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom->Set_Animation(TEXT("Zombie_Die_Default"), Desc_1);
 
@@ -414,7 +421,7 @@ HRESULT CZombie::Ready_Animations()
 
 	//Zombie_Die_HeadShot
 	iter = m_pTextureComs.find(TEXT("Zombie_Die_HeadShot"));
-	Desc_12.iFrameSpeed = 12;
+	Desc_12.iFrameSpeed = 8;
 	Desc_12.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom->Set_Animation(TEXT("Zombie_Die_HeadShot"), Desc_12);
 
@@ -477,18 +484,18 @@ HRESULT CZombie::Ready_Components()
 
 	/* Com_BoxCollider */
 	CBoxCollider::BOXCOLLIDER_DESC Desc;
-	Desc.vPosition = { 0.f, -0.1f, 0.f };
-	Desc.fScaleX = 0.2f;
-	Desc.fScaleZ = 0.2f;
-	Desc.fScaleY = 0.5f;
+	Desc.vPosition = { 0.f, -0.15f, 0.f };
+	Desc.fScaleX = 0.8f;
+	Desc.fScaleY = 1.25f;
+	Desc.fScaleZ = 0.8f;
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_BoxCollider"),
 		TEXT("Com_BoxCollider"), reinterpret_cast<CComponent**>(&m_pBoxColliderCom), &Desc)))
 		return E_FAIL;
 
-	Desc.vPosition = { 0.f, 2.5f, 0.f };
-	Desc.fScaleX = 0.1f;
-	Desc.fScaleZ = 0.1f;
-	Desc.fScaleY = 0.1f;
+	Desc.vPosition = { 0.f, 2.2f, 0.f };
+	Desc.fScaleX = 0.25f;
+	Desc.fScaleY = 0.28f;
+	Desc.fScaleZ = 0.25f;
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_BoxCollider"),
 		TEXT("Com_BoxCollider_Head"), reinterpret_cast<CComponent**>(&m_pBoxColliderHead), &Desc)))
 		return E_FAIL;

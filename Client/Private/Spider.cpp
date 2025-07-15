@@ -51,6 +51,7 @@ HRESULT CSpider::Initialize(void* pArg)
 	m_pTransformCom->Set_State(STATE::UP, m_pObjectDesc.matWorld.m[1]);
 	m_pTransformCom->Set_State(STATE::LOOK, m_pObjectDesc.matWorld.m[2]);
 	m_pTransformCom->Set_State(STATE::POSITION, m_pObjectDesc.matWorld.m[3]);
+	m_pTransformCom->Set_Scale(_float3{ 1.f, 1.f, 1.f });
 	//m_pTransformCom->Set_Scale(_float3{ 1.f, 1.f, 1.f });
 
 	/*if (m_vPos != nullptr)
@@ -71,7 +72,7 @@ HRESULT CSpider::Initialize(void* pArg)
 	m_fDamage = 30.f;
 	m_fAttackRange = 1.5f;
 	m_fAttackCoolTime = 5.f;
-	m_fJumpPower = 2.5f;
+	m_fJumpPower = 3.f;
 	m_fChaseRange = 7.f;
 	m_fMaxRange = 10.f;
 	//m_AttackfCoolTime = 1.f;
@@ -397,10 +398,10 @@ HRESULT CSpider::Ready_Components()
 
 	/* Com_BoxCollider */
 	CBoxCollider::BOXCOLLIDER_DESC Desc;
-	Desc.vPosition = { 0.f, 0.f, 0.f };
-	Desc.fScaleX = 0.4f;
-	Desc.fScaleZ = 0.4f;
-	Desc.fScaleY = 0.1f;
+	Desc.vPosition = { 0.f, -0.5f, 0.f };
+	Desc.fScaleX = 0.9f;
+	Desc.fScaleY = 0.4f;
+	Desc.fScaleZ = 0.8f;
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_BoxCollider"),
 		TEXT("Com_BoxCollider"), reinterpret_cast<CComponent**>(&m_pBoxColliderCom), &Desc)))
 		return E_FAIL;
