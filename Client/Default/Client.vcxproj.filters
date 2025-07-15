@@ -241,6 +241,18 @@
     <Filter Include="03.MapObjects\Door">
       <UniqueIdentifier>{5d3bb9d5-375a-479f-8cc0-32305ab6cfa0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\Item\ItemBurger">
+      <UniqueIdentifier>{19fb8671-8218-447d-8237-e1c3dc965c3c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Item\ItemCoffee">
+      <UniqueIdentifier>{4ee181f1-07d5-4360-b686-a683027cf06d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Effect\ShootGun_Fire">
+      <UniqueIdentifier>{76b102b3-71da-4223-8bd3-75b3d9ea74e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\UI\UIUsableItems">
+      <UniqueIdentifier>{1b37bf2c-27a4-4374-87cf-05e5c5962230}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -516,6 +528,18 @@
     <ClInclude Include="..\public\MapDoor.h">
       <Filter>03.MapObjects\Door</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\ItemBurger.h">
+      <Filter>02.GameObjects\Item\ItemBurger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ItemCoffee.h">
+      <Filter>02.GameObjects\Item\ItemCoffee</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Effect_ShootGun_Fire.h">
+      <Filter>02.GameObjects\Effect\ShootGun_Fire</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\UIUseableItems.h">
+      <Filter>02.GameObjects\UI\UIUsableItems</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -785,6 +809,18 @@
     </ClCompile>
     <ClCompile Include="..\private\MapDoor.cpp">
       <Filter>03.MapObjects\Door</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ItemBurger.cpp">
+      <Filter>02.GameObjects\Item\ItemBurger</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ItemCoffee.cpp">
+      <Filter>02.GameObjects\Item\ItemCoffee</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect_ShootGun_Fire.cpp">
+      <Filter>02.GameObjects\Effect\ShootGun_Fire</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\UIUseableItems.cpp">
+      <Filter>02.GameObjects\UI\UIUsableItems</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

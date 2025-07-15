@@ -10,6 +10,7 @@
 #include "UIArmor.h"
 #include "UIItemQueue.h"
 #include "UICardKey.h"
+#include "UIUseableItems.h"
 #include "Terrain.h"
 #include "ParticleSystem.h"
 #include "Player.h"
@@ -68,6 +69,9 @@ HRESULT CLevel_Jusin::Initialize(void* pArg)
 
 	 if (FAILED(Ready_Layer_Items(TEXT("Layer_Items"))))
 	 	return E_FAIL;
+
+	 if (FAILED(Ready_Layer_EventBox(TEXT("Layer_EventBox"))))
+		 return E_FAIL;
 	 
 	if (FAILED(Ready_Layer_Map_Objects_AABB(TEXT("Layer_Map_Objects_AABB")))) // 벽 같이 회전 안한 큐브
 		return E_FAIL;
@@ -84,10 +88,10 @@ HRESULT CLevel_Jusin::Initialize(void* pArg)
 	 
 	if (FAILED(Ready_Layer_Map_Objects_Gate(TEXT("Layer_Map_Objects_Gate")))) // 문
 		return E_FAIL;
-	// 
-	// if (FAILED(Ready_Layer_Map_Objects_Ray(TEXT("Layer_Map_Objects_Ray"))))
-	// 	return E_FAIL;
-	// 
+	
+	if (FAILED(Ready_Layer_Map_Objects_Ray(TEXT("Layer_Map_Objects_Ray"))))
+		return E_FAIL;
+	
 	if (FAILED(Ready_Layer_Map_Objects_Deco(TEXT("Layer_Map_Objects_Deco")))) // 데코레이션
 		return E_FAIL;
 	
@@ -133,6 +137,7 @@ void CLevel_Jusin::Update(_float fTimeDelta)
 	m_pUIBullets->Set_Bullets();
 	m_pUICardKey->Set_CardKey();
 	m_pUIInteraction->Set_Interaction();
+	m_pUIUseableItems->Set_UseableItems();
 
 	size_t iItemQueueLength = dynamic_cast<CPlayer*>(
 		m_pGameInstance->Find_GameObject_ToLayer(
@@ -160,25 +165,25 @@ void CLevel_Jusin::Update(_float fTimeDelta)
 
 	m_pGameInstance->Check_SphereCollision(TEXT("Layer_Player"), TEXT("Layer_Items"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta);
 	m_pGameInstance->Check_SphereCollision(TEXT("Layer_Player"), TEXT("Layer_Interaction_Objects"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta);
-	//m_pGameInstance->Check_SphereCollision(TEXT("Layer_Player"), TEXT("Layer_Melee_Attack"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta);
+	m_pGameInstance->Check_SphereCollision(TEXT("Layer_Player"), TEXT("Layer_Melee_Attack"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta);
 
-	//m_pGameInstance->Check_AABBCollision(TEXT("Layer_Player"), TEXT("Layer_Map_Objects_AABB"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta);
-	//m_pGameInstance->Check_AABBCollision(TEXT("Layer_Player"), TEXT("Layer_Map_Objects_AABB_Ride"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta);
-	//m_pGameInstance->Check_AABBCollision(TEXT("Layer_Player"), TEXT("Layer_Map_Objects_Gate"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta);
+	m_pGameInstance->Check_AABBCollision(TEXT("Layer_Player"), TEXT("Layer_Map_Objects_AABB"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta);
+	m_pGameInstance->Check_AABBCollision(TEXT("Layer_Player"), TEXT("Layer_Map_Objects_AABB_Ride"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta);
+	m_pGameInstance->Check_AABBCollision(TEXT("Layer_Player"), TEXT("Layer_Map_Objects_Gate"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta);
 
-	//m_pGameInstance->Check_AABBCollision(TEXT("Layer_Monster"), TEXT("Layer_Monster"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta);
-	//m_pGameInstance->Check_AABBCollision(TEXT("Layer_Monster"), TEXT("Layer_Map_Objects_AABB"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta);
-	//m_pGameInstance->Check_AABBCollision(TEXT("Layer_Monster"), TEXT("Layer_Map_Objects_Gate"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta);
+	m_pGameInstance->Check_AABBCollision(TEXT("Layer_Monster"), TEXT("Layer_Monster"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta);
+	m_pGameInstance->Check_AABBCollision(TEXT("Layer_Monster"), TEXT("Layer_Map_Objects_AABB"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta);
+	m_pGameInstance->Check_AABBCollision(TEXT("Layer_Monster"), TEXT("Layer_Map_Objects_Gate"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta);
 	//
 	//m_pGameInstance->Check_OBBCollision(TEXT("Layer_Map_Objects_OBB_Ride"), TEXT("Layer_Player"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta);
 	//m_pGameInstance->Check_OBBCollision(TEXT("Layer_Map_Objects_OBB_Ride"), TEXT("Layer_Monster"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta);
 	//
-	//m_pGameInstance->Check_AABBCollision(TEXT("Layer_Player"), TEXT("Layer_Spawner"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta);
-	//m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_PlayerBullet"), TEXT("Layer_Map_Objects_AABB"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta, nullptr);
-	//m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_PlayerBullet"), TEXT("Layer_Map_Objects_AABB_Ride"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta, nullptr);
-	//m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_PlayerBullet"), TEXT("Layer_Map_Objects_Ray"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta, nullptr);
-	//m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_PlayerBullet"), TEXT("Layer_Monster"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta, nullptr);
-	//m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_Monster_Bullet"), TEXT("Layer_Player"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta, nullptr);
+	m_pGameInstance->Check_AABBCollision(TEXT("Layer_Player"), TEXT("Layer_Spawner"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta);
+	m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_PlayerBullet"), TEXT("Layer_Map_Objects_AABB"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta, nullptr);
+	m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_PlayerBullet"), TEXT("Layer_Map_Objects_AABB_Ride"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta, nullptr);
+	m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_PlayerBullet"), TEXT("Layer_Map_Objects_Ray"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta, nullptr);
+	m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_PlayerBullet"), TEXT("Layer_Monster"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta, nullptr);
+	m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_Monster_Bullet"), TEXT("Layer_Player"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta, nullptr);
 
 	m_pTerrain_Manager->Check_Landing();
 
@@ -216,6 +221,8 @@ void CLevel_Jusin::Update(_float fTimeDelta)
 				m_pGraphic_Device, LEVEL::LOADING, LEVEL::BOSSFIGHT, &Desc))))
 			return;
 	}
+	else
+		m_pGameInstance->Check_AABBCollision(TEXT("Layer_Player"), TEXT("Layer_EventBox"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta);
 }
 
 HRESULT CLevel_Jusin::Render()
@@ -704,6 +711,28 @@ HRESULT CLevel_Jusin::Ready_Layer_UI(const _wstring& strLayerTag)
 	m_pUICardKey = dynamic_cast<CUICardKey*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::JUSIN), strLayerTag));
 	Safe_AddRef(m_pUICardKey);
 
+	/* 사용 가능 아이템 */
+	CUIObject::UIOBJECT_DESC Desc_UseableItems{};
+
+	ws = to_wstring(pPlayer->Get_Player_Info().iHealpacks);
+
+	// UI전체 크기 및 위치
+	Desc_UseableItems.iTextLength = 3;
+	Desc_UseableItems.fSizeX = 50.f + (50.f * 2);
+	Desc_UseableItems.fSizeY = 50.f;
+	Desc_UseableItems.fX = Desc_Hp.fX + 10;
+	Desc_UseableItems.fY = g_iWinSizeY - (Desc_Hp.fSizeY) - 45.f;
+	Desc_UseableItems.iLayerLevelIndex = ENUM_CLASS(LEVEL::JUSIN);
+	Desc_UseableItems.strLayerTag = strLayerTag;
+	Desc_UseableItems.strFontType = TEXT("Default");
+
+	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_GameObject_UIUseableItems"),
+		ENUM_CLASS(LEVEL::JUSIN), strLayerTag, &Desc_UseableItems)))
+		return E_FAIL;
+
+	m_pUIUseableItems = dynamic_cast<CUIUseableItems*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::JUSIN), strLayerTag));
+	Safe_AddRef(m_pUIUseableItems);
+
 	Safe_Release(pPlayer);
 
 	return S_OK;
@@ -1171,6 +1200,7 @@ void CLevel_Jusin::Free()
 	Safe_Release(m_pUIInteraction);
 	Safe_Release(m_pUIAim);
 	Safe_Release(m_pUICardKey);
+	Safe_Release(m_pUIUseableItems);
 	Safe_Release(m_pFileMgr);
 
 	Safe_Release(m_pEffect_Manager);

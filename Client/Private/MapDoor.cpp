@@ -27,21 +27,24 @@ _bool CMapDoor::Get_Door_Open()
 	return m_bOpen;
 }
 
+_bool CMapDoor::Get_Door_End()
+{
+	return m_bEnd;
+}
+
 void CMapDoor::Door_Animation(_float fTimeDelta)
 {
 	_float3 vDoorPos = m_pTransformCom->Get_State(STATE::POSITION);
 
-	if (m_bOpen)
-	{
-		m_fTimeStack += fTimeDelta;
+	m_fTimeStack += fTimeDelta;
 
-		if (vDoorPos.z < (m_pObjectDesc.matWorld.m[3][2] + m_pTransformCom->Get_Scaled().x))
-		{
-			m_fTimeStack = 0.f;
-			m_bOpen = false;
-		}
-		vDoorPos.z += (fTimeDelta * 5);
+	if (vDoorPos.z > (m_pObjectDesc.matWorld.m[3][2] + m_pTransformCom->Get_Scaled().x))
+	{
+		m_fTimeStack = 0.f;
+		m_bOpen = false;
+		m_bEnd = true;
 	}
+	vDoorPos.z += (fTimeDelta * 5);
 
 	m_pTransformCom->Set_State(STATE::POSITION, vDoorPos);
 }

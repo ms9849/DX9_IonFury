@@ -23,6 +23,8 @@
 #include "ItemPortableHealPack.h"
 #include "MeleeAttack.h"
 #include "Zombie.h"
+#include "ItemBurger.h"
+#include "ItemCoffee.h"
 
 CPlayer::CPlayer(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CLandObject{ pGraphic_Device }
@@ -67,8 +69,9 @@ HRESULT CPlayer::Initialize(void* pArg)
 	if (FAILED(Ready_Weapons()))
 		return E_FAIL;
 
-	m_tInfo.iHp = 70;
-	m_tInfo.iArmor = 70;
+	m_tInfo.iHp = 80;
+	m_tInfo.iArmor = 0;
+	m_tInfo.iHealpacks = 12;
 
 	auto iter = m_tInfo.Weapons.find(m_tInfo.strWeapon);
 
@@ -118,17 +121,21 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 void CPlayer::Update(_float fTimeDelta)
 {
 	/*치트*/
-	//if (m_pGameInstance->Key_Down('0'))
-	//{
-	//	m_pTransformCom->Set_State(STATE::POSITION, _float3(14.f, 26.f, 178.f)); // 아지트 앞
-	//}
-	//if (m_pGameInstance->Key_Down('9'))
-	//{
-	//	m_pTransformCom->Set_State(STATE::POSITION, _float3(72.f, 26.f, 67.75f)); // 자습실 카드키 앞
-	//}
+	if (m_pGameInstance->Key_Down('0'))
+	{
+		m_pTransformCom->Set_State(STATE::POSITION, _float3(14.f, 26.f, 178.f)); // 아지트 앞
+	}
+	if (m_pGameInstance->Key_Down('9'))
+	{
+		m_pTransformCom->Set_State(STATE::POSITION, _float3(70.f, 26.f, 67.75f)); // 자습실 카드키 앞
+	}
 	if (m_pGameInstance->Key_Down('8'))
 	{
 		m_pTransformCom->Set_State(STATE::POSITION, _float3(35.f, 6.f, 45.f));
+	}
+	if (m_pGameInstance->Key_Down('7'))
+	{
+		m_pTransformCom->Set_State(STATE::POSITION, _float3(40.f, 40.f, 197.f));
 	}
 
 	/* 점프 로직*/
@@ -142,6 +149,18 @@ void CPlayer::Update(_float fTimeDelta)
 
 	/* 애니메이션 제어 */
 	auto iter = m_tInfo.Weapons.find(m_tInfo.strWeapon);
+
+	if (m_pGameInstance->Key_Down(VK_LCONTROL))
+	{
+		if (m_tInfo.iHealpacks > 0)
+		{
+			m_tInfo.iHp += 30;
+			if (m_tInfo.iHp >= 100)
+				m_tInfo.iHp = 100;
+			m_tInfo.iHealpacks -= 1;
+			CEffect_Manager::GetInstance()->Create_Effect(TEXT("Effect_Screen_Blur_Heal"), m_pObjectDesc.iLayerLevel, TEXT("Layer_Effect"), { 0.f, 0.f, 0.f });
+		}
+	}
 
 	if (m_tInfo.strAction.compare(TEXT("Reload")) != 0 && !m_bWeaponChange && !m_bUseCardKey)
 	{
@@ -192,6 +211,7 @@ void CPlayer::Update(_float fTimeDelta)
 				m_bUseCardKey = true;
 				m_pDoorLock->Set_Can_Open(m_bUseCardKey);
 				m_bCanUseCardKey = false;
+				m_bCanOpenDoor = false;
 			}
 			
 			if (m_bCanActiveElevator)
@@ -283,6 +303,8 @@ void CPlayer::Update(_float fTimeDelta)
 
 		if (m_tInfo.strWeapon == TEXT("MachineGun") && m_tInfo.strAction == TEXT("Shoot"))
 			m_tInfo.strAction = TEXT("Shoot");
+		else if (m_tInfo.strAction == TEXT("Walk"))
+			m_tInfo.strAction = TEXT("Walk");
 		else
 			m_tInfo.strAction = TEXT("Idle");
 
@@ -313,6 +335,17 @@ void CPlayer::Update(_float fTimeDelta)
 			m_pTransformCom->Go_Direction(vRight, fTimeDelta * m_fSpeed);
 			if (m_tInfo.strAction == TEXT("Idle"))
 				m_tInfo.strAction = TEXT("Walk");
+		}
+
+		if (m_tInfo.strAction == TEXT("Walk")
+			&& !m_pGameInstance->Key_Pressing('W')
+			&& !m_pGameInstance->Key_Pressing('A')
+			&& !m_pGameInstance->Key_Pressing('S')
+			&& !m_pGameInstance->Key_Pressing('D'))
+		{
+			//m_pRightHandAnimationCom->Clear_Animation(Set_FrameKey(m_tInfo.strWeapon, TEXT("Walk")));
+			//if(m_pRightHandAnimationCom->Check_Animation_Finish(Set_FrameKey(m_tInfo.strWeapon, TEXT("Walk"))))
+			m_tInfo.strAction = TEXT("Idle");
 		}
 
 		if (m_pGameInstance->Key_Down(VK_LSHIFT))
@@ -444,6 +477,8 @@ void CPlayer::Update(_float fTimeDelta)
 						&& m_tInfo.strAction != TEXT("Shoot"))
 					{
 						m_pGameInstance->PlaySoundOnce(TEXT("ShotGun_Fire.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
+						CEffect_Manager::GetInstance()->Create_Effect(TEXT("Effect_ShootGun_Fire"), m_pObjectDesc.iLayerLevel, TEXT("Layer_Effect"), { 0.f, 0.f, 0.f });
+
 						CBullet::BULLET_DESC Desc;
 						for (_uint i = 0; i < 7; ++i)
 						{
@@ -736,15 +771,16 @@ void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 		}
 		if (dynamic_cast<CItemArmor*>(pDst))
 		{
-			m_tInfo.iArmor += 10;
-			if (m_tInfo.iArmor >= 100)
-				m_tInfo.iArmor = 100;
-
-			Insert_ItemDesc(TEXT("Get Armor [Armor+10]"));
+			m_tInfo.iArmor = 100;
+			m_tInfo.bArmor = true;
+			Insert_ItemDesc(TEXT("Get Armor [Armor+100]"));
 		}
 		if (dynamic_cast<CItemArmorPack*>(pDst))
 		{
 			m_tInfo.iArmor += 1;
+			if (m_tInfo.iArmor >= 100)
+				m_tInfo.iArmor = 100;
+
 			Insert_ItemDesc(TEXT("Get Armor Fragment [Armor+1]"));
 		}
 		if (dynamic_cast<CItemHealpack*>(pDst))
@@ -755,9 +791,25 @@ void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 
 			Insert_ItemDesc(TEXT("Get Healpack [HP+10]"));
 		}
+		if (dynamic_cast<CItemBurger*>(pDst))
+		{
+			m_tInfo.iHp += 5;
+			if (m_tInfo.iHp >= 100)
+				m_tInfo.iHp = 100;
+
+			Insert_ItemDesc(TEXT("Eat Burger [HP+5]"));
+		}
+		if (dynamic_cast<CItemCoffee*>(pDst))
+		{
+			m_tInfo.iHp += 5;
+			if (m_tInfo.iHp >= 100)
+				m_tInfo.iHp = 100;
+
+			Insert_ItemDesc(TEXT("Drink Coffee [HP+5]"));
+		}
 		if (dynamic_cast<CItemPortableHealPack*>(pDst))
 		{
-			/* 들고 다닐 수 있는 회복 아이템 충돌 처리 해주시면 됩니다 */
+			m_tInfo.iHealpacks += 1;
 		}
 		if (dynamic_cast<CItemPistolBullet*>(pDst))
 		{

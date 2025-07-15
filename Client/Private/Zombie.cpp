@@ -223,19 +223,18 @@ void CZombie::Update(_float fTimeDelta)
 		}
 	}
 
-	if (m_fCurHp <= 0)
+	if (m_fCurHp <= 0 && m_bDying == false)
 	{
 		if (m_isHead)
 			m_strFrameKey = TEXT("Zombie_Die_HeadShot");
 		else
 			m_strFrameKey = TEXT("Zombie_Die_Default");
 
-		//m_pBoxColliderCom->Set_Scale({1.f, 0.1f, 1.f});
-		//m_pBoxColliderCom->Set_Scale({ 1.5f, 0.3f, 1.5f });
-		m_pBoxColliderCom->Set_Pos({ 0.f, -2.3f, 0.f });
+
 		m_pBoxColliderCom->Set_Scale({ 1.7f, 0.25f, 1.75f });
-		//m_pBoxColliderCom->Set_Scale({ 1.25f, 1.25f, 2.f });
+		m_pBoxColliderCom->Set_Pos({ 0.f, -0.6f, 0.f });
 		m_pBoxColliderHead->Set_Scale({ 0.f, 0.f, 0.f });
+
 		m_bAnimationLock = true;
 		m_bDying = true;
 		m_pGameInstance->PlaySoundOnce(TEXT("zombie_dead_1.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
@@ -246,8 +245,10 @@ void CZombie::Update(_float fTimeDelta)
 		SetUp_OnTerrain(m_pTransformCom, 0.45f, &m_bJump);
 		return;
 	}*/
-	/*else if (m_pSightCom->Check_Sight(fTimeDelta) && !m_bAnimationLock)
+	else if (m_pSightCom->Check_Sight(fTimeDelta) && !m_bAnimationLock)
 	{
+		m_isTarget = false;
+
 		if (!m_bFirstEncounter)
 		{
 			m_bFirstEncounter = true;
@@ -273,7 +274,7 @@ void CZombie::Update(_float fTimeDelta)
 				m_fSumMoveCoolTime = 0.f;
 			}
 		}
-	}*/
+	}
 
 	__super::Jump(fTimeDelta);
 	SetUp_OnTerrain(m_pTransformCom, 1.f, &m_bJump);
@@ -580,7 +581,10 @@ void CZombie::Move(_float fTimeDelta)
 	float fRadian = acosf(dot);
 	m_pTransformCom->Rotation({ 0.f, 1.f, 0.f }, fRadian);
 
-	m_pTransformCom->Go_Direction(vDirection, fTimeDelta);
+	if(m_pObjectDesc.iLayerLevel == ENUM_CLASS(LEVEL::GAMEPLAY))
+		m_pTransformCom->Go_Direction(vDirection, fTimeDelta * 1.5f);
+	else
+		m_pTransformCom->Go_Direction(vDirection, fTimeDelta);
 
 	m_pTransformCom->LookAt(m_pPlayerTransform->Get_State(STATE::POSITION));
 
@@ -609,11 +613,11 @@ void CZombie::TargetMove(_float fTimeDelta, _float3 vPos)		// 정해져 있는 장소로
 		if (m_isLeft)
 		{
 			//0.5
-			m_pTransformCom->Turn(_float3(0.f, -1.f, 0.f), fTimeDelta * 1.2f);
+			m_pTransformCom->Turn(_float3(0.f, -1.f, 0.f), fTimeDelta * 0.8f);
 		}
 		else
 		{
-			m_pTransformCom->Turn(_float3(0.f, 1.f, 0.f), fTimeDelta * 1.2f);
+			m_pTransformCom->Turn(_float3(0.f, 1.f, 0.f), fTimeDelta * 0.8f);
 		}
 		
 		_float3 vLook = m_pTransformCom->Get_State(STATE::LOOK);
@@ -623,7 +627,7 @@ void CZombie::TargetMove(_float fTimeDelta, _float3 vPos)		// 정해져 있는 장소로
 		m_pTransformCom->Set_State(STATE::LOOK, vLook);
 
 		m_fSumTime += fTimeDelta;
-		m_pTransformCom->Go_Straight(fTimeDelta * 3.f);
+		m_pTransformCom->Go_Straight(fTimeDelta * 1.5f);
 
 		if (m_fSumTime >= 5.f)
 		{

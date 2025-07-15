@@ -31,9 +31,9 @@ HRESULT CEffect_Pistol_Fire::Initialize(void* pArg)
     m_fWinSizeY = ViewportDesc.Height;
 
     m_pTransformCom->Set_Scale(_float3(100, 100, 1.f));
-    m_pTransformCom->Set_State(STATE::POSITION, _float3(750 - m_fWinSizeX * 0.5f, -380 + m_fWinSizeY * 0.5f, 0.f));
+    m_pTransformCom->Set_State(STATE::POSITION, _float3(735 - m_fWinSizeX * 0.5f, -390 + m_fWinSizeY * 0.5f, 0.f));
    
-    m_fNumFrame = 90.f;
+    m_fNumFrame = 3.f;
 
     return S_OK;
 }
@@ -48,7 +48,20 @@ void CEffect_Pistol_Fire::Update(_float fTimeDelta)
 
 void CEffect_Pistol_Fire::Late_Update(_float fTimeDelta)
 {
-    __super::Late_Update(fTimeDelta);
+    m_fFrame += m_fNumFrame * fTimeDelta * 5.f;
+
+    if (m_fFrame >= m_fNumFrame)
+    {
+        m_fFrame = 0.f;
+        m_isDead = true;
+    }
+
+    if (!m_isDead)
+    {
+        Compute_CamDistance(m_pTransformCom->Get_State(STATE::POSITION));
+        m_pGameInstance->Add_RenderGroup(RENDER::BLEND, this);
+    }
+
     m_fCamDistance = 0.1f;
 }
 
@@ -76,7 +89,7 @@ HRESULT CEffect_Pistol_Fire::Ready_Components()
         return E_FAIL;
 
     /* Com_Texture */
-    if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Effect"),
+    if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Effect_Pistol_Fire"),
         TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
         return E_FAIL;
 

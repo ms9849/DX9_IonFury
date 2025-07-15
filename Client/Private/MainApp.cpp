@@ -14,6 +14,7 @@
 #include "YellowDust.h"
 #include "Effect.h"
 #include "Effect_Pistol_Fire.h"
+#include "Effect_ShootGun_Fire.h"
 #include "Effect_Screen_Blur.h"
 #include "Bullet_Wound.h"
 #include "Bullet.h"
@@ -154,13 +155,6 @@ HRESULT CMainApp::Ready_Prototypes()
 		CFonts::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Fonts/Primary/Text_%d.png"), PrimaryFontSet, 94))))
 		return E_FAIL;
 
-#pragma endregion
-
-#pragma region 아이템 텍스쳐
-	/* For.Prototype_Component_Texture_Item_ArmorPack */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Item_ArmorPack"),
-		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Item/Item_ArmorPack_%d.png"), 1))))
-		return E_FAIL;
 #pragma endregion
 
 #pragma region 플레이어 애니메이션 텍스처
@@ -740,6 +734,16 @@ HRESULT CMainApp::Ready_Prototypes()
 #pragma endregion	
 
 #pragma region 이펙트
+	/* For.Prototype_Component_Texture_Effect_Pistol_Fire */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Effect_Pistol_Fire"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Effect/Pistol_Fire/Pistol_Fire_%d.png"), 3))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Effect_ShootGun_Fire */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Effect_ShootGun_Fire"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Effect/ShootGun_Fire/ShootGun_Fire_%d.png"), 4))))
+		return E_FAIL;
+
 	/* For.Prototype_Component_Texture_Effect */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Effect"),
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Explosion/Explosion%d.png"), 90))))
@@ -773,6 +777,11 @@ HRESULT CMainApp::Ready_Prototypes()
 	/* For.Prototype_GameObject_Effect_Pistol_Fire */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Effect_Pistol_Fire"),
 		CEffect_Pistol_Fire::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Effect_ShootGun_Fire */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Effect_ShootGun_Fire"),
+		CEffect_ShootGun_Fire::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_Effect */
