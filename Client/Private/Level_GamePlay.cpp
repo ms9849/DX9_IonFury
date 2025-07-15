@@ -10,6 +10,7 @@
 #include "UIArmor.h"
 #include "UIItemQueue.h"
 #include "UICardKey.h"
+#include "UIUseableItems.h"
 #include "Terrain.h"
 #include "ParticleSystem.h"
 #include "Player.h"
@@ -132,6 +133,7 @@ void CLevel_GamePlay::Update(_float fTimeDelta)
 	m_pUIBullets->Set_Bullets();
 	m_pUICardKey->Set_CardKey();
 	m_pUIInteraction->Set_Interaction();
+	m_pUIUseableItems->Set_UseableItems();
 	
 	size_t iItemQueueLength = dynamic_cast<CPlayer*>(
 		m_pGameInstance->Find_GameObject_ToLayer(
@@ -696,6 +698,28 @@ HRESULT CLevel_GamePlay::Ready_Layer_UI(const _wstring& strLayerTag)
 	m_pUICardKey = dynamic_cast<CUICardKey*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag));
 	Safe_AddRef(m_pUICardKey);
 
+	/* 사용 가능 아이템 */
+	CUIObject::UIOBJECT_DESC Desc_UseableItems{};
+
+	ws = to_wstring(pPlayer->Get_Player_Info().iHealpacks);
+
+	// UI전체 크기 및 위치
+	Desc_UseableItems.iTextLength = 3;
+	Desc_UseableItems.fSizeX = 50.f + (50.f * 2);
+	Desc_UseableItems.fSizeY = 50.f;
+	Desc_UseableItems.fX = Desc_Hp.fX + 10;
+	Desc_UseableItems.fY = g_iWinSizeY - (Desc_Hp.fSizeY) - 45.f;
+	Desc_UseableItems.iLayerLevelIndex = ENUM_CLASS(LEVEL::GAMEPLAY);
+	Desc_UseableItems.strLayerTag = strLayerTag;
+	Desc_UseableItems.strFontType = TEXT("Default");
+
+	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_UIUseableItems"),
+		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag, &Desc_UseableItems)))
+		return E_FAIL;
+
+	m_pUIUseableItems = dynamic_cast<CUIUseableItems*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag));
+	Safe_AddRef(m_pUIUseableItems);
+
 	Safe_Release(pPlayer);
 
 	return S_OK;
@@ -1162,6 +1186,7 @@ void CLevel_GamePlay::Free()
 	Safe_Release(m_pUIInteraction);
 	Safe_Release(m_pUIAim);
 	Safe_Release(m_pUICardKey);
+	Safe_Release(m_pUIUseableItems);
 	Safe_Release(m_pFileMgr);
 
 	Safe_Release(m_pEffect_Manager);

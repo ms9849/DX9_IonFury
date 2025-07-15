@@ -227,6 +227,7 @@
     <ClInclude Include="..\Public\UIInteraction.h" />
     <ClInclude Include="..\Public\UIText.h" />
     <ClInclude Include="..\Public\MapWall.h" />
+    <ClInclude Include="..\public\UIUseableItems.h" />
     <ClInclude Include="..\Public\YellowDust.h" />
     <ClInclude Include="..\public\Zombie.h" />
     <ClInclude Include="Client.h" />
@@ -318,6 +319,7 @@
     <ClCompile Include="..\private\UIItemQueue.cpp" />
     <ClCompile Include="..\Private\UIText.cpp" />
     <ClCompile Include="..\Private\MapWall.cpp" />
+    <ClCompile Include="..\private\UIUseableItems.cpp" />
     <ClCompile Include="..\Private\YellowDust.cpp" />
     <ClCompile Include="..\private\Zombie.cpp" />
     <ClCompile Include="Client.cpp" />
