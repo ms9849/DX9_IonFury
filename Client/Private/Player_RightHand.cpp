@@ -199,7 +199,7 @@ HRESULT CPlayer_RightHand::Ready_Animations()
 	
 	//Pistol_Walk
 	CAnimation::FRAME_DESC PistolWalkDesc{};
-	PistolWalkDesc.iEnd = 13;
+	PistolWalkDesc.iEnd = 11;
 	PistolWalkDesc.Poses.reserve(PistolWalkDesc.iEnd);
 
 	PistolWalkDesc.Poses.push_back(_float3{ -0.025f, 0.025f, 0.f });
@@ -207,8 +207,6 @@ HRESULT CPlayer_RightHand::Ready_Animations()
 	PistolWalkDesc.Poses.push_back(_float3{ -0.075f, 0.075f, 0.f });
 	PistolWalkDesc.Poses.push_back(_float3{ -0.1f, 0.1f, 0.f });
 	PistolWalkDesc.Poses.push_back(_float3{ -0.125f, 0.075f, 0.f });
-	PistolWalkDesc.Poses.push_back(_float3{ -0.15f, 0.05f, 0.f });
-	PistolWalkDesc.Poses.push_back(_float3{ -0.175f, 0.025f, 0.f });
 	PistolWalkDesc.Poses.push_back(_float3{ -0.15f, 0.05f, 0.f });
 	PistolWalkDesc.Poses.push_back(_float3{ -0.125f, 0.075f, 0.f });
 	PistolWalkDesc.Poses.push_back(_float3{ -0.1f, 0.1f, 0.f });

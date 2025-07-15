@@ -116,10 +116,6 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 void CPlayer::Priority_Update(_float fTimeDelta)
 {
-}
-
-void CPlayer::Update(_float fTimeDelta)
-{
 	/*치트*/
 	if (m_pGameInstance->Key_Down('0'))
 	{
@@ -542,6 +538,10 @@ void CPlayer::Update(_float fTimeDelta)
 	{
 		m_fColTimeStack = 0.f;
 	}
+}
+
+void CPlayer::Update(_float fTimeDelta)
+{
 }
 
 void CPlayer::Late_Update(_float fTimeDelta)
