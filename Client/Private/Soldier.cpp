@@ -28,10 +28,10 @@ HRESULT CSoldier::Initialize(void* pArg)
 	m_pPlayerTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(m_pObjectDesc.iLayerLevel, TEXT("Layer_Player"), TEXT("Com_Transform")));
 	Safe_AddRef(m_pPlayerTransform);
 
-	m_fAttackRange = 15.f;
+	m_fAttackRange = 10.f;
 	m_fDamage = 30.f;
 	m_fAttackCoolTime = 3.f;
-	m_fChaseRange = 20.f;
+	m_fChaseRange = 15.f;
 	m_fMaxRange = 15.f;
 	m_fRandomMoveTime = 3.f;
 	m_fSumRandomMoveTime = 0.f;
@@ -122,6 +122,11 @@ void CSoldier::Update(_float fTimeDelta)
 		m_isRandomMove = true;
 	}
 
+	/*if (!m_isRandomMove)
+	{
+		MoveAnimationCheck(true);
+	}*/
+	MoveAnimationCheck(true);
 	/*vDiff.y = 0.f;
 	D3DXVec3Normalize(&vDiff, &vDiff);
 
@@ -185,39 +190,42 @@ void CSoldier::Update(_float fTimeDelta)
 		m_bDying = true;
 		m_pGameInstance->PlaySoundOnce(TEXT("Soldier_Death01.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
 	}
-	//else if (m_pSightCom->Check_Sight(fTimeDelta) && !m_bAnimationLock)
-	//{
-	//	if (!m_bFirstEncounter)
-	//	{
-	//		m_bFirstEncounter = true;
-	//		// 첫 조우 사운드 추가
-	//		m_pGameInstance->PlaySoundOnce(TEXT("Soldier_Contact.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
-	//	}
-	//	if (m_fSumAttackCoolTime >= m_fAttackCoolTime)
-	//	{
-	//		_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
-	//		if (D3DXVec3Length(&vDiff) <= m_fAttackRange)
-	//		{
-	//			// 공격 사운드 추가
-	//			m_pGameInstance->PlaySoundOnce(TEXT("Soldier_Fire.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
-	//			Attack();
-	//			m_fSumRandomMoveTime = 0.f;
-	//		}
-	//	}
+	else if (m_pSightCom->Check_Sight(fTimeDelta) && !m_bAnimationLock)
+	{
+		if (!m_bFirstEncounter)
+		{
+			m_bFirstEncounter = true;
+			// 첫 조우 사운드 추가
+			m_pGameInstance->PlaySoundOnce(TEXT("Soldier_Contact.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
+		}
+		if (m_fSumAttackCoolTime >= m_fAttackCoolTime)
+		{
+			_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
+			if (D3DXVec3Length(&vDiff) <= m_fAttackRange)
+			{
+				// 공격 사운드 추가
+				m_pGameInstance->PlaySoundOnce(TEXT("Soldier_Fire.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
+				//Move(fTimeDelta);
+				Attack();
+				m_fSumRandomMoveTime = 0.f;
+				m_fSightFailTime = 0.f;
+			}
+		}
 
-	//	if (m_fSumMoveCoolTime >= m_fMoveCoolTime)
-	//	{
-	//		_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
-	//		if (D3DXVec3Length(&vDiff) <= m_fChaseRange && D3DXVec3Length(&vDiff) >= m_fAttackRange - 1.f)
-	//		{
-	//			MoveAnimationCheck(false);
-	//			Move(fTimeDelta);
-	//			m_isMove = true;
-	//			m_fSumMoveCoolTime = 0.f;
-	//			m_fSumRandomMoveTime = 0.f;
-	//		}
-	//	}
-	//}
+		if (m_fSumMoveCoolTime >= m_fMoveCoolTime)
+		{
+			_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
+			if (D3DXVec3Length(&vDiff) <= m_fChaseRange && D3DXVec3Length(&vDiff) >= m_fAttackRange - 1.f)
+			{
+				//MoveAnimationCheck(false);
+				Move(fTimeDelta);
+				m_isMove = true;
+				m_fSumMoveCoolTime = 0.f;
+				m_fSumRandomMoveTime = 0.f;
+				m_fSightFailTime = 0.f;
+			}
+		}
+	}
 	else
 	{
 		m_fSightFailTime += fTimeDelta;
@@ -227,6 +235,7 @@ void CSoldier::Update(_float fTimeDelta)
 			m_fSumMoveCoolTime = 0.f;
 			MoveAnimationCheck(true);
 			RandomMove(fTimeDelta, m_vNextDir);
+		
 			m_isMove = true;
 			m_fSightFailTime = 0.f;
 
@@ -594,6 +603,8 @@ void CSoldier::Attack()
 	_float3 vDir = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
 	_float3 vPos = m_pTransformCom->Get_State(STATE::POSITION);
 	D3DXVec3Normalize(&vDir, &vDir);
+
+	m_vNextDir = vDir;
 
 	CBullet::BULLET_DESC Desc;
 	Desc.vDir = vDir;
