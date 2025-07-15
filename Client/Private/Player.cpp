@@ -69,8 +69,8 @@ HRESULT CPlayer::Initialize(void* pArg)
 	if (FAILED(Ready_Weapons()))
 		return E_FAIL;
 
-	m_tInfo.iHp = 70;
-	m_tInfo.iArmor = 70;
+	m_tInfo.iHp = 100;
+	m_tInfo.iArmor = 100;
 
 	auto iter = m_tInfo.Weapons.find(m_tInfo.strWeapon);
 
@@ -120,14 +120,14 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 void CPlayer::Update(_float fTimeDelta)
 {
 	/*치트*/
-	//if (m_pGameInstance->Key_Down('0'))
-	//{
-	//	m_pTransformCom->Set_State(STATE::POSITION, _float3(14.f, 26.f, 178.f)); // 아지트 앞
-	//}
-	//if (m_pGameInstance->Key_Down('9'))
-	//{
-	//	m_pTransformCom->Set_State(STATE::POSITION, _float3(72.f, 26.f, 67.75f)); // 자습실 카드키 앞
-	//}
+	if (m_pGameInstance->Key_Down('0'))
+	{
+		m_pTransformCom->Set_State(STATE::POSITION, _float3(14.f, 26.f, 178.f)); // 아지트 앞
+	}
+	if (m_pGameInstance->Key_Down('9'))
+	{
+		m_pTransformCom->Set_State(STATE::POSITION, _float3(72.f, 26.f, 67.75f)); // 자습실 카드키 앞
+	}
 	if (m_pGameInstance->Key_Down('8'))
 	{
 		m_pTransformCom->Set_State(STATE::POSITION, _float3(35.f, 6.f, 45.f));
@@ -198,6 +198,7 @@ void CPlayer::Update(_float fTimeDelta)
 				m_bUseCardKey = true;
 				m_pDoorLock->Set_Can_Open(m_bUseCardKey);
 				m_bCanUseCardKey = false;
+				m_bCanOpenDoor = false;
 			}
 			
 			if (m_bCanActiveElevator)
@@ -289,6 +290,8 @@ void CPlayer::Update(_float fTimeDelta)
 
 		if (m_tInfo.strWeapon == TEXT("MachineGun") && m_tInfo.strAction == TEXT("Shoot"))
 			m_tInfo.strAction = TEXT("Shoot");
+		else if (m_tInfo.strAction == TEXT("Walk"))
+			m_tInfo.strAction = TEXT("Walk");
 		else
 			m_tInfo.strAction = TEXT("Idle");
 
@@ -319,6 +322,17 @@ void CPlayer::Update(_float fTimeDelta)
 			m_pTransformCom->Go_Direction(vRight, fTimeDelta * m_fSpeed);
 			if (m_tInfo.strAction == TEXT("Idle"))
 				m_tInfo.strAction = TEXT("Walk");
+		}
+
+		if (m_tInfo.strAction == TEXT("Walk")
+			&& !m_pGameInstance->Key_Pressing('W')
+			&& !m_pGameInstance->Key_Pressing('A')
+			&& !m_pGameInstance->Key_Pressing('S')
+			&& !m_pGameInstance->Key_Pressing('D'))
+		{
+			//m_pRightHandAnimationCom->Clear_Animation(Set_FrameKey(m_tInfo.strWeapon, TEXT("Walk")));
+			//if(m_pRightHandAnimationCom->Check_Animation_Finish(Set_FrameKey(m_tInfo.strWeapon, TEXT("Walk"))))
+			m_tInfo.strAction = TEXT("Idle");
 		}
 
 		if (m_pGameInstance->Key_Down(VK_LSHIFT))
@@ -753,6 +767,9 @@ void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 		if (dynamic_cast<CItemArmorPack*>(pDst))
 		{
 			m_tInfo.iArmor += 1;
+			if (m_tInfo.iArmor >= 100)
+				m_tInfo.iArmor = 100;
+
 			Insert_ItemDesc(TEXT("Get Armor Fragment [Armor+1]"));
 		}
 		if (dynamic_cast<CItemHealpack*>(pDst))

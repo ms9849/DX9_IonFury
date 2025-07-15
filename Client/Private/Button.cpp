@@ -37,7 +37,11 @@ void CButton::Priority_Update(_float fTimeDelta)
 
 void CButton::Update(_float fTimeDelta)
 {
-	if (m_bActive)
+	if (m_bActive && !dynamic_cast<CMapDoor*>(
+		m_pGameInstance->Get_GameObject_By_ID(
+			m_pObjectDesc.iLayerLevel,
+			TEXT("Layer_Map_Objects_Gate"),
+			m_iTargetID))->Get_Door_End())
 	{
 		Button_Control(fTimeDelta);
 	}

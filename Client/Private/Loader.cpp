@@ -202,6 +202,11 @@ HRESULT CLoader::Loading_For_GamePlay()
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Item/Item_Armor_0.png"), 1))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Texture_Item_ArmorPack */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Item_ArmorPack"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Item/Item_ArmorPack_%d.png"), 1))))
+		return E_FAIL;
+
 	/* For.Prototype_Component_Texture_Item_Healpack_0 */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Item_Healpack_0"),
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Item/Item_Healpack_0.png"), 1))))
@@ -512,8 +517,8 @@ HRESULT CLoader::Loading_For_GamePlay()
 	/* For.Prototype_GameObject_Item_ArmorPack */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Item_ArmorPack"),
 		CItemArmorPack::Create(m_pGraphic_Device))))
-
 		return E_FAIL;
+
 	/* For.Prototype_GameObject_Item_Healpack */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Item_Healpack"),
 		CItemHealpack::Create(m_pGraphic_Device))))
@@ -695,6 +700,11 @@ HRESULT CLoader::Loading_For_Jusin()
 	/* For.Prototype_Component_Texture_Item_Armor_0 */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_Component_Texture_Item_Armor_0"),
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Item/Item_Armor_0.png"), 1))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Item_ArmorPack */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_Component_Texture_Item_ArmorPack"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Item/Item_ArmorPack_%d.png"), 1))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Item_Healpack_0 */
@@ -1019,7 +1029,7 @@ HRESULT CLoader::Loading_For_Jusin()
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_Item_Healpack */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_GameObject_Item_HealPack"),
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_GameObject_Item_Healpack"),
 		CItemHealpack::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
@@ -1232,6 +1242,11 @@ HRESULT CLoader::Loading_For_BossFight()
 	/* For.Prototype_Component_Texture_Item_Armor_0 */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_Component_Texture_Item_Armor_0"),
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Item/Item_Armor_0.png"), 1))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Item_ArmorPack */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_Component_Texture_Item_ArmorPack"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Item/Item_ArmorPack_%d.png"), 1))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Item_Healpack_0 */
