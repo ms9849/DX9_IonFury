@@ -68,6 +68,9 @@ HRESULT CLevel_Jusin::Initialize(void* pArg)
 
 	 if (FAILED(Ready_Layer_Items(TEXT("Layer_Items"))))
 	 	return E_FAIL;
+
+	 if (FAILED(Ready_Layer_EventBox(TEXT("Layer_EventBox"))))
+		 return E_FAIL;
 	 
 	if (FAILED(Ready_Layer_Map_Objects_AABB(TEXT("Layer_Map_Objects_AABB")))) // 벽 같이 회전 안한 큐브
 		return E_FAIL;
@@ -84,10 +87,10 @@ HRESULT CLevel_Jusin::Initialize(void* pArg)
 	 
 	if (FAILED(Ready_Layer_Map_Objects_Gate(TEXT("Layer_Map_Objects_Gate")))) // 문
 		return E_FAIL;
-	// 
-	// if (FAILED(Ready_Layer_Map_Objects_Ray(TEXT("Layer_Map_Objects_Ray"))))
-	// 	return E_FAIL;
-	// 
+	
+	if (FAILED(Ready_Layer_Map_Objects_Ray(TEXT("Layer_Map_Objects_Ray"))))
+		return E_FAIL;
+	
 	if (FAILED(Ready_Layer_Map_Objects_Deco(TEXT("Layer_Map_Objects_Deco")))) // 데코레이션
 		return E_FAIL;
 	
@@ -160,25 +163,25 @@ void CLevel_Jusin::Update(_float fTimeDelta)
 
 	m_pGameInstance->Check_SphereCollision(TEXT("Layer_Player"), TEXT("Layer_Items"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta);
 	m_pGameInstance->Check_SphereCollision(TEXT("Layer_Player"), TEXT("Layer_Interaction_Objects"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta);
-	//m_pGameInstance->Check_SphereCollision(TEXT("Layer_Player"), TEXT("Layer_Melee_Attack"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta);
+	m_pGameInstance->Check_SphereCollision(TEXT("Layer_Player"), TEXT("Layer_Melee_Attack"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta);
 
-	//m_pGameInstance->Check_AABBCollision(TEXT("Layer_Player"), TEXT("Layer_Map_Objects_AABB"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta);
-	//m_pGameInstance->Check_AABBCollision(TEXT("Layer_Player"), TEXT("Layer_Map_Objects_AABB_Ride"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta);
-	//m_pGameInstance->Check_AABBCollision(TEXT("Layer_Player"), TEXT("Layer_Map_Objects_Gate"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta);
+	m_pGameInstance->Check_AABBCollision(TEXT("Layer_Player"), TEXT("Layer_Map_Objects_AABB"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta);
+	m_pGameInstance->Check_AABBCollision(TEXT("Layer_Player"), TEXT("Layer_Map_Objects_AABB_Ride"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta);
+	m_pGameInstance->Check_AABBCollision(TEXT("Layer_Player"), TEXT("Layer_Map_Objects_Gate"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta);
 
-	//m_pGameInstance->Check_AABBCollision(TEXT("Layer_Monster"), TEXT("Layer_Monster"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta);
-	//m_pGameInstance->Check_AABBCollision(TEXT("Layer_Monster"), TEXT("Layer_Map_Objects_AABB"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta);
-	//m_pGameInstance->Check_AABBCollision(TEXT("Layer_Monster"), TEXT("Layer_Map_Objects_Gate"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta);
+	m_pGameInstance->Check_AABBCollision(TEXT("Layer_Monster"), TEXT("Layer_Monster"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta);
+	m_pGameInstance->Check_AABBCollision(TEXT("Layer_Monster"), TEXT("Layer_Map_Objects_AABB"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta);
+	m_pGameInstance->Check_AABBCollision(TEXT("Layer_Monster"), TEXT("Layer_Map_Objects_Gate"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta);
 	//
 	//m_pGameInstance->Check_OBBCollision(TEXT("Layer_Map_Objects_OBB_Ride"), TEXT("Layer_Player"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta);
 	//m_pGameInstance->Check_OBBCollision(TEXT("Layer_Map_Objects_OBB_Ride"), TEXT("Layer_Monster"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta);
 	//
-	//m_pGameInstance->Check_AABBCollision(TEXT("Layer_Player"), TEXT("Layer_Spawner"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta);
-	//m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_PlayerBullet"), TEXT("Layer_Map_Objects_AABB"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta, nullptr);
-	//m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_PlayerBullet"), TEXT("Layer_Map_Objects_AABB_Ride"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta, nullptr);
-	//m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_PlayerBullet"), TEXT("Layer_Map_Objects_Ray"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta, nullptr);
-	//m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_PlayerBullet"), TEXT("Layer_Monster"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta, nullptr);
-	//m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_Monster_Bullet"), TEXT("Layer_Player"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta, nullptr);
+	m_pGameInstance->Check_AABBCollision(TEXT("Layer_Player"), TEXT("Layer_Spawner"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta);
+	m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_PlayerBullet"), TEXT("Layer_Map_Objects_AABB"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta, nullptr);
+	m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_PlayerBullet"), TEXT("Layer_Map_Objects_AABB_Ride"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta, nullptr);
+	m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_PlayerBullet"), TEXT("Layer_Map_Objects_Ray"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta, nullptr);
+	m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_PlayerBullet"), TEXT("Layer_Monster"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta, nullptr);
+	m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_Monster_Bullet"), TEXT("Layer_Player"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta, nullptr);
 
 	m_pTerrain_Manager->Check_Landing();
 
@@ -216,6 +219,8 @@ void CLevel_Jusin::Update(_float fTimeDelta)
 				m_pGraphic_Device, LEVEL::LOADING, LEVEL::BOSSFIGHT, &Desc))))
 			return;
 	}
+	else
+		m_pGameInstance->Check_AABBCollision(TEXT("Layer_Player"), TEXT("Layer_EventBox"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta);
 }
 
 HRESULT CLevel_Jusin::Render()

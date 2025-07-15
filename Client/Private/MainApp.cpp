@@ -157,13 +157,6 @@ HRESULT CMainApp::Ready_Prototypes()
 
 #pragma endregion
 
-#pragma region 아이템 텍스쳐
-	/* For.Prototype_Component_Texture_Item_ArmorPack */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Item_ArmorPack"),
-		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Item/Item_ArmorPack_%d.png"), 1))))
-		return E_FAIL;
-#pragma endregion
-
 #pragma region 플레이어 애니메이션 텍스처
 	// 권총
 	/* For.Prototype_Component_Texture_Player_Pistol_Idle */

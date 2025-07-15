@@ -22,6 +22,7 @@ private:
 public:
 	void Set_Door_Open(_bool bOpen);
 	_bool Get_Door_Open();
+	_bool Get_Door_End();
 	void Door_Animation(_float fTimeDelta);
 
 public:
@@ -43,6 +44,7 @@ private:
 	CBoxCollider* m_pBoxColliderCom = { nullptr };
 
 	_bool m_bOpen{ false };
+	_bool m_bEnd{ false };
 	_float m_fTimeStack{ 0.f };
 
 private:
