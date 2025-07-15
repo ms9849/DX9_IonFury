@@ -223,7 +223,7 @@ void CZombie::Update(_float fTimeDelta)
 		}
 	}
 
-	if (m_fCurHp <= 0)
+	if (m_fCurHp <= 0 && m_bDying == false)
 	{
 		if (m_isHead)
 			m_strFrameKey = TEXT("Zombie_Die_HeadShot");
