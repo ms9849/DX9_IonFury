@@ -95,6 +95,19 @@ void CSound_Manager::PlayBGM(const _wstring& pSoundKey, float fVolume)
 	m_pSystem->update();
 }
 
+void CSound_Manager::PlaySoundLoop(const _wstring& pSoundKey, CHANNELID eID, float fVolume)
+{
+	auto iter = m_mapSound.find(pSoundKey);
+
+	if (iter == m_mapSound.end())
+		return;
+
+	m_pSystem->playSound(iter->second, nullptr, FALSE, &m_pChannelArr[ENUM_CLASS(CHANNELID::SOUND_BGM)]);
+	m_pChannelArr[ENUM_CLASS(eID)]->setMode(FMOD_LOOP_NORMAL);
+	m_pChannelArr[ENUM_CLASS(eID)]->setVolume(fVolume);
+	m_pSystem->update();
+}
+
 void CSound_Manager::StopSound(CHANNELID eID)
 {
 	m_pChannelArr[ENUM_CLASS(eID)]->stop();
