@@ -59,7 +59,7 @@ protected:
 	_bool m_bisFire = { false };
 	_bool m_bPlayerBullet = { false };
 	_float m_fDamage = { 10.f };
-	_float m_fBulletSpeed = { 15.f };
+	_float m_fBulletSpeed = { 35.f };
 	_float m_fDuration = 5.f;
 	_float m_fSumTime = 0.f;
 	_float3 m_vDir = {};

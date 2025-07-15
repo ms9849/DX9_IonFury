@@ -161,8 +161,8 @@ void CLevel_GamePlay::Update(_float fTimeDelta)
 	m_pGameInstance->Check_SphereCollision(TEXT("Layer_Player"), TEXT("Layer_Interaction_Objects"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta);
 	 m_pGameInstance->Check_SphereCollision(TEXT("Layer_Player"), TEXT("Layer_Melee_Attack"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta);
 
-	m_pGameInstance->Check_AABBCollision(TEXT("Layer_Player"), TEXT("Layer_Map_Objects_AABB"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta);
-	m_pGameInstance->Check_AABBCollision(TEXT("Layer_Player"), TEXT("Layer_Map_Objects_AABB_Ride"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta);
+	//m_pGameInstance->Check_AABBCollision(TEXT("Layer_Player"), TEXT("Layer_Map_Objects_AABB"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta);
+	//m_pGameInstance->Check_AABBCollision(TEXT("Layer_Player"), TEXT("Layer_Map_Objects_AABB_Ride"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta);
 	//m_pGameInstance->Check_AABBCollision(TEXT("Layer_Player"), TEXT("Layer_Map_Objects_Gate"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta);
 
 	m_pGameInstance->Check_AABBCollision(TEXT("Layer_Monster"), TEXT("Layer_Monster"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta);
@@ -199,9 +199,7 @@ void CLevel_GamePlay::Update(_float fTimeDelta)
 
 	m_fTimeDelta = fTimeDelta;
 
-	m_pGameInstance->Check_AABBCollision(TEXT("Layer_Player"), TEXT("Layer_EventBox"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta);
-
-	if (m_pGameInstance->Key_Down(VK_F9))
+	if (m_pGameInstance->Key_Down(VK_F3))
 	{
 		CPlayer::PLAYER_INFO Desc{};
 
@@ -215,6 +213,8 @@ void CLevel_GamePlay::Update(_float fTimeDelta)
 				m_pGraphic_Device, LEVEL::LOADING, LEVEL::JUSIN, &Desc))))
 			return;
 	}
+	else
+		m_pGameInstance->Check_AABBCollision(TEXT("Layer_Player"), TEXT("Layer_EventBox"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta);
 }
 
 HRESULT CLevel_GamePlay::Render()

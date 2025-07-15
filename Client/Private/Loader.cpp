@@ -23,6 +23,8 @@
 #include "ItemShootGun.h"
 #include "ItemMachineGun.h"
 #include "ItemCardKey.h"
+#include "ItemArmorPack.h"
+#include "ItemPortableHealPack.h"
 #include "Spawner.h"
 #include "Soldier.h"
 #include "EliteSoldier.h"
@@ -202,6 +204,11 @@ HRESULT CLoader::Loading_For_GamePlay()
 	/* For.Prototype_Component_Texture_Item_Healpack_0 */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Item_Healpack_0"),
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Item/Item_Healpack_0.png"), 1))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Item_Portable_HealPack */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Item_Portable_Healpack"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Item/Item_Portable_Healpack.png"), 1))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Item_CardKey_0 */
@@ -491,9 +498,19 @@ HRESULT CLoader::Loading_For_GamePlay()
 		CItemArmor::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
+	/* For.Prototype_GameObject_Item_ArmorPack */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Item_ArmorPack"),
+		CItemArmorPack::Create(m_pGraphic_Device))))
+
+		return E_FAIL;
 	/* For.Prototype_GameObject_Item_Healpack */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Item_Healpack"),
 		CItemHealpack::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Item_Portable_Healpack */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Item_Portable_Healpack"),
+		CItemPortableHealPack::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_Item_Pistol_Bullet */
@@ -662,6 +679,11 @@ HRESULT CLoader::Loading_For_Jusin()
 	/* For.Prototype_Component_Texture_Item_Healpack_0 */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_Component_Texture_Item_Healpack_0"),
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Item/Item_Healpack_0.png"), 1))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Item_Portable_HealPack */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_Component_Texture_Item_Portable_Healpack"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Item/Item_Portable_Healpack.png"), 1))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Item_CardKey_0 */
@@ -960,9 +982,19 @@ HRESULT CLoader::Loading_For_Jusin()
 		CItemArmor::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
+	/* For.Prototype_GameObject_Item_ArmorPack */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_GameObject_Item_ArmorPack"),
+		CItemArmorPack::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
 	/* For.Prototype_GameObject_Item_Healpack */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_GameObject_Item_Healpack"),
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_GameObject_Item_HealPack"),
 		CItemHealpack::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Item_Portable_Healpack */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_GameObject_Item_Portable_Healpack"),
+		CItemPortableHealPack::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_Item_Pistol_Bullet */
@@ -1164,6 +1196,11 @@ HRESULT CLoader::Loading_For_BossFight()
 	/* For.Prototype_Component_Texture_Item_Healpack_0 */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_Component_Texture_Item_Healpack_0"),
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Item/Item_Healpack_0.png"), 1))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Item_Portable_HealPack */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_Component_Texture_Item_Portable_Healpack"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Item/Item_Portable_Healpack.png"), 1))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Item_CardKey_0 */
@@ -1467,9 +1504,19 @@ HRESULT CLoader::Loading_For_BossFight()
 		CItemArmor::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
+	/* For.Prototype_GameObject_Item_ArmorPack */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_GameObject_Item_ArmorPack"),
+		CItemArmorPack::Create(m_pGraphic_Device))))
+
+
 	/* For.Prototype_GameObject_Item_Healpack */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_GameObject_Item_Healpack"),
 		CItemHealpack::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Item_Portable_Healpack */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_GameObject_Item_Portable_Healpack"),
+		CItemPortableHealPack::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_Item_Pistol_Bullet */

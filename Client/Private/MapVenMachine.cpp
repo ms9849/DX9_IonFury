@@ -1,6 +1,12 @@
 #include "MapVenMachine.h"
 
 #include "GameInstance.h"
+#include "Item.h"
+#include "ItemArmorPack.h"
+#include "ItemPistolBullet.h"
+#include "ItemShootGunBullet.h"
+#include "ItemHealpack.h"
+#include "Bullet.h"
 
 CMapVenMachine::CMapVenMachine(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CCubeObject{ pGraphic_Device }
@@ -40,6 +46,8 @@ void CMapVenMachine::Priority_Update(_float fTimeDelta)
 
 void CMapVenMachine::Update(_float fTimeDelta)
 {
+	if (m_fTimeAcc <= 2.0f && m_bBroken)
+		Item_Dispense(fTimeDelta);
 }
 
 void CMapVenMachine::Late_Update(_float fTimeDelta)
@@ -53,7 +61,7 @@ HRESULT CMapVenMachine::Render()
 
 	m_pTransformCom->Set_Transform();
 
-	m_pTextureCom->Set_Texture(0); // 터지면 1로
+	m_pTextureCom->Set_Texture(m_iTextureNum); // 터지면 1로
 
 	m_pVIBufferCom->Render();
 
@@ -88,8 +96,67 @@ HRESULT CMapVenMachine::Ready_Components()
 	return S_OK;
 }
 
+void CMapVenMachine::Item_Dispense(_float fTimeDelta)
+{
+	m_fTimeAcc += fTimeDelta;
+	m_fItemCoolDown += fTimeDelta;
+
+	if (m_fItemCoolDown >= 0.07f)
+	{
+		_int iRandomNum = static_cast<_int>(m_pGameInstance->Random(0.f, 4.0f));
+		CItem* pItem;
+		
+		switch (iRandomNum)
+		{
+		case 0:
+			pItem = static_cast<CItem*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, m_pObjectDesc.iLayerLevel,
+				TEXT("Prototype_GameObject_Item_ArmorPack"), &m_pObjectDesc));
+			break;
+		case 1:
+			pItem = static_cast<CItem*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, m_pObjectDesc.iLayerLevel,
+				TEXT("Prototype_GameObject_Item_Pistol_Bullet"), &m_pObjectDesc));
+			break;
+		case 2:
+			pItem = static_cast<CItem*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, m_pObjectDesc.iLayerLevel,
+				TEXT("Prototype_GameObject_Item_ShootGun_Bullet"), &m_pObjectDesc));
+			break;
+		case 3:
+			pItem = static_cast<CItem*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, m_pObjectDesc.iLayerLevel,
+				TEXT("Prototype_GameObject_Item_HealPack"), &m_pObjectDesc));
+			break;
+		default:
+			pItem = static_cast<CItem*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, m_pObjectDesc.iLayerLevel,
+				TEXT("Prototype_GameObject_Item_HealPack"), &m_pObjectDesc));
+			break;
+		}
+
+		_float3 vDir = { m_pGameInstance->Random(-1.f, 0.f), 0.f,  m_pGameInstance->Random(-1.f, 1.f) };
+		pItem->Set_Jump(true);
+		pItem->Set_Parabola(true, vDir);
+
+		m_pGameInstance->Add_Clone_ToLayer(pItem, m_pObjectDesc.iLayerLevel, TEXT("Layer_Items"));
+		m_pGameInstance->PlaySoundOnce(TEXT("Vending_ItemDrop.ogg"), CHANNELID::SOUND_EFFECT, 0.3f);
+		m_fItemCoolDown = 0.f;
+	}
+}
+
 void CMapVenMachine::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta)
 {
+}
+
+void CMapVenMachine::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta, CComponent* pCollider, const _float3& vPos)
+{
+	if (static_cast<CBullet*>(pDst) != nullptr)
+	{
+		m_iHp -= 1;
+
+		if (m_iHp <= 0 && m_bBroken == false)
+		{
+			m_bBroken = true;
+			m_iTextureNum = 1;
+			m_pGameInstance->PlaySoundOnce(TEXT("Vending_Explode.ogg"), CHANNELID::SOUND_EFFECT, 0.5f);
+		}
+	}
 }
 
 const COLLISION_DESC& CMapVenMachine::Get_CollisionDesc(COLLISION eColType)

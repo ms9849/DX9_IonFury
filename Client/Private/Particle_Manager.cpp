@@ -35,7 +35,7 @@ HRESULT CParticle_Manager::Ready_Particle_Blood()
 
 	list<CParticleSystem*> Particles = {};
 
-	for (_int i = 0; i < 50; ++i)
+	for (_int i = 0; i < 500; ++i)
 	{
 		Particles.push_back(
 			static_cast<CParticleSystem*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Blood"), nullptr))
@@ -54,7 +54,7 @@ HRESULT CParticle_Manager::Ready_Particle_YellowDust()
 
 	list<CParticleSystem*> Particles = {};
 
-	for (_int i = 0; i < 50; ++i)
+	for (_int i = 0; i < 500; ++i)
 	{
 		Particles.push_back(
 			static_cast<CParticleSystem*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_YellowDust"), nullptr))

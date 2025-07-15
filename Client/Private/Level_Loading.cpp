@@ -38,6 +38,7 @@ void CLevel_Loading::Update(_float fTimeDelta)
 	if (true == m_pLoader->isFinished() &&
 		GetKeyState(VK_RETURN) & 0x8000)
 	{
+		m_pGameInstance->StopAll();
 		CLevel* pNewLevel = { nullptr };
 
 		switch (m_eNextLevelID)

@@ -35,7 +35,8 @@ HRESULT CItemCardKey::Initialize(void* pArg)
 	m_pTransformCom->Set_State(STATE::LOOK, m_pObjectDesc.matWorld.m[2]);
 	m_pTransformCom->Set_State(STATE::POSITION, m_pObjectDesc.matWorld.m[3]);
 
-	SetUp_OnTerrain(m_pTransformCom, 0.5f);
+	if (!m_bParabola)
+		SetUp_OnTerrain(m_pTransformCom, 0.5f);
 
 	m_fItemOriginPosY = m_pTransformCom->Get_State(STATE::POSITION).y;
 
@@ -52,7 +53,11 @@ void CItemCardKey::Priority_Update(_float fTimeDelta)
 
 void CItemCardKey::Update(_float fTimeDelta)
 {
-	Item_Animation(fTimeDelta);
+	if (!m_bParabola)
+		Item_Animation(fTimeDelta);
+	else
+		Parabola(2.f, fTimeDelta);
+
 	m_pTransformCom->LookAt(m_pPlayerTransformCom->Get_State(STATE::POSITION));
 }
 
