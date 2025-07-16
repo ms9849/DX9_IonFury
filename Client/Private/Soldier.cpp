@@ -227,27 +227,27 @@ void CSoldier::Update(_float fTimeDelta)
 			}
 		}
 	}
-	//else
-	//{
-	//	m_fSightFailTime += fTimeDelta;
-	//	if (m_fSumMoveCoolTime >= m_fMoveCoolTime && m_isRandomMove)
-	//	{
-	//		m_fSumRandomMoveTime += fTimeDelta;
-	//		m_fSumMoveCoolTime = 0.f;
-	//		//MoveAnimationCheck(true);
-	//		RandomMove(fTimeDelta, m_vNextDir);
-	//	
-	//		m_isMove = true;
-	//		m_fSightFailTime = 0.f;
+	else
+	{
+		m_fSightFailTime += fTimeDelta;
+		if (m_fSumMoveCoolTime >= m_fMoveCoolTime && m_isRandomMove)
+		{
+			m_fSumRandomMoveTime += fTimeDelta;
+			m_fSumMoveCoolTime = 0.f;
+			//MoveAnimationCheck(true);
+			RandomMove(fTimeDelta, m_vNextDir);
+		
+			m_isMove = true;
+			m_fSightFailTime = 0.f;
 
-	//		if (m_fSumRandomMoveTime >= m_fRandomMoveTime)
-	//		{
-	//			m_isRandomMove = false;
-	//			m_fSightFailTime = 0.f;
-	//			m_fSumRandomMoveTime = 0.f;
-	//		}
-	//	}
-	//}
+			if (m_fSumRandomMoveTime >= m_fRandomMoveTime)
+			{
+				m_isRandomMove = false;
+				m_fSightFailTime = 0.f;
+				m_fSumRandomMoveTime = 0.f;
+			}
+		}
+	}
 
 	SetUp_OnTerrain(m_pTransformCom, 0.8f, &m_bJump);
 }

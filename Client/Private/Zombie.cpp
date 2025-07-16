@@ -157,68 +157,7 @@ void CZombie::Update(_float fTimeDelta)
 	m_fSumAttackCoolTime += fTimeDelta;
 	m_fSumMoveCoolTime += fTimeDelta;
 
-	if (m_fSightFailTime >= 5.f)
-	{
-		do
-		{
-			_float3 vMin = { -1.f, 0.f, -1.f };
-			_float3 vMax = { 1.f, 0.f, 1.f };
-			m_pGameInstance->GetRandomVector(&m_vNextDir, &vMin, &vMax);
-			m_vNextDir.y = 0.f;
-		} while (D3DXVec3Length(&m_vNextDir) < 0.001f);
-
-		m_isRandomMove = true;
-	}
-
-	D3DXVec3Normalize(&m_vNextDir, &m_vNextDir);
 	MoveAnimationCheck();
-
-	/*vDiff.y = 0.f;
-	D3DXVec3Normalize(&vDiff, &vDiff);
-
-	_float3 vMonsterLook = m_pTransformCom->Get_State(STATE::LOOK);
-	vMonsterLook.y = 0.f;
-	D3DXVec3Normalize(&vMonsterLook, &vMonsterLook);
-
-	_float dot = D3DXVec3Dot(&vMonsterLook, &vDiff);
-	dot = max(-1.f, min(1.f, dot));
-
-	_float3 vCross;
-	D3DXVec3Cross(&vCross, &vMonsterLook, &vDiff);
-
-	_float fFov = cosf(D3DXToRadian(45.f));
-	_float angle30 = cosf(D3DXToRadian(30.f));
-	_float angle60 = cosf(D3DXToRadian(60.f));
-
-	if (!m_bAnimationLock)
-	{
-		if (dot >= fFov)
-		{
-			m_strFrameKey = TEXT("Zombie_Front");
-		}
-		else if (dot <= -fFov)
-		{
-			m_strFrameKey = TEXT("Zombie_Back");
-		}
-		else
-		{
-			if (vCross.y > 0)
-			{
-				if (dot > 0)
-					m_strFrameKey = TEXT("Zombie_Direction_SW");
-				else
-					m_strFrameKey = TEXT("Zombie_Direction_NW");
-			}
-			else
-			{
-				if (dot > 0)
-					m_strFrameKey = TEXT("Zombie_Direction_SE");
-				else
-					m_strFrameKey = TEXT("Zombie_Direction_NE");
-			}
-		}
-		m_isMove = false;
-	}*/
 
 	if (m_isAwake)
 	{
@@ -230,12 +169,6 @@ void CZombie::Update(_float fTimeDelta)
 	{
 		if (m_fSumMoveCoolTime >= m_fMoveCoolTime)
 		{
-			/*if (m_uIdx < m_uPosLen)
-				TargetMove(fTimeDelta, m_vTargetPos[m_uIdx]);
-			else
-				m_isTarget = false;*/
-
-			//TargetMove(fTimeDelta, m_vTargetPos[m_uIdx]);
 			TargetMove(fTimeDelta, m_vPos);
 			m_isMove = true;
 			m_fSumMoveCoolTime = 0.f;
@@ -301,26 +234,6 @@ void CZombie::Update(_float fTimeDelta)
 			}
 		}
 	}
-	/*else
-	{
-		m_fSightFailTime += fTimeDelta;
-		if (m_fSumMoveCoolTime >= m_fMoveCoolTime && m_isRandomMove)
-		{
-			m_fSumRandomMoveTime += fTimeDelta;
-			m_fSumMoveCoolTime = 0.f;
-			RandomMove(fTimeDelta, m_vNextDir);
-
-			m_isMove = true;
-			m_fSightFailTime = 0.f;
-
-			if (m_fSumRandomMoveTime >= m_fRandomMoveTime)
-			{
-				m_isRandomMove = false;
-				m_fSightFailTime = 0.f;
-				m_fSumRandomMoveTime = 0.f;
-			}
-		}
-	}*/
 
 	__super::Jump(fTimeDelta);
 	SetUp_OnTerrain(m_pTransformCom, 1.f, &m_bJump);
