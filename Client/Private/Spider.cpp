@@ -51,22 +51,6 @@ HRESULT CSpider::Initialize(void* pArg)
 	m_pTransformCom->Set_State(STATE::LOOK, m_pObjectDesc.matWorld.m[2]);
 	m_pTransformCom->Set_State(STATE::POSITION, m_pObjectDesc.matWorld.m[3]);
 	m_pTransformCom->Set_Scale(_float3{ 1.f, 1.f, 1.f });
-	//m_pTransformCom->Set_Scale(_float3{ 1.f, 1.f, 1.f });
-
-	/*if (m_vPos != nullptr)
-	{
-		m_pTransformCom->Set_State(STATE::POSITION, _float3(
-			m_vPos->x + m_pGameInstance->Random(0.f, 2.f),
-			0.f,
-			m_vPos->z + m_pGameInstance->Random(0.f, 2.f)));
-	}
-	else
-	{
-		m_pTransformCom->Set_State(STATE::POSITION, _float3(
-			m_pGameInstance->Random(0.f, 2.f),
-			0.f,
-			m_pGameInstance->Random(0.f, 2.f)));
-	}*/
 
 	m_fDamage = 30.f;
 	m_fAttackRange = 3.5f;
@@ -107,20 +91,6 @@ void CSpider::Update(_float fTimeDelta)
 	m_fSumAttackCoolTime += fTimeDelta;
 	m_fSumMoveCoolTime += fTimeDelta;
 
-	if (m_fSightFailTime >= 5.f)
-	{
-		do
-		{
-			_float3 vMin = { -1.f, 0.f, -1.f };
-			_float3 vMax = { 1.f, 0.f, 1.f };
-			m_pGameInstance->GetRandomVector(&m_vNextDir, &vMin, &vMax);
-			m_vNextDir.y = 0.f;
-		} while (D3DXVec3Length(&m_vNextDir) < 0.001f);
-
-		m_isRandomMove = true;
-	}
-
-	D3DXVec3Normalize(&m_vNextDir, &m_vNextDir);
 	MoveAnimationCheck();
 
 	vDiff.y = 0.f;
@@ -210,26 +180,6 @@ void CSpider::Update(_float fTimeDelta)
 			}
 		}
 	}
-	/*else
-	{
-		m_fSightFailTime += fTimeDelta;
-		if (m_fSumMoveCoolTime >= m_fMoveCoolTime && m_isRandomMove)
-		{
-			m_fSumRandomMoveTime += fTimeDelta;
-			m_fSumMoveCoolTime = 0.f;
-			RandomMove(fTimeDelta, m_vNextDir);
-
-			m_isMove = true;
-			m_fSightFailTime = 0.f;
-
-			if (m_fSumRandomMoveTime >= m_fRandomMoveTime)
-			{
-				m_isRandomMove = false;
-				m_fSightFailTime = 0.f;
-				m_fSumRandomMoveTime = 0.f;
-			}
-		}
-	}*/
 
 	Jump(fTimeDelta, m_fJumpPower);
 	SetUp_OnTerrain(m_pTransformCom, 0.5f, &m_bJump);
