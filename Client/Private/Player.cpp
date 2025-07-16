@@ -903,10 +903,17 @@ void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 
 			for (size_t i = 12; i < 52; ++i)
 			{
-				dynamic_cast<CZombie*>(
+				CZombie* pZombie = dynamic_cast<CZombie*>(m_pGameInstance->Get_GameObject_By_ID(
+					m_pObjectDesc.iLayerLevel,
+					TEXT("Layer_Monster"), i));
+
+				if (pZombie != nullptr)
+					pZombie->Set_TargetMove(true);
+
+				/*dynamic_cast<CZombie*>(
 					m_pGameInstance->Get_GameObject_By_ID(
 						m_pObjectDesc.iLayerLevel,
-						TEXT("Layer_Monster"), i))->Set_TargetMove(true);
+						TEXT("Layer_Monster"), i))->Set_TargetMove(true);*/
 			}
 
 			Insert_ItemDesc(TEXT("Get ShotGun"));

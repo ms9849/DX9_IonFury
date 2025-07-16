@@ -240,6 +240,8 @@ void CZombie::Update(_float fTimeDelta)
 			m_isMove = true;
 			m_fSumMoveCoolTime = 0.f;
 		}
+
+		m_fSightFailTime = 0.f;
 	}
 
 	if (m_fCurHp <= 0 && m_bDying == false)
@@ -691,11 +693,12 @@ void CZombie::TargetMove(_float fTimeDelta, _float3 vPos)		// 정해져 있는 장소로
 		vLook.y = 0.f;
 		D3DXVec3Normalize(&vLook, &vLook);
 		m_pTransformCom->Set_State(STATE::LOOK, vLook);
+		m_vNextDir = vLook;
 
 		m_fSumTime += fTimeDelta;
 		m_pTransformCom->Go_Straight(fTimeDelta * 1.5f);
 
-		if (m_fSumTime >= 5.f)
+		if (m_fSumTime >= 2.f)
 		{
 			m_isTarget = false;
 		}
@@ -807,17 +810,19 @@ void CZombie::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 		CBullet* pBullet = dynamic_cast<CBullet*>(pDst);
 		if (pBullet != nullptr)
 		{
-			if ((m_fCurHp -= (pBullet->Get_Damage())) > 0)
+			if (pCollider == m_pBoxColliderHead)
 			{
-				m_pGameInstance->PlaySoundOnce(TEXT("zombie_hit_1.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
+				m_fCurHp -= (pBullet->Get_Damage() * 2.f);
+				if (m_fCurHp <= 0)
+					m_isHead = true;
 			}
 			else
 			{
-				if (pCollider == m_pBoxColliderHead)
-				{
-					m_isHead = true;
-				}
+				m_fCurHp -= pBullet->Get_Damage();
 			}
+
+			if (m_fCurHp > 0)
+				m_pGameInstance->PlaySoundOnce(TEXT("zombie_hit_1.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
 
 			CParticle_Manager::GetInstance()->Create_Particle(TEXT("Particle_Blood"), m_pObjectDesc.iLayerLevel,
 				TEXT("Layer_Particle"), vPos);
