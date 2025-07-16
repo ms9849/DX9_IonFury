@@ -63,9 +63,9 @@ HRESULT CEventBox::Ready_Components()
 
 	CBoxCollider::BOXCOLLIDER_DESC Desc;
 	Desc.vPosition = { -0.1f, -0.07f, -0.1f };
-	Desc.fScaleX = 2.0f;
-	Desc.fScaleZ = 2.0f;
-	Desc.fScaleY = 0.8f;
+	Desc.fScaleX = 7.0f;
+	Desc.fScaleZ = 5.0f;
+	Desc.fScaleY = 1.0f;
 
 	/* Com_BoxCollider */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_BoxCollider"),
@@ -90,18 +90,23 @@ void CEventBox::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeD
 	// 여기서 충돌 로직이 나와야 한다.
 	CPlayer::PLAYER_INFO Desc{};
 
-	Desc = dynamic_cast<CPlayer*>(
-		m_pGameInstance->Find_GameObject_ToLayer(
-			ENUM_CLASS(LEVEL::GAMEPLAY),
-			TEXT("Layer_Player")))->Get_Player_Info();
-
 	if (m_pGameInstance->Get_CurrentLevelID() == ENUM_CLASS(LEVEL::GAMEPLAY))
 	{
+		Desc = dynamic_cast<CPlayer*>(
+			m_pGameInstance->Find_GameObject_ToLayer(
+				ENUM_CLASS(LEVEL::GAMEPLAY),
+				TEXT("Layer_Player")))->Get_Player_Info();
+
 		m_pGameInstance->Change_Level(CLevel_Loading::Create(
 			m_pGraphic_Device, LEVEL::LOADING, LEVEL::JUSIN, &Desc));
 	}
 	else if (m_pGameInstance->Get_CurrentLevelID() == ENUM_CLASS(LEVEL::JUSIN))
 	{
+		Desc = dynamic_cast<CPlayer*>(
+			m_pGameInstance->Find_GameObject_ToLayer(
+				ENUM_CLASS(LEVEL::JUSIN),
+				TEXT("Layer_Player")))->Get_Player_Info();
+
 		m_pGameInstance->Change_Level(CLevel_Loading::Create(
 			m_pGraphic_Device, LEVEL::LOADING, LEVEL::BOSSFIGHT, &Desc));
 	}

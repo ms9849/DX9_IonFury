@@ -171,13 +171,10 @@ void CMonster::RotateToPlayer(CTransform* pTranform)
 	memcpy(&matWorld.m[3][0], &vPos, sizeof(_float3));
 
 	pTranform->Set_Transform(matWorld);
-
-
-
 	//_float4x4		ViewMatrix = m_pGameInstance->Get_CameraWorldInv();
 
 	//pTranform->Set_State(STATE::RIGHT, *reinterpret_cast<_float3*>(&ViewMatrix.m[0]));
-	///*m_pTransformCom->Set_State(STATE::UP, *reinterpret_cast<_float3*>(&ViewMatrix.m[1]));*/
+	//m_pTransformCom->Set_State(STATE::UP, *reinterpret_cast<_float3*>(&ViewMatrix.m[1]));
 	//pTranform->Set_State(STATE::LOOK, *reinterpret_cast<_float3*>(&ViewMatrix.m[2]));
 
 }
@@ -185,14 +182,6 @@ void CMonster::RotateToPlayer(CTransform* pTranform)
 void CMonster::RandomMove(_float fTimeDelta, _float3 nextDir)
 {
 	_float3 vNextDir = {};
-	/*do 
-	{
-		_float3 vMin = { 0.f, 0.f, 0.f };
-		_float3 vMax = { 1.f, 1.f, 1.f };
-		m_pGameInstance->GetRandomVector(&vNextDir, &vMin, &vMax);
-		vNextDir.y = 0.f;
-	} while (D3DXVec3Length(&vNextDir) < 0.001f);*/
-
 	vNextDir = nextDir;
 	D3DXVec3Normalize(&vNextDir, &vNextDir);
 
@@ -209,7 +198,7 @@ void CMonster::RandomMove(_float fTimeDelta, _float3 nextDir)
 
 	m_pTransformCom->Rotation({ 0.f, 1.f, 0.f }, fRadian);
 	m_pTransformCom->Go_Direction(vNextDir, fTimeDelta);
-	m_pTransformCom->LookAt(vNextDir * 10.f);
+	m_pTransformCom->LookAt(m_pTransformCom->Get_State(STATE::POSITION) + m_vNextDir);
 }
 
 void CMonster::Free()

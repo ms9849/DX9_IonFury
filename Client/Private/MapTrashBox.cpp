@@ -167,9 +167,9 @@ HRESULT CMapTrashBox::Ready_Components()
 	/* Com_BoxCollider */
 	CBoxCollider::BOXCOLLIDER_DESC Desc;
 	Desc.vPosition = { 0.f, 0.f, 0.f };
-	Desc.fScaleX = 0.2f;
-	Desc.fScaleZ = 0.2f;
-	Desc.fScaleY = 0.2f;
+	Desc.fScaleX = 0.3f;
+	Desc.fScaleZ = 0.3f;
+	Desc.fScaleY = 0.3f;
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_BoxCollider"),
 		TEXT("Com_BoxCollider"), reinterpret_cast<CComponent**>(&m_pBoxColliderCom), &Desc)))
 		return E_FAIL;

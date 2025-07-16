@@ -210,7 +210,7 @@ void CSpider::Update(_float fTimeDelta)
 			}
 		}
 	}
-	else
+	/*else
 	{
 		m_fSightFailTime += fTimeDelta;
 		if (m_fSumMoveCoolTime >= m_fMoveCoolTime && m_isRandomMove)
@@ -229,7 +229,7 @@ void CSpider::Update(_float fTimeDelta)
 				m_fSumRandomMoveTime = 0.f;
 			}
 		}
-	}
+	}*/
 
 	Jump(fTimeDelta, m_fJumpPower);
 	SetUp_OnTerrain(m_pTransformCom, 0.5f, &m_bJump);
@@ -536,7 +536,10 @@ void CSpider::Attack()
 	Desc.vDir = vDir;
 	Desc.vPos = vPos;*/
 
-	m_pGameInstance->Add_GameObject_ToLayer(m_pObjectDesc.iLayerLevel, TEXT("Prototype_GameObject_Melee_Attack"), m_pObjectDesc.iLayerLevel, TEXT("Layer_Melee_Attack"), &m_pObjectDesc);
+	GAMEOBJECT_DESC DescTemp = m_pObjectDesc;
+	DescTemp.matWorld = *m_pPlayerTransform->Get_WorldMatrixPtr();
+
+	m_pGameInstance->Add_GameObject_ToLayer(m_pObjectDesc.iLayerLevel, TEXT("Prototype_GameObject_Melee_Attack"), m_pObjectDesc.iLayerLevel, TEXT("Layer_Melee_Attack"), &DescTemp);
 	//m_pGameInstance->Add_GameObject_ToLayer(m_pObjectDesc.iLayerLevel, TEXT("Prototype_GameObject_Bullet"), m_pObjectDesc.iLayerLevel, TEXT("Layer_Spider_Bullet"), &Desc);
 }
 

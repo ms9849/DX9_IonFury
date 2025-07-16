@@ -183,7 +183,11 @@ void CLevel_GamePlay::Update(_float fTimeDelta)
 	m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_PlayerBullet"), TEXT("Layer_Map_Objects_AABB_Ride"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta, nullptr);
 	m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_PlayerBullet"), TEXT("Layer_Map_Objects_Ray"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta, nullptr);
 	m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_PlayerBullet"), TEXT("Layer_Monster"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta, nullptr);	
+
 	m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_Monster_Bullet"), TEXT("Layer_Player"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta, nullptr);
+	m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_Monster_Bullet"), TEXT("Layer_Map_Objects_AABB"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta, nullptr);
+	m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_Monster_Bullet"), TEXT("Layer_Map_Objects_AABB_Ride"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta, nullptr);
+	m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_Monster_Bullet"), TEXT("Layer_Map_Objects_Ray"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta, nullptr);
 
 	m_pGameInstance->Check_RayToOBBCollision(TEXT("Layer_PlayerBullet"), TEXT("Layer_Map_Objects_OBB_Ride"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta, nullptr);
 

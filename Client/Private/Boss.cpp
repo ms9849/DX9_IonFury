@@ -7,6 +7,8 @@
 #include "Bullet_Manager.h"
 #include "Effect_Manager.h"
 #include "Terrain_Manager.h"
+#include "Effect_Black_Sight.h"
+#include "Camera.h"
 
 CBoss::CBoss(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CGameObject{ pGraphic_Device }
@@ -127,6 +129,8 @@ void CBoss::Update(_float fTimeDelta)
 		m_isDead = true;
 
 		m_pGameInstance->PlaySoundOnce(TEXT("Boss1_Die.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
+		CEffect_Black_Sight* pBlackSight = static_cast<CEffect_Black_Sight*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Effect_Black_Sight"), nullptr));
+		m_pGameInstance->Add_Clone_ToLayer(pBlackSight, ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Layer_Effect"));
 		/*CEffect_Manager::GetInstance()->Create_Effect(TEXT("Effect_Boss_Die"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Effect"),
 			m_pTransformCom->Get_State(STATE::POSITION));*/
 	}
@@ -169,6 +173,9 @@ void CBoss::Resurrection()
 	Safe_Release(m_pBossUpperBody);
 	m_pBossUpperBody = dynamic_cast<CBossUpperBody*>(m_pGameInstance->Find_GameObject_ToLayer(
 		ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Layer_Boss1_Upper")));
+
+	static_cast<CCamera*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Layer_Camera"), nullptr))->Shaking(0.2f);
+
 	Safe_AddRef(m_pBossUpperBody);
 }
 

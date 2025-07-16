@@ -25,7 +25,7 @@ HRESULT CMeleeAttack::Initialize(void* pArg)
 		return E_FAIL;
 
 	m_pTransformCom->Set_State(STATE::POSITION, *(_float3*)&m_pObjectDesc.matWorld.m[3][0]);
-
+	
 	return S_OK;
 }
 

@@ -24,6 +24,7 @@ public:
 	virtual HRESULT Render() override;
 
 public:
+	void Set_Loading();
 	void Set_Guide(_bool bFinish);
 
 private:

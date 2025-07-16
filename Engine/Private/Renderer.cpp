@@ -33,6 +33,7 @@ void CRenderer::Render()
 	Render_Blend();
 	Render_Blend_Last();
 	Render_UI();
+	Render_Screen();
 }
 
 void CRenderer::Render_Priority()
@@ -118,6 +119,19 @@ void CRenderer::Render_UI()
 	}
 
 	m_RenderObjects[ENUM_CLASS(RENDER::UI)].clear();
+}
+
+void CRenderer::Render_Screen()
+{
+	for (auto& pRenderObject : m_RenderObjects[ENUM_CLASS(RENDER::SCREEN)])
+	{
+		if (nullptr != pRenderObject)
+			pRenderObject->Render();
+
+		Safe_Release(pRenderObject);
+	}
+
+	m_RenderObjects[ENUM_CLASS(RENDER::SCREEN)].clear();
 }
 
 CRenderer* CRenderer::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
