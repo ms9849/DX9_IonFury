@@ -36,11 +36,13 @@ public:
 	HRESULT Ready_Components() override;
 	HRESULT Begin_RenderState() override;
 	HRESULT End_RenderState() override;
+	HRESULT Begin_RenderTestState();
+	HRESULT End_RenderTestState();
 
 	virtual void Attack() override;
 	void Move(_float fTimeDelta);
 	virtual void Move() override;
-	void MoveAnimationCheck(_bool isRandom);
+	void MoveAnimationCheck();
 
 private:
 	_bool m_bAnimationLock = false;

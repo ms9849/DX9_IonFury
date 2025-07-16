@@ -29,7 +29,7 @@ HRESULT CSoldier::Initialize(void* pArg)
 	Safe_AddRef(m_pPlayerTransform);
 
 	m_fAttackRange = 10.f;
-	m_fDamage = 30.f;
+	//m_fDamage = 30.f;
 	m_fAttackCoolTime = 3.f;
 	m_fChaseRange = 15.f;
 	m_fMaxRange = 15.f;
@@ -126,7 +126,9 @@ void CSoldier::Update(_float fTimeDelta)
 	{
 		MoveAnimationCheck(true);
 	}*/
-	MoveAnimationCheck(true);
+	D3DXVec3Normalize(&m_vNextDir, &m_vNextDir);
+	//m_pTransformCom->Set_State(STATE::LOOK, m_vNextDir);				// 공격하거나 했을 때 이슈가 될수도
+	MoveAnimationCheck();
 	/*vDiff.y = 0.f;
 	D3DXVec3Normalize(&vDiff, &vDiff);
 
@@ -235,7 +237,7 @@ void CSoldier::Update(_float fTimeDelta)
 		{
 			m_fSumRandomMoveTime += fTimeDelta;
 			m_fSumMoveCoolTime = 0.f;
-			MoveAnimationCheck(true);
+			//MoveAnimationCheck(true);
 			RandomMove(fTimeDelta, m_vNextDir);
 		
 			m_isMove = true;
@@ -291,12 +293,12 @@ HRESULT CSoldier::Render()
 	auto iter = m_pTextureComs.find(m_strFrameKey);
 	iter->second->Set_Texture(m_pAnimationCom->Get_Frame_Current_Index(m_strFrameKey));
 
-	if (FAILED(Begin_RenderState()))
+	if (FAILED(Begin_RenderTestState()))
 		return E_FAIL;
 
 	m_pVIBufferCom->Render();
 
-	if (FAILED(End_RenderState()))
+	if (FAILED(End_RenderTestState()))
 		return E_FAIL;
 
 	return S_OK;
@@ -452,6 +454,9 @@ void CSoldier::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDe
 		{
 			m_pTransformCom->Turn({0.f, 1.0f, 0.f}, fTimeDelta);
 			m_pTransformCom->LookAt(m_pPlayerTransform->Get_State(STATE::POSITION));
+			_float3 vTemp = m_pTransformCom->Get_State(STATE::LOOK);
+			D3DXVec3Normalize(&m_vNextDir, &vTemp);
+			//m_vNextDir = m_pTransformCom->Get_State(STATE::LOOK);
 
 			if ((m_fCurHp -= (pBullet->Get_Damage())) > 0)
 			{
@@ -596,6 +601,26 @@ HRESULT CSoldier::End_RenderState()
 	return S_OK;
 }
 
+HRESULT CSoldier::Begin_RenderTestState()
+{
+	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+
+	m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+	m_pGraphic_Device->SetRenderState(D3DRS_ALPHAREF, 0);
+	m_pGraphic_Device->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
+
+	return S_OK;
+}
+
+HRESULT CSoldier::End_RenderTestState()
+{
+	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+
+	m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+
+	return S_OK;
+}
+
 void CSoldier::Attack()
 {
 	m_fSumAttackCoolTime = 0.f;
@@ -632,6 +657,8 @@ void CSoldier::Move(_float fTimeDelta)
 	D3DXVec3Normalize(&fMonsterLook, &fMonsterLook);
 	D3DXVec3Normalize(&vDirection, &vDirection);
 
+	m_vNextDir = vDirection;
+
 	/*_float dot = D3DXVec3Dot(&fPlayerLook, &fMonsterLook);
 	float fRadian = acosf(dot);
 	m_pTransformCom->Rotation({ 0.f, 1.f, 0.f }, fRadian);
@@ -656,9 +683,9 @@ void CSoldier::Move()
 	m_pTransformCom->Get_State(STATE::POSITION);
 }
 
-void CSoldier::MoveAnimationCheck(_bool isRandom)
+void CSoldier::MoveAnimationCheck()
 {
-	_float3 vMonsterLook = {};
+	/*_float3 vMonsterLook = {};
 	if (isRandom)
 	{
 		vMonsterLook = m_vNextDir;
@@ -666,8 +693,9 @@ void CSoldier::MoveAnimationCheck(_bool isRandom)
 	else
 	{
 		vMonsterLook = m_pTransformCom->Get_State(STATE::LOOK);
-	}
-
+	}*/
+	//_float3 vMonsterLook = m_pTransformCom->Get_State(STATE::LOOK);
+	_float3 vMonsterLook = m_vNextDir;
 	_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
 
 	_float fDist = D3DXVec3Length(&vDiff);
