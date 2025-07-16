@@ -160,7 +160,7 @@ void CSpider::Update(_float fTimeDelta)
 		m_bDying = true;
 
 		m_pBoxColliderCom->Set_Scale({ 1.0f, 0.7f, 1.2f });
-		m_pBoxColliderCom->Set_Pos({ 0.f, -0.15f, 0.f });
+		m_pBoxColliderCom->Set_Position({ 0.f, -0.15f, 0.f });
 
 		m_pGameInstance->PlaySoundOnce(TEXT("Spider_Die.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
 	}
@@ -402,9 +402,9 @@ HRESULT CSpider::Ready_Components()
 
 	/* Com_BoxCollider */
 	CBoxCollider::BOXCOLLIDER_DESC Desc;
-	Desc.vPosition = { 0.f, -0.5f, 0.f };
-	Desc.fScaleX = 0.9f;
-	Desc.fScaleY = 0.4f;
+	Desc.vPosition = { 0.f, -0.15f, 0.f };
+	Desc.fScaleX = 0.8f;
+	Desc.fScaleY = 0.2f;
 	Desc.fScaleZ = 0.8f;
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_BoxCollider"),
 		TEXT("Com_BoxCollider"), reinterpret_cast<CComponent**>(&m_pBoxColliderCom), &Desc)))
