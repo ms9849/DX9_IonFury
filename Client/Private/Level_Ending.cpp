@@ -12,6 +12,8 @@ CLevel_Ending::CLevel_Ending(LPDIRECT3DDEVICE9 pGraphic_Device, LEVEL eLevelID)
 
 HRESULT CLevel_Ending::Initialize()
 {
+	m_pGameInstance->PlayBGM(L"corroded_192.xm", 0.7f);
+
 	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
 		return E_FAIL;
 
