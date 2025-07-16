@@ -14,16 +14,18 @@ public:
 	HRESULT Initialize();
 
 public:
-	bool		Key_Pressing(_uint _iKey);
+	_bool		Key_Pressing(_uint _iKey);
 	// 눌렀다가 뗐을 때
-	bool		Key_Up(_uint _iKey);
+	_bool		Key_Up(_uint _iKey);
 	// 누른 타이밍 딱 한 번 만
-	bool		Key_Down(_uint _iKey);
+	_bool		Key_Down(_uint _iKey);
 
-	void		Update();
+	void		Begin_Input();
+	void		End_Input();
 
 private:
-	bool		m_bKeyState[VK_MAX];
+	_bool		m_bCurKeyState[VK_MAX];
+	_bool		m_bPreKeyState[VK_MAX];
 
 public:
 	static CKey_Manager* Create();

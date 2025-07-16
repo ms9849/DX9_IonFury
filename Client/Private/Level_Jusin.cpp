@@ -331,8 +331,6 @@ HRESULT CLevel_Jusin::Ready_Layer_BackGround(const _wstring& strLayerTag)
 
 	m_pTerrain_Manager = CTerrain_Manager::GetInstance();
 
-
-
 	//if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_GameObject_Terrain"),
 	//	ENUM_CLASS(LEVEL::JUSIN), strLayerTag)))
 	//	return E_FAIL;
@@ -435,6 +433,13 @@ HRESULT CLevel_Jusin::Ready_Layer_Player(const _wstring& strLayerTag)
 
 HRESULT CLevel_Jusin::Ready_Layer_Spawner(const _wstring& strLayerTag)
 {
+	for (auto& iter : m_ObjectDescs->find(strLayerTag)->second)
+	{
+		if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(iter.iProtoLevel), iter.strProto,
+			ENUM_CLASS(iter.iLayerLevel), iter.strLayer, &iter)))
+			return E_FAIL;
+	}
+
 	/*for (size_t i = 0; i < 30; i++)
 	{
 		if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_GameObject_Spawner"),
