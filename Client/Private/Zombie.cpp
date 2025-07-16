@@ -36,7 +36,7 @@ HRESULT CZombie::Initialize(void* pArg)
 	m_fMaxRange = 20.f;
 	m_fRandomMoveTime = 3.f;
 	m_fSumRandomMoveTime = 0.f;
-	m_fCurHp = 40.f;
+	m_fCurHp = 65.f;
 
 	// 스포너 관련
 	//if (pArg != nullptr)				// 스포너의 위치를 받아온다
@@ -76,6 +76,8 @@ HRESULT CZombie::Initialize(void* pArg)
 	m_pTransformCom->Set_State(STATE::LOOK, m_pObjectDesc.matWorld.m[2]);
 	m_pTransformCom->Set_State(STATE::POSITION, m_pObjectDesc.matWorld.m[3]);
 	m_pTransformCom->Set_Scale(_float3{ 1.75f, 1.75f, 1.f});
+
+	m_vNextDir = m_pTransformCom->Get_State(STATE::LOOK);
 	
 	// 게임 플레이에서만 동작하게
 	if (m_pObjectDesc.iLayerLevel == ENUM_CLASS(LEVEL::GAMEPLAY))
@@ -185,7 +187,7 @@ void CZombie::Update(_float fTimeDelta)
 			m_strFrameKey = TEXT("Zombie_Die_Default");
 
 
-		m_pBoxColliderCom->Set_Scale({ 1.2f, 0.20f, 1.2f });
+		m_pBoxColliderCom->Set_Scale({ 1.f, 0.2f, 1.9f });
 		m_pBoxColliderCom->Set_Position({ 0.f, -0.6f, 0.f });
 		m_pBoxColliderHead->Set_Scale({ 0.f, 0.f, 0.f });
 
@@ -271,8 +273,8 @@ void CZombie::Late_Update(_float fTimeDelta)
 
 HRESULT CZombie::Render()
 {
-	m_pBoxColliderCom->Render(m_pTransformCom->Get_State(STATE::POSITION));
-	m_pBoxColliderHead->Render(m_pTransformCom->Get_State(STATE::POSITION));
+	//m_pBoxColliderCom->Render(m_pTransformCom->Get_State(STATE::POSITION));
+	//m_pBoxColliderHead->Render(m_pTransformCom->Get_State(STATE::POSITION));
 
 	RotateToPlayer(m_pTransformCom);
 
@@ -282,9 +284,15 @@ HRESULT CZombie::Render()
 	if (FAILED(Begin_RenderTestState()))
 		return E_FAIL;
 
+	if (FAILED(Begin_RenderState()))
+		return E_FAIL;
+
 	m_pVIBufferCom->Render();
 
 	if (FAILED(End_RenderTestState()))
+		return E_FAIL;
+
+	if (FAILED(End_RenderState()))
 		return E_FAIL;
 
 	return S_OK;
