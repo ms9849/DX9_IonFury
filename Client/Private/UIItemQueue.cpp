@@ -49,11 +49,11 @@ HRESULT CUIItemQueue::Initialize(void* pArg)
 	Desc.strLayerTag = m_tagDesc.strLayerTag;
 	Desc.strFontType = m_tagDesc.strFontType;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(Desc.iLayerLevelIndex, TEXT("Prototype_GameObject_UIText"),
-		Desc.iLayerLevelIndex, Desc.strLayerTag, &Desc)))
+	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UIText"),
+		ENUM_CLASS(LEVEL::STATIC), Desc.strLayerTag, &Desc)))
 		return E_FAIL;
 
-	m_pText = dynamic_cast<CUIText*>(m_pGameInstance->Find_GameObject_ToLayer(Desc.iLayerLevelIndex, Desc.strLayerTag));
+	m_pText = dynamic_cast<CUIText*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::STATIC), Desc.strLayerTag));
 	Safe_AddRef(m_pText);
 
 	return S_OK;

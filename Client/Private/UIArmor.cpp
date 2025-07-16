@@ -52,7 +52,7 @@ HRESULT CUIArmor::Initialize(void* pArg)
 	Desc.strLayerTag = m_tagDesc.strLayerTag;
 	Desc.strFontType = m_tagDesc.strFontType;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(Desc.iLayerLevelIndex, TEXT("Prototype_GameObject_UIText"),
+	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UIText"),
 		Desc.iLayerLevelIndex, Desc.strLayerTag, &Desc)))
 		return E_FAIL;
 
@@ -92,7 +92,8 @@ HRESULT CUIArmor::Render()
 
 	__super::Begin();
 
-	m_pVIBufferCom->Render();
+	if(m_pPlayer->Get_Player_Info().bArmor)
+		m_pVIBufferCom->Render();
 
 	__super::End();
 
@@ -106,7 +107,11 @@ void CUIArmor::Set_Armor()
 	m_iArmor = m_pPlayer->Get_Player_Info().iArmor;
 
 	_tchar ws[10];
-	swprintf(ws, 10, L"%03d", m_iArmor);
+
+	if(m_pPlayer->Get_Player_Info().bArmor)
+		swprintf(ws, 10, L"%03d", m_iArmor);
+	else
+		swprintf(ws, 10, L" ");
 
 	m_pText->Set_Text(ws);
 }

@@ -31,7 +31,7 @@ HRESULT CItemMachineGun::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-	m_pTransformCom->Set_Scale({ 0.2f, 0.2f, 0.2f });
+	//m_pTransformCom->Set_Scale({ 0.2f, 0.2f, 0.2f });
 
 	m_pTransformCom->Set_State(STATE::RIGHT, m_pObjectDesc.matWorld.m[0]);
 	m_pTransformCom->Set_State(STATE::UP, m_pObjectDesc.matWorld.m[1]);

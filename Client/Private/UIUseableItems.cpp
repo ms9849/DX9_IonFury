@@ -1,26 +1,26 @@
-#include "UIHp.h"
+#include "UIUseableItems.h"
 
 #include "GameInstance.h"
 #include "UIFont.h"
 #include "UIText.h"
 #include "Player.h"
 
-CUIHp::CUIHp(LPDIRECT3DDEVICE9 pGraphic_Device)
+CUIUseableItems::CUIUseableItems(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CUIObject{ pGraphic_Device }
 {
 }
 
-CUIHp::CUIHp(const CUIHp& Prototype)
+CUIUseableItems::CUIUseableItems(const CUIUseableItems& Prototype)
 	: CUIObject(Prototype)
 {
 }
 
-HRESULT CUIHp::Initialize_Prototype()
+HRESULT CUIUseableItems::Initialize_Prototype()
 {
 	return S_OK;
 }
 
-HRESULT CUIHp::Initialize(void* pArg)
+HRESULT CUIUseableItems::Initialize(void* pArg)
 {
 	UIOBJECT_DESC* pTemp = static_cast<UIOBJECT_DESC*>(pArg);
 
@@ -43,8 +43,8 @@ HRESULT CUIHp::Initialize(void* pArg)
 	// 전체 체력 텍스트 크기 및 위치
 	UIOBJECT_DESC Desc{};
 
-	Desc.fSizeX = 40.f;
-	Desc.fSizeY = 40.f;
+	Desc.fSizeX = 30.f;
+	Desc.fSizeY = 30.f;
 	Desc.fX = m_tagDesc.fX + 20.f;
 	Desc.fY = m_tagDesc.fY - (Desc.fSizeY * 0.5f);
 	Desc.iTextLength = m_tagDesc.iTextLength;
@@ -53,10 +53,10 @@ HRESULT CUIHp::Initialize(void* pArg)
 	Desc.strFontType = m_tagDesc.strFontType;
 
 	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UIText"),
-		Desc.iLayerLevelIndex, Desc.strLayerTag, &Desc)))
+		ENUM_CLASS(LEVEL::STATIC), Desc.strLayerTag, &Desc)))
 		return E_FAIL;
 
-	m_pText = dynamic_cast<CUIText*>(m_pGameInstance->Find_GameObject_ToLayer(Desc.iLayerLevelIndex, Desc.strLayerTag));
+	m_pText = dynamic_cast<CUIText*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::STATIC), Desc.strLayerTag));
 	Safe_AddRef(m_pText);
 
 	m_pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Find_GameObject_ToLayer(m_tagDesc.iLayerLevelIndex, TEXT("Layer_Player")));
@@ -65,25 +65,25 @@ HRESULT CUIHp::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CUIHp::Priority_Update(_float fTimeDelta)
+void CUIUseableItems::Priority_Update(_float fTimeDelta)
 {
 }
 
-void CUIHp::Update(_float fTimeDelta)
+void CUIUseableItems::Update(_float fTimeDelta)
 {
 	__super::Update_Transform(m_pTransformCom);
 }
 
-void CUIHp::Late_Update(_float fTimeDelta)
+void CUIUseableItems::Late_Update(_float fTimeDelta)
 {
 	m_pGameInstance->Add_RenderGroup(RENDER::UI, this);
 }
 
-HRESULT CUIHp::Render()
+HRESULT CUIUseableItems::Render()
 {
 	m_pTransformCom->Set_Transform();
 
-	m_pTextureCom->Set_Texture(m_iHp / 20);
+	m_pTextureCom->Set_Texture(0);
 
 	m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
 	m_pGraphic_Device->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
@@ -92,7 +92,8 @@ HRESULT CUIHp::Render()
 
 	__super::Begin();
 
-	m_pVIBufferCom->Render();
+	if (m_pPlayer->Get_Player_Info().iHealpacks > 0)
+		m_pVIBufferCom->Render();
 
 	__super::End();
 
@@ -101,16 +102,21 @@ HRESULT CUIHp::Render()
 	return S_OK;
 }
 
-void CUIHp::Set_Hp()
+void CUIUseableItems::Set_UseableItems()
 {
-	m_iHp = m_pPlayer->Get_Player_Info().iHp;
+	m_iUseableItems = m_pPlayer->Get_Player_Info().iHealpacks;
+
 	_tchar ws[10];
-	swprintf(ws, 10, L"%03d", m_iHp);
+
+	if (m_pPlayer->Get_Player_Info().iHealpacks > 0)
+		swprintf(ws, 10, L"X%02d", m_iUseableItems);
+	else
+		swprintf(ws, 10, L" ");
 
 	m_pText->Set_Text(ws);
 }
 
-HRESULT CUIHp::Ready_Components()
+HRESULT CUIUseableItems::Ready_Components()
 {
 	/* Com_Transform */
 	CTransform::TRANSFORM_DESC		TransformDesc{ 5.f, D3DXToRadian(90.0f) };
@@ -123,16 +129,16 @@ HRESULT CUIHp::Ready_Components()
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
 		return E_FAIL;
 	/* Com_Texture */
-	if (FAILED(__super::Add_Component(m_tagDesc.iLayerLevelIndex, TEXT("Prototype_Component_Texture_UI_Hp"),
+	if (FAILED(__super::Add_Component(m_tagDesc.iLayerLevelIndex, TEXT("Prototype_Component_Texture_UI_UseableItems"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-CUIHp* CUIHp::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
+CUIUseableItems* CUIUseableItems::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 {
-	CUIHp* pInstance = new CUIHp(pGraphic_Device);
+	CUIUseableItems* pInstance = new CUIUseableItems(pGraphic_Device);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
@@ -143,20 +149,20 @@ CUIHp* CUIHp::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 	return pInstance;
 }
 
-CGameObject* CUIHp::Clone(void* pArg)
+CGameObject* CUIUseableItems::Clone(void* pArg)
 {
-	CUIHp* pInstance = new CUIHp(*this);
+	CUIUseableItems* pInstance = new CUIUseableItems(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Cloned : CUIHp");
+		MSG_BOX("Failed to Cloned : CUIUseableItems");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CUIHp::Free()
+void CUIUseableItems::Free()
 {
 	__super::Free();
 

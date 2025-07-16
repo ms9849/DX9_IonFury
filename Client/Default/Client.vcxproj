@@ -164,6 +164,7 @@
     <ClInclude Include="..\Public\ItemPortableHealPack.h" />
     <ClInclude Include="..\Public\ItemShootGun.h" />
     <ClInclude Include="..\public\Level_BossFight.h" />
+    <ClInclude Include="..\public\Level_Ending.h" />
     <ClInclude Include="..\public\Level_Jusin.h" />
     <ClInclude Include="..\public\MapDoor.h" />
     <ClInclude Include="..\public\MapMachineGunBulletBox.h" />
@@ -225,8 +226,10 @@
     <ClInclude Include="..\Public\UIFont.h" />
     <ClInclude Include="..\Public\UIHp.h" />
     <ClInclude Include="..\Public\UIInteraction.h" />
+    <ClInclude Include="..\public\UIPressEnter.h" />
     <ClInclude Include="..\Public\UIText.h" />
     <ClInclude Include="..\Public\MapWall.h" />
+    <ClInclude Include="..\public\UIUseableItems.h" />
     <ClInclude Include="..\Public\YellowDust.h" />
     <ClInclude Include="..\public\Zombie.h" />
     <ClInclude Include="Client.h" />
@@ -256,6 +259,7 @@
     <ClCompile Include="..\Private\ItemPortableHealPack.cpp" />
     <ClCompile Include="..\Private\ItemShootGun.cpp" />
     <ClCompile Include="..\private\Level_BossFight.cpp" />
+    <ClCompile Include="..\private\Level_Ending.cpp" />
     <ClCompile Include="..\private\Level_Jusin.cpp" />
     <ClCompile Include="..\private\MapDoor.cpp" />
     <ClCompile Include="..\private\MapMachineGunBulletBox.cpp" />
@@ -316,8 +320,10 @@
     <ClCompile Include="..\Private\UIHp.cpp" />
     <ClCompile Include="..\Private\UIInteraction.cpp" />
     <ClCompile Include="..\private\UIItemQueue.cpp" />
+    <ClCompile Include="..\private\UIPressEnter.cpp" />
     <ClCompile Include="..\Private\UIText.cpp" />
     <ClCompile Include="..\Private\MapWall.cpp" />
+    <ClCompile Include="..\private\UIUseableItems.cpp" />
     <ClCompile Include="..\Private\YellowDust.cpp" />
     <ClCompile Include="..\private\Zombie.cpp" />
     <ClCompile Include="Client.cpp" />

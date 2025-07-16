@@ -23,13 +23,14 @@ private:
 public:
 	typedef struct tagWeapon
 	{
-		_uint iBulletsMax{}, iCanShootBullets{}, iCurrentBullets{}, iShootBullets{};
-		_bool bUseable{ true };
+		_uint iBulletsMax{0}, iCanShootBullets{0}, iCurrentBullets{0}, iShootBullets{0};
+		_bool bUseable{ false };
 	}WEAPON_INFO;
 
 	typedef struct tagPlayerInfo
 	{
-		_uint iHp{}, iBullets{}, iShootBullets{}, iArmor{};
+		_uint iHp{0}, iBullets{0}, iShootBullets{0}, iArmor{0}, iHealpacks{0};
+		_bool bArmor{ false };
 		_wstring strWeapon{ TEXT("Pistol") };
 		_wstring strAction{ TEXT("Idle") };
 		_wstring strItem{ TEXT("CardKey") };

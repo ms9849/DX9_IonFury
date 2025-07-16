@@ -250,6 +250,15 @@
     <Filter Include="02.GameObjects\Effect\ShootGun_Fire">
       <UniqueIdentifier>{76b102b3-71da-4223-8bd3-75b3d9ea74e8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\UI\UIUsableItems">
+      <UniqueIdentifier>{1b37bf2c-27a4-4374-87cf-05e5c5962230}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\UI\UIPressEnter">
+      <UniqueIdentifier>{abf27476-4d29-4bd0-947e-4fcd2dd15d57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\Ending">
+      <UniqueIdentifier>{21b1c74a-0ad2-447b-bf0b-14f05127fcd1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -534,6 +543,15 @@
     <ClInclude Include="..\Public\Effect_ShootGun_Fire.h">
       <Filter>02.GameObjects\Effect\ShootGun_Fire</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\UIUseableItems.h">
+      <Filter>02.GameObjects\UI\UIUsableItems</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\UIPressEnter.h">
+      <Filter>02.GameObjects\UI\UIPressEnter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Level_Ending.h">
+      <Filter>01.Levels\Ending</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -812,6 +830,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\Effect_ShootGun_Fire.cpp">
       <Filter>02.GameObjects\Effect\ShootGun_Fire</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\UIUseableItems.cpp">
+      <Filter>02.GameObjects\UI\UIUsableItems</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\UIPressEnter.cpp">
+      <Filter>02.GameObjects\UI\UIPressEnter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Level_Ending.cpp">
+      <Filter>01.Levels\Ending</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

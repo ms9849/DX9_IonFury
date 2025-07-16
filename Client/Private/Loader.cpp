@@ -1,6 +1,5 @@
 #include "Loader.h"
 
-#include "BackGround.h"
 #include "Terrain.h"
 #include "Player.h"
 #include "Player_RightHand.h"
@@ -8,14 +7,13 @@
 #include "Sky.h"
 #include "Bullet.h"
 #include "UIHp.h"
-#include "UIText.h"
-#include "UIFont.h"
 #include "UIBullets.h"
 #include "UIInteraction.h"
 #include "UIAim.h"
 #include "UIArmor.h"
 #include "UIItemQueue.h"
 #include "UICardKey.h"
+#include "UIUseableItems.h"
 #include "ItemArmor.h"
 #include "ItemHealpack.h"
 #include "ItemPistolBullet.h"
@@ -117,6 +115,9 @@ HRESULT CLoader::Loading()
 	case LEVEL::BOSSFIGHT:
 		hr = Loading_For_BossFight();
 		break;
+	case LEVEL::ENDING:
+		hr = Loading_For_Ending();
+		break;
 	}
 
 	LeaveCriticalSection(&m_CriticalSection);
@@ -135,19 +136,29 @@ void CLoader::Output()
 HRESULT CLoader::Loading_For_Logo()
 {
 	m_strMessage = TEXT("텍스쳐를(을) 로딩 중 입니다.");
-	/* For.Prototype_Component_Texture_BackGround */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::LOGO), TEXT("Prototype_Component_Texture_BackGround"),
-		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Default%d.jpg"), 2))))
-		return E_FAIL;
 	
 	m_strMessage = TEXT("모델를(을) 로딩 중 입니다.");
 
 	m_strMessage = TEXT("셰이더를(을) 로딩 중 입니다.");
 	
 	m_strMessage = TEXT("객체원형를(을) 로딩 중 입니다.");
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::LOGO), TEXT("Prototype_GameObject_BackGround"),
-		CBackGround::Create(m_pGraphic_Device))))
-		return E_FAIL;
+
+	m_strMessage = TEXT("로딩이 완료되었습니다..");
+
+	m_isFinished = true;
+
+	return S_OK;
+}
+
+HRESULT CLoader::Loading_For_Ending()
+{
+	m_strMessage = TEXT("텍스쳐를(을) 로딩 중 입니다.");
+
+	m_strMessage = TEXT("모델를(을) 로딩 중 입니다.");
+
+	m_strMessage = TEXT("셰이더를(을) 로딩 중 입니다.");
+
+	m_strMessage = TEXT("객체원형를(을) 로딩 중 입니다.");
 
 	m_strMessage = TEXT("로딩이 완료되었습니다..");
 
@@ -194,12 +205,22 @@ HRESULT CLoader::Loading_For_GamePlay()
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/UI/CardKey/CardKey.png"), 1))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Texture_UI_UseableItems */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_UI_UseableItems"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/UI/UseableItems/UseableItem_%d.png"), 1))))
+		return E_FAIL;
+
 #pragma endregion
 	
 #pragma region 아이템
 	/* For.Prototype_Component_Texture_Item_Armor_0 */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Item_Armor_0"),
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Item/Item_Armor_0.png"), 1))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Item_ArmorPack */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Item_ArmorPack"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Item/Item_ArmorPack_%d.png"), 1))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Item_Healpack_0 */
@@ -466,16 +487,6 @@ HRESULT CLoader::Loading_For_GamePlay()
 		CUIArmor::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
-	/* For.Prototype_GameObject_UIText */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_UIText"),
-		CUIText::Create(m_pGraphic_Device))))
-		return E_FAIL;
-
-	/* For.Prototype_GameObject_UIFont */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_UIFont"),
-		CUIFont::Create(m_pGraphic_Device))))
-		return E_FAIL;
-
 	/* For.Prototype_GameObject_UIBullets */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_UIBullets"),
 		CUIBullets::Create(m_pGraphic_Device))))
@@ -501,6 +512,11 @@ HRESULT CLoader::Loading_For_GamePlay()
 		CUICardKey::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
+	/* For.Prototype_GameObject_UIUseableItems */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_UIUseableItems"),
+		CUIUseableItems::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
 #pragma endregion	
 
 #pragma region 아이템
@@ -512,8 +528,8 @@ HRESULT CLoader::Loading_For_GamePlay()
 	/* For.Prototype_GameObject_Item_ArmorPack */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Item_ArmorPack"),
 		CItemArmorPack::Create(m_pGraphic_Device))))
-
 		return E_FAIL;
+
 	/* For.Prototype_GameObject_Item_Healpack */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Item_Healpack"),
 		CItemHealpack::Create(m_pGraphic_Device))))
@@ -689,12 +705,22 @@ HRESULT CLoader::Loading_For_Jusin()
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/UI/CardKey/CardKey.png"), 1))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Texture_UI_UseableItems */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_Component_Texture_UI_UseableItems"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/UI/UseableItems/UseableItem_%d.png"), 1))))
+		return E_FAIL;
+
 #pragma endregion
 
 #pragma region 아이템
 	/* For.Prototype_Component_Texture_Item_Armor_0 */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_Component_Texture_Item_Armor_0"),
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Item/Item_Armor_0.png"), 1))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Item_ArmorPack */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_Component_Texture_Item_ArmorPack"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Item/Item_ArmorPack_%d.png"), 1))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Item_Healpack_0 */
@@ -971,16 +997,6 @@ HRESULT CLoader::Loading_For_Jusin()
 		CUIArmor::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
-	/* For.Prototype_GameObject_UIText */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_GameObject_UIText"),
-		CUIText::Create(m_pGraphic_Device))))
-		return E_FAIL;
-
-	/* For.Prototype_GameObject_UIFont */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_GameObject_UIFont"),
-		CUIFont::Create(m_pGraphic_Device))))
-		return E_FAIL;
-
 	/* For.Prototype_GameObject_UIBullets */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_GameObject_UIBullets"),
 		CUIBullets::Create(m_pGraphic_Device))))
@@ -1005,6 +1021,11 @@ HRESULT CLoader::Loading_For_Jusin()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_GameObject_UICardKey"),
 		CUICardKey::Create(m_pGraphic_Device))))
 		return E_FAIL;
+
+	/* For.Prototype_GameObject_UIUseableItems */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_GameObject_UIUseableItems"),
+		CUIUseableItems::Create(m_pGraphic_Device))))
+		return E_FAIL;
 #pragma endregion	
 
 #pragma region 아이템
@@ -1019,7 +1040,7 @@ HRESULT CLoader::Loading_For_Jusin()
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_Item_Healpack */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_GameObject_Item_HealPack"),
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_GameObject_Item_Healpack"),
 		CItemHealpack::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
@@ -1203,6 +1224,11 @@ HRESULT CLoader::Loading_For_BossFight()
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/UI/CardKey/CardKey.png"), 1))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Texture_UI_UseableItems */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_Component_Texture_UI_UseableItems"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/UI/UseableItems/UseableItem_%d.png"), 1))))
+		return E_FAIL;
+
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Monster_Boss_HpBar"),
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Monster/Boss/HpBar_%d.png"), 1))))
 		return E_FAIL;
@@ -1232,6 +1258,11 @@ HRESULT CLoader::Loading_For_BossFight()
 	/* For.Prototype_Component_Texture_Item_Armor_0 */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_Component_Texture_Item_Armor_0"),
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Item/Item_Armor_0.png"), 1))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Item_ArmorPack */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_Component_Texture_Item_ArmorPack"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Item/Item_ArmorPack_%d.png"), 1))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Item_Healpack_0 */
@@ -1513,16 +1544,6 @@ HRESULT CLoader::Loading_For_BossFight()
 		CUIArmor::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
-	/* For.Prototype_GameObject_UIText */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_GameObject_UIText"),
-		CUIText::Create(m_pGraphic_Device))))
-		return E_FAIL;
-
-	/* For.Prototype_GameObject_UIFont */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_GameObject_UIFont"),
-		CUIFont::Create(m_pGraphic_Device))))
-		return E_FAIL;
-
 	/* For.Prototype_GameObject_UIBullets */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_GameObject_UIBullets"),
 		CUIBullets::Create(m_pGraphic_Device))))
@@ -1546,6 +1567,11 @@ HRESULT CLoader::Loading_For_BossFight()
 	/* For.Prototype_GameObject_UICardKey */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_GameObject_UICardKey"),
 		CUICardKey::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UIUseableItems */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_GameObject_UIUseableItems"),
+		CUIUseableItems::Create(m_pGraphic_Device))))
 		return E_FAIL;
 #pragma endregion	
 
