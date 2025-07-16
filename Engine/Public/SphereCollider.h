@@ -22,6 +22,10 @@ private:
 	virtual ~CSphereCollider() = default;
 
 public:
+	void Set_Radius(_float fRadius) {
+		m_fRadius = fRadius;
+	}
+
 	const _float& Get_Radius() const {
 		return m_fRadius;
 	}

@@ -772,7 +772,7 @@ HRESULT CMainApp::Ready_Prototypes()
 #pragma region ÀÌÆåÆ®
 	/* For.Prototype_Component_Texture_Effect_Black_Sight */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Effect_Black_Sight"),
-		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Effect/Black_Sight/Black_Sight_%d.png"), 1))))
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Effect/Black_Sight/FadeOut_%d.png"), 51))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Effect_Pistol_Fire */
