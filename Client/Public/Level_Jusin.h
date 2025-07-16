@@ -41,6 +41,7 @@ private:
 	HRESULT Ready_Layer_Map_Objects_Ride(const _wstring& strLayerTag);
 	HRESULT Ready_Layer_Map_Objects_Gate(const _wstring& strLayerTag);
 	HRESULT Ready_Layer_Interaction_Objects(const _wstring& strLayerTag);
+	HRESULT Ready_Layer_Map_Ceiling(const _wstring& strLayerTag);
 	HRESULT Ready_Layer_Bullet(const _wstring& strLayerTag);
 
 private:

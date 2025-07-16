@@ -70,6 +70,7 @@ HRESULT CFile_Manager::Load_Layers(LEVEL iLevel)
                     || UTF8ToWString(jLayer["Layer"].get<string>()) == TEXT("Layer_Map_Objects_Ride")
                     || UTF8ToWString(jLayer["Layer"].get<string>()) == TEXT("Layer_Map_Objects_Gate")
                     || UTF8ToWString(jLayer["Layer"].get<string>()) == TEXT("Layer_Map_Objects_Deco")
+                    || UTF8ToWString(jLayer["Layer"].get<string>()) == TEXT("Layer_Map_Ceiling")
                     || UTF8ToWString(jLayer["Layer"].get<string>()) == TEXT("Layer_BackGround"))
                     desc.iTextureIndex = jObj["TextureIndex"].get<_uint>();
 
