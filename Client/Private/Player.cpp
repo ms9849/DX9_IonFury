@@ -70,9 +70,14 @@ HRESULT CPlayer::Initialize(void* pArg)
 	if (FAILED(Ready_Weapons()))
 		return E_FAIL;
 
-	m_tInfo.iHp = 80;
+	m_pTransformCom->Set_State(STATE::RIGHT, m_pObjectDesc.matWorld.m[0]);
+	m_pTransformCom->Set_State(STATE::UP, m_pObjectDesc.matWorld.m[1]);
+	m_pTransformCom->Set_State(STATE::LOOK, m_pObjectDesc.matWorld.m[2]);
+	m_pTransformCom->Set_State(STATE::POSITION, m_pObjectDesc.matWorld.m[3]);
+
+	m_tInfo.iHp = 100;
 	m_tInfo.iArmor = 0;
-	m_tInfo.iHealpacks = 12;
+	m_tInfo.iHealpacks = 0;
 
 	auto iter = m_tInfo.Weapons.find(m_tInfo.strWeapon);
 
@@ -117,34 +122,45 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 void CPlayer::Priority_Update(_float fTimeDelta)
 {
-	
-
 	/*치트*/
-	if (m_pGameInstance->Key_Down('0'))
+	if (CHEAT)
 	{
-		m_pTransformCom->Set_State(STATE::POSITION, _float3(14.f, 26.f, 178.f)); // 아지트 앞
+		if (m_pGameInstance->Key_Down('0'))
+		{
+			m_pTransformCom->Set_State(STATE::POSITION, _float3(14.f, 26.f, 178.f)); // 아지트 앞
+		}
+		if (m_pGameInstance->Key_Down('9'))
+		{
+			m_pTransformCom->Set_State(STATE::POSITION, _float3(70.f, 26.f, 67.75f)); // 자습실 카드키 앞
+		}
+		if (m_pGameInstance->Key_Down('8'))
+		{
+			m_pTransformCom->Set_State(STATE::POSITION, _float3(35.f, 6.f, 45.f));
+		}
+		if (m_pGameInstance->Key_Down('7'))
+		{
+			m_pTransformCom->Set_State(STATE::POSITION, _float3(40.f, 40.f, 197.f));
+		}
+		if (m_pGameInstance->Key_Down('6'))
+		{
+			m_pTransformCom->Set_State(STATE::POSITION, _float3(15.f, 1.f, 95.f)); // 엘베 앞
+		}
+		if (m_pGameInstance->Key_Down('5'))
+		{
+			CEffect_Black_Sight* pBlackSight = static_cast<CEffect_Black_Sight*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Effect_Black_Sight"), nullptr));
+			m_pGameInstance->Add_Clone_ToLayer(pBlackSight, ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Layer_Effect"));
+		}
+
+		if (m_pGameInstance->Key_Down(VK_LSHIFT))
+		{
+			m_bSpeedUp = !m_bSpeedUp;
+			if (m_bSpeedUp)
+				m_fSpeed = 2.f;
+			else
+				m_fSpeed = 1.f;
+		}
 	}
-	if (m_pGameInstance->Key_Down('9'))
-	{
-		m_pTransformCom->Set_State(STATE::POSITION, _float3(70.f, 26.f, 67.75f)); // 자습실 카드키 앞
-	}
-	if (m_pGameInstance->Key_Down('8'))
-	{
-		m_pTransformCom->Set_State(STATE::POSITION, _float3(35.f, 6.f, 45.f));
-	}
-	if (m_pGameInstance->Key_Down('7'))
-	{
-		m_pTransformCom->Set_State(STATE::POSITION, _float3(40.f, 40.f, 197.f));
-	}
-	if (m_pGameInstance->Key_Down('6'))
-	{
-		m_pTransformCom->Set_State(STATE::POSITION, _float3(15.f, 1.f, 95.f)); // 엘베 앞
-	}
-	if (m_pGameInstance->Key_Down('5'))
-	{
-		CEffect_Black_Sight* pBlackSight = static_cast<CEffect_Black_Sight*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Effect_Black_Sight"), nullptr));
-		m_pGameInstance->Add_Clone_ToLayer(pBlackSight, ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Layer_Effect"));
-	}
+	
 	/* 점프 로직*/
 	if (!m_bJump && m_pGameInstance->Key_Down(VK_SPACE))
 	{
@@ -317,7 +333,10 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 	vRight.y = 0.f;
 
 	// 오른손 애니메이션 끝나면 idle로
-	if (!m_bWeaponChange && !m_bUseCardKey && m_pRightHandAnimationCom->Check_Animation_Finish())
+	if (!m_bWeaponChange
+		&& !m_bUseCardKey
+		&& m_pRightHandAnimationCom->Check_Animation_Finish()
+		&& m_tInfo.strAction != TEXT("Walk"))
 	{
 		/* 장전이 끝났을 때 철컥 소리 나게 */
 		if (m_tInfo.strWeapon == TEXT("Pistol") && m_tInfo.strAction == TEXT("Reload"))
@@ -327,14 +346,11 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 
 		if (m_tInfo.strWeapon == TEXT("MachineGun") && m_tInfo.strAction == TEXT("Shoot"))
 			m_tInfo.strAction = TEXT("Shoot");
-		else if (m_tInfo.strAction == TEXT("Walk"))
-			m_tInfo.strAction = TEXT("Walk");
 		else
 			m_tInfo.strAction = TEXT("Idle");
 	}
 
 #pragma region 플레이어 키 입력
-
 	// 이동
 	if (m_pGameInstance->Key_Pressing('W'))
 	{
@@ -367,18 +383,7 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 		&& !m_pGameInstance->Key_Pressing('S')
 		&& !m_pGameInstance->Key_Pressing('D'))
 	{
-		//m_pRightHandAnimationCom->Clear_Animation(Set_FrameKey(m_tInfo.strWeapon, TEXT("Walk")));
-		//if(m_pRightHandAnimationCom->Check_Animation_Finish(Set_FrameKey(m_tInfo.strWeapon, TEXT("Walk"))))
 		m_tInfo.strAction = TEXT("Idle");
-	}
-
-	if (m_pGameInstance->Key_Down(VK_LSHIFT))
-	{
-		m_bSpeedUp = !m_bSpeedUp;
-		if (m_bSpeedUp)
-			m_fSpeed = 2.f;
-		else
-			m_fSpeed = 1.f;
 	}
 
 	// 장전

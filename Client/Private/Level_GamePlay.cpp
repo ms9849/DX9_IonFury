@@ -209,7 +209,7 @@ void CLevel_GamePlay::Update(_float fTimeDelta)
 
 	m_fTimeDelta = fTimeDelta;
 
-	if (m_pGameInstance->Key_Down(VK_F3))
+	if (m_pGameInstance->Key_Down(VK_F3) && CHEAT)
 	{
 		CPlayer::PLAYER_INFO Desc{};
 
@@ -382,7 +382,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Player(const _wstring& strLayerTag)
 			ENUM_CLASS(iter.iLayerLevel), iter.strLayer, &iter)))
 			return E_FAIL;
 
-		dynamic_cast<CTransform*>(
+		/*dynamic_cast<CTransform*>(
 			m_pGameInstance->Get_Component(
 				ENUM_CLASS(iter.iLayerLevel), iter.strLayer, TEXT("Com_Transform"), iter.iObjectID)
 			)->Set_State(STATE::RIGHT, iter.matWorld.m[0]);
@@ -397,7 +397,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Player(const _wstring& strLayerTag)
 		dynamic_cast<CTransform*>(
 			m_pGameInstance->Get_Component(
 				ENUM_CLASS(iter.iLayerLevel), iter.strLayer, TEXT("Com_Transform"), iter.iObjectID)
-			)->Set_State(STATE::POSITION, iter.matWorld.m[3]);
+			)->Set_State(STATE::POSITION, iter.matWorld.m[3]);*/
 	}
 
 	//if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Player"),
