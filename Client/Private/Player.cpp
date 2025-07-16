@@ -682,8 +682,8 @@ HRESULT CPlayer::Ready_Weapons()
 	WEAPON_INFO MachineGunDesc{};
 
 	/* 임시로 999로 설정*/
-	//MachineGunDesc.iBulletsMax = 999;
-	MachineGunDesc.iBulletsMax = 100;
+	//MachineGunDesc.iBulletsMax = 100;
+	MachineGunDesc.iBulletsMax = 999;
 	MachineGunDesc.iCurrentBullets = MachineGunDesc.iBulletsMax;
 	MachineGunDesc.iCanShootBullets = MachineGunDesc.iBulletsMax;
 	MachineGunDesc.iShootBullets = MachineGunDesc.iCanShootBullets;
