@@ -52,6 +52,8 @@ HRESULT CSpider::Initialize(void* pArg)
 	m_pTransformCom->Set_State(STATE::POSITION, m_pObjectDesc.matWorld.m[3]);
 	m_pTransformCom->Set_Scale(_float3{ 1.f, 1.f, 1.f });
 
+	m_vNextDir = m_pTransformCom->Get_State(STATE::LOOK);
+
 	m_fDamage = 30.f;
 	m_fAttackRange = 3.5f;
 	m_fAttackCoolTime = 5.f;
@@ -60,7 +62,7 @@ HRESULT CSpider::Initialize(void* pArg)
 	m_fMaxRange = 10.f;
 	m_fRandomMoveTime = 3.f;
 	m_fSumRandomMoveTime = 0.f;
-	m_fCurHp = 30.f;
+	m_fCurHp = 50.f;
 	//m_AttackfCoolTime = 1.f;
 
 	return S_OK;
@@ -148,7 +150,7 @@ void CSpider::Update(_float fTimeDelta)
 		m_bDying = true;
 
 		m_pBoxColliderCom->Set_Scale({ 1.0f, 0.7f, 1.2f });
-		m_pBoxColliderCom->Set_Position({ 0.f, -0.15f, 0.f });
+		m_pBoxColliderCom->Set_Position({ 0.f, -0.35f, 0.f });
 
 		m_pGameInstance->PlaySoundOnce(TEXT("Spider_Die.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
 	}
@@ -215,7 +217,7 @@ void CSpider::Late_Update(_float fTimeDelta)
 
 HRESULT CSpider::Render()
 {
-	m_pBoxColliderCom->Render(m_pTransformCom->Get_State(STATE::POSITION));
+	//m_pBoxColliderCom->Render(m_pTransformCom->Get_State(STATE::POSITION));
 	RotateToPlayer(m_pTransformCom);
 
 	auto iter = m_pTextureComs.find(m_strFrameKey);
@@ -224,9 +226,15 @@ HRESULT CSpider::Render()
 	if (FAILED(Begin_RenderTestState()))
 		return E_FAIL;
 
+	if (FAILED(Begin_RenderState()))
+		return E_FAIL;
+
 	m_pVIBufferCom->Render();
 
 	if (FAILED(End_RenderTestState()))
+		return E_FAIL;
+
+	if (FAILED(End_RenderState()))
 		return E_FAIL;
 
 	return S_OK;

@@ -34,7 +34,7 @@ HRESULT CEliteSoldier::Initialize(void* pArg)
 	m_fAttackCoolTime = 3.f;
 	m_fRandomMoveTime = 3.f;
 	m_fSumRandomMoveTime = 0.f;
-	m_fCurHp = 50.f;
+	m_fCurHp = 100.f;
 
 	//if (pArg != nullptr)				// 스포너의 위치를 받아온다
 	//{
@@ -59,6 +59,17 @@ HRESULT CEliteSoldier::Initialize(void* pArg)
 	m_pTransformCom->Set_State(STATE::LOOK, m_pObjectDesc.matWorld.m[2]);
 	m_pTransformCom->Set_State(STATE::POSITION, m_pObjectDesc.matWorld.m[3]);
 	m_pTransformCom->Set_Scale(_float3{ 2.f, 2.f, 1.f });
+
+	m_vNextDir = m_pTransformCom->Get_State(STATE::LOOK);
+
+	/*_float3 vLook = m_pTransformCom->Get_State(STATE::LOOK);
+	_float3 vPosition = m_pTransformCom->Get_State(STATE::POSITION);
+
+	D3DXVec3Normalize(&vLook, &vLook);
+
+	_float3 vTarget = vPosition + vLook;
+	m_pTransformCom->LookAt(vTarget);*/
+
 
 	/*if (m_vPos != nullptr)
 	{
@@ -201,8 +212,8 @@ void CEliteSoldier::Late_Update(_float fTimeDelta)
 
 HRESULT CEliteSoldier::Render()
 {
-	m_pBoxColliderCom->Render(m_pTransformCom->Get_State(STATE::POSITION));
-	m_pBoxColliderHead->Render(m_pTransformCom->Get_State(STATE::POSITION));
+	//m_pBoxColliderCom->Render(m_pTransformCom->Get_State(STATE::POSITION));
+	//m_pBoxColliderHead->Render(m_pTransformCom->Get_State(STATE::POSITION));
 	RotateToPlayer(m_pTransformCom);
 
 	auto iter = m_pTextureComs.find(m_strFrameKey);
@@ -211,9 +222,15 @@ HRESULT CEliteSoldier::Render()
 	if (FAILED(Begin_RenderTestState()))
 		return E_FAIL;
 
+	if (FAILED(Begin_RenderState()))
+		return E_FAIL;
+
 	m_pVIBufferCom->Render();
 
 	if (FAILED(End_RenderTestState()))
+		return E_FAIL;
+
+	if (FAILED(End_RenderState()))
 		return E_FAIL;
 
 	return S_OK;
@@ -565,6 +582,7 @@ void CEliteSoldier::Attack(EliteSoldierState eState)
 		D3DXVec3Normalize(&vDir, &vDir);
 
 		m_vNextDir = vDir;
+		m_pTransformCom->LookAt(m_vNextDir);
 
 		CBullet::BULLET_DESC Desc;
 		Desc.vDir = vDir;
@@ -591,6 +609,7 @@ void CEliteSoldier::Attack(EliteSoldierState eState)
 		D3DXVec3Normalize(&vDir, &vDir);
 
 		m_vNextDir = vDir;
+		m_pTransformCom->LookAt(m_vNextDir);
 
 		_uint len = sizeof(m_vShootPosOffset) / sizeof(m_vShootPosOffset[0]);
 

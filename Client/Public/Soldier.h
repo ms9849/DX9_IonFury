@@ -43,6 +43,7 @@ public:
 	void Move(_float fTimeDelta);
 	virtual void Move() override;
 	void MoveAnimationCheck();
+	bool CheckSafeArea(const _float3& vPlayerPos);
 
 private:
 	_bool m_bAnimationLock = false;

@@ -31,6 +31,8 @@ CLevel_BossFight::CLevel_BossFight(LPDIRECT3DDEVICE9 pGraphic_Device, LEVEL eLev
 
 HRESULT CLevel_BossFight::Initialize(void* pArg)
 {
+	m_pGameInstance->PlayBGM(L"bango.xm", 0.7f);
+
 	if (pArg != nullptr)
 		m_tPlayerInfo = *static_cast<CPlayer::PLAYER_INFO*>(pArg);
 

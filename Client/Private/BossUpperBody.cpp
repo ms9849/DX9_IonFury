@@ -643,9 +643,9 @@ HRESULT CBossUpperBody::Ready_Components()
 
 	/* Com_BoxCollider */
 	CBoxCollider::BOXCOLLIDER_DESC Desc;
-	Desc.vPosition = { 0.f, -0.3f, 0.f };
-	Desc.fScaleX = 1.5f;
-	Desc.fScaleZ = 1.5f;
+	Desc.vPosition = { 0.f, -0.7f, 0.f };
+	Desc.fScaleX = 1.7f;
+	Desc.fScaleZ = 1.7f;
 	Desc.fScaleY = 2.0f;
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_BoxCollider"),
 		TEXT("Com_BoxCollider"), reinterpret_cast<CComponent**>(&m_pBoxColliderCom), &Desc)))
@@ -703,7 +703,8 @@ void CBossUpperBody::Attack(_float fTimeDelta, BossAttackState state)
 			Desc.vPos = vMonsterPos;
 			//Desc.vPos = {vPos.x ,vPos.y += m_vUpOffset.y, vPos.z };
 			Desc.fBulletSpeed = 10.f;
-			Desc.vBulletScale = { 0.005f, 0.005f, 0.2f };
+			//Desc.vBulletScale = { 0.005f, 0.005f, 0.2f };			// ±‚¡∏
+			Desc.vBulletScale = { 0.01f, 0.007f, 0.2f };
 			//Desc.vBulletScale = { 0.2f, 0.2f, 0.1f };
 			Desc.isPlayerBullet = false;
 			Desc.fDuration = 5.f;
@@ -759,7 +760,8 @@ void CBossUpperBody::Attack(_float fTimeDelta, BossAttackState state)
 			Desc.vDir = vDir;
 			Desc.vPos = vMonsterPos;
 			Desc.fBulletSpeed = 10.f;
-			Desc.vBulletScale = { 0.005f, 0.005f, 0.2f };
+			//Desc.vBulletScale = { 0.005f, 0.005f, 0.2f };
+			Desc.vBulletScale = { 0.01f, 0.007f, 0.2f };
 			//Desc.vBulletScale = { 0.2f, 0.2f, 0.1f };
 			Desc.isPlayerBullet = false;
 			Desc.fDuration = 7.f;
