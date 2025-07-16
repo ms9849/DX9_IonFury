@@ -1,6 +1,5 @@
 #include "Loader.h"
 
-#include "BackGround.h"
 #include "Terrain.h"
 #include "Player.h"
 #include "Player_RightHand.h"
@@ -8,8 +7,6 @@
 #include "Sky.h"
 #include "Bullet.h"
 #include "UIHp.h"
-#include "UIText.h"
-#include "UIFont.h"
 #include "UIBullets.h"
 #include "UIInteraction.h"
 #include "UIAim.h"
@@ -118,6 +115,9 @@ HRESULT CLoader::Loading()
 	case LEVEL::BOSSFIGHT:
 		hr = Loading_For_BossFight();
 		break;
+	case LEVEL::ENDING:
+		hr = Loading_For_Ending();
+		break;
 	}
 
 	LeaveCriticalSection(&m_CriticalSection);
@@ -136,19 +136,29 @@ void CLoader::Output()
 HRESULT CLoader::Loading_For_Logo()
 {
 	m_strMessage = TEXT("텍스쳐를(을) 로딩 중 입니다.");
-	/* For.Prototype_Component_Texture_BackGround */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::LOGO), TEXT("Prototype_Component_Texture_BackGround"),
-		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Default%d.jpg"), 2))))
-		return E_FAIL;
 	
 	m_strMessage = TEXT("모델를(을) 로딩 중 입니다.");
 
 	m_strMessage = TEXT("셰이더를(을) 로딩 중 입니다.");
 	
 	m_strMessage = TEXT("객체원형를(을) 로딩 중 입니다.");
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::LOGO), TEXT("Prototype_GameObject_BackGround"),
-		CBackGround::Create(m_pGraphic_Device))))
-		return E_FAIL;
+
+	m_strMessage = TEXT("로딩이 완료되었습니다..");
+
+	m_isFinished = true;
+
+	return S_OK;
+}
+
+HRESULT CLoader::Loading_For_Ending()
+{
+	m_strMessage = TEXT("텍스쳐를(을) 로딩 중 입니다.");
+
+	m_strMessage = TEXT("모델를(을) 로딩 중 입니다.");
+
+	m_strMessage = TEXT("셰이더를(을) 로딩 중 입니다.");
+
+	m_strMessage = TEXT("객체원형를(을) 로딩 중 입니다.");
 
 	m_strMessage = TEXT("로딩이 완료되었습니다..");
 
@@ -475,16 +485,6 @@ HRESULT CLoader::Loading_For_GamePlay()
 	/* For.Prototype_GameObject_UIArmor */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_UIArmor"),
 		CUIArmor::Create(m_pGraphic_Device))))
-		return E_FAIL;
-
-	/* For.Prototype_GameObject_UIText */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_UIText"),
-		CUIText::Create(m_pGraphic_Device))))
-		return E_FAIL;
-
-	/* For.Prototype_GameObject_UIFont */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_UIFont"),
-		CUIFont::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_UIBullets */
@@ -995,16 +995,6 @@ HRESULT CLoader::Loading_For_Jusin()
 	/* For.Prototype_GameObject_UIArmor */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_GameObject_UIArmor"),
 		CUIArmor::Create(m_pGraphic_Device))))
-		return E_FAIL;
-
-	/* For.Prototype_GameObject_UIText */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_GameObject_UIText"),
-		CUIText::Create(m_pGraphic_Device))))
-		return E_FAIL;
-
-	/* For.Prototype_GameObject_UIFont */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_GameObject_UIFont"),
-		CUIFont::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_UIBullets */
@@ -1552,16 +1542,6 @@ HRESULT CLoader::Loading_For_BossFight()
 	/* For.Prototype_GameObject_UIArmor */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_GameObject_UIArmor"),
 		CUIArmor::Create(m_pGraphic_Device))))
-		return E_FAIL;
-
-	/* For.Prototype_GameObject_UIText */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_GameObject_UIText"),
-		CUIText::Create(m_pGraphic_Device))))
-		return E_FAIL;
-
-	/* For.Prototype_GameObject_UIFont */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_GameObject_UIFont"),
-		CUIFont::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_UIBullets */

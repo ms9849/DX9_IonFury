@@ -19,6 +19,10 @@
 #include "Bullet_Wound.h"
 #include "Bullet.h"
 #include "EventBox.h"
+#include "Background.h"
+#include "UIText.h"
+#include "UIFont.h"
+#include "UIPressEnter.h"
 
 /*****************************
 대재훈의 은총 이 얼마나 관대한가
@@ -138,6 +142,37 @@ HRESULT CMainApp::Ready_Prototypes()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Sight"),
 		CSight::Create(m_pGraphic_Device))))
 		return E_FAIL;
+
+#pragma region Logo, Loading, Ending 화면 공통 객체
+
+	/* For.Prototype_GameObject_BackGround */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_BackGround"),
+		CBackGround::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UIText */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UIText"),
+		CUIText::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UIFont */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UIFont"),
+		CUIFont::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UIPressEnter */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UIPressEnter"),
+		CUIPressEnter::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
+#pragma endregion
+
+#pragma region 백그라운드 이미지
+	/* For.Prototype_Component_Texture_BackGround */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_BackGround"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Backgrounds/Background_%d.png"), 3))))
+		return E_FAIL;
+#pragma endregion
 
 #pragma region 폰트 텍스처
 	/* For.Prototype_Component_Fonts_Default */

@@ -1,24 +1,27 @@
-#include "UIText.h"
+#include "UIPressEnter.h"
 
 #include "GameInstance.h"
 #include "UIFont.h"
+#include "UIText.h"
+#include "Player.h"
+#include "DoorLock.h"
 
-CUIText::CUIText(LPDIRECT3DDEVICE9 pGraphic_Device)
-	: CUIObject{pGraphic_Device}
+CUIPressEnter::CUIPressEnter(LPDIRECT3DDEVICE9 pGraphic_Device)
+	: CUIObject{ pGraphic_Device }
 {
 }
 
-CUIText::CUIText(const CUIText& Prototype)
+CUIPressEnter::CUIPressEnter(const CUIPressEnter& Prototype)
 	: CUIObject(Prototype)
 {
 }
 
-HRESULT CUIText::Initialize_Prototype()
+HRESULT CUIPressEnter::Initialize_Prototype()
 {
 	return S_OK;
 }
 
-HRESULT CUIText::Initialize(void* pArg)
+HRESULT CUIPressEnter::Initialize(void* pArg)
 {
 	UIOBJECT_DESC* pTemp = static_cast<UIOBJECT_DESC*>(pArg);
 
@@ -31,7 +34,7 @@ HRESULT CUIText::Initialize(void* pArg)
 	m_tagDesc.strLayerTag = pTemp->strLayerTag;
 	m_tagDesc.strFontType = pTemp->strFontType;
 
-	if (FAILED(__super::Initialize(&pArg)))
+	if (FAILED(__super::Initialize(&m_tagDesc)))
 		return E_FAIL;
 
 	if (FAILED(Ready_Components()))
@@ -39,78 +42,55 @@ HRESULT CUIText::Initialize(void* pArg)
 
 	UIOBJECT_DESC Desc{};
 
-	// 각 텍스트 크기 및 위치
-	Desc.fSizeX = m_tagDesc.fSizeX;
+	Desc.fSizeX = m_tagDesc.fSizeX / m_tagDesc.iTextLength;
 	Desc.fSizeY = m_tagDesc.fSizeY;
-	Desc.fY = m_tagDesc.fY;
+	Desc.fX = m_tagDesc.fX - (Desc.fSizeX);
+	Desc.fY = m_tagDesc.fY - (Desc.fSizeY * 0.5f);
 	Desc.iTextLength = m_tagDesc.iTextLength;
 	Desc.iLayerLevelIndex = m_tagDesc.iLayerLevelIndex;
 	Desc.strLayerTag = m_tagDesc.strLayerTag;
 	Desc.strFontType = m_tagDesc.strFontType;
 
-	m_vecFont.reserve(Desc.iTextLength);
+	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UIText"),
+		Desc.iLayerLevelIndex, Desc.strLayerTag, &Desc)))
+		return E_FAIL;
 
-	for (size_t i = 0; i < Desc.iTextLength; ++i)
-	{
-		Desc.fX = (m_tagDesc.fX + (Desc.fSizeX * 0.5f)) + (Desc.fSizeX * i);
-
-		if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UIFont"),
-			Desc.iLayerLevelIndex, Desc.strLayerTag, &Desc)))
-			return E_FAIL;
-
-		CUIFont* pUIFont = dynamic_cast<CUIFont*>(m_pGameInstance->Find_GameObject_ToLayer(Desc.iLayerLevelIndex, Desc.strLayerTag));
-		Safe_AddRef(pUIFont);
-
-		m_vecFont.push_back(pUIFont);
-	}
+	m_pText = dynamic_cast<CUIText*>(m_pGameInstance->Find_GameObject_ToLayer(Desc.iLayerLevelIndex, Desc.strLayerTag));
+	Safe_AddRef(m_pText);
 
 	return S_OK;
 }
 
-void CUIText::Priority_Update(_float fTimeDelta)
+void CUIPressEnter::Priority_Update(_float fTimeDelta)
 {
 }
 
-void CUIText::Update(_float fTimeDelta)
+void CUIPressEnter::Update(_float fTimeDelta)
 {
 	__super::Update_Transform(m_pTransformCom);
 }
 
-void CUIText::Late_Update(_float fTimeDelta)
+void CUIPressEnter::Late_Update(_float fTimeDelta)
 {
 	m_pGameInstance->Add_RenderGroup(RENDER::UI, this);
 }
 
-HRESULT CUIText::Render()
+HRESULT CUIPressEnter::Render()
 {
 	m_pTransformCom->Set_Transform();
 
 	return S_OK;
 }
 
-void CUIText::Set_Text(const _tchar* strText)
+void CUIPressEnter::Set_Guide(_bool bFinish)
 {
-	for (size_t i = 0; i < wcslen(strText); ++i)
-	{
-		_tchar ch = strText[i];
-		m_vecFont[i]->Set_Font_Type(ch);
-	}
-	for (size_t i = wcslen(strText); i < m_tagDesc.iTextLength; ++i)
-	{
-		m_vecFont[i]->Set_Font_Type(' ');
-	}
+	if(bFinish)
+		m_pText->Set_Text(TEXT("Press [Enter] Key"));
+	else
+		m_pText->Set_Text(TEXT(" "));
 }
 
-void CUIText::Set_Text(_uint iNumber)
-{
-	for (size_t i = 0; i < m_tagDesc.iTextLength; ++i)
-	{
-		_tchar ch = to_string(iNumber)[i];
-		m_vecFont[i]->Set_Font_Type(ch);
-	}
-}
-
-HRESULT CUIText::Ready_Components()
+HRESULT CUIPressEnter::Ready_Components()
 {
 	/* Com_Transform */
 	CTransform::TRANSFORM_DESC		TransformDesc{ 5.f, D3DXToRadian(90.0f) };
@@ -126,9 +106,9 @@ HRESULT CUIText::Ready_Components()
 	return S_OK;
 }
 
-CUIText* CUIText::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
+CUIPressEnter* CUIPressEnter::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 {
-	CUIText* pInstance = new CUIText(pGraphic_Device);
+	CUIPressEnter* pInstance = new CUIPressEnter(pGraphic_Device);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
@@ -139,30 +119,24 @@ CUIText* CUIText::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
 	return pInstance;
 }
 
-CGameObject* CUIText::Clone(void* pArg)
+CGameObject* CUIPressEnter::Clone(void* pArg)
 {
-	CUIText* pInstance = new CUIText(*this);
+	CUIPressEnter* pInstance = new CUIPressEnter(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Cloned : CUIText");
+		MSG_BOX("Failed to Cloned : CUIPressEnter");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CUIText::Free()
+void CUIPressEnter::Free()
 {
 	__super::Free();
 
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pVIBufferCom);
-
-	for (auto& iter : m_vecFont)
-	{
-		Safe_Release(iter);
-	}
-
-	m_vecFont.clear();
+	Safe_Release(m_pText);
 }

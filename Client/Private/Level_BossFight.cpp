@@ -2,6 +2,7 @@
 
 #include "GameInstance.h"
 #include "CFile_Manager.h"
+#include "Level_Loading.h"
 #include "UIHp.h"
 #include "UIBullets.h"
 #include "UIInteraction.h"
@@ -136,6 +137,14 @@ void CLevel_BossFight::Update(_float fTimeDelta)
 	m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_PlayerBullet"), TEXT("Layer_Boss1_Upper"), ENUM_CLASS(LEVEL::BOSSFIGHT), fTimeDelta, nullptr);
 	m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_PlayerBullet"), TEXT("Layer_Boss1_Lower"), ENUM_CLASS(LEVEL::BOSSFIGHT), fTimeDelta, nullptr);
 	m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_Monster_Bullet"), TEXT("Layer_Player"), ENUM_CLASS(LEVEL::BOSSFIGHT), fTimeDelta, nullptr);
+
+	if (m_pGameInstance->Key_Down(VK_F9))
+	{
+		if (FAILED(m_pGameInstance->Change_Level(
+			CLevel_Loading::Create(
+				m_pGraphic_Device, LEVEL::LOADING, LEVEL::ENDING))))
+			return;
+	}
 }
 
 HRESULT CLevel_BossFight::Render()
