@@ -27,8 +27,12 @@ private:
 
 	CPlayer::PLAYER_INFO m_tPlayerInfo{};
 
+	class CUIPressEnter* m_pUIPressEnter{ nullptr };
+
 private:
-	HRESULT Ready_Layer_BackGround();
+	/* 이 레벨에서 쓰기위한 객체들을 생성한다. */
+	HRESULT Ready_Layer_BackGround(const _wstring& strLayerTag);
+
 
 
 public:

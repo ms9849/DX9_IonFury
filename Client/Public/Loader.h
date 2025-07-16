@@ -45,6 +45,7 @@ private:
 	HRESULT Loading_For_GamePlay();
 	HRESULT Loading_For_Jusin();
 	HRESULT Loading_For_BossFight();
+	HRESULT Loading_For_Ending();
 
 public:
 	static CLoader* Create(LPDIRECT3DDEVICE9 pGraphic_Device, LEVEL eNextLevelID);
