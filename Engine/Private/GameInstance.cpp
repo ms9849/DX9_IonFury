@@ -67,6 +67,8 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& EngineDesc, LPDIRECT
 
 void CGameInstance::Update_Engine(_float fTimeDelta)
 {
+	m_pKey_Manager->Begin_Input();
+
 	m_pObject_Manager->Priority_Update(fTimeDelta);
 
 	m_pObject_Manager->Update(fTimeDelta);
@@ -83,7 +85,7 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 	절대로
 	진짜 절대로
 	*/
-	m_pKey_Manager->Update();
+	m_pKey_Manager->End_Input();
 }
 
 HRESULT CGameInstance::Draw()
