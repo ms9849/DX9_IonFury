@@ -3986,7 +3986,7 @@
                 ],
                 "Proto": "Prototype_GameObject_Map_Gate",
                 "ProtoLevel": 3,
-                "TextureIndex": 1
+                "TextureIndex": 0
             },
             {
                 "ID": 3,
@@ -4019,7 +4019,7 @@
                 ],
                 "Proto": "Prototype_GameObject_Map_Gate",
                 "ProtoLevel": 3,
-                "TextureIndex": 1
+                "TextureIndex": 0
             }
         ]
     },

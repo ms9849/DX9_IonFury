@@ -54,6 +54,8 @@ public:
 	void Set_TargetMove(_float bTarget);
 	void MoveAnimationCheck();
 
+	void Set_Awake(_bool isAwake);
+
 private:
 	_bool m_bAnimationLock = false;
 	_bool m_bFrameBlock = false;

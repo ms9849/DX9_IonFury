@@ -116,22 +116,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 void CPlayer::Priority_Update(_float fTimeDelta)
 {
-	// 오른손 애니메이션 끝나면 idle로
-	if (!m_bWeaponChange && !m_bUseCardKey && m_pRightHandAnimationCom->Check_Animation_Finish())
-	{
-		/* 장전이 끝났을 때 철컥 소리 나게 */
-		if (m_tInfo.strWeapon == TEXT("Pistol") && m_tInfo.strAction == TEXT("Reload"))
-		{
-			m_pGameInstance->PlaySoundOnce(TEXT("Pistol_Reload_3.ogg"), CHANNELID::SOUND_EFFECT, 0.2f);
-		}
-
-		if (m_tInfo.strWeapon == TEXT("MachineGun") && m_tInfo.strAction == TEXT("Shoot"))
-			m_tInfo.strAction = TEXT("Shoot");
-		else if (m_tInfo.strAction == TEXT("Walk"))
-			m_tInfo.strAction = TEXT("Walk");
-		else
-			m_tInfo.strAction = TEXT("Idle");
-	}
+	
 
 	/*치트*/
 	if (m_pGameInstance->Key_Down('0'))
@@ -325,6 +310,23 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 
 	_float3 vRight = m_pTransformCom->Get_State(STATE::RIGHT);
 	vRight.y = 0.f;
+
+	// 오른손 애니메이션 끝나면 idle로
+	if (!m_bWeaponChange && !m_bUseCardKey && m_pRightHandAnimationCom->Check_Animation_Finish())
+	{
+		/* 장전이 끝났을 때 철컥 소리 나게 */
+		if (m_tInfo.strWeapon == TEXT("Pistol") && m_tInfo.strAction == TEXT("Reload"))
+		{
+			m_pGameInstance->PlaySoundOnce(TEXT("Pistol_Reload_3.ogg"), CHANNELID::SOUND_EFFECT, 0.2f);
+		}
+
+		if (m_tInfo.strWeapon == TEXT("MachineGun") && m_tInfo.strAction == TEXT("Shoot"))
+			m_tInfo.strAction = TEXT("Shoot");
+		else if (m_tInfo.strAction == TEXT("Walk"))
+			m_tInfo.strAction = TEXT("Walk");
+		else
+			m_tInfo.strAction = TEXT("Idle");
+	}
 
 #pragma region 플레이어 키 입력
 

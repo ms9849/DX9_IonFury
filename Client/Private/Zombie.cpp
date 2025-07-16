@@ -163,8 +163,18 @@ void CZombie::Update(_float fTimeDelta)
 
 	if (m_isAwake)
 	{
+		m_strFrameKey = TEXT("Zombie_Awake");
 		__super::Jump(fTimeDelta);
 		SetUp_OnTerrain(m_pTransformCom, 1.f, &m_bJump);
+
+		m_pAnimationCom->Play_Animation(TEXT("Zombie_Awake"), fTimeDelta);
+
+		if (m_pAnimationCom->Check_Animation_Finish(TEXT("Zombie_Awake")))
+		{
+			m_isAwake = false;
+			m_strFrameKey = TEXT("Zombie_Front");
+		}
+
 		return;
 	}
 	else if (m_isTarget)
@@ -265,7 +275,7 @@ void CZombie::Late_Update(_float fTimeDelta)
 			m_bAnimationLock = false;
 			m_strFrameKey = TEXT("Zombie_Front");
 		}
-	}
+	}	
 
 	Compute_CamDistance(m_pTransformCom->Get_State(STATE::POSITION));
 	m_pGameInstance->Add_RenderGroup(RENDER::BLEND, this);
@@ -401,7 +411,7 @@ HRESULT CZombie::Ready_Animations()
 
 	//Zombie_Awake
 	iter = m_pTextureComs.find(TEXT("Zombie_Awake"));
-	Desc_14.iFrameSpeed = 40;
+	Desc_14.iFrameSpeed = 20;
 	Desc_14.iEnd = iter->second->Get_Texture_Length();
 	m_pAnimationCom->Set_Animation(TEXT("Zombie_Awake"), Desc_14);
 
@@ -716,9 +726,14 @@ void CZombie::MoveAnimationCheck()
 	}
 }
 
+void CZombie::Set_Awake(_bool isAwake)
+{
+	m_isAwake = isAwake;
+}
+
 void CZombie::Set_TargetMove(_float bTarget)
 {
-	m_isTarget = true;
+	m_isTarget = bTarget;
 }
 
 void CZombie::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta)
