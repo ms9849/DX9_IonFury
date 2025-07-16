@@ -27,12 +27,12 @@ HRESULT CBossLowerBody::Initialize(void* pArg)
 {
 	m_pPlayerTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Layer_Player"), TEXT("Com_Transform")));
 	Safe_AddRef(m_pPlayerTransform);
-	m_pCoreTranform = static_cast<CTransform*>(pArg);
-	Safe_AddRef(m_pCoreTranform);
+	m_pCoreTransform = static_cast<CTransform*>(pArg);
+	Safe_AddRef(m_pCoreTransform);
 
 	m_pObjectDesc.iLayerLevel = ENUM_CLASS(LEVEL::BOSSFIGHT);
 
-	if (m_pCoreTranform == nullptr)
+	if (m_pCoreTransform == nullptr)
 		return E_FAIL;
 
 	if (m_pPlayerTransform == nullptr)
@@ -51,18 +51,20 @@ HRESULT CBossLowerBody::Initialize(void* pArg)
 
 	//_float3 vPos = m_pTransformCom->Get_State(STATE::POSITION);
 	// 최초 위치 코어의 위치값으로 설정
-	m_pTransformCom->Set_State(STATE::POSITION, m_pCoreTranform->Get_State(STATE::POSITION));
+	m_pTransformCom->Set_State(STATE::POSITION, m_pCoreTransform->Get_State(STATE::POSITION));
 
 	m_fChaseRange = 20.f;
 	m_fSafeDistance = 5.f;
 	m_fStopMoveTime = 2.f;
-	m_fDefaultStopMoveTime = m_fStopMoveTime;
+	//m_fDefaultStopMoveTime = m_fStopMoveTime;
 	// 기존 0.05
 	m_fMoveCoolTime = 0.2f;
 	m_strFrameKey = TEXT("Boss_Front_LeftLeg");
 	m_strLegFrameKey = TEXT("Boss_Front_LeftLeg");
-	m_fDirDuraionTime = 3.f;
+	m_fDirDuraionTime = 5.f;
+	m_fDefaultStopMoveTime = m_fDirDuraionTime;
 	m_fSumDirDurarionTime = 0.f;
+	Set_Hp(5000.f);
 	m_fCurHp = m_fMaxHp;
 
 	return S_OK;
@@ -93,8 +95,8 @@ void CBossLowerBody::Update(_float fTimeDelta)
 	}
 	else
 	{
-		m_fStopMoveTime = m_fDefaultStopMoveTime;
-		m_fDirDuraionTime = 3.f;
+		//m_fStopMoveTime = m_fDefaultStopMoveTime;
+		m_fDirDuraionTime = m_fDefaultStopMoveTime;
 		m_fStopMoveTime = 2.f;
 	}
 
@@ -139,7 +141,7 @@ void CBossLowerBody::Update(_float fTimeDelta)
 	
 	// 이동 후 core위치 잡아주기
 	//__super::Jump(fTimeDelta);
-	m_pCoreTranform->Set_State(STATE::POSITION, m_pTransformCom->Get_State(STATE::POSITION));
+	m_pCoreTransform->Set_State(STATE::POSITION, m_pTransformCom->Get_State(STATE::POSITION));
 	SetUp_OnTerrain(m_pTransformCom, 1.2f, &m_bJump);
 }
 
@@ -826,6 +828,6 @@ void CBossLowerBody::Free()
 {
 	__super::Free();
 
-	Safe_Release(m_pCoreTranform);
+	Safe_Release(m_pCoreTransform);
 	Safe_Release(m_pPlayerTransform);
 }

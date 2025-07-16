@@ -98,12 +98,12 @@ void CEventBox::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeD
 	if (m_pGameInstance->Get_CurrentLevelID() == ENUM_CLASS(LEVEL::GAMEPLAY))
 	{
 		m_pGameInstance->Change_Level(CLevel_Loading::Create(
-			m_pGraphic_Device, LEVEL::GAMEPLAY, LEVEL::JUSIN, &Desc));
+			m_pGraphic_Device, LEVEL::LOADING, LEVEL::JUSIN, &Desc));
 	}
 	else if (m_pGameInstance->Get_CurrentLevelID() == ENUM_CLASS(LEVEL::JUSIN))
 	{
 		m_pGameInstance->Change_Level(CLevel_Loading::Create(
-			m_pGraphic_Device, LEVEL::JUSIN, LEVEL::BOSSFIGHT, &Desc));
+			m_pGraphic_Device, LEVEL::LOADING, LEVEL::BOSSFIGHT, &Desc));
 	}
 }
 

@@ -33,17 +33,24 @@ public:
 	HRESULT Ready_Components() override;
 	HRESULT Begin_RenderState() override;
 	HRESULT End_RenderState() override;
+	HRESULT Begin_RenderTestState();
+	HRESULT End_RenderTestState();
 
 	virtual void Attack() override;
 	void Move(_float fTimeDelta);
 	virtual void Move() override;
+	void MoveAnimationCheck();
 
 	void Jump(_float fTimeDelta, _float fJumpPower);
 
 private:
 	_bool m_bAnimationLock = false;
+	_bool m_isRandomMove = false;
 	_bool m_bFrameBlock = false;
 	_float m_fJumpPower = 0.f;
+	_float m_fRandomMoveTime = 0.f;
+	_float m_fSightFailTime = 0.f;
+	_float m_fSafeDistance = 3.f;
 	_float3* m_vPos = {};
 
 public:

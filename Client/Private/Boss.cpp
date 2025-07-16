@@ -51,7 +51,7 @@ HRESULT CBoss::Initialize(void* pArg)
 	Safe_AddRef(m_pBossLowerBody);
 
 	m_pObjectDesc.iLayerLevel = ENUM_CLASS(LEVEL::BOSSFIGHT);
-	m_fCurHp = m_fMaxHp;
+	m_fMaxHp = m_pBossUpperBody->Get_Hp() + m_pBossLowerBody->Get_Hp();
 
 	//m_pTerrain_Manager = CTerrain_Manager::Create();
 	//m_pTerrain_Manager->Add_LandObject_One(m_pBossLowerBody);

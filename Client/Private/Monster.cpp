@@ -1,7 +1,4 @@
 #include "Monster.h"
-
-#include "Bullet.h"
-#include "BehaviorNode.h"
 #include "ItemArmorPack.h"
 #include "ItemPistolBullet.h"
 #include "ItemShootGunBullet.h"
@@ -66,6 +63,11 @@ HRESULT CMonster::Render()
 void CMonster::RecoveryHp()
 {
 	m_fCurHp = m_fMaxHp;
+}
+
+void CMonster::Set_Hp(_float fHp)
+{
+	m_fMaxHp = fHp;
 }
 
 _float CMonster::Get_Hp()
@@ -178,6 +180,36 @@ void CMonster::RotateToPlayer(CTransform* pTranform)
 	///*m_pTransformCom->Set_State(STATE::UP, *reinterpret_cast<_float3*>(&ViewMatrix.m[1]));*/
 	//pTranform->Set_State(STATE::LOOK, *reinterpret_cast<_float3*>(&ViewMatrix.m[2]));
 
+}
+
+void CMonster::RandomMove(_float fTimeDelta, _float3 nextDir)
+{
+	_float3 vNextDir = {};
+	/*do 
+	{
+		_float3 vMin = { 0.f, 0.f, 0.f };
+		_float3 vMax = { 1.f, 1.f, 1.f };
+		m_pGameInstance->GetRandomVector(&vNextDir, &vMin, &vMax);
+		vNextDir.y = 0.f;
+	} while (D3DXVec3Length(&vNextDir) < 0.001f);*/
+
+	vNextDir = nextDir;
+	D3DXVec3Normalize(&vNextDir, &vNextDir);
+
+	_float3 fMonsterLook = m_pTransformCom->Get_State(STATE::LOOK);
+	D3DXVec3Normalize(&fMonsterLook, &fMonsterLook);
+
+	float dot = D3DXVec3Dot(&fMonsterLook, &vNextDir);;
+	float fRadian = acosf(dot);
+
+	_float3 vCross = {};
+	D3DXVec3Cross(&vCross, &fMonsterLook, &vNextDir);
+	if (vCross.y < 0)
+		fRadian = -fRadian;
+
+	m_pTransformCom->Rotation({ 0.f, 1.f, 0.f }, fRadian);
+	m_pTransformCom->Go_Direction(vNextDir, fTimeDelta);
+	m_pTransformCom->LookAt(vNextDir * 10.f);
 }
 
 void CMonster::Free()

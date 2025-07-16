@@ -52,6 +52,9 @@ public:
 	HRESULT Begin_RenderTestState();
 	HRESULT End_RenderTestState();
 
+	void UseBooster(CHANNELID _eId);
+	void TurnOffBooster(CHANNELID _eId);
+
 	void Attack(_float fTimeDelta, BossAttackState eState);
 	void RotationCheck();
 	void AttackRotationCheck();
@@ -61,11 +64,11 @@ public:
 
 private:
 	//void RotateToPlayer(CTransform* pTranform);
-	void UseBooster();
-	void TurnOffBooster();
+	//void UseBooster();
+	//void TurnOffBooster();
 	void RotateWithParentTransform();
 	void RotateToTarget();
-	CTransform* m_pCoreTranform = { nullptr };
+	CTransform* m_pCoreTransform = { nullptr };
 
 private:
 	_bool m_bAnimationLock = false;

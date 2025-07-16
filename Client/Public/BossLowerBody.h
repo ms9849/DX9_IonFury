@@ -69,7 +69,7 @@ private:
 	_float m_fSumDirDurarionTime = {};
 	_float m_fSumStopMoveTime = 0.f;
 	_float3 m_vTargetPos = {};
-	CTransform* m_pCoreTranform = { nullptr };
+	CTransform* m_pCoreTransform = { nullptr };
 
 public:
 	static CBossLowerBody* Create(LPDIRECT3DDEVICE9 pGraphic_Device);

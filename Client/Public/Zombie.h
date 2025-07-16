@@ -44,12 +44,15 @@ public:
 	HRESULT Ready_Components() override;
 	HRESULT Begin_RenderState() override;
 	HRESULT End_RenderState() override;
+	HRESULT Begin_RenderTestState();
+	HRESULT End_RenderTestState();
 
 	virtual void Attack() override;
 	void Move(_float fTimeDelta);
 	void TargetMove(_float fTimeDelta, _float3 vPos);
 	virtual void Move() override;
 	void Set_TargetMove(_float bTarget);
+	void MoveAnimationCheck();
 
 private:
 	_bool m_bAnimationLock = false;
@@ -58,7 +61,11 @@ private:
 	_bool m_isTarget = false;
 	_bool m_isArrive = false;
 	_bool m_isLeft = false;
+	_bool m_isRandomMove = false;
 	_float m_fSumTime = 0.f;
+	_float m_fRandomMoveTime = 0.f;
+	_float m_fSightFailTime = 0.f;
+	_float m_fSafeDistance = 3.f;
 	_float3 m_vPos = {};
 	_uint m_uPosLen = 0;
 	_uint m_uIdx = 0;
