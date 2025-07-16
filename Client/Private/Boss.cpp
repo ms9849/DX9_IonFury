@@ -129,8 +129,6 @@ void CBoss::Update(_float fTimeDelta)
 		m_isDead = true;
 
 		m_pGameInstance->PlaySoundOnce(TEXT("Boss1_Die.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
-		CEffect_Black_Sight* pBlackSight = static_cast<CEffect_Black_Sight*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Effect_Black_Sight"), nullptr));
-		m_pGameInstance->Add_Clone_ToLayer(pBlackSight, ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Layer_Effect"));
 		/*CEffect_Manager::GetInstance()->Create_Effect(TEXT("Effect_Boss_Die"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Effect"),
 			m_pTransformCom->Get_State(STATE::POSITION));*/
 	}

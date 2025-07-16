@@ -1038,11 +1038,13 @@ void CBossUpperBody::SummonMonster()				// 추후 필요하면 인덱스 받을 수 있도록 �
 			0.f, 0.f, 1.f, 0.f,
 			0.f, 0.f, 0.f, 1.f
 		};
-		
+		_float fX = m_pGameInstance->Random(0.f, 20.f);
+		_float fZ = m_pGameInstance->Random(0.f, 20.f);
+
 		_float3 vPos = m_pCoreTransform->Get_State(STATE::POSITION);
-		mat._41 = vPos.x;
+		mat._41 = vPos.x + fX;
 		mat._42 = vPos.y;
-		mat._43 = vPos.z;
+		mat._43 = vPos.z + fZ;
 		CGameObject::GAMEOBJECT_DESC Desc{};
 
 		Desc.iLayerLevel = ENUM_CLASS(LEVEL::BOSSFIGHT);

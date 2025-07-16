@@ -253,7 +253,7 @@ void CSoldier::Update(_float fTimeDelta)
 			m_fSumMoveCoolTime = 0.f;
 			//MoveAnimationCheck(true);
 			RandomMove(fTimeDelta, m_vNextDir);
-		
+
 			m_isMove = true;
 			m_fSightFailTime = 0.f;
 

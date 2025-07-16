@@ -25,6 +25,7 @@
 #include "Zombie.h"
 #include "ItemBurger.h"
 #include "ItemCoffee.h"
+#include "Effect_Black_Sight.h"
 
 CPlayer::CPlayer(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CLandObject{ pGraphic_Device }
@@ -139,7 +140,11 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 	{
 		m_pTransformCom->Set_State(STATE::POSITION, _float3(15.f, 1.f, 95.f)); // 엘베 앞
 	}
-
+	if (m_pGameInstance->Key_Down('5'))
+	{
+		CEffect_Black_Sight* pBlackSight = static_cast<CEffect_Black_Sight*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Effect_Black_Sight"), nullptr));
+		m_pGameInstance->Add_Clone_ToLayer(pBlackSight, ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Layer_Effect"));
+	}
 	/* 점프 로직*/
 	if (!m_bJump && m_pGameInstance->Key_Down(VK_SPACE))
 	{
@@ -244,7 +249,7 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 			{
 				auto iter = m_tInfo.Weapons.find(TEXT("MachineGun"));
 
-				iter->second.iCurrentBullets += 20;
+				iter->second.iCurrentBullets += 100;
 
 				if (iter->second.iCurrentBullets >= iter->second.iBulletsMax)
 					iter->second.iCurrentBullets = iter->second.iBulletsMax;
@@ -252,7 +257,7 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 				if (m_tInfo.strWeapon == TEXT("MachineGun"))
 					m_tInfo.iBullets = iter->second.iCurrentBullets;
 
-				Insert_ItemDesc(TEXT("Get MachineGun Bullets [Bullet+20]"));
+				Insert_ItemDesc(TEXT("Get MachineGun Bullets [Bullet+100]"));
 				m_pGameInstance->PlaySoundOnce(TEXT("Get_Item.ogg"), CHANNELID::SOUND_EFFECT, 0.3f);
 				m_bMachinGunBulletCharge = false;
 			}
