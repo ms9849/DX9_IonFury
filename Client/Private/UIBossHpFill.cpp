@@ -56,6 +56,9 @@ void CUIBossHpFill::Priority_Update(_float fTimeDelta)
 
 void CUIBossHpFill::Update(_float fTimeDelta)
 {
+	if (m_pBoss->isDead())
+		m_isDead = true;
+
 	__super::Update_Transform(m_pTransformCom);
 	Get_Hp();
 }
