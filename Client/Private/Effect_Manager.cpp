@@ -165,7 +165,7 @@ HRESULT CEffect_Manager::Ready_Bullet_Wound(LEVEL eLevelID)
 	Desc.vPosition = { 0.f, 0.f, 0.f };
 
 
-	for (int i = 0; i < 500; ++i)
+	for (int i = 0; i < 3000; ++i)
 	{
 		Effects.push_back(
 			static_cast<CEffect*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC),

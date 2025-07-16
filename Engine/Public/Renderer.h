@@ -31,6 +31,7 @@ private:
 	void Render_Blend();
 	void Render_Blend_Last();
 	void Render_UI();
+	void Render_Screen();
 
 public:
 	static CRenderer* Create(LPDIRECT3DDEVICE9 pGraphic_Device);

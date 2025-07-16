@@ -27,6 +27,7 @@ public:
 	virtual const COLLISION_DESC& Get_CollisionDesc(COLLISION eColType);
 
 private:
+	_int m_iPortableCnt = { 10 };
 	_int m_iHp = { 100 };
 	_int m_iTextureNum = { 0 };
 	_bool m_bBroken = { false };

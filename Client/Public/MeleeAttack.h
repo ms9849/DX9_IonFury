@@ -53,7 +53,7 @@ public:
 private:
 	_float3 m_vDir = {};
 	_float m_fDamage = { 0.f };
-	_float m_fDurationTime = { 0.f };
+	_float m_fDurationTime = { 0.5f };
 	_float m_fAccumulationTime = { 0.f };
 
 	CTransform* m_pTransformCom = { nullptr };

@@ -82,6 +82,11 @@ HRESULT CUIPressEnter::Render()
 	return S_OK;
 }
 
+void CUIPressEnter::Set_Loading()
+{
+	m_pText->Set_Text(TEXT("Loading..."));
+}
+
 void CUIPressEnter::Set_Guide(_bool bFinish)
 {
 	if(bFinish)

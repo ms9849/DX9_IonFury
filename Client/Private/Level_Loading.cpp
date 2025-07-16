@@ -25,12 +25,13 @@ HRESULT CLevel_Loading::Initialize(LEVEL eNextLevelID, void* pArg)
 	if(pArg != nullptr)
 		m_tPlayerInfo = *static_cast<CPlayer::PLAYER_INFO*>(pArg);
 
+
+	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
+		return E_FAIL;
+
 	/* 다음 레벨에 대한 자원을 로드하여 준비해둔다. */
 	m_pLoader = CLoader::Create(m_pGraphic_Device, eNextLevelID);
 	if (nullptr == m_pLoader)
-		return E_FAIL;
-
-	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
 		return E_FAIL;
 
 	return S_OK;
@@ -38,10 +39,9 @@ HRESULT CLevel_Loading::Initialize(LEVEL eNextLevelID, void* pArg)
 
 void CLevel_Loading::Update(_float fTimeDelta)
 {
-	m_pUIPressEnter->Set_Guide(m_pLoader->isFinished());
+	m_pUIPressEnter->Set_Loading();
 
-	if (true == m_pLoader->isFinished() &&
-		m_pGameInstance->Key_Down(VK_RETURN))
+	if (true == m_pLoader->isFinished())
 	{
 		m_pGameInstance->StopAll();
 		CLevel* pNewLevel = { nullptr };
@@ -88,7 +88,7 @@ HRESULT CLevel_Loading::Ready_Layer_BackGround(const _wstring& strLayerTag)
 	/* 상호작용 키 */
 	CUIObject::UIOBJECT_DESC Desk_PressEnter{};
 
-	Desk_PressEnter.iTextLength = wcslen(TEXT("Press [Enter] Key"));
+	Desk_PressEnter.iTextLength = wcslen(TEXT("Loading..."));
 	Desk_PressEnter.fSizeX = 30.f * Desk_PressEnter.iTextLength;
 	Desk_PressEnter.fSizeY = 30.f;
 	Desk_PressEnter.fX = g_iWinSizeX * 0.5f - (Desk_PressEnter.fSizeX * 0.5f);

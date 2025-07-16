@@ -37,6 +37,7 @@ HRESULT CItemArmor::Initialize(void* pArg)
 	m_pTransformCom->Set_State(STATE::LOOK, m_pObjectDesc.matWorld.m[2]);
 	m_pTransformCom->Set_State(STATE::POSITION, m_pObjectDesc.matWorld.m[3]);
 
+	m_pTransformCom->Set_Scale(_float3{ 0.7f, 0.7f, 0.7 });
 	if (!m_bParabola)
 		SetUp_OnTerrain(m_pTransformCom, 0.5f);
 
@@ -111,9 +112,9 @@ HRESULT CItemArmor::Begin_RenderState()
 	///* 알파 테스트 : 픽셀의 알파를 비교해서 그린다 안그린다를 설정. */
 	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 
-	//m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
-	//m_pGraphic_Device->SetRenderState(D3DRS_ALPHAREF, 200);
-	//m_pGraphic_Device->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
+	m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+	m_pGraphic_Device->SetRenderState(D3DRS_ALPHAREF, 200);
+	m_pGraphic_Device->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
 
 	return S_OK;
 }
