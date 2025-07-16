@@ -401,7 +401,7 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 
 					if (m_pGameInstance->Key_Pressing('D'))
 						vPos -= fTimeDelta * 8.f * m_pTransformCom->Get_State(STATE::RIGHT);
-					if (m_pGameInstance->Key_Pressing('A'))
+					else if (m_pGameInstance->Key_Pressing('A'))
 						vPos += fTimeDelta * 8.f * m_pTransformCom->Get_State(STATE::RIGHT);
 
 					D3DXVec3Normalize(&vDir, &vDir);
@@ -452,6 +452,11 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 						_float3 vDir = Calc_BulletDir(&vOffset);
 						_float3 vPos = m_pTransformCom->Get_State(STATE::POSITION);
 
+						if (m_pGameInstance->Key_Pressing('D'))
+							vPos -= fTimeDelta * 8.f * m_pTransformCom->Get_State(STATE::RIGHT);
+						else if (m_pGameInstance->Key_Pressing('A'))
+							vPos += fTimeDelta * 8.f * m_pTransformCom->Get_State(STATE::RIGHT);
+
 						D3DXVec3Normalize(&vDir, &vDir);
 
 						CBullet::BULLET_DESC Desc;
@@ -488,6 +493,11 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 							vDir.y += m_pGameInstance->Random(-0.05f, 0.05f);
 							vDir.z += m_pGameInstance->Random(-0.05f, 0.05f);
 							_float3 vPos = m_pTransformCom->Get_State(STATE::POSITION);
+
+							if (m_pGameInstance->Key_Pressing('D'))
+								vPos -= fTimeDelta * 8.f * m_pTransformCom->Get_State(STATE::RIGHT);
+							else if (m_pGameInstance->Key_Pressing('A'))
+								vPos += fTimeDelta * 8.f * m_pTransformCom->Get_State(STATE::RIGHT);
 
 							D3DXVec3Normalize(&vDir, &vDir);
 
@@ -781,6 +791,7 @@ void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 			if (m_tInfo.iArmor >= 100)
 				m_tInfo.iArmor = 100;
 
+			CEffect_Manager::GetInstance()->Create_Effect(TEXT("Effect_Screen_Blur_Blue"), m_pObjectDesc.iLayerLevel, TEXT("Layer_Effect"), { 0.f, 0.f, 0.f });
 			Insert_ItemDesc(TEXT("Get Armor Fragment [Armor+1]"));
 		}
 		if (dynamic_cast<CItemHealpack*>(pDst))
@@ -788,7 +799,7 @@ void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 			m_tInfo.iHp += 10;
 			if (m_tInfo.iHp >= 100)
 				m_tInfo.iHp = 100;
-
+			CEffect_Manager::GetInstance()->Create_Effect(TEXT("Effect_Screen_Blur_Heal"), m_pObjectDesc.iLayerLevel, TEXT("Layer_Effect"), { 0.f, 0.f, 0.f });
 			Insert_ItemDesc(TEXT("Get Healpack [HP+10]"));
 		}
 		if (dynamic_cast<CItemBurger*>(pDst))
@@ -945,7 +956,18 @@ void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 	{
 		if (m_tInfo.iHp >= 3)
 		{
-			m_tInfo.iHp -= 2;
+			if (m_tInfo.iArmor >= 2)
+			{
+				m_tInfo.iArmor -= 2;
+			}
+			else if (m_tInfo.iArmor < 2)
+			{
+				_int iDamage = 2 - m_tInfo.iArmor;
+				m_tInfo.iArmor = 0.f;
+				m_tInfo.iHp -= iDamage;
+			}
+			else
+				m_tInfo.iHp -= 2;
 			m_pGameInstance->PlaySoundOnce(TEXT("hurt02.ogg"), CHANNELID::SOUND_EFFECT, 0.4f);
 			CEffect_Manager::GetInstance()->Create_Effect(TEXT("Effect_Screen_Blur_Hit"), m_pObjectDesc.iLayerLevel, TEXT("Layer_Effect"), { 0.f, 0.f, 0.f });
 		}

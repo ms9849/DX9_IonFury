@@ -38,6 +38,8 @@ private:
 public:
 	virtual void Set_Pos(const _float3& vPos) override;
 	void Set_TextureNum(_int iTextureNum);
+	_float Get_Age() { return m_fAge; }
+	void   Set_Age(_float fAge) { m_fAge = fAge; }
 
 private:
 	_float4x4	m_OldViewMatrix{}, m_OldProjMatrix{};
