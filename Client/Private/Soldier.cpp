@@ -35,7 +35,7 @@ HRESULT CSoldier::Initialize(void* pArg)
 	m_fMaxRange = 15.f;
 	m_fRandomMoveTime = 3.f;
 	m_fSumRandomMoveTime = 0.f;
-	m_fCurHp = 30.f;
+	m_fCurHp = 55.f;
 
 	//if (pArg != nullptr)				// 스포너의 위치를 받아온다
 	//{
@@ -75,6 +75,8 @@ HRESULT CSoldier::Initialize(void* pArg)
 	m_pTransformCom->Set_State(STATE::LOOK, m_pObjectDesc.matWorld.m[2]);
 	m_pTransformCom->Set_State(STATE::POSITION, m_pObjectDesc.matWorld.m[3]);
 	m_pTransformCom->Set_Scale(_float3{1.5f, 1.5f, 1.f});
+
+	m_vNextDir = m_pTransformCom->Get_State(STATE::LOOK);
 
 	m_strFrameKey = TEXT("Soldier_Front");
 
@@ -298,8 +300,8 @@ void CSoldier::Late_Update(_float fTimeDelta)
 
 HRESULT CSoldier::Render()
 {
-	m_pBoxColliderCom->Render(m_pTransformCom->Get_State(STATE::POSITION));
-	m_pBoxColliderHead->Render(m_pTransformCom->Get_State(STATE::POSITION));
+	//m_pBoxColliderCom->Render(m_pTransformCom->Get_State(STATE::POSITION));
+	//m_pBoxColliderHead->Render(m_pTransformCom->Get_State(STATE::POSITION));
 	RotateToPlayer(m_pTransformCom);
 
 	auto iter = m_pTextureComs.find(m_strFrameKey);
@@ -308,9 +310,15 @@ HRESULT CSoldier::Render()
 	if (FAILED(Begin_RenderTestState()))
 		return E_FAIL;
 
+	if (FAILED(Begin_RenderState()))
+		return E_FAIL;
+
 	m_pVIBufferCom->Render();
 
 	if (FAILED(End_RenderTestState()))
+		return E_FAIL;
+
+	if (FAILED(End_RenderState()))
 		return E_FAIL;
 
 	return S_OK;
