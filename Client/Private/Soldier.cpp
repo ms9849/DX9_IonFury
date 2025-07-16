@@ -202,14 +202,29 @@ void CSoldier::Update(_float fTimeDelta)
 		if (m_fSumAttackCoolTime >= m_fAttackCoolTime)
 		{
 			_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
-			if (D3DXVec3Length(&vDiff) <= m_fAttackRange)
+			if (m_pObjectDesc.iLayerLevel == ENUM_CLASS(LEVEL::GAMEPLAY))
 			{
-				// 공격 사운드 추가
-				m_pGameInstance->PlaySoundOnce(TEXT("Soldier_Fire.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
-				//Move(fTimeDelta);
-				Attack();
-				m_fSumRandomMoveTime = 0.f;
-				m_fSightFailTime = 0.f;
+				if (D3DXVec3Length(&vDiff) <= m_fAttackRange && !CheckSafeArea(m_pPlayerTransform->Get_State(STATE::POSITION)))
+				{
+					// 공격 사운드 추가
+					m_pGameInstance->PlaySoundOnce(TEXT("Soldier_Fire.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
+					//Move(fTimeDelta);
+					Attack();
+					m_fSumRandomMoveTime = 0.f;
+					m_fSightFailTime = 0.f;
+				}
+			}
+			else
+			{
+				if (D3DXVec3Length(&vDiff) <= m_fAttackRange)
+				{
+					// 공격 사운드 추가
+					m_pGameInstance->PlaySoundOnce(TEXT("Soldier_Fire.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
+					//Move(fTimeDelta);
+					Attack();
+					m_fSumRandomMoveTime = 0.f;
+					m_fSightFailTime = 0.f;
+				}
 			}
 		}
 
@@ -772,6 +787,18 @@ void CSoldier::MoveAnimationCheck()
 		}
 		m_isMove = false;
 	}
+}
+
+bool CSoldier::CheckSafeArea(const _float3& vPlayerPos)
+{
+	_float3 min = { 0.750f, 1.000f, 0.750f }; 
+	_float3 max = { 36.750f, 1.000f, 14.250f };
+
+	return (vPlayerPos.x >= min.x && vPlayerPos.x <= max.x &&
+		vPlayerPos.y == min.y &&
+		vPlayerPos.z >= min.z && vPlayerPos.z <= max.z);
+
+	return false;
 }
 
 CSoldier* CSoldier::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
