@@ -32,7 +32,7 @@ HRESULT CLevel_Jusin::Initialize(void* pArg)
 	if (pArg != nullptr)
 		m_tPlayerInfo = *static_cast<CPlayer::PLAYER_INFO*>(pArg);
 
-	m_pGameInstance->PlayBGM(L"BackGround.mp3", 0.7f);
+	m_pGameInstance->PlayBGM(L"broken_system.xm", 0.7f);
 
 	if (FAILED(Ready_Objects_By_JSON()))
 		return E_FAIL;

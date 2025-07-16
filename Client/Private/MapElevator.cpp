@@ -20,6 +20,7 @@ CMapElevator::CMapElevator(const CMapElevator& Prototype)
 void CMapElevator::Set_Elevator_Active(_bool bActive)
 {
 	m_bActive = bActive;
+	m_pGameInstance->PlaySoundOnce(TEXT("elevator_move.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
 }
 
 _bool CMapElevator::Get_Elevator_End()

@@ -217,9 +217,6 @@
     <Filter Include="02.GameObjects\Monster">
       <UniqueIdentifier>{9ecd6a7a-b57c-4bf7-8ec0-6475d3c58ddb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\Monster\BehaviorTree">
-      <UniqueIdentifier>{31f75f59-c90a-49cb-bc56-c1160a97b071}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\Monster\Melee">
       <UniqueIdentifier>{69794553-4677-457c-b4d3-6c02b68febe8}</UniqueIdentifier>
     </Filter>
@@ -347,9 +344,6 @@
     </ClInclude>
     <ClInclude Include="..\public\ItemHealpack.h">
       <Filter>02.GameObjects\Item\ItemHealpack</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\BehaviorNode.h">
-      <Filter>02.GameObjects\Monster\BehaviorTree</Filter>
     </ClInclude>
     <ClInclude Include="..\public\UIAim.h">
       <Filter>02.GameObjects\UI\UIAim</Filter>
@@ -644,9 +638,6 @@
     </ClCompile>
     <ClCompile Include="..\private\ItemHealpack.cpp">
       <Filter>02.GameObjects\Item\ItemHealpack</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\BehaviorNode.cpp">
-      <Filter>02.GameObjects\Monster\BehaviorTree</Filter>
     </ClCompile>
     <ClCompile Include="..\private\ItemPistolBullet.cpp">
       <Filter>02.GameObjects\Item\ItemPistolBullet</Filter>
