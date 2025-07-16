@@ -25,6 +25,7 @@ public:
 	virtual HRESULT Render() override;
 
 private:
+	class CBoss* m_pBoss = { nullptr };
 	CTexture* m_pTextureCom = { nullptr };
 	CTransform* m_pTransformCom = { nullptr };
 	CVIBuffer_Rect* m_pVIBufferCom = { nullptr };

@@ -41,6 +41,9 @@ HRESULT CUIBossName::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
+	m_pBoss = dynamic_cast<CBoss*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Layer_Boss")));
+	Safe_AddRef(m_pBoss);
+
 	return S_OK;
 }
 
@@ -50,6 +53,8 @@ void CUIBossName::Priority_Update(_float fTimeDelta)
 
 void CUIBossName::Update(_float fTimeDelta)
 {
+	if (m_pBoss->isDead())
+		m_isDead = true;
 	__super::Update_Transform(m_pTransformCom);
 }
 
@@ -131,6 +136,7 @@ void CUIBossName::Free()
 {
 	__super::Free();
 
+	Safe_Release(m_pBoss);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pTextureCom);

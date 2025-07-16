@@ -276,6 +276,11 @@ void CGameInstance::PlayBGM(const _wstring& pSoundKey, float fVolume)
 	m_pSound_Manager->PlayBGM(pSoundKey, fVolume);
 }
 
+void CGameInstance::PlaySoundLoop(const _wstring& pSoundKey, CHANNELID eID, float fVolume)
+{
+	m_pSound_Manager->PlaySoundLoop(pSoundKey, eID, fVolume);
+}
+
 void CGameInstance::StopSound(CHANNELID eID)
 {
 	m_pSound_Manager->StopSound(eID);
