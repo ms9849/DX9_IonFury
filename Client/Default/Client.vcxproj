@@ -153,6 +153,7 @@
     <ClInclude Include="..\Public\Bullet_Wound.h" />
     <ClInclude Include="..\public\Button.h" />
     <ClInclude Include="..\Public\CFile_Manager.h" />
+    <ClInclude Include="..\Public\Effect_Black_Sight.h" />
     <ClInclude Include="..\Public\Effect_Screen_Blur.h" />
     <ClInclude Include="..\Public\Effect_ShootGun_Fire.h" />
     <ClInclude Include="..\Public\EventBox.h" />
@@ -247,6 +248,7 @@
     <ClCompile Include="..\Private\CFile_Manager.cpp" />
     <ClCompile Include="..\Private\BossLowerBody.cpp" />
     <ClCompile Include="..\Private\BossUpperBody.cpp" />
+    <ClCompile Include="..\Private\Effect_Black_Sight.cpp" />
     <ClCompile Include="..\Private\Effect_Screen_Blur.cpp" />
     <ClCompile Include="..\Private\Effect_ShootGun_Fire.cpp" />
     <ClCompile Include="..\Private\EventBox.cpp" />

@@ -194,7 +194,7 @@ void CTerrain_Manager::Check_Landing()
             {
                 Desc = { dynamic_cast<CTerrain*>(pNearestLand)->Get_TerrainDesc().pBuffer, dynamic_cast<CTerrain*>(pNearestLand)->Get_TerrainDesc().pTransform };
 
-                if (fMin > 1.2f && (*iter)->Get_Jump() == false)
+                if (fMin > 1.2 && (*iter)->Get_Jump() == false)
                 {
                     (*iter)->Set_Jump(true);
                     (*iter)->Set_Time(0.133334f);
@@ -205,7 +205,7 @@ void CTerrain_Manager::Check_Landing()
             {
                 Desc = { dynamic_cast<CCubeObject*>(pNearestLand)->Get_CubeDesc().pBuffer, dynamic_cast<CCubeObject*>(pNearestLand)->Get_CubeDesc().pTransform };
 
-                if (fMin > 1.2f && (*iter)->Get_Jump() == false)
+                if (fMin > 1.2 && (*iter)->Get_Jump() == false)
                 {
                     (*iter)->Set_Jump(true);
                     (*iter)->Set_Time(0.133334f);

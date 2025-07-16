@@ -4,6 +4,7 @@
 #include "Effect_Manager.h"
 #include "Particle_Manager.h"
 #include "CubeObject.h"
+#include "MapGate.h"
 
 CBullet::CBullet(LPDIRECT3DDEVICE9 pGraphicDev)
 	: CGameObject{ pGraphicDev }
@@ -112,7 +113,7 @@ void CBullet::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 {
 	m_isDead = true;
 
-	if (dynamic_cast<CCubeObject*>(pDst) != nullptr)
+	if (dynamic_cast<CCubeObject*>(pDst) != nullptr || dynamic_cast<CMapGate*>(pDst) != nullptr)
 	{
 		CEffect_Manager::GetInstance()->Create_Effect(TEXT("Effect_Bullet_Wound"), m_pGameInstance->Get_CurrentLevelID(), TEXT("Layer_Effect"), vPos + vPlaneNormal / 10000.f, vPlaneNormal);
 		CParticle_Manager::GetInstance()->Create_Particle(TEXT("Particle_YellowDust"), m_pGameInstance->Get_CurrentLevelID(),

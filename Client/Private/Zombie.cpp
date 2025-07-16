@@ -36,7 +36,7 @@ HRESULT CZombie::Initialize(void* pArg)
 	m_fMaxRange = 20.f;
 	m_fRandomMoveTime = 3.f;
 	m_fSumRandomMoveTime = 0.f;
-	m_fCurHp = 40.f;
+	m_fCurHp = 65.f;
 
 	// 스포너 관련
 	//if (pArg != nullptr)				// 스포너의 위치를 받아온다
@@ -76,6 +76,8 @@ HRESULT CZombie::Initialize(void* pArg)
 	m_pTransformCom->Set_State(STATE::LOOK, m_pObjectDesc.matWorld.m[2]);
 	m_pTransformCom->Set_State(STATE::POSITION, m_pObjectDesc.matWorld.m[3]);
 	m_pTransformCom->Set_Scale(_float3{ 1.75f, 1.75f, 1.f});
+
+	m_vNextDir = m_pTransformCom->Get_State(STATE::LOOK);
 	
 	// 게임 플레이에서만 동작하게
 	if (m_pObjectDesc.iLayerLevel == ENUM_CLASS(LEVEL::GAMEPLAY))
@@ -157,68 +159,7 @@ void CZombie::Update(_float fTimeDelta)
 	m_fSumAttackCoolTime += fTimeDelta;
 	m_fSumMoveCoolTime += fTimeDelta;
 
-	if (m_fSightFailTime >= 5.f)
-	{
-		do
-		{
-			_float3 vMin = { -1.f, 0.f, -1.f };
-			_float3 vMax = { 1.f, 0.f, 1.f };
-			m_pGameInstance->GetRandomVector(&m_vNextDir, &vMin, &vMax);
-			m_vNextDir.y = 0.f;
-		} while (D3DXVec3Length(&m_vNextDir) < 0.001f);
-
-		m_isRandomMove = true;
-	}
-
-	D3DXVec3Normalize(&m_vNextDir, &m_vNextDir);
 	MoveAnimationCheck();
-
-	/*vDiff.y = 0.f;
-	D3DXVec3Normalize(&vDiff, &vDiff);
-
-	_float3 vMonsterLook = m_pTransformCom->Get_State(STATE::LOOK);
-	vMonsterLook.y = 0.f;
-	D3DXVec3Normalize(&vMonsterLook, &vMonsterLook);
-
-	_float dot = D3DXVec3Dot(&vMonsterLook, &vDiff);
-	dot = max(-1.f, min(1.f, dot));
-
-	_float3 vCross;
-	D3DXVec3Cross(&vCross, &vMonsterLook, &vDiff);
-
-	_float fFov = cosf(D3DXToRadian(45.f));
-	_float angle30 = cosf(D3DXToRadian(30.f));
-	_float angle60 = cosf(D3DXToRadian(60.f));
-
-	if (!m_bAnimationLock)
-	{
-		if (dot >= fFov)
-		{
-			m_strFrameKey = TEXT("Zombie_Front");
-		}
-		else if (dot <= -fFov)
-		{
-			m_strFrameKey = TEXT("Zombie_Back");
-		}
-		else
-		{
-			if (vCross.y > 0)
-			{
-				if (dot > 0)
-					m_strFrameKey = TEXT("Zombie_Direction_SW");
-				else
-					m_strFrameKey = TEXT("Zombie_Direction_NW");
-			}
-			else
-			{
-				if (dot > 0)
-					m_strFrameKey = TEXT("Zombie_Direction_SE");
-				else
-					m_strFrameKey = TEXT("Zombie_Direction_NE");
-			}
-		}
-		m_isMove = false;
-	}*/
 
 	if (m_isAwake)
 	{
@@ -230,16 +171,12 @@ void CZombie::Update(_float fTimeDelta)
 	{
 		if (m_fSumMoveCoolTime >= m_fMoveCoolTime)
 		{
-			/*if (m_uIdx < m_uPosLen)
-				TargetMove(fTimeDelta, m_vTargetPos[m_uIdx]);
-			else
-				m_isTarget = false;*/
-
-			//TargetMove(fTimeDelta, m_vTargetPos[m_uIdx]);
 			TargetMove(fTimeDelta, m_vPos);
 			m_isMove = true;
 			m_fSumMoveCoolTime = 0.f;
 		}
+
+		m_fSightFailTime = 0.f;
 	}
 
 	if (m_fCurHp <= 0 && m_bDying == false)
@@ -250,7 +187,7 @@ void CZombie::Update(_float fTimeDelta)
 			m_strFrameKey = TEXT("Zombie_Die_Default");
 
 
-		m_pBoxColliderCom->Set_Scale({ 1.2f, 0.20f, 1.2f });
+		m_pBoxColliderCom->Set_Scale({ 1.f, 0.2f, 1.9f });
 		m_pBoxColliderCom->Set_Position({ 0.f, -0.6f, 0.f });
 		m_pBoxColliderHead->Set_Scale({ 0.f, 0.f, 0.f });
 
@@ -299,26 +236,6 @@ void CZombie::Update(_float fTimeDelta)
 			}
 		}
 	}
-	else
-	{
-		m_fSightFailTime += fTimeDelta;
-		if (m_fSumMoveCoolTime >= m_fMoveCoolTime && m_isRandomMove)
-		{
-			m_fSumRandomMoveTime += fTimeDelta;
-			m_fSumMoveCoolTime = 0.f;
-			RandomMove(fTimeDelta, m_vNextDir);
-
-			m_isMove = true;
-			m_fSightFailTime = 0.f;
-
-			if (m_fSumRandomMoveTime >= m_fRandomMoveTime)
-			{
-				m_isRandomMove = false;
-				m_fSightFailTime = 0.f;
-				m_fSumRandomMoveTime = 0.f;
-			}
-		}
-	}
 
 	__super::Jump(fTimeDelta);
 	SetUp_OnTerrain(m_pTransformCom, 1.f, &m_bJump);
@@ -356,8 +273,8 @@ void CZombie::Late_Update(_float fTimeDelta)
 
 HRESULT CZombie::Render()
 {
-	m_pBoxColliderCom->Render(m_pTransformCom->Get_State(STATE::POSITION));
-	m_pBoxColliderHead->Render(m_pTransformCom->Get_State(STATE::POSITION));
+	//m_pBoxColliderCom->Render(m_pTransformCom->Get_State(STATE::POSITION));
+	//m_pBoxColliderHead->Render(m_pTransformCom->Get_State(STATE::POSITION));
 
 	RotateToPlayer(m_pTransformCom);
 
@@ -367,9 +284,15 @@ HRESULT CZombie::Render()
 	if (FAILED(Begin_RenderTestState()))
 		return E_FAIL;
 
+	if (FAILED(Begin_RenderState()))
+		return E_FAIL;
+
 	m_pVIBufferCom->Render();
 
 	if (FAILED(End_RenderTestState()))
+		return E_FAIL;
+
+	if (FAILED(End_RenderState()))
 		return E_FAIL;
 
 	return S_OK;
@@ -529,10 +452,10 @@ HRESULT CZombie::Ready_Components()
 
 	/* Com_BoxCollider */
 	CBoxCollider::BOXCOLLIDER_DESC Desc;
-	Desc.vPosition = { 0.f, 0.05f, 0.f };
-	Desc.fScaleX = 0.7f;
-	Desc.fScaleY = 1.15f;
-	Desc.fScaleZ = 0.7f;
+	Desc.vPosition = { 0.f, 0.10f, 0.f };
+	Desc.fScaleX = 0.6f;
+	Desc.fScaleY = 1.0f;
+	Desc.fScaleZ = 0.6f;
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_BoxCollider"),
 		TEXT("Com_BoxCollider"), reinterpret_cast<CComponent**>(&m_pBoxColliderCom), &Desc)))
 		return E_FAIL;
@@ -625,8 +548,11 @@ void CZombie::Attack()
 	/*CBullet::BULLET_DESC Desc;
 	Desc.vDir = vDir;
 	Desc.vPos = vPos;*/
+	GAMEOBJECT_DESC DescTemp;
+	DescTemp = m_pObjectDesc;
+	DescTemp.matWorld = *m_pPlayerTransform->Get_WorldMatrixPtr();
 
-	m_pGameInstance->Add_GameObject_ToLayer(m_pObjectDesc.iLayerLevel, TEXT("Prototype_GameObject_Melee_Attack"), m_pObjectDesc.iLayerLevel, TEXT("Layer_Melee_Attack"), &m_pObjectDesc);
+	m_pGameInstance->Add_GameObject_ToLayer(m_pObjectDesc.iLayerLevel, TEXT("Prototype_GameObject_Melee_Attack"), m_pObjectDesc.iLayerLevel, TEXT("Layer_Melee_Attack"), &DescTemp);
 	//m_pGameInstance->Add_GameObject_ToLayer(m_pObjectDesc.iLayerLevel, TEXT("Prototype_GameObject_Bullet"), m_pObjectDesc.iLayerLevel, TEXT("Layer_Zombie_Bullet"), &Desc);
 }
 
@@ -691,11 +617,12 @@ void CZombie::TargetMove(_float fTimeDelta, _float3 vPos)		// 정해져 있는 장소로
 		vLook.y = 0.f;
 		D3DXVec3Normalize(&vLook, &vLook);
 		m_pTransformCom->Set_State(STATE::LOOK, vLook);
+		m_vNextDir = vLook;
 
 		m_fSumTime += fTimeDelta;
 		m_pTransformCom->Go_Straight(fTimeDelta * 1.5f);
 
-		if (m_fSumTime >= 5.f)
+		if (m_fSumTime >= 2.f)
 		{
 			m_isTarget = false;
 		}
@@ -807,17 +734,19 @@ void CZombie::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 		CBullet* pBullet = dynamic_cast<CBullet*>(pDst);
 		if (pBullet != nullptr)
 		{
-			if ((m_fCurHp -= (pBullet->Get_Damage())) > 0)
+			if (pCollider == m_pBoxColliderHead)
 			{
-				m_pGameInstance->PlaySoundOnce(TEXT("zombie_hit_1.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
+				m_fCurHp -= (pBullet->Get_Damage() * 2.f);
+				if (m_fCurHp <= 0)
+					m_isHead = true;
 			}
 			else
 			{
-				if (pCollider == m_pBoxColliderHead)
-				{
-					m_isHead = true;
-				}
+				m_fCurHp -= pBullet->Get_Damage();
 			}
+
+			if (m_fCurHp > 0)
+				m_pGameInstance->PlaySoundOnce(TEXT("zombie_hit_1.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
 
 			CParticle_Manager::GetInstance()->Create_Particle(TEXT("Particle_Blood"), m_pObjectDesc.iLayerLevel,
 				TEXT("Layer_Particle"), vPos);

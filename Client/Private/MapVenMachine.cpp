@@ -46,7 +46,7 @@ void CMapVenMachine::Priority_Update(_float fTimeDelta)
 
 void CMapVenMachine::Update(_float fTimeDelta)
 {
-	if (m_fTimeAcc <= 3.5f && m_bBroken)
+	if ((m_fTimeAcc <= 3.5f || m_iPortableCnt >= 0) && (m_bBroken) )
 		Item_Dispense(fTimeDelta);
 }
 
@@ -126,7 +126,9 @@ void CMapVenMachine::Item_Dispense(_float fTimeDelta)
 			break;
 		case 4:
 			pItem = static_cast<CItem*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, m_pObjectDesc.iLayerLevel,
-				TEXT("Prototype_GameObject_Item_Burger"), &m_pObjectDesc));
+				TEXT("Prototype_GameObject_Item_Portable_Healpack"), &m_pObjectDesc));
+			
+			m_iPortableCnt--;
 			break;
 		case 5:
 			pItem = static_cast<CItem*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, m_pObjectDesc.iLayerLevel,

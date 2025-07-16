@@ -91,6 +91,9 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(Ready_Layer_Map_Objects_Deco(TEXT("Layer_Map_Objects_Deco")))) // 데코레이션
 		return E_FAIL;
 
+	if (FAILED(Ready_Layer_Map_Ceiling(TEXT("Layer_Map_Ceiling"))))
+		return E_FAIL;
+
 	if (FAILED(Ready_Layer_Interaction_Objects(TEXT("Layer_Interaction_Objects"))))
 		return E_FAIL;
 
@@ -180,7 +183,12 @@ void CLevel_GamePlay::Update(_float fTimeDelta)
 	m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_PlayerBullet"), TEXT("Layer_Map_Objects_AABB_Ride"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta, nullptr);
 	m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_PlayerBullet"), TEXT("Layer_Map_Objects_Ray"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta, nullptr);
 	m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_PlayerBullet"), TEXT("Layer_Monster"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta, nullptr);	
+	m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_PlayerBullet"), TEXT("Layer_Map_Objects_Gate"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta, nullptr);
+
 	m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_Monster_Bullet"), TEXT("Layer_Player"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta, nullptr);
+	m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_Monster_Bullet"), TEXT("Layer_Map_Objects_AABB"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta, nullptr);
+	m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_Monster_Bullet"), TEXT("Layer_Map_Objects_AABB_Ride"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta, nullptr);
+	m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_Monster_Bullet"), TEXT("Layer_Map_Objects_Ray"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta, nullptr);
 
 	m_pGameInstance->Check_RayToOBBCollision(TEXT("Layer_PlayerBullet"), TEXT("Layer_Map_Objects_OBB_Ride"), ENUM_CLASS(LEVEL::GAMEPLAY), fTimeDelta, nullptr);
 
@@ -1087,6 +1095,35 @@ HRESULT CLevel_GamePlay::Ready_Layer_Map_Objects_Gate(const _wstring& strLayerTa
 }
 
 HRESULT CLevel_GamePlay::Ready_Layer_Map_Objects_Deco(const _wstring& strLayerTag)
+{
+	for (auto& iter : m_ObjectDescs->find(strLayerTag)->second)
+	{
+		if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(iter.iProtoLevel), iter.strProto,
+			ENUM_CLASS(iter.iLayerLevel), iter.strLayer, &iter)))
+			return E_FAIL;
+
+		dynamic_cast<CTransform*>(
+			m_pGameInstance->Get_Component(
+				ENUM_CLASS(iter.iLayerLevel), iter.strLayer, TEXT("Com_Transform"), iter.iObjectID)
+			)->Set_State(STATE::RIGHT, iter.matWorld.m[0]);
+		dynamic_cast<CTransform*>(
+			m_pGameInstance->Get_Component(
+				ENUM_CLASS(iter.iLayerLevel), iter.strLayer, TEXT("Com_Transform"), iter.iObjectID)
+			)->Set_State(STATE::UP, iter.matWorld.m[1]);
+		dynamic_cast<CTransform*>(
+			m_pGameInstance->Get_Component(
+				ENUM_CLASS(iter.iLayerLevel), iter.strLayer, TEXT("Com_Transform"), iter.iObjectID)
+			)->Set_State(STATE::LOOK, iter.matWorld.m[2]);
+		dynamic_cast<CTransform*>(
+			m_pGameInstance->Get_Component(
+				ENUM_CLASS(iter.iLayerLevel), iter.strLayer, TEXT("Com_Transform"), iter.iObjectID)
+			)->Set_State(STATE::POSITION, iter.matWorld.m[3]);
+	}
+
+	return S_OK;
+}
+
+HRESULT CLevel_GamePlay::Ready_Layer_Map_Ceiling(const _wstring& strLayerTag)
 {
 	for (auto& iter : m_ObjectDescs->find(strLayerTag)->second)
 	{

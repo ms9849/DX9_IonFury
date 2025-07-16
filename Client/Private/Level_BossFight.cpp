@@ -31,6 +31,8 @@ CLevel_BossFight::CLevel_BossFight(LPDIRECT3DDEVICE9 pGraphic_Device, LEVEL eLev
 
 HRESULT CLevel_BossFight::Initialize(void* pArg)
 {
+	m_pGameInstance->PlayBGM(L"bango.xm", 0.7f);
+
 	if (pArg != nullptr)
 		m_tPlayerInfo = *static_cast<CPlayer::PLAYER_INFO*>(pArg);
 
@@ -97,6 +99,9 @@ HRESULT CLevel_BossFight::Initialize(void* pArg)
 	if (FAILED(Ready_Layer_Bullet(TEXT("Layer_Bullet"))))
 	 	return E_FAIL;
 
+	m_pTerrain_Manager->Add_Terrian(LEVEL::BOSSFIGHT);
+	m_pTerrain_Manager->Add_Cube(LEVEL::BOSSFIGHT);
+
 	return S_OK;
 }
 
@@ -137,6 +142,29 @@ void CLevel_BossFight::Update(_float fTimeDelta)
 	m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_PlayerBullet"), TEXT("Layer_Boss1_Upper"), ENUM_CLASS(LEVEL::BOSSFIGHT), fTimeDelta, nullptr);
 	m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_PlayerBullet"), TEXT("Layer_Boss1_Lower"), ENUM_CLASS(LEVEL::BOSSFIGHT), fTimeDelta, nullptr);
 	m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_Monster_Bullet"), TEXT("Layer_Player"), ENUM_CLASS(LEVEL::BOSSFIGHT), fTimeDelta, nullptr);
+
+	////
+	m_pGameInstance->Check_SphereCollision(TEXT("Layer_Player"), TEXT("Layer_Items"), ENUM_CLASS(LEVEL::BOSSFIGHT), fTimeDelta);
+	m_pGameInstance->Check_SphereCollision(TEXT("Layer_Player"), TEXT("Layer_Interaction_Objects"), ENUM_CLASS(LEVEL::BOSSFIGHT), fTimeDelta);
+	m_pGameInstance->Check_SphereCollision(TEXT("Layer_Player"), TEXT("Layer_Melee_Attack"), ENUM_CLASS(LEVEL::BOSSFIGHT), fTimeDelta);
+	m_pGameInstance->Check_SphereCollision(TEXT("Layer_Player"), TEXT("Layer_Map_Objects_AABB_Ride"), ENUM_CLASS(LEVEL::BOSSFIGHT), fTimeDelta);
+
+	m_pGameInstance->Check_AABBCollision(TEXT("Layer_Player"), TEXT("Layer_Map_Objects_AABB"), ENUM_CLASS(LEVEL::BOSSFIGHT), fTimeDelta);
+	m_pGameInstance->Check_AABBCollision(TEXT("Layer_Player"), TEXT("Layer_Map_Objects_AABB_Ride"), ENUM_CLASS(LEVEL::BOSSFIGHT), fTimeDelta);
+
+	//m_pGameInstance->Check_AABBCollision(TEXT("Layer_Monster"), TEXT("Layer_Monster"), ENUM_CLASS(LEVEL::BOSSFIGHT), fTimeDelta);
+	//m_pGameInstance->Check_AABBCollision(TEXT("Layer_Monster"), TEXT("Layer_Map_Objects_AABB"), ENUM_CLASS(LEVEL::BOSSFIGHT), fTimeDelta);
+
+	//m_pGameInstance->Check_AABBCollision(TEXT("Layer_Player"), TEXT("Layer_Spawner"), ENUM_CLASS(LEVEL::BOSSFIGHT), fTimeDelta);
+
+	//m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_PlayerBullet"), TEXT("Layer_Map_Objects_AABB"), ENUM_CLASS(LEVEL::BOSSFIGHT), fTimeDelta, nullptr);
+	//m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_PlayerBullet"), TEXT("Layer_Map_Objects_AABB_Ride"), ENUM_CLASS(LEVEL::BOSSFIGHT), fTimeDelta, nullptr);
+	//m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_PlayerBullet"), TEXT("Layer_Map_Objects_Ray"), ENUM_CLASS(LEVEL::BOSSFIGHT), fTimeDelta, nullptr);
+
+	//m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_Monster_Bullet"), TEXT("Layer_Player"), ENUM_CLASS(LEVEL::BOSSFIGHT), fTimeDelta, nullptr);
+	//m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_Monster_Bullet"), TEXT("Layer_Map_Objects_AABB"), ENUM_CLASS(LEVEL::BOSSFIGHT), fTimeDelta, nullptr);
+	//m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_Monster_Bullet"), TEXT("Layer_Map_Objects_AABB_Ride"), ENUM_CLASS(LEVEL::BOSSFIGHT), fTimeDelta, nullptr);
+	//m_pGameInstance->Check_RayToAABBCollision(TEXT("Layer_Monster_Bullet"), TEXT("Layer_Map_Objects_Ray"), ENUM_CLASS(LEVEL::BOSSFIGHT), fTimeDelta, nullptr);
 
 	if (m_pGameInstance->Key_Down(VK_F9))
 	{
@@ -679,6 +707,7 @@ HRESULT CLevel_BossFight::Ready_Layer_Items(const _wstring& strLayerTag)
 
 HRESULT CLevel_BossFight::Ready_Layer_Map_Objects_AABB(const _wstring& strLayerTag)
 {
+
 	for (auto& iter : m_ObjectDescs->find(strLayerTag)->second)
 	{
 		if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(iter.iProtoLevel), iter.strProto,
@@ -701,13 +730,17 @@ HRESULT CLevel_BossFight::Ready_Layer_Map_Objects_AABB(const _wstring& strLayerT
 			m_pGameInstance->Get_Component(
 				ENUM_CLASS(iter.iLayerLevel), iter.strLayer, TEXT("Com_Transform"), iter.iObjectID)
 			)->Set_State(STATE::POSITION, iter.matWorld.m[3]);
-	}
 
+		/* 콜라이더 꺼내와서 세팅 */
+		CBoxCollider* pCollider = dynamic_cast<CBoxCollider*>(m_pGameInstance->Get_Component(ENUM_CLASS(iter.iLayerLevel), iter.strLayer, TEXT("Com_BoxCollider"), iter.iObjectID));
+		pCollider->Set_Matrix(iter.matWorld);
+	}
 	return S_OK;
 }
 
 HRESULT CLevel_BossFight::Ready_Layer_Map_Objects_AABB_Ride(const _wstring& strLayerTag)
 {
+
 	for (auto& iter : m_ObjectDescs->find(strLayerTag)->second)
 	{
 		if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(iter.iProtoLevel), iter.strProto,
@@ -730,6 +763,10 @@ HRESULT CLevel_BossFight::Ready_Layer_Map_Objects_AABB_Ride(const _wstring& strL
 			m_pGameInstance->Get_Component(
 				ENUM_CLASS(iter.iLayerLevel), iter.strLayer, TEXT("Com_Transform"), iter.iObjectID)
 			)->Set_State(STATE::POSITION, iter.matWorld.m[3]);
+
+		/* 콜라이더 꺼내와서 세팅 */
+		CBoxCollider* pCollider = dynamic_cast<CBoxCollider*>(m_pGameInstance->Get_Component(ENUM_CLASS(iter.iLayerLevel), iter.strLayer, TEXT("Com_BoxCollider"), iter.iObjectID));
+		pCollider->Set_Matrix(iter.matWorld);
 	}
 
 	return S_OK;
@@ -948,6 +985,16 @@ HRESULT CLevel_BossFight::Ready_Layer_Bullet(const _wstring& strLayerTag)
 	Safe_AddRef(m_pBullet_Manager);
 
 	return S_OK;
+}
+
+void CLevel_BossFight::Ending()
+{
+	m_pGameInstance->StopAll();
+
+	//암전 효과 내부에서 블렌딩 처리해줌.
+	m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Effect_Black_Sight"), ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Layer_Effect"), nullptr);
+
+	//타임델타 쌓아서 3~4초 뒤면 레벨 엔딩으로 바뀌게끔 해줄 수 있을 듯?
 }
 
 CLevel_BossFight* CLevel_BossFight::Create(LPDIRECT3DDEVICE9 pGraphic_Device, LEVEL eLevelID, void* pArg)

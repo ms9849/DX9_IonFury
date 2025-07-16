@@ -23,6 +23,7 @@
 #include "UIText.h"
 #include "UIFont.h"
 #include "UIPressEnter.h"
+#include "Effect_Black_Sight.h"
 
 /*****************************
 대재훈의 은총 이 얼마나 관대한가
@@ -769,6 +770,11 @@ HRESULT CMainApp::Ready_Prototypes()
 #pragma endregion	
 
 #pragma region 이펙트
+	/* For.Prototype_Component_Texture_Effect_Black_Sight */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Effect_Black_Sight"),
+		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Effect/Black_Sight/FadeOut_%d.png"), 51))))
+		return E_FAIL;
+
 	/* For.Prototype_Component_Texture_Effect_Pistol_Fire */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Effect_Pistol_Fire"),
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Effect/Pistol_Fire/Pistol_Fire_%d.png"), 3))))
@@ -804,6 +810,11 @@ HRESULT CMainApp::Ready_Prototypes()
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/Effect/Screen_Blur/Screen_Blur_%d.png"), 3))))
 		return E_FAIL;
 	
+	/* For.Prototype_GameObject_Black_Sight */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Effect_Black_Sight"),
+		CEffect_Black_Sight::Create(m_pGraphic_Device))))
+		return E_FAIL;
+
 	/* For.Prototype_GameObject_Effect_Screen_Blur */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Effect_Screen_Blur"),
 		CEffect_Screen_Blur::Create(m_pGraphic_Device))))

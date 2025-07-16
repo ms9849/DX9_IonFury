@@ -83,7 +83,25 @@ HRESULT CMapBuilding::Ready_Components()
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
 		return E_FAIL;
 
+	/* Com_Collider */
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_BoxCollider"),
+		TEXT("Com_BoxCollider"), reinterpret_cast<CComponent**>(&m_BoxColliderCom), nullptr)))
+		return E_FAIL;
+
 	return S_OK;
+}
+
+void CMapBuilding::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta)
+{
+}
+
+const COLLISION_DESC& CMapBuilding::Get_CollisionDesc(COLLISION eColType)
+{
+	COLLISION_DESC Desc;
+	Desc.pTransform = m_pTransformCom;
+	Desc.pCollider = m_BoxColliderCom;
+
+	return Desc;
 }
 
 CMapBuilding* CMapBuilding::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
@@ -117,4 +135,5 @@ void CMapBuilding::Free()
 	Safe_Release(m_pTextureCom);
 	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pTransformCom);
+	Safe_Release(m_BoxColliderCom);
 }

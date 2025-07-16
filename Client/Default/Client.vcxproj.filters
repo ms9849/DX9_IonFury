@@ -91,9 +91,6 @@
     <Filter Include="01.Levels\Loading\Loader">
       <UniqueIdentifier>{e059409c-2c15-4cce-9e90-c868051debd5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\Terrain\Mananger">
-      <UniqueIdentifier>{0e535393-0b40-49a9-84aa-e7035e924402}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\Player">
       <UniqueIdentifier>{704f75c8-f626-4c7b-aff3-fbd9102c05f9}</UniqueIdentifier>
     </Filter>
@@ -256,6 +253,12 @@
     <Filter Include="01.Levels\Ending">
       <UniqueIdentifier>{21b1c74a-0ad2-447b-bf0b-14f05127fcd1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\Effect\Black_Sight">
+      <UniqueIdentifier>{be6aa792-f60b-4b79-9f9c-a35f074a7172}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Sky\Mananger">
+      <UniqueIdentifier>{0e535393-0b40-49a9-84aa-e7035e924402}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -361,7 +364,7 @@
       <Filter>02.GameObjects\UI\UIAim</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Terrain_Manager.h">
-      <Filter>02.GameObjects\Terrain\Mananger</Filter>
+      <Filter>02.GameObjects\Sky\Mananger</Filter>
     </ClInclude>
     <ClInclude Include="..\public\UIAim.h">
       <Filter>02.GameObjects\UI\UIAim</Filter>
@@ -546,6 +549,9 @@
     <ClInclude Include="..\public\Level_Ending.h">
       <Filter>01.Levels\Ending</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Effect_Black_Sight.h">
+      <Filter>02.GameObjects\Effect\Black_Sight</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -649,7 +655,7 @@
       <Filter>02.GameObjects\UI\UIItemQueue</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Terrain_Manager.cpp">
-      <Filter>02.GameObjects\Terrain\Mananger</Filter>
+      <Filter>02.GameObjects\Sky\Mananger</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Soldier.cpp">
       <Filter>02.GameObjects\Monster\Range</Filter>
@@ -830,6 +836,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Level_Ending.cpp">
       <Filter>01.Levels\Ending</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect_Black_Sight.cpp">
+      <Filter>02.GameObjects\Effect\Black_Sight</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

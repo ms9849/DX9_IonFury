@@ -7,6 +7,8 @@
 #include "Bullet_Manager.h"
 #include "Effect_Manager.h"
 #include "Terrain_Manager.h"
+#include "Effect_Black_Sight.h"
+#include "Camera.h"
 
 CBoss::CBoss(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CGameObject{ pGraphic_Device }
@@ -169,6 +171,9 @@ void CBoss::Resurrection()
 	Safe_Release(m_pBossUpperBody);
 	m_pBossUpperBody = dynamic_cast<CBossUpperBody*>(m_pGameInstance->Find_GameObject_ToLayer(
 		ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Layer_Boss1_Upper")));
+
+	static_cast<CCamera*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Layer_Camera"), nullptr))->Shaking(0.2f);
+
 	Safe_AddRef(m_pBossUpperBody);
 }
 

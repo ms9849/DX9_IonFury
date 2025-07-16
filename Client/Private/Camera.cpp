@@ -87,6 +87,8 @@ void CCamera::Update(_float fTimeDelta)
 		{
 			Chase_Target(m_pCameraConfig.vLimitDistance, m_pCameraConfig.isSyncLook, m_pCameraConfig.isCanTurn, m_pCameraConfig.isMouseFixCenter, fTimeDelta);
 		}
+		//if (m_bShaking == true)
+		//	Shaking(fTimeDelta);
 	}
 	else
 	{
@@ -115,6 +117,19 @@ void CCamera::Late_Update(_float fTimeDelta)
 HRESULT CCamera::Render()
 {
 	return S_OK;
+}
+
+void CCamera::Shaking(_float fTimeDelta)
+{
+	if(m_bShaking == false)
+		m_vOriginPos = m_pTransformCom->Get_State(STATE::POSITION);
+
+	_float fRandomX = m_pGameInstance->Random(-0.2f, 0.2f);
+	_float fRandomY = m_pGameInstance->Random(-0.2f, 0.2f);
+	
+	m_pTransformCom->Set_State(STATE::POSITION, _float3{ m_vOriginPos.x + fRandomX, m_vOriginPos.y + fRandomY, m_vOriginPos.z });
+	m_bShaking = true;
+	m_fTimeAcc += fTimeDelta;
 }
 
 void CCamera::Camera_Turn(bool isMouseFixCenter, _float fTimeDelta)

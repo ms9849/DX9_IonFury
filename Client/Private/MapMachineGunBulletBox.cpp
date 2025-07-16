@@ -80,9 +80,14 @@ HRESULT CMapMachineGunBulletBox::Ready_Components()
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
 		return E_FAIL;
 
-	/* Com_Collider */
+	/* Com_BoxCollider */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_BoxCollider"),
 		TEXT("Com_BoxCollider"), reinterpret_cast<CComponent**>(&m_BoxColliderCom), nullptr)))
+		return E_FAIL;
+
+	/* Com_SphereCollider */
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_SphereCollider"),
+		TEXT("Com_SphereCollider"), reinterpret_cast<CComponent**>(&m_pSphereColliderCom), nullptr)))
 		return E_FAIL;
 
 	return S_OK;
@@ -95,8 +100,17 @@ void CMapMachineGunBulletBox::OnCollision(CGameObject* pDst, COLLISION eColType,
 const COLLISION_DESC& CMapMachineGunBulletBox::Get_CollisionDesc(COLLISION eColType)
 {
 	COLLISION_DESC Desc;
-	Desc.pTransform = m_pTransformCom;
-	Desc.pCollider = m_BoxColliderCom;
+
+	if (eColType == COLLISION::BOX)
+	{
+		Desc.pTransform = m_pTransformCom;
+		Desc.pCollider = m_BoxColliderCom;
+	}
+	else if(eColType == COLLISION::SPHERE)
+	{
+		Desc.pTransform = m_pTransformCom;
+		Desc.pCollider = m_pSphereColliderCom;
+	}
 
 	return Desc;
 }

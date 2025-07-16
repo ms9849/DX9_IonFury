@@ -51,22 +51,8 @@ HRESULT CSpider::Initialize(void* pArg)
 	m_pTransformCom->Set_State(STATE::LOOK, m_pObjectDesc.matWorld.m[2]);
 	m_pTransformCom->Set_State(STATE::POSITION, m_pObjectDesc.matWorld.m[3]);
 	m_pTransformCom->Set_Scale(_float3{ 1.f, 1.f, 1.f });
-	//m_pTransformCom->Set_Scale(_float3{ 1.f, 1.f, 1.f });
 
-	/*if (m_vPos != nullptr)
-	{
-		m_pTransformCom->Set_State(STATE::POSITION, _float3(
-			m_vPos->x + m_pGameInstance->Random(0.f, 2.f),
-			0.f,
-			m_vPos->z + m_pGameInstance->Random(0.f, 2.f)));
-	}
-	else
-	{
-		m_pTransformCom->Set_State(STATE::POSITION, _float3(
-			m_pGameInstance->Random(0.f, 2.f),
-			0.f,
-			m_pGameInstance->Random(0.f, 2.f)));
-	}*/
+	m_vNextDir = m_pTransformCom->Get_State(STATE::LOOK);
 
 	m_fDamage = 30.f;
 	m_fAttackRange = 3.5f;
@@ -76,7 +62,7 @@ HRESULT CSpider::Initialize(void* pArg)
 	m_fMaxRange = 10.f;
 	m_fRandomMoveTime = 3.f;
 	m_fSumRandomMoveTime = 0.f;
-	m_fCurHp = 30.f;
+	m_fCurHp = 50.f;
 	//m_AttackfCoolTime = 1.f;
 
 	return S_OK;
@@ -107,20 +93,6 @@ void CSpider::Update(_float fTimeDelta)
 	m_fSumAttackCoolTime += fTimeDelta;
 	m_fSumMoveCoolTime += fTimeDelta;
 
-	if (m_fSightFailTime >= 5.f)
-	{
-		do
-		{
-			_float3 vMin = { -1.f, 0.f, -1.f };
-			_float3 vMax = { 1.f, 0.f, 1.f };
-			m_pGameInstance->GetRandomVector(&m_vNextDir, &vMin, &vMax);
-			m_vNextDir.y = 0.f;
-		} while (D3DXVec3Length(&m_vNextDir) < 0.001f);
-
-		m_isRandomMove = true;
-	}
-
-	D3DXVec3Normalize(&m_vNextDir, &m_vNextDir);
 	MoveAnimationCheck();
 
 	vDiff.y = 0.f;
@@ -178,7 +150,7 @@ void CSpider::Update(_float fTimeDelta)
 		m_bDying = true;
 
 		m_pBoxColliderCom->Set_Scale({ 1.0f, 0.7f, 1.2f });
-		m_pBoxColliderCom->Set_Position({ 0.f, -0.15f, 0.f });
+		m_pBoxColliderCom->Set_Position({ 0.f, -0.35f, 0.f });
 
 		m_pGameInstance->PlaySoundOnce(TEXT("Spider_Die.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
 	}
@@ -207,26 +179,6 @@ void CSpider::Update(_float fTimeDelta)
 				m_fSumMoveCoolTime = 0.f;
 				m_fSumRandomMoveTime = 0.f;
 				m_fSightFailTime = 0.f;
-			}
-		}
-	}
-	else
-	{
-		m_fSightFailTime += fTimeDelta;
-		if (m_fSumMoveCoolTime >= m_fMoveCoolTime && m_isRandomMove)
-		{
-			m_fSumRandomMoveTime += fTimeDelta;
-			m_fSumMoveCoolTime = 0.f;
-			RandomMove(fTimeDelta, m_vNextDir);
-
-			m_isMove = true;
-			m_fSightFailTime = 0.f;
-
-			if (m_fSumRandomMoveTime >= m_fRandomMoveTime)
-			{
-				m_isRandomMove = false;
-				m_fSightFailTime = 0.f;
-				m_fSumRandomMoveTime = 0.f;
 			}
 		}
 	}
@@ -265,7 +217,7 @@ void CSpider::Late_Update(_float fTimeDelta)
 
 HRESULT CSpider::Render()
 {
-	m_pBoxColliderCom->Render(m_pTransformCom->Get_State(STATE::POSITION));
+	//m_pBoxColliderCom->Render(m_pTransformCom->Get_State(STATE::POSITION));
 	RotateToPlayer(m_pTransformCom);
 
 	auto iter = m_pTextureComs.find(m_strFrameKey);
@@ -274,9 +226,15 @@ HRESULT CSpider::Render()
 	if (FAILED(Begin_RenderTestState()))
 		return E_FAIL;
 
+	if (FAILED(Begin_RenderState()))
+		return E_FAIL;
+
 	m_pVIBufferCom->Render();
 
 	if (FAILED(End_RenderTestState()))
+		return E_FAIL;
+
+	if (FAILED(End_RenderState()))
 		return E_FAIL;
 
 	return S_OK;
@@ -536,7 +494,10 @@ void CSpider::Attack()
 	Desc.vDir = vDir;
 	Desc.vPos = vPos;*/
 
-	m_pGameInstance->Add_GameObject_ToLayer(m_pObjectDesc.iLayerLevel, TEXT("Prototype_GameObject_Melee_Attack"), m_pObjectDesc.iLayerLevel, TEXT("Layer_Melee_Attack"), &m_pObjectDesc);
+	GAMEOBJECT_DESC DescTemp = m_pObjectDesc;
+	DescTemp.matWorld = *m_pPlayerTransform->Get_WorldMatrixPtr();
+
+	m_pGameInstance->Add_GameObject_ToLayer(m_pObjectDesc.iLayerLevel, TEXT("Prototype_GameObject_Melee_Attack"), m_pObjectDesc.iLayerLevel, TEXT("Layer_Melee_Attack"), &DescTemp);
 	//m_pGameInstance->Add_GameObject_ToLayer(m_pObjectDesc.iLayerLevel, TEXT("Prototype_GameObject_Bullet"), m_pObjectDesc.iLayerLevel, TEXT("Layer_Spider_Bullet"), &Desc);
 }
 

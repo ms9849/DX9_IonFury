@@ -25,6 +25,7 @@
 #include "Zombie.h"
 #include "ItemBurger.h"
 #include "ItemCoffee.h"
+#include "Effect_Black_Sight.h"
 
 CPlayer::CPlayer(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CLandObject{ pGraphic_Device }
@@ -154,7 +155,11 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 	{
 		m_pTransformCom->Set_State(STATE::POSITION, _float3(15.f, 1.f, 95.f)); // 엘베 앞
 	}
-
+	if (m_pGameInstance->Key_Down('5'))
+	{
+		CEffect_Black_Sight* pBlackSight = static_cast<CEffect_Black_Sight*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Effect_Black_Sight"), nullptr));
+		m_pGameInstance->Add_Clone_ToLayer(pBlackSight, ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Layer_Effect"));
+	}
 	/* 점프 로직*/
 	if (!m_bJump && m_pGameInstance->Key_Down(VK_SPACE))
 	{
@@ -259,7 +264,7 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 			{
 				auto iter = m_tInfo.Weapons.find(TEXT("MachineGun"));
 
-				iter->second.iCurrentBullets += 20;
+				iter->second.iCurrentBullets += 100;
 
 				if (iter->second.iCurrentBullets >= iter->second.iBulletsMax)
 					iter->second.iCurrentBullets = iter->second.iBulletsMax;
@@ -267,7 +272,7 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 				if (m_tInfo.strWeapon == TEXT("MachineGun"))
 					m_tInfo.iBullets = iter->second.iCurrentBullets;
 
-				Insert_ItemDesc(TEXT("Get MachineGun Bullets [Bullet+20]"));
+				Insert_ItemDesc(TEXT("Get MachineGun Bullets [Bullet+100]"));
 				m_pGameInstance->PlaySoundOnce(TEXT("Get_Item.ogg"), CHANNELID::SOUND_EFFECT, 0.3f);
 				m_bMachinGunBulletCharge = false;
 			}
@@ -682,8 +687,8 @@ HRESULT CPlayer::Ready_Weapons()
 	WEAPON_INFO MachineGunDesc{};
 
 	/* 임시로 999로 설정*/
-	//MachineGunDesc.iBulletsMax = 999;
-	MachineGunDesc.iBulletsMax = 100;
+	//MachineGunDesc.iBulletsMax = 100;
+	MachineGunDesc.iBulletsMax = 999;
 	MachineGunDesc.iCurrentBullets = MachineGunDesc.iBulletsMax;
 	MachineGunDesc.iCanShootBullets = MachineGunDesc.iBulletsMax;
 	MachineGunDesc.iShootBullets = MachineGunDesc.iCanShootBullets;
@@ -903,10 +908,17 @@ void CPlayer::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 
 			for (size_t i = 12; i < 52; ++i)
 			{
-				dynamic_cast<CZombie*>(
+				CZombie* pZombie = dynamic_cast<CZombie*>(m_pGameInstance->Get_GameObject_By_ID(
+					m_pObjectDesc.iLayerLevel,
+					TEXT("Layer_Monster"), i));
+
+				if (pZombie != nullptr)
+					pZombie->Set_TargetMove(true);
+
+				/*dynamic_cast<CZombie*>(
 					m_pGameInstance->Get_GameObject_By_ID(
 						m_pObjectDesc.iLayerLevel,
-						TEXT("Layer_Monster"), i))->Set_TargetMove(true);
+						TEXT("Layer_Monster"), i))->Set_TargetMove(true);*/
 			}
 
 			Insert_ItemDesc(TEXT("Get ShotGun"));

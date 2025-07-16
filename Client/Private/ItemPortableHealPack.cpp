@@ -35,6 +35,7 @@ HRESULT CItemPortableHealPack::Initialize(void* pArg)
     m_pTransformCom->Set_State(STATE::UP, m_pObjectDesc.matWorld.m[1]);
     m_pTransformCom->Set_State(STATE::LOOK, m_pObjectDesc.matWorld.m[2]);
     m_pTransformCom->Set_State(STATE::POSITION, m_pObjectDesc.matWorld.m[3]);
+    m_pTransformCom->Set_Scale({ 0.5f, 0.5f, 0.5f });
 
     if (!m_bParabola)
         SetUp_OnTerrain(m_pTransformCom, 0.5f);

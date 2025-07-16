@@ -643,9 +643,9 @@ HRESULT CBossUpperBody::Ready_Components()
 
 	/* Com_BoxCollider */
 	CBoxCollider::BOXCOLLIDER_DESC Desc;
-	Desc.vPosition = { 0.f, -0.3f, 0.f };
-	Desc.fScaleX = 1.5f;
-	Desc.fScaleZ = 1.5f;
+	Desc.vPosition = { 0.f, -0.7f, 0.f };
+	Desc.fScaleX = 1.7f;
+	Desc.fScaleZ = 1.7f;
 	Desc.fScaleY = 2.0f;
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_BoxCollider"),
 		TEXT("Com_BoxCollider"), reinterpret_cast<CComponent**>(&m_pBoxColliderCom), &Desc)))
@@ -703,7 +703,8 @@ void CBossUpperBody::Attack(_float fTimeDelta, BossAttackState state)
 			Desc.vPos = vMonsterPos;
 			//Desc.vPos = {vPos.x ,vPos.y += m_vUpOffset.y, vPos.z };
 			Desc.fBulletSpeed = 10.f;
-			Desc.vBulletScale = { 0.005f, 0.005f, 0.2f };
+			//Desc.vBulletScale = { 0.005f, 0.005f, 0.2f };			// 기존
+			Desc.vBulletScale = { 0.01f, 0.007f, 0.2f };
 			//Desc.vBulletScale = { 0.2f, 0.2f, 0.1f };
 			Desc.isPlayerBullet = false;
 			Desc.fDuration = 5.f;
@@ -759,7 +760,8 @@ void CBossUpperBody::Attack(_float fTimeDelta, BossAttackState state)
 			Desc.vDir = vDir;
 			Desc.vPos = vMonsterPos;
 			Desc.fBulletSpeed = 10.f;
-			Desc.vBulletScale = { 0.005f, 0.005f, 0.2f };
+			//Desc.vBulletScale = { 0.005f, 0.005f, 0.2f };
+			Desc.vBulletScale = { 0.01f, 0.007f, 0.2f };
 			//Desc.vBulletScale = { 0.2f, 0.2f, 0.1f };
 			Desc.isPlayerBullet = false;
 			Desc.fDuration = 7.f;
@@ -1036,11 +1038,13 @@ void CBossUpperBody::SummonMonster()				// 추후 필요하면 인덱스 받을 수 있도록 �
 			0.f, 0.f, 1.f, 0.f,
 			0.f, 0.f, 0.f, 1.f
 		};
-		
+		_float fX = m_pGameInstance->Random(0.f, 20.f);
+		_float fZ = m_pGameInstance->Random(0.f, 20.f);
+
 		_float3 vPos = m_pCoreTransform->Get_State(STATE::POSITION);
-		mat._41 = vPos.x;
+		mat._41 = vPos.x + fX;
 		mat._42 = vPos.y;
-		mat._43 = vPos.z;
+		mat._43 = vPos.z + fZ;
 		CGameObject::GAMEOBJECT_DESC Desc{};
 
 		Desc.iLayerLevel = ENUM_CLASS(LEVEL::BOSSFIGHT);

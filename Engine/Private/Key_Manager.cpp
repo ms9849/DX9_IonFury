@@ -6,53 +6,51 @@ CKey_Manager::CKey_Manager()
 
 HRESULT CKey_Manager::Initialize()
 {
-	ZeroMemory(m_bKeyState, sizeof(m_bKeyState));
+	ZeroMemory(m_bCurKeyState, sizeof(m_bCurKeyState));
 
 	return S_OK;
 }
 
 bool CKey_Manager::Key_Pressing(_uint _iKey)
 {
-	if (GetAsyncKeyState(_iKey) & 0x8000)
-		return true;
-
-	return false;
+	return m_bCurKeyState[_iKey] && m_bPreKeyState[_iKey];
 }
 
 // 이전 프레임에 눌린 적이 없고, 지금 막 눌렀을 때
-bool CKey_Manager::Key_Down(_uint _iKey)
+_bool CKey_Manager::Key_Down(_uint _iKey)
 {
-	if ((!m_bKeyState[_iKey]) && (GetAsyncKeyState(_iKey) & 0x8000))
-	{
-		m_bKeyState[_iKey] = !m_bKeyState[_iKey];
-		return true;
-	}
-
-	return false;
+	return m_bCurKeyState[_iKey] && !m_bPreKeyState[_iKey];
 }
 
 
 bool CKey_Manager::Key_Up(_uint _iKey)
 {
-	if ((m_bKeyState[_iKey]) && !(GetAsyncKeyState(_iKey) & 0x8000))
-	{
-		m_bKeyState[_iKey] = !m_bKeyState[_iKey];
-		return true;
-	}
-
-	return false;
+	return !m_bCurKeyState[_iKey] && m_bPreKeyState[_iKey];;
 }
 
-void CKey_Manager::Update()
+void CKey_Manager::Begin_Input()
 {
+	ZeroMemory(m_bCurKeyState, sizeof(m_bCurKeyState));
+
 	for (int i = 0; i < VK_MAX; ++i)
 	{
-		if ((m_bKeyState[i]) && !(GetAsyncKeyState(i) & 0x8000))
-			m_bKeyState[i] = !m_bKeyState[i];
-
-		if ((!m_bKeyState[i]) && (GetAsyncKeyState(i) & 0x8000))
-			m_bKeyState[i] = !m_bKeyState[i];
+		if(GetAsyncKeyState(i) & 0x8000)
+			m_bCurKeyState[i] = true;
 	}
+}
+
+void CKey_Manager::End_Input()
+{
+	memcpy(m_bPreKeyState, m_bCurKeyState, sizeof(m_bPreKeyState));
+
+	//for (int i = 0; i < VK_MAX; ++i)
+	//{
+	//	if ((m_bKeyState[i]) && !(GetAsyncKeyState(i) & 0x8000))
+	//		m_bKeyState[i] = !m_bKeyState[i];
+
+	//	if ((!m_bKeyState[i]) && (GetAsyncKeyState(i) & 0x8000))
+	//		m_bKeyState[i] = !m_bKeyState[i];
+	//}
 }
 
 CKey_Manager* CKey_Manager::Create()

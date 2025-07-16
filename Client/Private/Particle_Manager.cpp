@@ -54,7 +54,7 @@ HRESULT CParticle_Manager::Ready_Particle_YellowDust()
 
 	list<CParticleSystem*> Particles = {};
 
-	for (_int i = 0; i < 500; ++i)
+	for (_int i = 0; i < 1000; ++i)
 	{
 		Particles.push_back(
 			static_cast<CParticleSystem*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_YellowDust"), nullptr))
