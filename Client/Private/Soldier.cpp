@@ -453,28 +453,57 @@ void CSoldier::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDe
 		CBullet* pBullet = dynamic_cast<CBullet*>(pDst);
 		if (pBullet != nullptr)
 		{
-			m_pTransformCom->Turn({0.f, 1.0f, 0.f}, fTimeDelta);
+			m_pTransformCom->Turn({ 0.f, 1.0f, 0.f }, fTimeDelta);
 			m_pTransformCom->LookAt(m_pPlayerTransform->Get_State(STATE::POSITION));
 			_float3 vTemp = m_pTransformCom->Get_State(STATE::LOOK);
 			D3DXVec3Normalize(&m_vNextDir, &vTemp);
-			//m_vNextDir = m_pTransformCom->Get_State(STATE::LOOK);
 
-			if ((m_fCurHp -= (pBullet->Get_Damage())) > 0)
+			if (pCollider == m_pBoxColliderHead)
 			{
-				m_pGameInstance->PlaySoundOnce(TEXT("Soldier_Pain01.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
+				m_fCurHp -= (pBullet->Get_Damage() * 2.f);
+				if (m_fCurHp <= 0)
+					m_isHead = true;
 			}
 			else
 			{
-				if (pCollider == m_pBoxColliderHead)
-				{
-					m_isHead = true;
-				}
+				m_fCurHp -= pBullet->Get_Damage();
 			}
+
+			if (m_fCurHp > 0)
+				m_pGameInstance->PlaySoundOnce(TEXT("Soldier_Pain01.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
 
 			CParticle_Manager::GetInstance()->Create_Particle(TEXT("Particle_Blood"), m_pObjectDesc.iLayerLevel,
 				TEXT("Layer_Particle"), vPos);
 		}
 	}
+
+	//if (eColType == COLLISION::RAY)
+	//{
+	//	CBullet* pBullet = dynamic_cast<CBullet*>(pDst);
+	//	if (pBullet != nullptr)
+	//	{
+	//		m_pTransformCom->Turn({0.f, 1.0f, 0.f}, fTimeDelta);
+	//		m_pTransformCom->LookAt(m_pPlayerTransform->Get_State(STATE::POSITION));
+	//		_float3 vTemp = m_pTransformCom->Get_State(STATE::LOOK);
+	//		D3DXVec3Normalize(&m_vNextDir, &vTemp);
+	//		//m_vNextDir = m_pTransformCom->Get_State(STATE::LOOK);
+
+	//		if ((m_fCurHp -= (pBullet->Get_Damage())) > 0)
+	//		{
+	//			m_pGameInstance->PlaySoundOnce(TEXT("Soldier_Pain01.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
+	//		}
+	//		else
+	//		{
+	//			if (pCollider == m_pBoxColliderHead)
+	//			{
+	//				m_isHead = true;
+	//			}
+	//		}
+
+	//		CParticle_Manager::GetInstance()->Create_Particle(TEXT("Particle_Blood"), m_pObjectDesc.iLayerLevel,
+	//			TEXT("Layer_Particle"), vPos);
+	//	}
+	//}
 }
 
 const COLLISION_DESC& CSoldier::Get_CollisionDesc(COLLISION eColType)
