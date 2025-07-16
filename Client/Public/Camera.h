@@ -46,6 +46,9 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+public:
+	void Shaking(_float fIntensity);
+
 private:
 	CAMERA_CONFIG					m_pCameraConfig{};
 
@@ -66,7 +69,10 @@ private:
 	 _float3						m_vOldCameraRight{};
 	 _float3						m_vOldCameraUp{};
 	 _float3						m_vOldCameraLook{};
-
+	 //Ω¶¿Ã≈∑øÎ
+	 _bool							m_bShaking = { false };
+	 _float3						m_vOriginPos = {}; 
+	 _float							m_fTimeAcc = {};
 private:
 	//std::function<void()> m_update;
 	void Camera_Turn(bool isMouseFixCenter, _float fTimeDelta);

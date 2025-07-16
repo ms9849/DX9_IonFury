@@ -46,6 +46,7 @@ private:
 	HRESULT Ready_Layer_Map_Objects_Gate(const _wstring& strLayerTag);
 	HRESULT Ready_Layer_Interaction_Objects(const _wstring& strLayerTag);
 	HRESULT Ready_Layer_Bullet(const _wstring& strLayerTag);
+	void Ending();
 
 private:
 	class CFile_Manager* m_pFileMgr = {};

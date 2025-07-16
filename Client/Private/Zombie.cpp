@@ -301,7 +301,7 @@ void CZombie::Update(_float fTimeDelta)
 			}
 		}
 	}
-	else
+	/*else
 	{
 		m_fSightFailTime += fTimeDelta;
 		if (m_fSumMoveCoolTime >= m_fMoveCoolTime && m_isRandomMove)
@@ -320,7 +320,7 @@ void CZombie::Update(_float fTimeDelta)
 				m_fSumRandomMoveTime = 0.f;
 			}
 		}
-	}
+	}*/
 
 	__super::Jump(fTimeDelta);
 	SetUp_OnTerrain(m_pTransformCom, 1.f, &m_bJump);
@@ -531,10 +531,10 @@ HRESULT CZombie::Ready_Components()
 
 	/* Com_BoxCollider */
 	CBoxCollider::BOXCOLLIDER_DESC Desc;
-	Desc.vPosition = { 0.f, 0.05f, 0.f };
-	Desc.fScaleX = 0.7f;
-	Desc.fScaleY = 1.15f;
-	Desc.fScaleZ = 0.7f;
+	Desc.vPosition = { 0.f, 0.10f, 0.f };
+	Desc.fScaleX = 0.6f;
+	Desc.fScaleY = 1.0f;
+	Desc.fScaleZ = 0.6f;
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_BoxCollider"),
 		TEXT("Com_BoxCollider"), reinterpret_cast<CComponent**>(&m_pBoxColliderCom), &Desc)))
 		return E_FAIL;
@@ -627,8 +627,11 @@ void CZombie::Attack()
 	/*CBullet::BULLET_DESC Desc;
 	Desc.vDir = vDir;
 	Desc.vPos = vPos;*/
+	GAMEOBJECT_DESC DescTemp;
+	DescTemp = m_pObjectDesc;
+	DescTemp.matWorld = *m_pPlayerTransform->Get_WorldMatrixPtr();
 
-	m_pGameInstance->Add_GameObject_ToLayer(m_pObjectDesc.iLayerLevel, TEXT("Prototype_GameObject_Melee_Attack"), m_pObjectDesc.iLayerLevel, TEXT("Layer_Melee_Attack"), &m_pObjectDesc);
+	m_pGameInstance->Add_GameObject_ToLayer(m_pObjectDesc.iLayerLevel, TEXT("Prototype_GameObject_Melee_Attack"), m_pObjectDesc.iLayerLevel, TEXT("Layer_Melee_Attack"), &DescTemp);
 	//m_pGameInstance->Add_GameObject_ToLayer(m_pObjectDesc.iLayerLevel, TEXT("Prototype_GameObject_Bullet"), m_pObjectDesc.iLayerLevel, TEXT("Layer_Zombie_Bullet"), &Desc);
 }
 

@@ -112,14 +112,10 @@ void CSoldier::Update(_float fTimeDelta)
 
 	if (m_fSightFailTime >= 5.f)
 	{
-		do
-		{
-			_float3 vMin = { -1.f, 0.f, -1.f };
-			_float3 vMax = { 1.f, 0.f, 1.f };
-			m_pGameInstance->GetRandomVector(&m_vNextDir, &vMin, &vMax);
-			m_vNextDir.y = 0.f;
-		} while (D3DXVec3Length(&m_vNextDir) < 0.001f);
-
+		_float3 vMin = { -1.f, 0.f, -1.f };
+		_float3 vMax = { 1.f, 0.f, 1.f };
+		m_pGameInstance->GetRandomVector(&m_vNextDir, &vMin, &vMax);
+		m_vNextDir.y = 0.f;
 		m_isRandomMove = true;
 	}
 
@@ -231,27 +227,27 @@ void CSoldier::Update(_float fTimeDelta)
 			}
 		}
 	}
-	else
-	{
-		m_fSightFailTime += fTimeDelta;
-		if (m_fSumMoveCoolTime >= m_fMoveCoolTime && m_isRandomMove)
-		{
-			m_fSumRandomMoveTime += fTimeDelta;
-			m_fSumMoveCoolTime = 0.f;
-			//MoveAnimationCheck(true);
-			RandomMove(fTimeDelta, m_vNextDir);
-		
-			m_isMove = true;
-			m_fSightFailTime = 0.f;
+	//else
+	//{
+	//	m_fSightFailTime += fTimeDelta;
+	//	if (m_fSumMoveCoolTime >= m_fMoveCoolTime && m_isRandomMove)
+	//	{
+	//		m_fSumRandomMoveTime += fTimeDelta;
+	//		m_fSumMoveCoolTime = 0.f;
+	//		//MoveAnimationCheck(true);
+	//		RandomMove(fTimeDelta, m_vNextDir);
+	//	
+	//		m_isMove = true;
+	//		m_fSightFailTime = 0.f;
 
-			if (m_fSumRandomMoveTime >= m_fRandomMoveTime)
-			{
-				m_isRandomMove = false;
-				m_fSightFailTime = 0.f;
-				m_fSumRandomMoveTime = 0.f;
-			}
-		}
-	}
+	//		if (m_fSumRandomMoveTime >= m_fRandomMoveTime)
+	//		{
+	//			m_isRandomMove = false;
+	//			m_fSightFailTime = 0.f;
+	//			m_fSumRandomMoveTime = 0.f;
+	//		}
+	//	}
+	//}
 
 	SetUp_OnTerrain(m_pTransformCom, 0.8f, &m_bJump);
 }
