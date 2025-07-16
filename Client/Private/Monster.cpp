@@ -207,14 +207,30 @@ void CMonster::RandomMove(_float fTimeDelta, _float3 nextDir)
 		fRadian = -fRadian;
 
 	_float3 vTarget = m_pTransformCom->Get_State(STATE::POSITION) + vNextDir;
-	/*char szBuffer[128];
-	sprintf_s(szBuffer, "vTarget: x = %.3f, y = %.3f, z = %.3f\n", vTarget.x, vTarget.y, vTarget.z);
-	OutputDebugStringA(szBuffer);*/
 
 	m_pTransformCom->Rotation({ 0.f, 1.f, 0.f }, fRadian);
 	m_pTransformCom->Go_Direction(vNextDir, fTimeDelta);
 	m_pTransformCom->LookAt(vTarget);
 }
+
+void CMonster::RandomRotate()
+{
+	_float3 vMin = { -1.f, 0.f, -1.f };
+	_float3 vMax = { 1.f, 0.f, 1.f };
+	m_pGameInstance->GetRandomVector(&m_vNextDir, &vMin, &vMax);
+	m_vNextDir.y = 0.f;
+
+	if (D3DXVec3Length(&m_vNextDir) < 0.001f || !_finite(m_vNextDir.x) || !_finite(m_vNextDir.y) || !_finite(m_vNextDir.z))
+	{
+		m_vNextDir = { 0.f, 0.f, 1.f };
+	}
+
+	D3DXVec3Normalize(&m_vNextDir, &m_vNextDir);
+	_float3 vTarget = m_pTransformCom->Get_State(STATE::POSITION) + m_vNextDir;
+
+	m_pTransformCom->LookAt(vTarget); 
+}
+
 
 void CMonster::Free()
 {
