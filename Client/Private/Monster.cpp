@@ -181,14 +181,24 @@ void CMonster::RotateToPlayer(CTransform* pTranform)
 
 void CMonster::RandomMove(_float fTimeDelta, _float3 nextDir)
 {
+
 	_float3 vNextDir = {};
 	vNextDir = nextDir;
+	if (D3DXVec3Length(&vNextDir) < 0.001f || !_finite(vNextDir.x) || !_finite(vNextDir.y) || !_finite(vNextDir.z))
+	{
+		vNextDir = { 0.f, 0.f, 1.f };
+		//char szBuffer1[128];
+		//sprintf_s(szBuffer1, "[Warning] vNextDir 비정상값 감지! x: %.3f, y: %.3f, z: %.3f\n", vNextDir.x, vNextDir.y, vNextDir.z);
+		//OutputDebugStringA(szBuffer1);  // 디버그 출력창에 메시지 전송
+	}
+
 	D3DXVec3Normalize(&vNextDir, &vNextDir);
 
 	_float3 fMonsterLook = m_pTransformCom->Get_State(STATE::LOOK);
 	D3DXVec3Normalize(&fMonsterLook, &fMonsterLook);
 
-	float dot = D3DXVec3Dot(&fMonsterLook, &vNextDir);;
+	float dot = D3DXVec3Dot(&fMonsterLook, &vNextDir);
+	dot = max(-1.f, min(1.f, dot));
 	float fRadian = acosf(dot);
 
 	_float3 vCross = {};
@@ -196,9 +206,14 @@ void CMonster::RandomMove(_float fTimeDelta, _float3 nextDir)
 	if (vCross.y < 0)
 		fRadian = -fRadian;
 
+	_float3 vTarget = m_pTransformCom->Get_State(STATE::POSITION) + vNextDir;
+	/*char szBuffer[128];
+	sprintf_s(szBuffer, "vTarget: x = %.3f, y = %.3f, z = %.3f\n", vTarget.x, vTarget.y, vTarget.z);
+	OutputDebugStringA(szBuffer);*/
+
 	m_pTransformCom->Rotation({ 0.f, 1.f, 0.f }, fRadian);
 	m_pTransformCom->Go_Direction(vNextDir, fTimeDelta);
-	m_pTransformCom->LookAt(m_pTransformCom->Get_State(STATE::POSITION) + m_vNextDir);
+	m_pTransformCom->LookAt(vTarget);
 }
 
 void CMonster::Free()
