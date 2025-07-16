@@ -50,6 +50,7 @@ private:
 	_float m_fJumpPower = 0.f;
 	_float m_fRandomMoveTime = 0.f;
 	_float m_fSightFailTime = 0.f;
+	_float m_fSafeDistance = 3.f;
 	_float3* m_vPos = {};
 
 public:

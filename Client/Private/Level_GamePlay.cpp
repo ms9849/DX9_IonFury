@@ -79,8 +79,8 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(Ready_Layer_Map_Objects_OBB_Ride(TEXT("Layer_Map_Objects_OBB_Ride")))) // È¸Àü ÇÑ Å» ¼ö ÀÖ´Â Å¥ºê
 		return E_FAIL;
 
-	// if (FAILED(Ready_Layer_Map_Objects_Ride(TEXT("Layer_Map_Objects_Ride")))) // ¿¤º£
-	// 	return E_FAIL;
+	 //if (FAILED(Ready_Layer_Map_Objects_Ride(TEXT("Layer_Map_Objects_Ride")))) // ¿¤º£
+	 //	return E_FAIL;
 
 	if (FAILED(Ready_Layer_Map_Objects_Gate(TEXT("Layer_Map_Objects_Gate")))) // ¹®
 		return E_FAIL;
