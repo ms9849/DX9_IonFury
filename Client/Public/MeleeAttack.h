@@ -56,9 +56,7 @@ private:
 	_float m_fDurationTime = { 0.f };
 	_float m_fAccumulationTime = { 0.f };
 
-	CTexture* m_pTextureCom = { nullptr };
 	CTransform* m_pTransformCom = { nullptr };
-	CVIBuffer_Cube* m_pVIBufferCom = { nullptr };
 	CSphereCollider* m_pSphereColliderCom = { nullptr };
 
 private:

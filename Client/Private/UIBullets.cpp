@@ -41,22 +41,22 @@ HRESULT CUIBullets::Initialize(void* pArg)
 
 	UIOBJECT_DESC Desc{};
 
-	Desc.fSizeX = m_tagDesc.fSizeX;
-	Desc.fSizeY = m_tagDesc.fSizeY;
-	Desc.fX = m_tagDesc.fX - (Desc.fSizeX * (m_tagDesc.iTextLength + 1));
+	Desc.fSizeX = 40.f;
+	Desc.fSizeY = 40.f;
+	Desc.fX = m_tagDesc.fX - (Desc.fSizeX * (m_tagDesc.iTextLength + 1)) - 30.f;
 	Desc.fY = m_tagDesc.fY - (Desc.fSizeY * 0.5f);
 	Desc.iTextLength = m_tagDesc.iTextLength;
 	Desc.iLayerLevelIndex = m_tagDesc.iLayerLevelIndex;
 	Desc.strLayerTag = m_tagDesc.strLayerTag;
 	Desc.strFontType = m_tagDesc.strFontType;
 
-	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(Desc.iLayerLevelIndex, TEXT("Prototype_GameObject_UIText"),
+	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UIText"),
 		Desc.iLayerLevelIndex, Desc.strLayerTag, &Desc)))
 		return E_FAIL;
 
 	m_pText = dynamic_cast<CUIText*>(m_pGameInstance->Find_GameObject_ToLayer(Desc.iLayerLevelIndex, Desc.strLayerTag));
 	Safe_AddRef(m_pText);
-	m_pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player")));
+	m_pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Find_GameObject_ToLayer(m_tagDesc.iLayerLevelIndex, TEXT("Layer_Player")));
 	Safe_AddRef(m_pPlayer);
 
 	return S_OK;
@@ -80,11 +80,13 @@ HRESULT CUIBullets::Render()
 {
 	m_pTransformCom->Set_Transform();
 
-	_wstring strWeapon = m_pPlayer->Get_Player_Info().strWeapon;
-	if(strWeapon.compare(TEXT("Pistol")) == 0)
-		m_pTextureCom->Set_Texture(0);
-	else if (strWeapon.compare(TEXT("ShootGun")) == 0)
-		m_pTextureCom->Set_Texture(1);
+	
+	if(m_pPlayer->Get_Player_Info().strWeapon == TEXT("Pistol"))
+		m_pTextureCom->Set_Texture(ENUM_CLASS(BULLET::PISTOL));
+	else if (m_pPlayer->Get_Player_Info().strWeapon == TEXT("ShootGun"))
+		m_pTextureCom->Set_Texture(ENUM_CLASS(BULLET::SHOOTGUN));
+	else if (m_pPlayer->Get_Player_Info().strWeapon == TEXT("MachineGun"))
+		m_pTextureCom->Set_Texture(ENUM_CLASS(BULLET::MACHINEGUN));
 
 	m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
 	m_pGraphic_Device->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
@@ -108,7 +110,10 @@ void CUIBullets::Set_Bullets()
 	m_iShootBullets = m_pPlayer->Get_Player_Info().iShootBullets;
 
 	_tchar ws[10];
-	swprintf(ws, 10, L"%02d/%03d", m_iShootBullets,m_iBullets);
+	if(m_pPlayer->Get_Player_Info().strWeapon == TEXT("MachineGun"))
+		swprintf(ws, 10, L"   %03d", m_iBullets);
+	else
+		swprintf(ws, 10, L"%02d/%03d", m_iShootBullets,m_iBullets);
 
 	m_pText->Set_Text(ws);
 }
@@ -126,7 +131,7 @@ HRESULT CUIBullets::Ready_Components()
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
 		return E_FAIL;
 	/* Com_Texture */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Item_Bullets"),
+	if (FAILED(__super::Add_Component(m_tagDesc.iLayerLevelIndex, TEXT("Prototype_Component_Texture_UI_Bullets"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 

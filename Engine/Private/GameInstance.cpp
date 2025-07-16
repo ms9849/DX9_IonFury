@@ -178,6 +178,11 @@ HRESULT CGameInstance::Change_Level(CLevel* pNewLevel)
 	return m_pLevel_Manager->Change_Level(pNewLevel);
 }
 
+_uint CGameInstance::Get_CurrentLevelID()
+{
+	return m_pLevel_Manager->Get_CurrentLevelID();
+}
+
 #pragma endregion
 
 #pragma region PROTOTYPE_MANAGER
@@ -189,7 +194,7 @@ HRESULT CGameInstance::Add_Prototype(_uint iLevelIndex, const _wstring& strProto
 
 CBase* CGameInstance::Clone_Prototype(PROTOTYPE ePrototype, _uint iLevelIndex, const _wstring& strPrototypeTag, void* pArg)
 {
-	return m_pPrototype_Manager->Clone_Prototype(ePrototype, iLevelIndex, strPrototypeTag, pArg);;
+	return m_pPrototype_Manager->Clone_Prototype(ePrototype, iLevelIndex, strPrototypeTag, pArg);
 }
 
 #pragma endregion
@@ -271,6 +276,11 @@ void CGameInstance::PlayBGM(const _wstring& pSoundKey, float fVolume)
 	m_pSound_Manager->PlayBGM(pSoundKey, fVolume);
 }
 
+void CGameInstance::PlaySoundLoop(const _wstring& pSoundKey, CHANNELID eID, float fVolume)
+{
+	m_pSound_Manager->PlaySoundLoop(pSoundKey, eID, fVolume);
+}
+
 void CGameInstance::StopSound(CHANNELID eID)
 {
 	m_pSound_Manager->StopSound(eID);
@@ -310,6 +320,10 @@ void CGameInstance::Check_RayToAABBCollision(const _wstring& strLayerTagRay, con
 {
 	m_pCollision_Manager->Check_RayToAABBCollision(strLayerTagRay, strLayerTagAABB, iLayerLevel, fTimeDelta, vCollisionPos);
 }
+void CGameInstance::Check_RayToOBBCollision(const _wstring& strLayerTagRay, const _wstring& strLayerTagAABB, _uint iLayerLevel, _float fTimeDelta, _float3* vCollisionPos)
+{
+	m_pCollision_Manager->Check_RayToOBBCollision(strLayerTagRay, strLayerTagAABB, iLayerLevel, fTimeDelta, vCollisionPos);
+}
 #pragma endregion 
 
 #pragma region PICKING
@@ -331,11 +345,11 @@ void CGameInstance::Release_Engine()
 
 	Safe_Release(m_pGraphic_Device);
 	Safe_Release(m_pGraphicDev);
+	Safe_Release(m_pRenderer);
 	Safe_Release(m_pTimer_Manager);
 	Safe_Release(m_pLevel_Manager);
 	Safe_Release(m_pPrototype_Manager);
 	Safe_Release(m_pObject_Manager);
-	Safe_Release(m_pRenderer);
 	Safe_Release(m_pKey_Manager);
 	Safe_Release(m_pSound_Manager);
 	Safe_Release(m_pCollision_Manager);

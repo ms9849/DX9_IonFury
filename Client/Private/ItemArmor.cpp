@@ -18,9 +18,11 @@ HRESULT CItemArmor::Initialize_Prototype()
 
 HRESULT CItemArmor::Initialize(void* pArg)
 {
+	m_pObjectDesc = *static_cast<CGameObject::GAMEOBJECT_DESC*>(pArg);
+
 	CLandObject::LANDOBJECT_DESC			Desc{};
-	Desc.pLandTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_BackGround"), TEXT("Com_Transform")));
-	Desc.pLandVIBuffer = static_cast<CVIBuffer*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_BackGround"), TEXT("Com_VIBuffer")));
+	Desc.pLandTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(m_pObjectDesc.iLayerLevel, TEXT("Layer_BackGround"), TEXT("Com_Transform")));
+	Desc.pLandVIBuffer = static_cast<CVIBuffer*>(m_pGameInstance->Get_Component(m_pObjectDesc.iLayerLevel, TEXT("Layer_BackGround"), TEXT("Com_VIBuffer")));
 
 	if (FAILED(__super::Initialize(&Desc)))
 		return E_FAIL;
@@ -30,12 +32,18 @@ HRESULT CItemArmor::Initialize(void* pArg)
 
 	//m_pTransformCom->Set_State(STATE::POSITION, _float3(25.f, 0.f, 5.f));
 
-	SetUp_OnTerrain(m_pTransformCom, 0.5f);
+	m_pTransformCom->Set_State(STATE::RIGHT, m_pObjectDesc.matWorld.m[0]);
+	m_pTransformCom->Set_State(STATE::UP, m_pObjectDesc.matWorld.m[1]);
+	m_pTransformCom->Set_State(STATE::LOOK, m_pObjectDesc.matWorld.m[2]);
+	m_pTransformCom->Set_State(STATE::POSITION, m_pObjectDesc.matWorld.m[3]);
+
+	if (!m_bParabola)
+		SetUp_OnTerrain(m_pTransformCom, 0.5f);
 
 	m_fItemOriginPosY = m_pTransformCom->Get_State(STATE::POSITION).y;
 
 	m_pPlayerTransformCom = dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(
-		ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player"), TEXT("Com_Transform")));
+		m_pObjectDesc.iLayerLevel, TEXT("Layer_Player"), TEXT("Com_Transform")));
 	Safe_AddRef(m_pPlayerTransformCom);
 
 	return S_OK;
@@ -47,7 +55,11 @@ void CItemArmor::Priority_Update(_float fTimeDelta)
 
 void CItemArmor::Update(_float fTimeDelta)
 {
-	Item_Animation(fTimeDelta);
+	if (!m_bParabola)
+		Item_Animation(fTimeDelta);
+	else
+		Parabola(m_pGameInstance->Random(0.5f, 1.5f), fTimeDelta);
+
 	m_pTransformCom->LookAt(m_pPlayerTransformCom->Get_State(STATE::POSITION));
 }
 
@@ -82,7 +94,7 @@ HRESULT CItemArmor::Ready_Components()
 		return E_FAIL;
 
 	/* Com_Texture */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Item_Armor_0"),
+	if (FAILED(__super::Add_Component(m_pObjectDesc.iLayerLevel, TEXT("Prototype_Component_Texture_Item_Armor_0"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 

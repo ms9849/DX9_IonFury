@@ -20,21 +20,25 @@ private:
 	CPlayer(const CPlayer& Prototype);
 	virtual ~CPlayer() = default;
 
-private:
+public:
+	typedef struct tagWeapon
+	{
+		_uint iBulletsMax{0}, iCanShootBullets{0}, iCurrentBullets{0}, iShootBullets{0};
+		_bool bUseable{ true };
+	}WEAPON_INFO;
+
 	typedef struct tagPlayerInfo
 	{
-		_uint iHp{}, iBullets{}, iShootBullets{}, iArmor{};
+		_uint iHp{0}, iBullets{0}, iShootBullets{0}, iArmor{0}, iHealpacks{0};
+		_bool bArmor{ false };
 		_wstring strWeapon{ TEXT("Pistol") };
 		_wstring strAction{ TEXT("Idle") };
 		_wstring strItem{ TEXT("CardKey") };
 		_wstring strItemAction{ TEXT("Idle") };
+		map<const _wstring, WEAPON_INFO> Weapons{};
 	}PLAYER_INFO;
 
-	typedef struct tagWeapon
-	{
-		_uint iBulletsMax{}, iCanShootBullets{}, iCurrentBullets{}, iShootBullets{};
-	}WEAPON_INFO;
-
+private:
 	typedef struct tagItem
 	{
 		_float fCreateTime{};
@@ -51,6 +55,8 @@ public:
 
 public:
 	PLAYER_INFO Get_Player_Info();
+	void Set_Player_Info(PLAYER_INFO tPlayerInfo);
+
 	_bool Get_CanUse_CardKey();
 	_bool Get_Can_Open_Door();
 	_bool Get_Use_CardKey();
@@ -80,12 +86,18 @@ private:
 	PLAYER_INFO		m_tInfo{};
 	class CPlayer_RightHand*	m_pRightHand{ nullptr };
 	class CPlayer_LeftHand*		m_pLeftHand{ nullptr };
-	map<const _wstring, WEAPON_INFO> m_Weapons{};
-	_bool			m_bWeaponChange{ false };
-	deque<_wstring> m_ItemQueues{};
-	_float			m_fTimeStack{0.f};
+	class CDoorLock* m_pDoorLock{nullptr};
+	class CLever* m_pLever{nullptr};
+	class CButton* m_pButton{nullptr};
+
+	_float			m_fSpeed{ 1.f };
+	_bool			m_bSpeedUp{ false };
+
 	_wstring		m_strNextWeapon{};
+	deque<ITEM_DESC> m_ItemQueues{};
+	_float			m_fTimeStack{0.f};
 	_float			m_fColTimeStack{ 0.f };
+	_bool			m_bWeaponChange{ false };
 
 	_bool			m_bUseCardKey{ false };
 	_bool			m_bCanOpenDoor{ false };
@@ -93,13 +105,15 @@ private:
 
 	_bool			m_bActiveElevator{ false };
 	_bool			m_bCanActiveElevator{ false };
+	_bool			m_bCanActiveDoor{ false };
 
-	class CDoorLock* m_pDoorLock{nullptr};
-	class CLever* m_pLever{nullptr};
+	_bool			m_bMachinGunBulletCharge{ false };
+	_bool			m_bMachinGunShootEnd{ false };
+	_float			m_fMachinGunSoundCoolDown = { 0.f };
 
 public:
 	virtual void OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta) override;
-	virtual void OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta, CComponent* pCollider) override;
+	virtual void OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta, CComponent* pCollider, const _float3& vPos) override;
 	virtual const COLLISION_DESC& Get_CollisionDesc(COLLISION eColType);
 	_wstring Get_ItemText(size_t iIndex);
 	size_t Get_ItemQueue_Length();

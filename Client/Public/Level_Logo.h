@@ -18,9 +18,10 @@ public:
 
 public:
 	/* 이 레벨에서 쓰기위한 객체들을 생성한다. */
-	HRESULT Ready_Layer_Camera(const _wstring& strLayerTag);
 	HRESULT Ready_Layer_BackGround(const _wstring& strLayerTag);
 	
+private:
+	class CUIPressEnter* m_pUIPressEnter{nullptr};
 
 public:
 	static CLevel_Logo* Create(LPDIRECT3DDEVICE9 pGraphic_Device, LEVEL eLevelID);

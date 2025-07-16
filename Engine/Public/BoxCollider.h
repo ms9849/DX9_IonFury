@@ -31,17 +31,18 @@ public:
 		return *(_float *)&m_vScale[iIdx];
 	}
 
-	void Set_Scale(const _float3& vScale) {
-		memcpy(m_vScale, vScale, sizeof(_float3));
-	}
-
 	const _float3& Get_Min() const {
-		return m_vLocalPos[3];
+		return m_vMin;
+	}
+	const _float3& Get_Max() const {
+		return m_vMax;
 	}
 
-	const _float3& Get_Max() const {
-		return m_vLocalPos[5];
-	}
+	void Set_Matrix(const _float4x4& matWorld);
+	void Set_Scale(const _float3& vScale);
+	void Set_Position(const _float3& vPos);
+	/* vPos 만큼 콜라이더 이동시키는 함수*/
+
 public:
 	virtual HRESULT Initialize_Prototype();
 	virtual HRESULT Initialize(void* pArg);
@@ -73,6 +74,9 @@ private:
 	_float3 m_vPos = {};
 	_float3 m_vScale = {};
 	_float3 m_vAxis[3] = {};
+	_float3 m_vMin = {};
+	_float3 m_vMax = {};
+
 public:
 	static CBoxCollider* Create(LPDIRECT3DDEVICE9 pGraphicDev);
 	virtual CComponent* Clone(void* pArg) override;

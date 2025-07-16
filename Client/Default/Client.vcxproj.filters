@@ -28,9 +28,6 @@
     <Filter Include="02.GameObjects\Terrain">
       <UniqueIdentifier>{54b7a8ab-69a7-4ce7-9671-37f6680f90c5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\Monster">
-      <UniqueIdentifier>{9ecd6a7a-b57c-4bf7-8ec0-6475d3c58ddb}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\Sky">
       <UniqueIdentifier>{a0c4209e-6e1c-405f-86ac-aed8eda70026}</UniqueIdentifier>
     </Filter>
@@ -76,9 +73,6 @@
     <Filter Include="02.GameObjects\Item\ItemHealpack">
       <UniqueIdentifier>{50880e45-07e6-4c6a-8b6d-d54276bffa13}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\Monster\BehaviorTree">
-      <UniqueIdentifier>{31f75f59-c90a-49cb-bc56-c1160a97b071}</UniqueIdentifier>
-    </Filter>
     <Filter Include="98.Default">
       <UniqueIdentifier>{f37c9b44-d000-4dd3-a7dc-d0a7064abf65}</UniqueIdentifier>
     </Filter>
@@ -102,18 +96,6 @@
     </Filter>
     <Filter Include="02.GameObjects\Player">
       <UniqueIdentifier>{704f75c8-f626-4c7b-aff3-fbd9102c05f9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\Monster\Melee">
-      <UniqueIdentifier>{69794553-4677-457c-b4d3-6c02b68febe8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\Monster\Range">
-      <UniqueIdentifier>{7101d18f-77b1-4167-84f4-cca17bf2a3ee}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\Monster\Melee\Attack">
-      <UniqueIdentifier>{73ce83fd-65ee-47b9-9a1b-16e041f00828}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\Monster\Boss">
-      <UniqueIdentifier>{5c706583-e0a5-49b2-9a1a-1fe76cb935af}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\Player\Player_RightHand">
       <UniqueIdentifier>{6b2efc96-1da8-47e3-a7fa-8fdb2ab53f72}</UniqueIdentifier>
@@ -154,9 +136,6 @@
     <Filter Include="03.MapObjects\Box">
       <UniqueIdentifier>{47149285-d4ad-4e5a-ba70-96b8bf247d40}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03.MapObjects\Container">
-      <UniqueIdentifier>{c0027bf5-6103-4201-8387-3ea73dc1ab32}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\Particle">
       <UniqueIdentifier>{5aceb304-8663-4303-b9ce-4b821f11eb75}</UniqueIdentifier>
     </Filter>
@@ -195,6 +174,90 @@
     </Filter>
     <Filter Include="05.FileMgr">
       <UniqueIdentifier>{33fb8857-bc71-4a1b-b379-08ac4004da97}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.MapObjects\TrashBox">
+      <UniqueIdentifier>{8cbeaa4a-2cf4-4202-b75b-37fd845f37da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.MapObjects\ContainerBox">
+      <UniqueIdentifier>{c0027bf5-6103-4201-8387-3ea73dc1ab32}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.MapObjects\MachineGunBulletBox">
+      <UniqueIdentifier>{741e9160-c26d-4186-a087-5fe64d60fa9b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\BossFight">
+      <UniqueIdentifier>{332ec638-154a-4e3f-b0a8-167f4ee1a9f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Item\ItemShootGun">
+      <UniqueIdentifier>{776355bc-d0b6-488e-80a3-edc1df06660b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Item\ItemMachineGun">
+      <UniqueIdentifier>{3bc8d8fd-58c6-4421-bb10-9db4426c49ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Particle\YellowDust">
+      <UniqueIdentifier>{d53c7e74-b51e-46b2-aec0-834dc23aebf1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Effect\Bullet_Wound">
+      <UniqueIdentifier>{08ac39b3-eb1b-4888-9f36-ed6bce1e49c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Effect\Screen_Blur">
+      <UniqueIdentifier>{0ceb665b-8c8f-4ed4-9fbc-aca5b8f5810e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\Jusin">
+      <UniqueIdentifier>{cf9b5d39-5659-4a7a-9d1a-ed9e2f27ecb9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\EventBox">
+      <UniqueIdentifier>{259753ed-deaa-4250-af6f-d1a10a7e4396}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Item\ItemArmorPack">
+      <UniqueIdentifier>{1d31b7ad-6d6d-495b-8f33-e3765d11e943}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Item\ItemPortableHealPack">
+      <UniqueIdentifier>{52e699f3-c2a3-4717-9e33-4b623185d598}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Monster">
+      <UniqueIdentifier>{9ecd6a7a-b57c-4bf7-8ec0-6475d3c58ddb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Monster\BehaviorTree">
+      <UniqueIdentifier>{31f75f59-c90a-49cb-bc56-c1160a97b071}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Monster\Melee">
+      <UniqueIdentifier>{69794553-4677-457c-b4d3-6c02b68febe8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Monster\Melee\Attack">
+      <UniqueIdentifier>{73ce83fd-65ee-47b9-9a1b-16e041f00828}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Monster\Range">
+      <UniqueIdentifier>{7101d18f-77b1-4167-84f4-cca17bf2a3ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Monster\Boss">
+      <UniqueIdentifier>{5c706583-e0a5-49b2-9a1a-1fe76cb935af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.MapObjects\VenMachine">
+      <UniqueIdentifier>{6d06be78-886e-4143-b85e-9252c6f2b778}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04.InteractionObjects\Button">
+      <UniqueIdentifier>{7914e65b-04f5-496a-a037-5d712e216af5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.MapObjects\Door">
+      <UniqueIdentifier>{5d3bb9d5-375a-479f-8cc0-32305ab6cfa0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Item\ItemBurger">
+      <UniqueIdentifier>{19fb8671-8218-447d-8237-e1c3dc965c3c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Item\ItemCoffee">
+      <UniqueIdentifier>{4ee181f1-07d5-4360-b686-a683027cf06d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Effect\ShootGun_Fire">
+      <UniqueIdentifier>{76b102b3-71da-4223-8bd3-75b3d9ea74e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\UI\UIUsableItems">
+      <UniqueIdentifier>{1b37bf2c-27a4-4374-87cf-05e5c5962230}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\UI\UIPressEnter">
+      <UniqueIdentifier>{abf27476-4d29-4bd0-947e-4fcd2dd15d57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\Ending">
+      <UniqueIdentifier>{21b1c74a-0ad2-447b-bf0b-14f05127fcd1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -352,7 +415,7 @@
       <Filter>03.MapObjects\Box</Filter>
     </ClInclude>
     <ClInclude Include="..\public\MapContainerBox.h">
-      <Filter>03.MapObjects\Container</Filter>
+      <Filter>03.MapObjects\ContainerBox</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Spider.h">
       <Filter>02.GameObjects\Monster\Melee</Filter>
@@ -402,8 +465,92 @@
     <ClInclude Include="..\public\Lever.h">
       <Filter>04.InteractionObjects\Lever</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\BossLowerBody.h">
+      <Filter>02.GameObjects\Monster\Boss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\BossUpperBody.h">
+      <Filter>02.GameObjects\Monster\Boss</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\CFile_Manager.h">
       <Filter>05.FileMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MapTrashBox.h">
+      <Filter>03.MapObjects\TrashBox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Spawner.h">
+      <Filter>02.GameObjects\Monster\Boss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\MapMachineGunBulletBox.h">
+      <Filter>03.MapObjects\MachineGunBulletBox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Level_BossFight.h">
+      <Filter>01.Levels\BossFight</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ItemShootGun.h">
+      <Filter>02.GameObjects\Item\ItemShootGun</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ItemMachineGun.h">
+      <Filter>02.GameObjects\Item\ItemMachineGun</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\YellowDust.h">
+      <Filter>02.GameObjects\Particle\YellowDust</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\BossUpperFly.h">
+      <Filter>02.GameObjects\Monster\Boss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Bullet_Wound.h">
+      <Filter>02.GameObjects\Effect\Bullet_Wound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Effect_Screen_Blur.h">
+      <Filter>02.GameObjects\Effect\Screen_Blur</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Level_Jusin.h">
+      <Filter>01.Levels\Jusin</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIBossHpBar.h">
+      <Filter>02.GameObjects\UI\UIHp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIBossHpFill.h">
+      <Filter>02.GameObjects\UI\UIHp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIBossName.h">
+      <Filter>02.GameObjects\UI\UIText</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\EventBox.h">
+      <Filter>02.GameObjects\EventBox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ItemArmorPack.h">
+      <Filter>02.GameObjects\Item\ItemArmorPack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ItemPortableHealPack.h">
+      <Filter>02.GameObjects\Item\ItemPortableHealPack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MapVenMachine.h">
+      <Filter>03.MapObjects\VenMachine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Button.h">
+      <Filter>04.InteractionObjects\Button</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\MapDoor.h">
+      <Filter>03.MapObjects\Door</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ItemBurger.h">
+      <Filter>02.GameObjects\Item\ItemBurger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ItemCoffee.h">
+      <Filter>02.GameObjects\Item\ItemCoffee</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Effect_ShootGun_Fire.h">
+      <Filter>02.GameObjects\Effect\ShootGun_Fire</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\UIUseableItems.h">
+      <Filter>02.GameObjects\UI\UIUsableItems</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\UIPressEnter.h">
+      <Filter>02.GameObjects\UI\UIPressEnter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Level_Ending.h">
+      <Filter>01.Levels\Ending</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -556,7 +703,7 @@
       <Filter>03.MapObjects\Box</Filter>
     </ClCompile>
     <ClCompile Include="..\private\MapContainerBox.cpp">
-      <Filter>03.MapObjects\Container</Filter>
+      <Filter>03.MapObjects\ContainerBox</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Spider.cpp">
       <Filter>02.GameObjects\Monster\Melee</Filter>
@@ -606,8 +753,92 @@
     <ClCompile Include="..\private\Lever.cpp">
       <Filter>04.InteractionObjects\Lever</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\BossLowerBody.cpp">
+      <Filter>02.GameObjects\Monster\Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BossUpperBody.cpp">
+      <Filter>02.GameObjects\Monster\Boss</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\CFile_Manager.cpp">
       <Filter>05.FileMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MapTrashBox.cpp">
+      <Filter>03.MapObjects\TrashBox</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Spawner.cpp">
+      <Filter>02.GameObjects\Monster\Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\MapMachineGunBulletBox.cpp">
+      <Filter>03.MapObjects\MachineGunBulletBox</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Level_BossFight.cpp">
+      <Filter>01.Levels\BossFight</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ItemShootGun.cpp">
+      <Filter>02.GameObjects\Item\ItemShootGun</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ItemMachineGun.cpp">
+      <Filter>02.GameObjects\Item\ItemMachineGun</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\YellowDust.cpp">
+      <Filter>02.GameObjects\Particle\YellowDust</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\BossUpperFly.cpp">
+      <Filter>02.GameObjects\Monster\Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Bullet_Wound.cpp">
+      <Filter>02.GameObjects\Effect\Bullet_Wound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect_Screen_Blur.cpp">
+      <Filter>02.GameObjects\Effect\Screen_Blur</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Level_Jusin.cpp">
+      <Filter>01.Levels\Jusin</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIBossHpBar.cpp">
+      <Filter>02.GameObjects\UI\UIHp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIBossHpFill.cpp">
+      <Filter>02.GameObjects\UI\UIHp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIBossName.cpp">
+      <Filter>02.GameObjects\UI\UIText</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\EventBox.cpp">
+      <Filter>02.GameObjects\EventBox</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ItemArmorPack.cpp">
+      <Filter>02.GameObjects\Item\ItemArmorPack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ItemPortableHealPack.cpp">
+      <Filter>02.GameObjects\Item\ItemPortableHealPack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MapVenMachine.cpp">
+      <Filter>03.MapObjects\VenMachine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Button.cpp">
+      <Filter>04.InteractionObjects\Button</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\MapDoor.cpp">
+      <Filter>03.MapObjects\Door</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ItemBurger.cpp">
+      <Filter>02.GameObjects\Item\ItemBurger</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ItemCoffee.cpp">
+      <Filter>02.GameObjects\Item\ItemCoffee</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect_ShootGun_Fire.cpp">
+      <Filter>02.GameObjects\Effect\ShootGun_Fire</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\UIUseableItems.cpp">
+      <Filter>02.GameObjects\UI\UIUsableItems</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\UIPressEnter.cpp">
+      <Filter>02.GameObjects\UI\UIPressEnter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Level_Ending.cpp">
+      <Filter>01.Levels\Ending</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

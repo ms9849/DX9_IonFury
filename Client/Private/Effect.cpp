@@ -21,10 +21,11 @@ HRESULT CEffect::Initialize_Prototype()
 
 HRESULT CEffect::Initialize(void* pArg)
 {
+	EFFECT_DESC* pDesc = static_cast<EFFECT_DESC*>(pArg);
+	m_eType = pDesc->eType;
+
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
-	
-	EFFECT_DESC* pDesc = static_cast<EFFECT_DESC*>(pArg);
 
 	m_pTransformCom->Set_State(STATE::POSITION, pDesc->vPosition);
 	m_fFrame = pDesc->fFrame;
@@ -85,6 +86,12 @@ void CEffect::Set_Pos(const _float3& vPos)
 	m_pTransformCom->Set_State(STATE::POSITION, vPos);
 }
 
+void CEffect::Set_Look(const _float3& vLook)
+{
+	m_pTransformCom->LookAt(m_pTransformCom->Get_State(STATE::POSITION) - vLook);
+	m_fFrame += 1.f;
+}
+
 HRESULT CEffect::Ready_Components()
 {
 	/* Com_Transform */
@@ -103,7 +110,7 @@ HRESULT CEffect::Ready_Components()
 	switch (m_eType)
 	{
 	case EFFECT_TYPE::BOSS_DIE:
-		if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Effect_Boss_Die"),
+		if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Effect_Boss_Die"),
 			TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 			return E_FAIL;
 
@@ -111,11 +118,11 @@ HRESULT CEffect::Ready_Components()
 		break;
 
 	case EFFECT_TYPE::GRENADE_EXPLOSION:
-		if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Effect_Grenade_Explosion"),
+		if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Effect_Grenade_Explosion"),
 			TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 			return E_FAIL;
 
-		m_pTransformCom->Set_Scale({2.f, 2.f, 2.f});
+		m_pTransformCom->Set_Scale({10.f, 10.f, 10.f});
 		break;
 
 	default:
@@ -196,5 +203,4 @@ void CEffect::Free()
 	Safe_Release(m_pTextureCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pVIBufferCom);
-
 }

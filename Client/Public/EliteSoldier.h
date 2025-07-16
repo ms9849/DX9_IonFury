@@ -45,20 +45,27 @@ public:
 	virtual HRESULT Render() override;
 	virtual HRESULT Ready_Animations() override;
 	virtual void OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta) override;
-	virtual void OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta, CComponent* pCollider);
+	virtual void OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta, CComponent* pCollider, const _float3& vPos);
 	virtual const COLLISION_DESC& Get_CollisionDesc(COLLISION eColType);
 
 	HRESULT Ready_Components() override;
 	HRESULT Begin_RenderState() override;
 	HRESULT End_RenderState() override;
+	HRESULT Begin_RenderTestState();
+	HRESULT End_RenderTestState();
 
 	void Attack(EliteSoldierState eState);
 	void Move(_float fTimeDelta);
 	virtual void Move() override;
+	void MoveAnimationCheck();
 
 private:
 	_bool m_bAnimationLock = false;
+	_bool m_isRandomMove = false;
 	_uint m_uTempNum = 0;
+	_float m_fRandomMoveTime = 0.f;
+	_float m_fSightFailTime = 0.f;
+	_float3* m_vPos = {};
 	EliteSoldierState m_eState = EliteSoldierState::END;
 
 public:

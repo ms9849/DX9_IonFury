@@ -54,7 +54,7 @@ HRESULT CUIText::Initialize(void* pArg)
 	{
 		Desc.fX = (m_tagDesc.fX + (Desc.fSizeX * 0.5f)) + (Desc.fSizeX * i);
 
-		if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(Desc.iLayerLevelIndex, TEXT("Prototype_GameObject_UIFont"),
+		if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UIFont"),
 			Desc.iLayerLevelIndex, Desc.strLayerTag, &Desc)))
 			return E_FAIL;
 
@@ -163,4 +163,6 @@ void CUIText::Free()
 	{
 		Safe_Release(iter);
 	}
+
+	m_vecFont.clear();
 }

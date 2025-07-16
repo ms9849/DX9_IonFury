@@ -48,6 +48,7 @@ public:
 #pragma region LEVEL_MANAGER
 public:
 	HRESULT Change_Level(class CLevel* pNewLevel);
+	_uint	Get_CurrentLevelID();
 #pragma endregion
 
 #pragma region PROTOTYPE_MANAGER
@@ -81,6 +82,7 @@ public:
 #pragma region SOUND_MANAGER
 	void PlaySoundOnce(const _wstring& pSoundKey, CHANNELID eID, float fVolume);
 	void PlayBGM(const _wstring& pSoundKey, float fVolume);
+	void PlaySoundLoop(const _wstring& pSoundKey, CHANNELID eID, float fVolume);
 	void StopSound(CHANNELID eID);
 	void StopAll();
 	void SetChannelVolume(CHANNELID eID, float fVolume);
@@ -92,6 +94,7 @@ public:
 	void	Check_SphereCollision(const _wstring& strLayerTagSrc, const _wstring& strLayerTagDst, _uint iLayerLevel, _float fTimeDelta);
 	void	Check_AABBCollision(const _wstring& strLayerTagSrc, const _wstring& strLayerTagDst, _uint iLayerLevel, _float fTimeDelta);
 	void	Check_RayToAABBCollision(const _wstring& strLayerTagRay, const _wstring& strLayerTagAABB, _uint iLayerLevel, _float fTimeDelta, _float3* vCollisionPos);
+	void	Check_RayToOBBCollision(const _wstring& strLayerTagRay, const _wstring& strLayerTagAABB, _uint iLayerLevel, _float fTimeDelta, _float3* vCollisionPos);
 #pragma endregion
 
 #pragma region PICKING 

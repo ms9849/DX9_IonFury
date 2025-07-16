@@ -82,9 +82,6 @@ void CLandObject::Change_Land(LANDOBJECT_DESC* pLandDesc)
 	Safe_Release(m_pLandTransformLast);
 }
 
-/*
-
-*/
 void CLandObject::SetUp_OnTerrain(CTransform* pTransform, _float fOffset, _bool* bJump)
 {
 	if (dynamic_cast<CVIBuffer_Terrain*>(m_pLandVIBuffer) != nullptr)

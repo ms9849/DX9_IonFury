@@ -18,9 +18,11 @@ HRESULT CItemShootGunBullet::Initialize_Prototype()
 
 HRESULT CItemShootGunBullet::Initialize(void* pArg)
 {
+	m_pObjectDesc = *static_cast<CGameObject::GAMEOBJECT_DESC*>(pArg);
+
 	CLandObject::LANDOBJECT_DESC			Desc{};
-	Desc.pLandTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_BackGround"), TEXT("Com_Transform")));
-	Desc.pLandVIBuffer = static_cast<CVIBuffer*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_BackGround"), TEXT("Com_VIBuffer")));
+	Desc.pLandTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(m_pObjectDesc.iLayerLevel, TEXT("Layer_BackGround"), TEXT("Com_Transform")));
+	Desc.pLandVIBuffer = static_cast<CVIBuffer*>(m_pGameInstance->Get_Component(m_pObjectDesc.iLayerLevel, TEXT("Layer_BackGround"), TEXT("Com_VIBuffer")));
 
 	if (FAILED(__super::Initialize(&Desc)))
 		return E_FAIL;
@@ -28,14 +30,19 @@ HRESULT CItemShootGunBullet::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-	//m_pTransformCom->Set_State(STATE::POSITION, _float3(10.f, 0.f, 7.f));
+	m_pTransformCom->Set_State(STATE::RIGHT, m_pObjectDesc.matWorld.m[0]);
+	m_pTransformCom->Set_State(STATE::UP, m_pObjectDesc.matWorld.m[1]);
+	m_pTransformCom->Set_State(STATE::LOOK, m_pObjectDesc.matWorld.m[2]);
+	m_pTransformCom->Set_State(STATE::POSITION, m_pObjectDesc.matWorld.m[3]);
+	m_pTransformCom->Set_Scale({ 0.5f, 0.5f, 0.5f });
 
-	SetUp_OnTerrain(m_pTransformCom, 0.5f);
+	if(!m_bParabola)
+		SetUp_OnTerrain(m_pTransformCom, 0.2f);
 
 	m_fItemOriginPosY = m_pTransformCom->Get_State(STATE::POSITION).y;
 
 	m_pPlayerTransformCom = dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(
-		ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player"), TEXT("Com_Transform")));
+		m_pObjectDesc.iLayerLevel, TEXT("Layer_Player"), TEXT("Com_Transform")));
 	Safe_AddRef (m_pPlayerTransformCom);
 
 	return S_OK;
@@ -47,7 +54,11 @@ void CItemShootGunBullet::Priority_Update(_float fTimeDelta)
 
 void CItemShootGunBullet::Update(_float fTimeDelta)
 {
-	Item_Animation(fTimeDelta);
+	if (!m_bParabola)
+		Item_Animation(fTimeDelta);
+	else
+		Parabola(2.f, fTimeDelta);
+
 	m_pTransformCom->LookAt(m_pPlayerTransformCom->Get_State(STATE::POSITION));
 }
 
@@ -87,7 +98,7 @@ HRESULT CItemShootGunBullet::Ready_Components()
 		return E_FAIL;
 
 	/* Com_Texture */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Item_Bullets"),
+	if (FAILED(__super::Add_Component(m_pObjectDesc.iLayerLevel, TEXT("Prototype_Component_Texture_Item_Bullets"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
@@ -125,7 +136,7 @@ void CItemShootGunBullet::OnCollision(CGameObject* pDst, COLLISION eColType, _fl
 	if (eColType == COLLISION::SPHERE)
 	{
 		m_isDead = true;
-		m_pGameInstance->PlaySoundOnce(TEXT("Get_Item.ogg"), CHANNELID::SOUND_EFFECT, 0.3f);
+		m_pGameInstance->PlaySoundOnce(TEXT("Get_Item.ogg"), CHANNELID::SOUND_EFFECT, 0.5f);
 	}
 }
 

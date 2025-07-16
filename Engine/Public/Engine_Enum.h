@@ -9,7 +9,7 @@ namespace Engine
 	enum class RENDER { PRIORITY, NONBLEND, BLEND, BLEND_LATE, UI, END};
 	enum class TEXTURE { PLANE, CUBE, END };
 	enum class RAY { LOCAL, WORLD, END };
-	enum class CHANNELID { SOUND_EFFECT, SOUND_BGM, SOUND_END };
+	enum class CHANNELID { SOUND_EFFECT, SOUND_BGM, SOUND_BOOSTER_EFFECT, SOUND_BOOSTER_BGM, SOUND_END };
 	enum class COLLISION { BOX, SPHERE, RAY, END };
 }
 #endif // Engine_Enum_h__

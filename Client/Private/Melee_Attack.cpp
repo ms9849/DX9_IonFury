@@ -19,19 +19,12 @@ HRESULT CMeleeAttack::Initialize_Prototype()
 
 HRESULT CMeleeAttack::Initialize(void* pArg)
 {
+	m_pObjectDesc = *static_cast<CGameObject::GAMEOBJECT_DESC*>(pArg);
+
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-	MELEEATTACK_DESC* pDesc = static_cast<MELEEATTACK_DESC*>(pArg);
-
-	if (pDesc == nullptr)
-		return S_OK;
-
-	m_vDir = pDesc->vDir;
-	m_fDamage = pDesc->fDamage;
-	m_fDurationTime = pDesc->fDurationTime;
-	m_pTransformCom->Set_State(STATE::POSITION, pDesc->vPos);
-	m_pTransformCom->Set_Scale(_float3(0.1f, 0.1f, 0.1f));
+	m_pTransformCom->Set_State(STATE::POSITION, *(_float3*)&m_pObjectDesc.matWorld.m[3][0]);
 
 	return S_OK;
 }
@@ -51,16 +44,12 @@ void CMeleeAttack::Update(_float fTimeDelta)
 
 void CMeleeAttack::Late_Update(_float fTimeDelta)
 {
-	m_pGameInstance->Add_RenderGroup(RENDER::NONBLEND, this);
+
 }
 
 HRESULT CMeleeAttack::Render()
 {
 	m_pTransformCom->Set_Transform();
-
-	m_pTextureCom->Set_Texture(3);
-
-	m_pVIBufferCom->Render();
 
 	return S_OK;
 }
@@ -87,22 +76,12 @@ HRESULT CMeleeAttack::Ready_Components()
 		TEXT("Com_Transform"), reinterpret_cast<CComponent**>(&m_pTransformCom), &TransformDesc)))
 		return E_FAIL;
 
-	/* Com_Texture */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Sky"),
-		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
-		return E_FAIL;
-
-	/* Com_VIBuffer */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_VIBuffer_Cube"),
-		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
-		return E_FAIL;
-
 	/* Com_SphereCollider */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_SphereCollider"),
 		TEXT("Com_SphereCollider"), reinterpret_cast<CComponent**>(&m_pSphereColliderCom))))
 		return E_FAIL;
 
-	return S_OK;
+ 	return S_OK;
 }
 
 CMeleeAttack* CMeleeAttack::Create(LPDIRECT3DDEVICE9 pGraphicDev)
@@ -112,7 +91,7 @@ CMeleeAttack* CMeleeAttack::Create(LPDIRECT3DDEVICE9 pGraphicDev)
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
 		Safe_Release(pInstance);
-		MSG_BOX("CREATE FAILED: Prototype_Bullet");
+		MSG_BOX("CREATE FAILED: CMeleeAttack");
 	}
 
 	return pInstance;
@@ -125,7 +104,7 @@ CGameObject* CMeleeAttack::Clone(void* pArg)
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
 		Safe_Release(pInstance);
-		MSG_BOX("CREATE FAILED: Clone_Bullet");
+		MSG_BOX("CREATE FAILED: CMeleeAttack");
 	}
 
 	return pInstance;
@@ -135,8 +114,6 @@ void CMeleeAttack::Free()
 {
 	__super::Free();
 
-	Safe_Release(m_pTextureCom);
 	Safe_Release(m_pTransformCom);
-	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pSphereColliderCom);
 }

@@ -3,6 +3,7 @@
 #include "Bullet.h"
 #include "BehaviorNode.h"
 #include "Particle_Manager.h"
+#include "Bullet_Manager.h"
 
 CEliteSoldier::CEliteSoldier(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CMonster{ pGraphic_Device }
@@ -23,7 +24,22 @@ HRESULT CEliteSoldier::Initialize_Prototype()
 
 HRESULT CEliteSoldier::Initialize(void* pArg)
 {
-	m_pPlayerTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player"), TEXT("Com_Transform")));
+	m_pObjectDesc = *static_cast<CGameObject::GAMEOBJECT_DESC*>(pArg);
+
+	m_pPlayerTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(m_pObjectDesc.iLayerLevel, TEXT("Layer_Player"), TEXT("Com_Transform")));
+	Safe_AddRef(m_pPlayerTransform);
+
+	m_fAttackRange = 10.f;
+	m_fChaseRange = 15.f;
+	m_fMaxRange = 15.f;
+	m_fAttackCoolTime = 3.f;
+	m_fRandomMoveTime = 3.f;
+	m_fSumRandomMoveTime = 0.f;
+
+	//if (pArg != nullptr)				// 스포너의 위치를 받아온다
+	//{
+	//	m_vPos = static_cast<_float3*>(pArg);
+	//}
 
 	if (m_pPlayerTransform == nullptr)
 		return E_FAIL;
@@ -37,16 +53,29 @@ HRESULT CEliteSoldier::Initialize(void* pArg)
 	if (FAILED(Ready_Animations()))
 		return E_FAIL;
 
-	m_pTransformCom->Set_Scale({ 1.5f, 1.5f, 1.f });
+	// m_pTransformCom 세팅
+	m_pTransformCom->Set_State(STATE::RIGHT, m_pObjectDesc.matWorld.m[0]);
+	m_pTransformCom->Set_State(STATE::UP, m_pObjectDesc.matWorld.m[1]);
+	m_pTransformCom->Set_State(STATE::LOOK, m_pObjectDesc.matWorld.m[2]);
+	m_pTransformCom->Set_State(STATE::POSITION, m_pObjectDesc.matWorld.m[3]);
+	m_pTransformCom->Set_Scale(_float3{ 2.f, 2.f, 1.f });
 
-	m_pTransformCom->Set_State(STATE::POSITION, _float3(
-		m_pGameInstance->Random(0.f, 20.f),
-		0.f,
-		m_pGameInstance->Random(0.f, 20.f)));
+	/*if (m_vPos != nullptr)
+	{
+		m_pTransformCom->Set_State(STATE::POSITION, _float3(
+			m_vPos->x + m_pGameInstance->Random(0.f, 2.f),
+			0.f,
+			m_vPos->z + m_pGameInstance->Random(0.f, 2.f)));
+	}
+	else
+	{
+		m_pTransformCom->Set_State(STATE::POSITION, _float3(
+			m_pGameInstance->Random(0.f, 2.f),
+			0.f,
+			m_pGameInstance->Random(0.f, 2.f)));
+	}*/
 
-	m_fAttackRange = 5.f;
-	m_fChaseRange = 15.f;
-	m_fMaxRange = 10.f;
+	m_strFrameKey = TEXT("EliteSoldier_Front");
 
 	return S_OK;
 }
@@ -69,7 +98,7 @@ void CEliteSoldier::Update(_float fTimeDelta)
 
 	if (m_bDying)
 	{
-		SetUp_OnTerrain(m_pTransformCom, 0.4f, &m_bJump);
+		SetUp_OnTerrain(m_pTransformCom, 1.f, &m_bJump);
 		return;
 	}
 
@@ -78,8 +107,23 @@ void CEliteSoldier::Update(_float fTimeDelta)
 	m_fSumAttackCoolTime += fTimeDelta;
 	m_fSumMoveCoolTime += fTimeDelta;
 
+	if (m_fSightFailTime >= 5.f)
+	{
+		do
+		{
+			_float3 vMin = { -1.f, 0.f, -1.f };
+			_float3 vMax = { 1.f, 0.f, 1.f };
+			m_pGameInstance->GetRandomVector(&m_vNextDir, &vMin, &vMax);
+			m_vNextDir.y = 0.f;
+		} while (D3DXVec3Length(&m_vNextDir) < 0.001f);
+
+		m_isRandomMove = true;
+	}
+
+	MoveAnimationCheck();
+
 	//_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
-	vDiff.y = 0.f;
+	/*vDiff.y = 0.f;
 	D3DXVec3Normalize(&vDiff, &vDiff);
 
 	_float3 vMonsterLook = m_pTransformCom->Get_State(STATE::LOOK);
@@ -124,14 +168,19 @@ void CEliteSoldier::Update(_float fTimeDelta)
 			}
 		}
 		m_isMove = false;
-	}
+	}*/
 
-	if (m_fHp <= 0)
+	if (m_fCurHp <= 0)
 	{
 		if (m_isHead)
 			m_strFrameKey = TEXT("EliteSoldier_Die_HeadShot");
 		else
 			m_strFrameKey = TEXT("EliteSoldier_Die_Default");
+
+		m_pBoxColliderCom->Set_Scale({ 1.3f, 0.22f, 1.3f });
+		m_pBoxColliderCom->Set_Position({ 0.f, -0.65f, 0.f });
+		m_pBoxColliderHead->Set_Scale({ 0.f, 0.f, 0.f });
+
 		m_bAnimationLock = true;
 		m_bDying = true;
 		m_pGameInstance->PlaySoundOnce(TEXT("EliteSoldier_Die.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
@@ -147,7 +196,8 @@ void CEliteSoldier::Update(_float fTimeDelta)
 		if (m_fSumAttackCoolTime >= m_fAttackCoolTime)
 		{
 			_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
-			if (D3DXVec3Length(&vDiff) <= m_fAttackRange)
+			//if (D3DXVec3Length(&vDiff) <= m_fAttackRange)
+			if (fDist <= m_fAttackRange)
 			{
 				m_uTempNum = rand() % static_cast<int>(EliteSoldierState::END);
 				m_eState = static_cast<EliteSoldierState>(m_uTempNum);
@@ -160,6 +210,8 @@ void CEliteSoldier::Update(_float fTimeDelta)
 				//}
 
 				Attack(m_eState);
+				m_fSumRandomMoveTime = 0.f;
+				m_fSightFailTime = 0.f;
 			}
 		}
 
@@ -171,11 +223,34 @@ void CEliteSoldier::Update(_float fTimeDelta)
 				Move(fTimeDelta);
 				m_isMove = true;
 				m_fSumMoveCoolTime = 0.f;
+				m_fSumRandomMoveTime = 0.f;
+				m_fSightFailTime = 0.f;
+			}
+		}
+	}
+	else
+	{
+		m_fSightFailTime += fTimeDelta;
+		if (m_fSumMoveCoolTime >= m_fMoveCoolTime && m_isRandomMove)
+		{
+			m_fSumRandomMoveTime += fTimeDelta;
+			m_fSumMoveCoolTime = 0.f;
+			//MoveAnimationCheck();
+			RandomMove(fTimeDelta, m_vNextDir);
+
+			m_isMove = true;
+			m_fSightFailTime = 0.f;
+
+			if (m_fSumRandomMoveTime >= m_fRandomMoveTime)
+			{
+				m_isRandomMove = false;
+				m_fSightFailTime = 0.f;
+				m_fSumRandomMoveTime = 0.f;
 			}
 		}
 	}
 
-	SetUp_OnTerrain(m_pTransformCom, 0.5f, &m_bJump);
+	SetUp_OnTerrain(m_pTransformCom, 1.f, &m_bJump);
 }
 
 void CEliteSoldier::Late_Update(_float fTimeDelta)
@@ -214,12 +289,12 @@ HRESULT CEliteSoldier::Render()
 	auto iter = m_pTextureComs.find(m_strFrameKey);
 	iter->second->Set_Texture(m_pAnimationCom->Get_Frame_Current_Index(m_strFrameKey));
 
-	if (FAILED(Begin_RenderState()))
+	if (FAILED(Begin_RenderTestState()))
 		return E_FAIL;
 
 	m_pVIBufferCom->Render();
 
-	if (FAILED(End_RenderState()))
+	if (FAILED(End_RenderTestState()))
 		return E_FAIL;
 
 	return S_OK;
@@ -340,11 +415,11 @@ void CEliteSoldier::OnCollision(CGameObject* pDst, COLLISION eColType, _float fT
 		CBullet* pBullet = dynamic_cast<CBullet*>(pDst);
 		if (pBullet != nullptr)
 		{
-			if ((m_fHp -= (pBullet->Get_Damage())) > 0)
+			if ((m_fCurHp -= (pBullet->Get_Damage())) > 0)
 			{
 				m_pGameInstance->PlaySoundOnce(TEXT("EliteSoldier_Hit.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
 			}
-			CParticle_Manager::GetInstance()->Create_Particle(TEXT("Particle_Blood"), ENUM_CLASS(LEVEL::GAMEPLAY),
+			CParticle_Manager::GetInstance()->Create_Particle(TEXT("Particle_Blood"), m_pObjectDesc.iLayerLevel,
 				TEXT("Layer_Particle"), m_pTransformCom->Get_State(STATE::POSITION));
 		}
 	}
@@ -352,22 +427,21 @@ void CEliteSoldier::OnCollision(CGameObject* pDst, COLLISION eColType, _float fT
 	return;
 }
 
-void CEliteSoldier::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta, CComponent* pCollider)
+void CEliteSoldier::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta, CComponent* pCollider, const _float3& vPos)
 {
-	if (m_isDead || m_bDying)
-		return;
-
 	if (eColType == COLLISION::RAY)
 	{
 		CBullet* pBullet = dynamic_cast<CBullet*>(pDst);
 		if (pBullet != nullptr)
 		{
-			if ((m_fHp -= (pBullet->Get_Damage())) > 0)
+			m_pTransformCom->Turn({ 0.f, 1.0f, 0.f }, fTimeDelta);
+			m_pTransformCom->LookAt(m_pPlayerTransform->Get_State(STATE::POSITION));
+			_float3 vTemp = m_pTransformCom->Get_State(STATE::LOOK);
+			D3DXVec3Normalize(&m_vNextDir, &vTemp);
+
+			if ((m_fCurHp -= (pBullet->Get_Damage())) > 0)
 			{
 				m_pGameInstance->PlaySoundOnce(TEXT("Soldier_Pain01.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
-
-				CParticle_Manager::GetInstance()->Create_Particle(TEXT("Particle_Blood"), ENUM_CLASS(LEVEL::GAMEPLAY),
-					TEXT("Layer_Particle"), m_pTransformCom->Get_State(STATE::POSITION));
 			}
 			else
 			{
@@ -376,6 +450,9 @@ void CEliteSoldier::OnCollision(CGameObject* pDst, COLLISION eColType, _float fT
 					m_isHead = true;
 				}
 			}
+
+			CParticle_Manager::GetInstance()->Create_Particle(TEXT("Particle_Blood"), m_pObjectDesc.iLayerLevel,
+				TEXT("Layer_Particle"), vPos);
 		}
 	}
 }
@@ -433,25 +510,26 @@ HRESULT CEliteSoldier::Ready_Components()
 		return E_FAIL;
 
 	/* Com_Sight */
-	CSight::SIGHT_DESC		SightDesc{ 15.f, D3DXToRadian(120.0f), m_pPlayerTransform, m_pTransformCom};
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Sight"),
+	CSight::SIGHT_DESC		SightDesc{ m_fChaseRange, D3DXToRadian(120.0f), m_pPlayerTransform, m_pTransformCom};
+	if (FAILED(__super::Add_Component(m_pObjectDesc.iLayerLevel, TEXT("Prototype_Component_Sight"),
 		TEXT("Com_Sight"), reinterpret_cast<CComponent**>(&m_pSightCom), &SightDesc)))
 		return E_FAIL;
 
 	/* Com_BoxCollider */
 	CBoxCollider::BOXCOLLIDER_DESC Desc;
-	Desc.vPosition = { -0.1f, -0.07f, -0.1f };
-	Desc.fScaleX = 0.4f;
-	Desc.fScaleZ = 0.4f;
-	Desc.fScaleY = 0.8f;
+	Desc.vPosition = { 0.f, -0.15f, 0.f };
+	Desc.fScaleX = 1.f;
+	Desc.fScaleY = 1.6f;
+	Desc.fScaleZ = 0.8f;
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_BoxCollider"),
 		TEXT("Com_BoxCollider"), reinterpret_cast<CComponent**>(&m_pBoxColliderCom), &Desc)))
 		return E_FAIL;
 
-	Desc.vPosition = { -0.3f, 2.35f, -0.3f };
-	Desc.fScaleX = 0.2f;
-	Desc.fScaleZ = 0.2f;
-	Desc.fScaleY = 0.2f;
+	//Desc.vPosition = { -0.3f, 2.35f, -0.3f };
+	Desc.vPosition = { 0.f, 0.8f, 0.f };					// 머리 정면이랑 뒤 기준으론 맞음
+	Desc.fScaleX = 0.5f;
+	Desc.fScaleY = 0.5f;
+	Desc.fScaleZ = 0.5f;										// 0.4
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_BoxCollider"),
 		TEXT("Com_BoxCollider_Head"), reinterpret_cast<CComponent**>(&m_pBoxColliderHead), &Desc)))
 		return E_FAIL;
@@ -504,6 +582,26 @@ HRESULT CEliteSoldier::End_RenderState()
 	return S_OK;
 }
 
+HRESULT CEliteSoldier::Begin_RenderTestState()
+{
+	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+
+	m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+	m_pGraphic_Device->SetRenderState(D3DRS_ALPHAREF, 0);
+	m_pGraphic_Device->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
+
+	return S_OK;
+}
+
+HRESULT CEliteSoldier::End_RenderTestState()
+{
+	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+
+	m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+
+	return S_OK;
+}
+
 void CEliteSoldier::Attack(EliteSoldierState eState)
 {
 	if (eState == EliteSoldierState::ONESHOT)
@@ -518,16 +616,19 @@ void CEliteSoldier::Attack(EliteSoldierState eState)
 		_float3 vPos = m_pTransformCom->Get_State(STATE::POSITION);
 		D3DXVec3Normalize(&vDir, &vDir);
 
+		m_vNextDir = vDir;
+
 		CBullet::BULLET_DESC Desc;
 		Desc.vDir = vDir;
 		Desc.vPos = vPos;
-		Desc.vBulletScale = { 0.2f, 0.2f, 0.01f };
+		Desc.vBulletScale = { 0.005f, 0.005f, 0.2f };
+		//Desc.vBulletScale = { 0.2f, 0.2f, 0.01f };
 		Desc.fBulletSpeed = 8.f;
 		Desc.fDuration = 5.f;
 		Desc.isPlayerBullet = false;
 
-
-		m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Bullet"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Monster_Bullet"), &Desc);
+		CBullet_Manager::GetInstance()->Create_Bullet(TEXT("Bullet"), Desc, m_pObjectDesc.iLayerLevel, TEXT("Layer_Monster_Bullet"));
+		//m_pGameInstance->Add_GameObject_ToLayer(m_pObjectDesc.iLayerLevel, TEXT("Prototype_GameObject_Bullet"), m_pObjectDesc.iLayerLevel, TEXT("Layer_Monster_Bullet"), &Desc);
 	}
 	else if (eState == EliteSoldierState::MASS)
 	{
@@ -541,6 +642,8 @@ void CEliteSoldier::Attack(EliteSoldierState eState)
 		_float3 vPos = m_pTransformCom->Get_State(STATE::POSITION);
 		D3DXVec3Normalize(&vDir, &vDir);
 
+		m_vNextDir = vDir;
+
 		_uint len = sizeof(m_vShootPosOffset) / sizeof(m_vShootPosOffset[0]);
 
 		for (int i = 0; i < len; i++)		// 방향벡터는 유지하되 생성되는 위치를 근처로 해서 쏘게하자
@@ -548,11 +651,13 @@ void CEliteSoldier::Attack(EliteSoldierState eState)
 			CBullet::BULLET_DESC Desc;
 			Desc.vDir = vDir + m_vShootPosOffset[i];
 			Desc.vPos = vPos;
-			Desc.vBulletScale = { 0.2f, 0.2f, 0.01f };
+			Desc.vBulletScale = { 0.005f, 0.005f, 0.2f };
+			//Desc.vBulletScale = { 0.2f, 0.2f, 0.01f };
 			Desc.fBulletSpeed = 5.f;
 			Desc.fDuration = 5.f;
 			Desc.isPlayerBullet = false;
-			m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Bullet"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Monster_Bullet"), &Desc);
+			CBullet_Manager::GetInstance()->Create_Bullet(TEXT("Bullet"), Desc, m_pObjectDesc.iLayerLevel, TEXT("Layer_Monster_Bullet"));
+			//m_pGameInstance->Add_GameObject_ToLayer(m_pObjectDesc.iLayerLevel, TEXT("Prototype_GameObject_Bullet"), m_pObjectDesc.iLayerLevel, TEXT("Layer_Monster_Bullet"), &Desc);
 		}
 	}
 }
@@ -568,6 +673,7 @@ void CEliteSoldier::Move(_float fTimeDelta)
 	D3DXVec3Normalize(&fMonsterLook, &fMonsterLook);
 	D3DXVec3Normalize(&vDirection, &vDirection);
 
+	m_vNextDir = vDirection;
 	/*_float dot = D3DXVec3Dot(&fPlayerLook, &fMonsterLook);
 	float fRadian = acosf(dot);
 	m_pTransformCom->Rotation({ 0.f, 1.f, 0.f }, fRadian);
@@ -589,6 +695,70 @@ void CEliteSoldier::Move(_float fTimeDelta)
 void CEliteSoldier::Move()
 {
 	m_pTransformCom->Get_State(STATE::POSITION);
+}
+
+void CEliteSoldier::MoveAnimationCheck()
+{
+	// 바라보는 방향으로 체크하니까 굳이 나눌필요 없을것 같음
+	/*_float3 vMonsterLook = {};
+	if (isRandom)
+	{
+		vMonsterLook = m_vNextDir;
+	}
+	else
+	{
+		vMonsterLook = m_pTransformCom->Get_State(STATE::LOOK);
+	}*/
+	_float3 vMonsterLook = m_vNextDir;
+	_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
+
+	_float fDist = D3DXVec3Length(&vDiff);
+	vDiff.y = 0.f;
+	D3DXVec3Normalize(&vDiff, &vDiff);
+
+	//_float3 vMonsterLook = m_pTransformCom->Get_State(STATE::LOOK);
+	vMonsterLook.y = 0.f;
+	D3DXVec3Normalize(&vMonsterLook, &vMonsterLook);
+
+	_float dot = D3DXVec3Dot(&vMonsterLook, &vDiff);
+	dot = max(-1.f, min(1.f, dot));
+
+	_float3 vCross;
+	D3DXVec3Cross(&vCross, &vMonsterLook, &vDiff);
+
+	_float fFov = cosf(D3DXToRadian(45.f));
+	_float angle30 = cosf(D3DXToRadian(30.f));
+	_float angle60 = cosf(D3DXToRadian(60.f));
+
+	if (!m_bAnimationLock)
+	{
+		if (dot >= fFov)
+		{
+			m_strFrameKey = TEXT("EliteSoldier_Front");
+		}
+		else if (dot <= -fFov)
+		{
+			m_strFrameKey = TEXT("EliteSoldier_Back");
+		}
+		else
+		{
+			if (vCross.y > 0)
+			{
+				if (dot > 0)
+					m_strFrameKey = TEXT("EliteSoldier_Direction_SW");
+				else
+					m_strFrameKey = TEXT("EliteSoldier_Direction_NW");
+			}
+			else
+			{
+				if (dot > 0)
+					m_strFrameKey = TEXT("EliteSoldier_Direction_SE");
+				else
+					m_strFrameKey = TEXT("EliteSoldier_Direction_NE");
+			}
+		}
+		m_isMove = false;
+	}
 }
 
 CEliteSoldier* CEliteSoldier::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
@@ -620,4 +790,5 @@ CGameObject* CEliteSoldier::Clone(void* pArg)
 void CEliteSoldier::Free()
 {
 	__super::Free();
+	Safe_Release(m_pPlayerTransform);
 }

@@ -2,6 +2,7 @@
 #include "GameInstance.h"
 #include "Bullet.h"
 #include "Particle_Manager.h"
+#include "Bullet_Manager.h"
 
 CSoldier::CSoldier(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CMonster{ pGraphic_Device }
@@ -22,7 +23,23 @@ HRESULT CSoldier::Initialize_Prototype()
 
 HRESULT CSoldier::Initialize(void* pArg)
 {
-	m_pPlayerTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player"), TEXT("Com_Transform")));
+	m_pObjectDesc = *static_cast<CGameObject::GAMEOBJECT_DESC*>(pArg);
+
+	m_pPlayerTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(m_pObjectDesc.iLayerLevel, TEXT("Layer_Player"), TEXT("Com_Transform")));
+	Safe_AddRef(m_pPlayerTransform);
+
+	m_fAttackRange = 10.f;
+	//m_fDamage = 30.f;
+	m_fAttackCoolTime = 3.f;
+	m_fChaseRange = 15.f;
+	m_fMaxRange = 15.f;
+	m_fRandomMoveTime = 3.f;
+	m_fSumRandomMoveTime = 0.f;
+
+	//if (pArg != nullptr)				// 스포너의 위치를 받아온다
+	//{
+	//	m_vPos = static_cast<_float3*>(pArg);
+	//}
 
 	if (m_pPlayerTransform == nullptr)
 		return E_FAIL;
@@ -36,16 +53,29 @@ HRESULT CSoldier::Initialize(void* pArg)
 	if (FAILED(Ready_Animations()))
 		return E_FAIL;
 
-	m_pTransformCom->Set_State(STATE::POSITION, _float3(
-		m_pGameInstance->Random(0.f, 20.f),
-		0.f,
-		m_pGameInstance->Random(0.f, 20.f)));
+	//if (m_vPos != nullptr)
+	//{
+	//	m_pTransformCom->Set_State(STATE::POSITION, _float3(
+	//		m_vPos->x + m_pGameInstance->Random(0.f, 2.f),
+	//		0.f,
+	//		m_vPos->z + m_pGameInstance->Random(0.f, 2.f)));
+	//}
+	//else
+	//{
+	//	m_pTransformCom->Set_State(STATE::POSITION, _float3(
+	//		m_pGameInstance->Random(0.f, 2.f),
+	//		0.f,
+	//		m_pGameInstance->Random(0.f, 2.f)));
+	//}
 
-	m_fAttackRange = 4.f;
-	m_fDamage = 30.f;
-	m_fAttackCoolTime = 5.f;
-	m_fChaseRange = 7.f;
-	m_fMaxRange = 10.f;
+	// m_pTransformCom 세팅
+	m_pTransformCom->Set_State(STATE::RIGHT, m_pObjectDesc.matWorld.m[0]);
+	m_pTransformCom->Set_State(STATE::UP, m_pObjectDesc.matWorld.m[1]);
+	m_pTransformCom->Set_State(STATE::LOOK, m_pObjectDesc.matWorld.m[2]);
+	m_pTransformCom->Set_State(STATE::POSITION, m_pObjectDesc.matWorld.m[3]);
+	m_pTransformCom->Set_Scale(_float3{1.5f, 1.5f, 1.f});
+
+	m_strFrameKey = TEXT("Soldier_Front");
 
 	return S_OK;
 }
@@ -68,7 +98,7 @@ void CSoldier::Update(_float fTimeDelta)
 
 	if (m_bDying)
 	{
-		SetUp_OnTerrain(m_pTransformCom, 0.35f, &m_bJump);
+		SetUp_OnTerrain(m_pTransformCom, 0.75f, &m_bJump);
 		return;
 	}
 
@@ -77,9 +107,29 @@ void CSoldier::Update(_float fTimeDelta)
 
 	m_fSumAttackCoolTime += fTimeDelta;
 	m_fSumMoveCoolTime += fTimeDelta;
+	/*m_fSumRandomMoveTime += fTimeDelta;*/
 
-	//_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
-	vDiff.y = 0.f;
+	if (m_fSightFailTime >= 5.f)
+	{
+		do
+		{
+			_float3 vMin = { -1.f, 0.f, -1.f };
+			_float3 vMax = { 1.f, 0.f, 1.f };
+			m_pGameInstance->GetRandomVector(&m_vNextDir, &vMin, &vMax);
+			m_vNextDir.y = 0.f;
+		} while (D3DXVec3Length(&m_vNextDir) < 0.001f);
+
+		m_isRandomMove = true;
+	}
+
+	/*if (!m_isRandomMove)
+	{
+		MoveAnimationCheck(true);
+	}*/
+	D3DXVec3Normalize(&m_vNextDir, &m_vNextDir);
+	//m_pTransformCom->Set_State(STATE::LOOK, m_vNextDir);				// 공격하거나 했을 때 이슈가 될수도
+	MoveAnimationCheck();
+	/*vDiff.y = 0.f;
 	D3DXVec3Normalize(&vDiff, &vDiff);
 
 	_float3 vMonsterLook = m_pTransformCom->Get_State(STATE::LOOK);
@@ -124,17 +174,25 @@ void CSoldier::Update(_float fTimeDelta)
 			}
 		}
 		m_isMove = false;
-	}
+	}*/
+	//MoveAnimationCheck(false);
 
-	if (m_fHp <= 0)
+	if (m_fCurHp <= 0)
 	{
 		if (m_isHead)
 			m_strFrameKey = TEXT("Soldier_Die_HeadShot");
 		else
 			m_strFrameKey = TEXT("Soldier_Die_Default");
+
+		m_pBoxColliderCom->Set_Scale({ 1.4f, 0.2f, 1.4f });
+		m_pBoxColliderCom->Set_Position({ 0.f, -0.6f, 0.f });
+
+		m_pBoxColliderHead->Set_Scale({ 0.f, 0.f, 0.f });
+
 		m_bAnimationLock = true;
 		m_bDying = true;
 		m_pGameInstance->PlaySoundOnce(TEXT("Soldier_Death01.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
+		Drop_Item();
 	}
 	else if (m_pSightCom->Check_Sight(fTimeDelta) && !m_bAnimationLock)
 	{
@@ -151,7 +209,10 @@ void CSoldier::Update(_float fTimeDelta)
 			{
 				// 공격 사운드 추가
 				m_pGameInstance->PlaySoundOnce(TEXT("Soldier_Fire.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
+				//Move(fTimeDelta);
 				Attack();
+				m_fSumRandomMoveTime = 0.f;
+				m_fSightFailTime = 0.f;
 			}
 		}
 
@@ -160,14 +221,38 @@ void CSoldier::Update(_float fTimeDelta)
 			_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
 			if (D3DXVec3Length(&vDiff) <= m_fChaseRange && D3DXVec3Length(&vDiff) >= m_fAttackRange - 1.f)
 			{
+				//MoveAnimationCheck(false);
 				Move(fTimeDelta);
 				m_isMove = true;
 				m_fSumMoveCoolTime = 0.f;
+				m_fSumRandomMoveTime = 0.f;
+				m_fSightFailTime = 0.f;
+			}
+		}
+	}
+	else
+	{
+		m_fSightFailTime += fTimeDelta;
+		if (m_fSumMoveCoolTime >= m_fMoveCoolTime && m_isRandomMove)
+		{
+			m_fSumRandomMoveTime += fTimeDelta;
+			m_fSumMoveCoolTime = 0.f;
+			//MoveAnimationCheck(true);
+			RandomMove(fTimeDelta, m_vNextDir);
+		
+			m_isMove = true;
+			m_fSightFailTime = 0.f;
+
+			if (m_fSumRandomMoveTime >= m_fRandomMoveTime)
+			{
+				m_isRandomMove = false;
+				m_fSightFailTime = 0.f;
+				m_fSumRandomMoveTime = 0.f;
 			}
 		}
 	}
 
-	SetUp_OnTerrain(m_pTransformCom, 0.5f, &m_bJump);
+	SetUp_OnTerrain(m_pTransformCom, 0.8f, &m_bJump);
 }
 
 void CSoldier::Late_Update(_float fTimeDelta)
@@ -208,12 +293,12 @@ HRESULT CSoldier::Render()
 	auto iter = m_pTextureComs.find(m_strFrameKey);
 	iter->second->Set_Texture(m_pAnimationCom->Get_Frame_Current_Index(m_strFrameKey));
 
-	if (FAILED(Begin_RenderState()))
+	if (FAILED(Begin_RenderTestState()))
 		return E_FAIL;
 
 	m_pVIBufferCom->Render();
 
-	if (FAILED(End_RenderState()))
+	if (FAILED(End_RenderTestState()))
 		return E_FAIL;
 
 	return S_OK;
@@ -341,41 +426,41 @@ void CSoldier::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDe
 	if (m_isDead || m_bDying)
 		return;
 
-	if (eColType == COLLISION::SPHERE)
-	{
-		CBullet* pBullet = dynamic_cast<CBullet*>(pDst);
+	//if (eColType == COLLISION::SPHERE)
+	//{
+	//	CBullet* pBullet = dynamic_cast<CBullet*>(pDst);
 
-		if (pBullet != nullptr)
-		{
-			// 피격 사운드
-			if ((m_fHp -= (pBullet->Get_Damage())) > 0)
-			{
-				m_pGameInstance->PlaySoundOnce(TEXT("Soldier_Pain01.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
-			}
-			CParticle_Manager::GetInstance()->Create_Particle(TEXT("Particle_Blood"), ENUM_CLASS(LEVEL::GAMEPLAY),
-				TEXT("Layer_Particle"), m_pTransformCom->Get_State(STATE::POSITION));
-		}
-	}
+	//	if (pBullet != nullptr)
+	//	{
+	//		// 피격 사운드
+	//		if ((m_fHp -= (pBullet->Get_Damage())) > 0)
+	//		{
+	//			m_pGameInstance->PlaySoundOnce(TEXT("Soldier_Pain01.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
+	//		}
+	//		CParticle_Manager::GetInstance()->Create_Particle(TEXT("Particle_Blood"), m_pObjectDesc.iLayerLevel,
+	//			TEXT("Layer_Particle"), m_pTransformCom->Get_State(STATE::POSITION));
+	//	}
+	//}
 
 	return;
 }
 
-void CSoldier::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta, CComponent* pCollider)
+void CSoldier::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta, CComponent* pCollider, const _float3& vPos)
 {
-	if (m_isDead || m_bDying)
-		return;
-
 	if (eColType == COLLISION::RAY)
 	{
 		CBullet* pBullet = dynamic_cast<CBullet*>(pDst);
 		if (pBullet != nullptr)
 		{
-			if ((m_fHp -= (pBullet->Get_Damage())) > 0)
+			m_pTransformCom->Turn({0.f, 1.0f, 0.f}, fTimeDelta);
+			m_pTransformCom->LookAt(m_pPlayerTransform->Get_State(STATE::POSITION));
+			_float3 vTemp = m_pTransformCom->Get_State(STATE::LOOK);
+			D3DXVec3Normalize(&m_vNextDir, &vTemp);
+			//m_vNextDir = m_pTransformCom->Get_State(STATE::LOOK);
+
+			if ((m_fCurHp -= (pBullet->Get_Damage())) > 0)
 			{
 				m_pGameInstance->PlaySoundOnce(TEXT("Soldier_Pain01.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
-
-				CParticle_Manager::GetInstance()->Create_Particle(TEXT("Particle_Blood"), ENUM_CLASS(LEVEL::GAMEPLAY),
-					TEXT("Layer_Particle"), m_pTransformCom->Get_State(STATE::POSITION));
 			}
 			else
 			{
@@ -384,6 +469,9 @@ void CSoldier::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDe
 					m_isHead = true;
 				}
 			}
+
+			CParticle_Manager::GetInstance()->Create_Particle(TEXT("Particle_Blood"), m_pObjectDesc.iLayerLevel,
+				TEXT("Layer_Particle"), vPos);
 		}
 	}
 }
@@ -441,26 +529,26 @@ HRESULT CSoldier::Ready_Components()
 		return E_FAIL;
 
 	/* Com_Sight */
-	CSight::SIGHT_DESC		SightDesc{ 5.f, D3DXToRadian(90.0f), m_pPlayerTransform, m_pTransformCom };
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Sight"),
+	CSight::SIGHT_DESC		SightDesc{ m_fChaseRange, D3DXToRadian(90.0f), m_pPlayerTransform, m_pTransformCom };
+	if (FAILED(__super::Add_Component(m_pObjectDesc.iLayerLevel, TEXT("Prototype_Component_Sight"),
 		TEXT("Com_Sight"), reinterpret_cast<CComponent**>(&m_pSightCom), &SightDesc)))
 		return E_FAIL;
 
 	/* Com_BoxCollider */
 	CBoxCollider::BOXCOLLIDER_DESC Desc;
 	Desc.vPosition = { 0.f, -0.1f, 0.f };
-	Desc.fScaleX = 0.2f;
-	Desc.fScaleZ = 0.2f;
-	Desc.fScaleY = 0.5f;
+	Desc.fScaleX = 0.6f;
+	Desc.fScaleY = 1.18f;
+	Desc.fScaleZ = 0.65f;
+
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_BoxCollider"),
 		TEXT("Com_BoxCollider"), reinterpret_cast<CComponent**>(&m_pBoxColliderCom), &Desc)))
 		return E_FAIL;
 
-
-	Desc.vPosition = { 0.f, 2.3f, 0.f };
-	Desc.fScaleX = 0.12f;
-	Desc.fScaleZ = 0.12f;
-	Desc.fScaleY = 0.12f;
+	Desc.vPosition = { 0.f, 0.65f, 0.f };
+	Desc.fScaleX = 0.3f;
+	Desc.fScaleY = 0.28f;
+	Desc.fScaleZ = 0.3f;
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_BoxCollider"),
 		TEXT("Com_BoxCollider_Head"), reinterpret_cast<CComponent**>(&m_pBoxColliderHead), &Desc)))
 		return E_FAIL;
@@ -493,9 +581,9 @@ HRESULT CSoldier::Begin_RenderState()
 	//m_pGraphic_Device->SetRenderState(D3DRS_LIGHTING, FALSE);
 
 	/* 알파 테스트 : 픽셀의 알파를 비교해서 그린다 안그린다를 설정. */
-	/*m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+	m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
 	m_pGraphic_Device->SetRenderState(D3DRS_ALPHAREF, 0);
-	m_pGraphic_Device->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);*/
+	m_pGraphic_Device->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
 
 
 
@@ -508,7 +596,27 @@ HRESULT CSoldier::End_RenderState()
 	//m_pGraphic_Device->SetRenderState(D3DRS_LIGHTING, TRUE);
 
 	m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-	//m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+	m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+
+	return S_OK;
+}
+
+HRESULT CSoldier::Begin_RenderTestState()
+{
+	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+
+	m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+	m_pGraphic_Device->SetRenderState(D3DRS_ALPHAREF, 0);
+	m_pGraphic_Device->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
+
+	return S_OK;
+}
+
+HRESULT CSoldier::End_RenderTestState()
+{
+	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+
+	m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
 
 	return S_OK;
 }
@@ -523,16 +631,19 @@ void CSoldier::Attack()
 	_float3 vPos = m_pTransformCom->Get_State(STATE::POSITION);
 	D3DXVec3Normalize(&vDir, &vDir);
 
+	m_vNextDir = vDir;
+
 	CBullet::BULLET_DESC Desc;
 	Desc.vDir = vDir;
 	Desc.vPos = vPos;
-	Desc.vBulletScale = {0.2f, 0.2f, 0.01f};
+	//Desc.vBulletScale = {0.2f, 0.2f, 0.01f};
+	Desc.vBulletScale = { 0.005f, 0.005f, 0.2f };
 	Desc.fBulletSpeed = 5.f;
 	Desc.fDuration = 5.f;
 	Desc.isPlayerBullet = false;
 
-
-	m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Bullet"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Monster_Bullet"), &Desc);
+	CBullet_Manager::GetInstance()->Create_Bullet(TEXT("Bullet"), Desc, m_pObjectDesc.iLayerLevel, TEXT("Layer_Monster_Bullet"));
+	//m_pGameInstance->Add_GameObject_ToLayer(m_pObjectDesc.iLayerLevel, TEXT("Prototype_GameObject_Bullet"), m_pObjectDesc.iLayerLevel, TEXT("Layer_Monster_Bullet"), &Desc);
 }
 
 void CSoldier::Move(_float fTimeDelta)
@@ -545,6 +656,8 @@ void CSoldier::Move(_float fTimeDelta)
 	D3DXVec3Normalize(&fPlayerLook, &fPlayerLook);
 	D3DXVec3Normalize(&fMonsterLook, &fMonsterLook);
 	D3DXVec3Normalize(&vDirection, &vDirection);
+
+	m_vNextDir = vDirection;
 
 	/*_float dot = D3DXVec3Dot(&fPlayerLook, &fMonsterLook);
 	float fRadian = acosf(dot);
@@ -568,6 +681,71 @@ void CSoldier::Move()
 {
 	//m_pTransformCom->R
 	m_pTransformCom->Get_State(STATE::POSITION);
+}
+
+void CSoldier::MoveAnimationCheck()
+{
+	/*_float3 vMonsterLook = {};
+	if (isRandom)
+	{
+		vMonsterLook = m_vNextDir;
+	}
+	else
+	{
+		vMonsterLook = m_pTransformCom->Get_State(STATE::LOOK);
+	}*/
+	//_float3 vMonsterLook = m_pTransformCom->Get_State(STATE::LOOK);
+	_float3 vMonsterLook = m_vNextDir;
+	_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
+
+	_float fDist = D3DXVec3Length(&vDiff);
+
+	vDiff.y = 0.f;
+	D3DXVec3Normalize(&vDiff, &vDiff);
+
+	//_float3 vMonsterLook = m_pTransformCom->Get_State(STATE::LOOK);
+	vMonsterLook.y = 0.f;
+	D3DXVec3Normalize(&vMonsterLook, &vMonsterLook);
+
+	_float dot = D3DXVec3Dot(&vMonsterLook, &vDiff);
+	dot = max(-1.f, min(1.f, dot));
+
+	_float3 vCross;
+	D3DXVec3Cross(&vCross, &vMonsterLook, &vDiff);
+
+	_float fFov = cosf(D3DXToRadian(45.f));
+	_float angle30 = cosf(D3DXToRadian(30.f));
+	_float angle60 = cosf(D3DXToRadian(60.f));
+
+	if (!m_bAnimationLock)
+	{
+		if (dot >= fFov)
+		{
+			m_strFrameKey = TEXT("Soldier_Front");
+		}
+		else if (dot <= -fFov)
+		{
+			m_strFrameKey = TEXT("Soldier_Back");
+		}
+		else
+		{
+			if (vCross.y > 0)
+			{
+				if (dot > 0)
+					m_strFrameKey = TEXT("Soldier_Direction_SW");
+				else
+					m_strFrameKey = TEXT("Soldier_Direction_NW");
+			}
+			else
+			{
+				if (dot > 0)
+					m_strFrameKey = TEXT("Soldier_Direction_SE");
+				else
+					m_strFrameKey = TEXT("Soldier_Direction_NE");
+			}
+		}
+		m_isMove = false;
+	}
 }
 
 CSoldier* CSoldier::Create(LPDIRECT3DDEVICE9 pGraphic_Device)
@@ -600,5 +778,6 @@ void CSoldier::Free()
 {
 	//m_pRoot->ReleaseSubtree();
 	__super::Free();
+	Safe_Release(m_pPlayerTransform);
 	//Safe_Release(m_pBoxColliderHead);
 }

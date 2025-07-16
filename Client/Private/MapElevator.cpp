@@ -44,8 +44,13 @@ void CMapElevator::Elevator_Animation(_float fTimeDelta)
 			m_bEnd = true;
 		}
 
-		if(m_fTimeStack >= 1.f)
+		if(m_pObjectDesc.iLayerLevel == ENUM_CLASS(LEVEL::JUSIN))
 			vPos.y += (fTimeDelta * 5);
+		else
+		{
+			if(m_fTimeStack >= 1.f)
+				vPos.y += (fTimeDelta * 5);
+		}
 	}
 	else
 	{
@@ -72,11 +77,16 @@ HRESULT CMapElevator::Initialize_Prototype()
 
 HRESULT CMapElevator::Initialize(void* pArg)
 {
+	m_pObjectDesc = *static_cast<CGameObject::GAMEOBJECT_DESC*>(pArg);
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
+
+	if (m_pObjectDesc.iLayerLevel == ENUM_CLASS(LEVEL::JUSIN))
+		m_bActive = true;
 
 	return S_OK;
 }
@@ -122,12 +132,12 @@ HRESULT CMapElevator::Ready_Components()
 		return E_FAIL;
 
 	/* Com_Texture */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Map_Elevator"),
+	if (FAILED(__super::Add_Component(m_pObjectDesc.iLayerLevel, TEXT("Prototype_Component_Texture_Map_Elevator"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
 	/* Com_VIBuffer */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_VIBuffer_Cube"),
+	if (FAILED(__super::Add_Component(m_pObjectDesc.iLayerLevel, TEXT("Prototype_Component_VIBuffer_Cube"),
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
 		return E_FAIL;
 

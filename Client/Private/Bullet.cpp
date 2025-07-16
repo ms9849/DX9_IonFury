@@ -1,6 +1,9 @@
 #include "Bullet.h"
 
 #include "GameInstance.h"
+#include "Effect_Manager.h"
+#include "Particle_Manager.h"
+#include "CubeObject.h"
 
 CBullet::CBullet(LPDIRECT3DDEVICE9 pGraphicDev)
 	: CGameObject{ pGraphicDev }
@@ -16,8 +19,8 @@ const RAY_DESC& CBullet::Get_RayDesc()
 {
 	RAY_DESC Desc;
 	Desc.fSpeed = m_fBulletSpeed;
-	Desc.vDir = m_vDir;
-	Desc.vPos = m_pTransformCom->Get_State(STATE::POSITION);
+	memcpy(Desc.vDir, m_vDir, sizeof(_float3));
+	memcpy(Desc.vPos, m_pTransformCom->Get_State(STATE::POSITION), sizeof(_float3));
 
 	return Desc;
 }
@@ -25,7 +28,9 @@ const RAY_DESC& CBullet::Get_RayDesc()
 void CBullet::Set_Desc(const BULLET_DESC& Desc)
 {
 	m_fSumTime = 0.f;
-	m_fBulletSpeed = Desc.fBulletSpeed;
+	if(Desc.fBulletSpeed != 0)
+		m_fBulletSpeed = Desc.fBulletSpeed;
+
 	m_vDir = Desc.vDir;
 	m_fDuration = Desc.fDuration;
 	m_pTransformCom->Set_State(STATE::POSITION, Desc.vPos);
@@ -87,9 +92,9 @@ HRESULT CBullet::Render()
 	m_pTransformCom->Set_Transform();
 
 	if(m_bPlayerBullet)
-		m_pTextureCom->Set_Texture(0);
+		m_pTextureCom->Set_Texture(1);
 	else
-		m_pTextureCom->Set_Texture(0);
+		m_pTextureCom->Set_Texture(2);
 
 	m_pVIBufferCom->Render();
 
@@ -103,9 +108,16 @@ void CBullet::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDel
 	m_isDead = true;
 }
 
-void CBullet::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta, CComponent* pCollider)
+void CBullet::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta, CComponent* pCollider, const _float3& vPos, const _float3& vPlaneNormal)
 {
 	m_isDead = true;
+
+	if (dynamic_cast<CCubeObject*>(pDst) != nullptr)
+	{
+		CEffect_Manager::GetInstance()->Create_Effect(TEXT("Effect_Bullet_Wound"), m_pGameInstance->Get_CurrentLevelID(), TEXT("Layer_Effect"), vPos + vPlaneNormal / 10000.f, vPlaneNormal);
+		CParticle_Manager::GetInstance()->Create_Particle(TEXT("Particle_YellowDust"), m_pGameInstance->Get_CurrentLevelID(),
+			TEXT("Layer_Particle"), m_pTransformCom->Get_State(STATE::POSITION));
+	}
 }
 
 const COLLISION_DESC& CBullet::Get_CollisionDesc(COLLISION eColType)
@@ -131,7 +143,7 @@ HRESULT CBullet::Ready_Components()
 		return E_FAIL;
 
 	/* Com_VIBuffer */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_VIBuffer_Cube"),
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_Cube"),
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
 		return E_FAIL;
 

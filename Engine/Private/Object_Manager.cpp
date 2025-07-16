@@ -105,7 +105,7 @@ void CObject_Manager::Priority_Update(_float fTimeDelta)
 	for (size_t i = 0; i < m_iNumLevels; i++)
 	{
 		for (auto& Pair : m_pLayers[i])
-			Pair.second->Priority_Update(fTimeDelta);
+ 			Pair.second->Priority_Update(fTimeDelta);
 	}
 }
 
@@ -169,7 +169,15 @@ map<const _wstring, class CLayer*> CObject_Manager::Get_Layers_InLevel(_uint iLa
 
 list<class CGameObject*> CObject_Manager::Get_GameObjects_inLayer(_uint iLayerLevelIndex, const _wstring& strLayerTag)
 {
-	return Find_Layer(iLayerLevelIndex, strLayerTag)->Get_GameObjects();
+	list<class CGameObject*> tmp = {};
+
+	CLayer* pLayer = Find_Layer(iLayerLevelIndex, strLayerTag);
+
+	if (pLayer != nullptr)
+		return pLayer->Get_GameObjects();
+
+	else
+		return tmp;
 }
 
 CObject_Manager* CObject_Manager::Create(_uint iNumLevels)

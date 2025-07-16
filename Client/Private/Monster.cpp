@@ -2,6 +2,10 @@
 
 #include "Bullet.h"
 #include "BehaviorNode.h"
+#include "ItemArmorPack.h"
+#include "ItemPistolBullet.h"
+#include "ItemShootGunBullet.h"
+#include "ItemHealpack.h"
 
 CMonster::CMonster(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CLandObject{ pGraphic_Device }
@@ -27,9 +31,10 @@ HRESULT CMonster::Initialize(void* pArg)
 
 HRESULT CMonster::Initialize()
 {
+	m_bRideCube = true;
 	CLandObject::LANDOBJECT_DESC			Desc{};
-	Desc.pLandTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_BackGround"), TEXT("Com_Transform")));
-	Desc.pLandVIBuffer = static_cast<CVIBuffer*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_BackGround"), TEXT("Com_VIBuffer")));
+	Desc.pLandTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(m_pObjectDesc.iLayerLevel, TEXT("Layer_BackGround"), TEXT("Com_Transform")));
+	Desc.pLandVIBuffer = static_cast<CVIBuffer*>(m_pGameInstance->Get_Component(m_pObjectDesc.iLayerLevel, TEXT("Layer_BackGround"), TEXT("Com_VIBuffer")));
 
 	if (FAILED(__super::Initialize(&Desc)))
 		return E_FAIL;
@@ -56,6 +61,51 @@ HRESULT CMonster::Render()
 {
 
 	return S_OK;
+}
+
+void CMonster::RecoveryHp()
+{
+	m_fCurHp = m_fMaxHp;
+}
+
+_float CMonster::Get_Hp()
+{
+	return m_fCurHp;
+}
+
+void CMonster::Drop_Item()
+{
+	_int iRandomNum = static_cast<_int>(m_pGameInstance->Random(0.f, 6.0f));
+	CItem* pItem;
+
+	switch (iRandomNum)
+	{
+	case 0:
+		pItem = static_cast<CItem*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, m_pObjectDesc.iLayerLevel,
+			TEXT("Prototype_GameObject_Item_Healpack"), &m_pObjectDesc));
+		break;
+	case 1:
+		pItem = static_cast<CItem*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, m_pObjectDesc.iLayerLevel,
+			TEXT("Prototype_GameObject_Item_Pistol_Bullet"), &m_pObjectDesc));
+		break;
+	case 2:
+		pItem = static_cast<CItem*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, m_pObjectDesc.iLayerLevel,
+			TEXT("Prototype_GameObject_Item_ShootGun_Bullet"), &m_pObjectDesc));
+		break;
+	case 3:
+		pItem = static_cast<CItem*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, m_pObjectDesc.iLayerLevel,
+			TEXT("Prototype_GameObject_Item_ArmorPack"), &m_pObjectDesc));
+		break;
+	default:
+		pItem = nullptr;
+		break;
+	}
+
+	if (pItem != nullptr)
+	{
+		pItem->Set_Pos(m_pTransformCom->Get_State(STATE::POSITION));
+		m_pGameInstance->Add_Clone_ToLayer(pItem, m_pObjectDesc.iLayerLevel, TEXT("Layer_Items"));
+	}
 }
 
 
@@ -89,7 +139,7 @@ void CMonster::Move()
 }
 
 void CMonster::RotateToPlayer(CTransform* pTranform)
-{
+{ 
 	_float4x4 matWorldTemp = m_pGameInstance->Get_CameraWorld();
 
 	_float3 vLook;
@@ -119,6 +169,45 @@ void CMonster::RotateToPlayer(CTransform* pTranform)
 	memcpy(&matWorld.m[3][0], &vPos, sizeof(_float3));
 
 	pTranform->Set_Transform(matWorld);
+
+
+
+	//_float4x4		ViewMatrix = m_pGameInstance->Get_CameraWorldInv();
+
+	//pTranform->Set_State(STATE::RIGHT, *reinterpret_cast<_float3*>(&ViewMatrix.m[0]));
+	///*m_pTransformCom->Set_State(STATE::UP, *reinterpret_cast<_float3*>(&ViewMatrix.m[1]));*/
+	//pTranform->Set_State(STATE::LOOK, *reinterpret_cast<_float3*>(&ViewMatrix.m[2]));
+
+}
+
+void CMonster::RandomMove(_float fTimeDelta, _float3 nextDir)
+{
+	_float3 vNextDir = {};
+	/*do 
+	{
+		_float3 vMin = { 0.f, 0.f, 0.f };
+		_float3 vMax = { 1.f, 1.f, 1.f };
+		m_pGameInstance->GetRandomVector(&vNextDir, &vMin, &vMax);
+		vNextDir.y = 0.f;
+	} while (D3DXVec3Length(&vNextDir) < 0.001f);*/
+
+	vNextDir = nextDir;
+	D3DXVec3Normalize(&vNextDir, &vNextDir);
+
+	_float3 fMonsterLook = m_pTransformCom->Get_State(STATE::LOOK);
+	D3DXVec3Normalize(&fMonsterLook, &fMonsterLook);
+
+	float dot = D3DXVec3Dot(&fMonsterLook, &vNextDir);;
+	float fRadian = acosf(dot);
+
+	_float3 vCross = {};
+	D3DXVec3Cross(&vCross, &fMonsterLook, &vNextDir);
+	if (vCross.y < 0)
+		fRadian = -fRadian;
+
+	m_pTransformCom->Rotation({ 0.f, 1.f, 0.f }, fRadian);
+	m_pTransformCom->Go_Direction(vNextDir, fTimeDelta);
+	m_pTransformCom->LookAt(vNextDir * 10.f);
 }
 
 void CMonster::Free()

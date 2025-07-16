@@ -106,6 +106,9 @@ void CCollision_Manager::Check_SphereCollision(const _wstring& strLayerTagSrc, c
     }
 }
 
+/*
+현재 프레임, 그리고 다음 프레임에 레이가 안에 있다면
+*/
 void CCollision_Manager::Check_RayCollision(const _float3& vPos, const _float3& vLook, const _wstring& strLayerTagDst, _uint iLayerLevel, _float3* vColisionPos)
 {
     CLayer* pDstLayer = m_pGameInstance->Find_Layer(iLayerLevel, strLayerTagDst);
@@ -128,7 +131,7 @@ void CCollision_Manager::Check_RayCollision(const _float3& vPos, const _float3& 
     }
 }
 
-void CCollision_Manager::Check_RayToAABBCollision(const _wstring& strLayerTagRay, const _wstring& strLayerTagAABB, _uint iLayerLevel, _float fTimeDelta, _float3* vColisionPos)
+void CCollision_Manager::Check_RayToAABBCollision(const _wstring& strLayerTagRay, const _wstring& strLayerTagAABB, _uint iLayerLevel, _float fTimeDelta, _float3* vCollisionPos)
 {
     CLayer* pRayLayer = m_pGameInstance->Find_Layer(iLayerLevel, strLayerTagRay);
     CLayer* pAABBLayer = m_pGameInstance->Find_Layer(iLayerLevel, strLayerTagAABB);
@@ -142,17 +145,49 @@ void CCollision_Manager::Check_RayToAABBCollision(const _wstring& strLayerTagRay
     if (GameObjectRay.empty() || GameObjectAABB.empty())
         return;
 
+    _float3 vPos = {};
+    _float3 vPlaneNormal = {};
+    CComponent* pCollider = {};
+
     for (auto& pSrc : GameObjectRay)
     {
         for (auto& pDst : GameObjectAABB)
         {
-            _float3 vPos = {};
-            CComponent* pCollider = {};
-
-            if (RayToAABB_Collision(pSrc, pDst, &vPos, &pCollider))
+            if (RayToAABB_Collision(pSrc, pDst, &vPos, &pCollider, fTimeDelta, &vPlaneNormal))
             {
-                pSrc->OnCollision(pDst, COLLISION::RAY, fTimeDelta, pCollider);
-                pDst->OnCollision(pSrc, COLLISION::RAY, fTimeDelta, pCollider);
+                pSrc->OnCollision(pDst, COLLISION::RAY, fTimeDelta, pCollider, vPos, vPlaneNormal);
+                pDst->OnCollision(pSrc, COLLISION::RAY, fTimeDelta, pCollider, vPos);
+            }
+        }
+    }
+}
+
+void CCollision_Manager::Check_RayToOBBCollision(const _wstring& strLayerTagRay, const _wstring& strLayerTagAABB, _uint iLayerLevel, _float fTimeDelta, _float3* vCollisionPos)
+{
+    CLayer* pRayLayer = m_pGameInstance->Find_Layer(iLayerLevel, strLayerTagRay);
+    CLayer* pOBBLayer = m_pGameInstance->Find_Layer(iLayerLevel, strLayerTagAABB);
+
+    if (pRayLayer == nullptr || pOBBLayer == nullptr)
+        return;
+
+    list<CGameObject*> GameObjectRay = pRayLayer->Get_GameObjects();
+    list<CGameObject*> GameObjectOBB = pOBBLayer->Get_GameObjects();
+
+    if (GameObjectRay.empty() || GameObjectOBB.empty())
+        return;
+
+    _float3 vPos = {};
+    _float3 vPlaneNormal = {};
+    CComponent* pCollider = {};
+
+    for (auto& pSrc : GameObjectRay)
+    {
+        for (auto& pDst : GameObjectOBB)
+        {
+            if (RayToOBB_Collision(pSrc, pDst, &vPos, &pCollider, fTimeDelta, &vPlaneNormal))
+            {
+                pSrc->OnCollision(pDst, COLLISION::RAY, fTimeDelta, pCollider, vPos, vPlaneNormal);
+                pDst->OnCollision(pSrc, COLLISION::RAY, fTimeDelta, pCollider, vPos);
             }
         }
     }
@@ -306,6 +341,8 @@ _bool CCollision_Manager::AABB_Collision(CGameObject* pSrc, CGameObject* pDst, _
     /*
     AABB 충돌 구현.
     */
+    if (pSrc == pDst) return false;
+
     COLLISION_DESC DescSrc = pSrc->Get_CollisionDesc(COLLISION::BOX);
     COLLISION_DESC DescDst = pDst->Get_CollisionDesc(COLLISION::BOX);
 
@@ -386,14 +423,21 @@ Ray의 Pos와 AABB간의 거리를 계산하는 방법도 필요할 것이다.
 
 총알과 벽 충돌은 어떻게 할지 고민좀 해봐야 함..
 */
-_bool CCollision_Manager::RayToAABB_Collision(CGameObject* pRay, CGameObject* pAABB, _float3* vPos, CComponent** pCollider)
+_bool CCollision_Manager::RayToAABB_Collision(CGameObject* pRay, CGameObject* pAABB, _float3* vPos, CComponent** pCollider, _float fTimeDelta, _float3* vPlaneNormal)
 {
     /*
     레이 정보 가져오기
+
+    현 프레임과 다음 프레임의 레이 정보를 비교하여 둘 중 하나만 들어가 있어도 충돌로 체크해주면,
+    어느정도 고속으로 발사하더라도 괜찮을 것이다.
     */
+
+    //상수값을 주는게 진짜 안전한지 고민좀 해봐야 함 
     RAY_DESC RayDesc = pRay->Get_RayDesc();
-    _float3 vRayPos = RayDesc.vPos;
-    _float3 vRayDir = RayDesc.vDir; 
+    _float3 vRayDir = RayDesc.vDir;
+    _float3 vRayPos = RayDesc.vPos; 
+    _float3 vRayPosAfter = vRayPos + vRayDir * RayDesc.fSpeed * fTimeDelta;
+
     // 정규화된 상태니까, 스피드까지 곱해줘서 처리해버리자
     // -> 스피드 곱해버리니까 너무 빠름, 그냥 짧게 쏘자.
 
@@ -401,80 +445,223 @@ _bool CCollision_Manager::RayToAABB_Collision(CGameObject* pRay, CGameObject* pA
     AABB 충돌체 정보 가져오기.
     */
     COLLISION_DESC CollisionDesc = pAABB->Get_CollisionDesc(COLLISION::BOX);
+    CTransform* pColliderTransform;
+    CBoxCollider* pColliderBox;
+    _float3 vPosDst;
+    _float3 vColliderMin, vColliderMax;
+    _float t1, t2, t3, t4, t5, t6;
+    _float fMin, fMax;
+    _float fDistance;
 
     /* 두번째 콜라이더가 nullptr이 아니라면 두번째 콜라이더에 대해서도 검사한다.*/
     if (CollisionDesc.pColliderSecond != nullptr)
     {
-        CTransform* pColliderTransform = CollisionDesc.pTransform;
-        CBoxCollider* pColliderBox = static_cast<CBoxCollider*>(CollisionDesc.pColliderSecond);
-        _float3 vPosDst = pColliderTransform->Get_State(STATE::POSITION);
+        pColliderTransform = CollisionDesc.pTransform;
+        pColliderBox = static_cast<CBoxCollider*>(CollisionDesc.pColliderSecond);
+        vPosDst = pColliderTransform->Get_State(STATE::POSITION);
 
-        _float3 vColliderMin = pColliderBox->Get_Min();
-        _float3 vColliderMax = pColliderBox->Get_Max();
+        vColliderMin = pColliderBox->Get_Min();
+        vColliderMax = pColliderBox->Get_Max();
 
         vColliderMin += vPosDst;
         vColliderMax += vPosDst;
 
-        _float t1 = (vColliderMin.x - vRayPos.x) / vRayDir.x;
-        _float t2 = (vColliderMax.x - vRayPos.x) / vRayDir.x;
+        t1 = (vColliderMin.x - vRayPos.x) / vRayDir.x;
+        t2 = (vColliderMax.x - vRayPos.x) / vRayDir.x;
 
-        _float t3 = (vColliderMin.y - vRayPos.y) / vRayDir.y;
-        _float t4 = (vColliderMax.y - vRayPos.y) / vRayDir.y;
+        t3 = (vColliderMin.y - vRayPos.y) / vRayDir.y;
+        t4 = (vColliderMax.y - vRayPos.y) / vRayDir.y;
 
-        _float t5 = (vColliderMin.z - vRayPos.z) / vRayDir.z;
-        _float t6 = (vColliderMax.z - vRayPos.z) / vRayDir.z;
+        t5 = (vColliderMin.z - vRayPos.z) / vRayDir.z;
+        t6 = (vColliderMax.z - vRayPos.z) / vRayDir.z;
 
         /* 가장 큰 min 값을 구해낸다. */
-        _float fMin = fmaxf(fmaxf(fmin(t1, t2), fmin(t3, t4)), fminf(t5, t6));
+        fMin = fmaxf(fmaxf(fminf(t1, t2), fminf(t3, t4)), fminf(t5, t6));
 
         /* 가장 작은 max 값을 구해낸다. */
-        _float fMax = fminf(fminf(fmax(t1, t2), fmax(t3, t4)), fmaxf(t5, t6));
+        fMax = fminf(fminf(fmaxf(t1, t2), fmaxf(t3, t4)), fmaxf(t5, t6));
 
         /* 머리 우선 판정 해줘서 조금 널널하게 .*/
-        _float fDistance = fMin < 0.f ? fMax : fMin;
-        if (!(fMax < 0.f || fMin > fMax) && fDistance <= 3.f)
+        fDistance = fMin < 0.f ? fMax : fMin;
+
+        //if (fMax < 0.f || fMin > fMax)
+        //    return false;
+        if (!(fMax < 0.f || fMin > fMax) && fDistance < 0.5f)
+        {
+            *pCollider = CollisionDesc.pColliderSecond;
+            *vPos = vRayPos + vRayDir * fDistance; // 충돌 위치
             return true;
+        }
     }
 
     /* 첫 콜라이더에 대한 검사 수행 */
-    CTransform* pColliderTransform = CollisionDesc.pTransform;
-    CBoxCollider* pColliderBox = static_cast<CBoxCollider*>(CollisionDesc.pCollider);
-    _float3 vPosDst = pColliderTransform->Get_State(STATE::POSITION);
+    pColliderTransform = CollisionDesc.pTransform;
+    pColliderBox = static_cast<CBoxCollider*>(CollisionDesc.pCollider);
+    vPosDst = pColliderTransform->Get_State(STATE::POSITION);
 
-    _float3 vColliderMin = pColliderBox->Get_Min();
-    _float3 vColliderMax = pColliderBox->Get_Max();
+    vColliderMin = pColliderBox->Get_Min();
+    vColliderMax = pColliderBox->Get_Max();
 
     vColliderMin += vPosDst;
     vColliderMax += vPosDst;
-    
+
     // 콜라이더의 Min Max는 구할 수 있었는데..
     // 레이 정보를 어떻게 가져오지?
 
-    _float t1 = (vColliderMin.x - vRayPos.x) / vRayDir.x;
-    _float t2 = (vColliderMax.x - vRayPos.x) / vRayDir.x;
+    t1 = (vColliderMin.x - vRayPos.x) / vRayDir.x;
+    t2 = (vColliderMax.x - vRayPos.x) / vRayDir.x;
 
-    _float t3 = (vColliderMin.y - vRayPos.y) / vRayDir.y;
-    _float t4 = (vColliderMax.y - vRayPos.y) / vRayDir.y;
+    t3 = (vColliderMin.y - vRayPos.y) / vRayDir.y;
+    t4 = (vColliderMax.y - vRayPos.y) / vRayDir.y;
 
-    _float t5 = (vColliderMin.z - vRayPos.z) / vRayDir.z;
-    _float t6 = (vColliderMax.z - vRayPos.z) / vRayDir.z;
+    t5 = (vColliderMin.z - vRayPos.z) / vRayDir.z;
+    t6 = (vColliderMax.z - vRayPos.z) / vRayDir.z;
 
     /* 가장 큰 min 값을 구해낸다. */
-    _float fMin = fmaxf(fmaxf(fmin(t1, t2), fmin(t3,t4)), fminf(t5, t6));
+    fMin = fmaxf(fmaxf(fminf(t1, t2), fminf(t3,t4)), fminf(t5, t6));
 
     /* 가장 큰 max 값을 구해낸다. */
-    _float fMax = fminf(fminf(fmax(t1, t2), fmax(t3, t4)), fmaxf(t5, t6));
+    fMax = fminf(fminf(fmaxf(t1, t2), fmaxf(t3, t4)), fmaxf(t5, t6));
 
+    fDistance = fMin < 0.f ? fMax : fMin;
 
-    if (fMax < 0.f || fMin > fMax)
-        return false;
+    if (!(fMax < 0.f || fMin > fMax) && fDistance < 0.5f)
+    {
+        _float3 vFirst, vSecond;
+        *pCollider = CollisionDesc.pCollider;
+        *vPos = vRayPos + vRayDir * fDistance; // 충돌 위치
 
-    _float fDistance = fMin < 0.f ? fMax : fMin;
-    
-    if(fDistance <= 3.f)
+        _float3 vAABBPoints[8] = {
+            { vColliderMin.x, vColliderMax.y, vColliderMin.z },
+            { vColliderMax.x, vColliderMax.y, vColliderMin.z },
+            { vColliderMax.x, vColliderMin.y, vColliderMin.z },
+            { vColliderMin.x, vColliderMin.y, vColliderMin.z },
+            { vColliderMin.x, vColliderMax.y, vColliderMax.z },
+            { vColliderMax.x, vColliderMax.y, vColliderMax.z },
+            { vColliderMax.x, vColliderMin.y, vColliderMax.z },
+            { vColliderMin.x, vColliderMin.y, vColliderMax.z }
+        };
+
+        /* 면 1번 0,1,2  */
+        if (vPos->z == vColliderMin.z)
+        {
+            vFirst = vAABBPoints[1] - vAABBPoints[0];
+            vSecond = vAABBPoints[2] - vAABBPoints[1];
+        }
+
+        /* 면 2번 1,5,6 */
+        else if (vPos->x == vColliderMax.x)
+        {
+            vFirst = vAABBPoints[5] - vAABBPoints[1];
+            vSecond = vAABBPoints[6] - vAABBPoints[5];
+        }
+
+        /* 면 3번 2,6,7 */
+        else if (vPos->y == vColliderMin.y)
+        {
+            vFirst = vAABBPoints[6] - vAABBPoints[2];
+            vSecond = vAABBPoints[7] - vAABBPoints[6];
+        }
+
+        /* 면 4번 7,4,0, */
+        else if (vPos->x == vColliderMin.x)
+        {
+            vFirst = vAABBPoints[4] - vAABBPoints[7];
+            vSecond = vAABBPoints[0] - vAABBPoints[4];
+        }
+
+        /* 면 5번 6,5,4 */
+        else if (vPos->z == vColliderMax.z)
+        {
+            vFirst = vAABBPoints[5] - vAABBPoints[6];
+            vSecond = vAABBPoints[4] - vAABBPoints[5];
+        }
+
+        /* 면 6번 4,5,1 */
+        else if (vPos->y == vColliderMax.y)
+        {
+            vFirst = vAABBPoints[1] - vAABBPoints[5];
+            vSecond = vAABBPoints[5] - vAABBPoints[4];
+        }
+
+        //평면의 법선을 구해냈다. 
+        // 자신의 위치 + 법선 쪽을 바라보도록 총흔을 생성하면 될 것이다.
+        D3DXVec3Cross(vPlaneNormal, &vFirst, &vSecond);
         return true;
+    }
 
     return false;
+}
+
+_bool CCollision_Manager::RayToOBB_Collision(CGameObject* pRay, CGameObject* pOBB, _float3* vPos, CComponent** pCollider, _float fTimeDelta, _float3* vPlaneNormal)
+{
+    /*
+    면 6개를 통과하는지 체크해야 할 것.
+    */
+
+    RAY_DESC RayDesc = pRay->Get_RayDesc();
+    _float3 vRayDir = RayDesc.vDir;
+    _float3 vRayPos = RayDesc.vPos;
+    // 정규화된 상태니까, 스피드까지 곱해줘서 처리해버리자
+    // -> 스피드 곱해버리니까 너무 빠름, 그냥 짧게 쏘자.
+
+    /*
+    OBB 충돌체 정보 가져오기.
+    */
+    COLLISION_DESC CollisionDesc = pOBB->Get_CollisionDesc(COLLISION::BOX);
+    CTransform* pColliderTransform = CollisionDesc.pTransform;
+    CBoxCollider* pColliderBox = static_cast<CBoxCollider*>(CollisionDesc.pCollider);
+    _float3 vPosDst = pColliderTransform->Get_State(STATE::POSITION);
+    _float3 vOBBPoints[8];
+    _float3 vDst;
+
+    _int iIdx[36] = {
+        0,1,2, 0,2,3,
+        1,5,6, 1,6,2,
+        2,6,7, 2,7,3,
+        7,4,0, 7,0,3,
+        6,5,4, 6,4,7,
+        4,5,1, 4,1,0
+    };
+
+    for(_int i=0; i < 8; ++i)
+    {
+        D3DXVec3TransformCoord(&vDst, &pColliderBox->Get_LocalPos(i), pColliderTransform->Get_WorldMatrixPtr());
+        vOBBPoints[i] = vDst;
+    }
+    // 삼각형 12개를 체크해야 한다
+    /* 면 1번 0,1,2 // 0,2,3 */
+    /* 면 2번 1,5,6 // 1,6,2 */
+    /* 면 3번 2,6,7 // 2,7,3 */
+    /* 면 4번 7,4,0 // 7,0,3 */
+    /* 면 5번 6,5,4 // 6,4,7 */
+    /* 면 6번 4,5,1 // 4,1,0  */
+
+
+    _float fDist;
+    _float3 vFirst, vSecond = {};
+
+    for (_int i = 0; i < 12; ++i)
+    {
+        if (D3DXIntersectTri(&vOBBPoints[iIdx[i*3]], &vOBBPoints[iIdx[i*3+1]], &vOBBPoints[iIdx[i*3+2]], &vRayPos, &vRayDir, nullptr, nullptr, &fDist) && fDist < 0.5f)
+        {
+            *vPos = vRayPos + vRayDir * fDist;
+            vFirst = vOBBPoints[iIdx[i * 3]] - vOBBPoints[iIdx[i * 3 + 1]];
+            vSecond = vOBBPoints[iIdx[i * 3 + 1]] - vOBBPoints[iIdx[i * 3 + 2]];
+            D3DXVec3Cross(vPlaneNormal, &vFirst, &vSecond);
+            return true;
+        }
+    }
+
+
+    return false;
+}
+
+_bool CCollision_Manager::Check_inAABB(const _float3& vPos, const _float3& vMin, const _float3 vMax)
+{
+    return   (vPos.x >= vMin.x && vPos.x <= vMax.x) &&
+             (vPos.y >= vMin.y && vPos.y <= vMax.y) &&
+             (vPos.z >= vMin.z && vPos.z <= vMax.z);
 }
 
 CCollision_Manager* CCollision_Manager::Create()
@@ -493,12 +680,6 @@ void CCollision_Manager::Free()
 
 	Safe_Release(m_pGameInstance);
 }
-
-
-
-/*
-
-*/
 
 /*
 _bool CCollision_Manager::RayToAABB_Collision(CGameObject* pRay, CGameObject* pAABB, _float3* vPos)
@@ -553,4 +734,93 @@ if (fMin < 0.f)
 return true;
 }
 
+*/
+
+
+/*
+_bool CCollision_Manager::RayToAABB_Collision(CGameObject* pRay, CGameObject* pAABB, _float3* vPos, CComponent** pCollider, _float fTimeDelta)
+{
+
+RAY_DESC RayDesc = pRay->Get_RayDesc();
+_float3 vRayDir = RayDesc.vDir;
+_float3 vRayPos = RayDesc.vPos;
+_float3 vRayPosAfter = vRayPos + vRayDir * RayDesc.fSpeed * fTimeDelta * RayDesc.fSpeed;
+
+
+
+COLLISION_DESC CollisionDesc = pAABB->Get_CollisionDesc(COLLISION::BOX);
+
+if (CollisionDesc.pColliderSecond != nullptr)
+{
+    CTransform* pColliderTransform = CollisionDesc.pTransform;
+    CBoxCollider* pColliderBox = static_cast<CBoxCollider*>(CollisionDesc.pColliderSecond);
+    _float3 vPosDst = pColliderTransform->Get_State(STATE::POSITION);
+
+    _float3 vColliderMin = pColliderBox->Get_Min();
+    _float3 vColliderMax = pColliderBox->Get_Max();
+
+    vColliderMin += vPosDst;
+    vColliderMax += vPosDst;
+
+    _float t1 = (vColliderMin.x - vRayPos.x) / vRayDir.x;
+    _float t2 = (vColliderMax.x - vRayPos.x) / vRayDir.x;
+
+    _float t3 = (vColliderMin.y - vRayPos.y) / vRayDir.y;
+    _float t4 = (vColliderMax.y - vRayPos.y) / vRayDir.y;
+
+    _float t5 = (vColliderMin.z - vRayPos.z) / vRayDir.z;
+    _float t6 = (vColliderMax.z - vRayPos.z) / vRayDir.z;
+
+    _float fMin = fmaxf(fmaxf(fminf(t1, t2), fminf(t3, t4)), fminf(t5, t6));
+
+    _float fMax = fminf(fminf(fmaxf(t1, t2), fmaxf(t3, t4)), fmaxf(t5, t6));
+
+    _float fDistance = fMin < 0.f ? fMax : fMin;
+
+    if (!(fMax < 0.f || fMin > fMax) && (Check_inAABB(vRayPos, vColliderMin, vColliderMax) || Check_inAABB(vRayPosAfter, vColliderMin, vColliderMax)))
+    {
+        *pCollider = CollisionDesc.pColliderSecond;
+        return true;
+    }
+}
+
+CTransform* pColliderTransform = CollisionDesc.pTransform;
+CBoxCollider* pColliderBox = static_cast<CBoxCollider*>(CollisionDesc.pCollider);
+_float3 vPosDst = pColliderTransform->Get_State(STATE::POSITION);
+
+_float3 vColliderMin = pColliderBox->Get_Min();
+_float3 vColliderMax = pColliderBox->Get_Max();
+
+vColliderMin += vPosDst;
+vColliderMax += vPosDst;
+
+
+_float t1 = (vColliderMin.x - vRayPos.x) / vRayDir.x;
+_float t2 = (vColliderMax.x - vRayPos.x) / vRayDir.x;
+
+_float t3 = (vColliderMin.y - vRayPos.y) / vRayDir.y;
+_float t4 = (vColliderMax.y - vRayPos.y) / vRayDir.y;
+
+_float t5 = (vColliderMin.z - vRayPos.z) / vRayDir.z;
+_float t6 = (vColliderMax.z - vRayPos.z) / vRayDir.z;
+
+_float fMin = fmaxf(fmaxf(fminf(t1, t2), fminf(t3, t4)), fminf(t5, t6));
+
+_float fMax = fminf(fminf(fmaxf(t1, t2), fmaxf(t3, t4)), fmaxf(t5, t6));
+
+
+if (fMax < 0.f || fMin > fMax)
+return false;
+
+
+
+
+if (Check_inAABB(vRayPos, vColliderMin, vColliderMax) || Check_inAABB(vRayPosAfter, vColliderMin, vColliderMax))
+{
+    *pCollider = CollisionDesc.pCollider;
+    return true;
+}
+
+return false;
+}
 */

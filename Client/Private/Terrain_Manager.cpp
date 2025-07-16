@@ -5,7 +5,7 @@
 #include "Terrain.h"
 #include "CubeObject.h"
 #include "LandObject.h"
-
+#include "MapSlope.h"
 
 /*
 매니저에 접근할 수 있게 해야 하나?
@@ -44,6 +44,8 @@ CTerrain_Manager라고 가정하면
 큐브에서 터레인으로 바뀌면 점프 상태로 바뀌지 않고 바로 달라붙는 문제가 있음
 */
 
+IMPLEMENT_SINGLETON(CTerrain_Manager);
+
 CTerrain_Manager::CTerrain_Manager() : 
     m_pGameInstance{ CGameInstance::GetInstance() }
 {
@@ -54,11 +56,15 @@ void CTerrain_Manager::Add_LandObject(LEVEL eLevelID, const _wstring& strLayerTa
 {
     list<CGameObject*> GameObjects = m_pGameInstance->Get_GameObjects_inLayer(ENUM_CLASS(eLevelID), strLayerTag);
 
-
     for (auto& iter : GameObjects)
     {
         m_LandObjects.push_back(dynamic_cast<CLandObject*>(iter));
     }
+}
+
+void CTerrain_Manager::Add_LandObject_One(CGameObject* pClone)
+{
+    m_LandObjects.push_back(dynamic_cast<CLandObject*>(pClone));
 }
 
 void CTerrain_Manager::Add_Terrian(LEVEL eLevelID)
@@ -74,13 +80,43 @@ void CTerrain_Manager::Add_Terrian(LEVEL eLevelID)
 
 void CTerrain_Manager::Add_Cube(LEVEL eLevelID)
 {
-    list<CGameObject*> GameObjects = m_pGameInstance->Get_GameObjects_inLayer(ENUM_CLASS(eLevelID), TEXT("Layer_Cube"));
+    list<CGameObject*> GameObjects = m_pGameInstance->Get_GameObjects_inLayer(ENUM_CLASS(eLevelID), TEXT("Layer_Map_Objects_AABB_Ride"));
 
     /* Cube 담기 */
-    for (auto& iter : GameObjects)
+    if (!GameObjects.empty())
     {
-        m_CubeObjects.push_back(reinterpret_cast<CCubeObject*>(iter));
+        for (auto& iter : GameObjects)
+        {
+            m_CubeObjects.push_back(reinterpret_cast<CCubeObject*>(iter));
+        }
     }
+
+    GameObjects = m_pGameInstance->Get_GameObjects_inLayer(ENUM_CLASS(eLevelID), TEXT("Layer_Map_Objects_Ride"));
+
+    /* Cube 담기 */
+    if (!GameObjects.empty())
+    {
+        for (auto& iter : GameObjects)
+        {
+            m_CubeObjects.push_back(reinterpret_cast<CCubeObject*>(iter));
+        }
+    }
+
+    GameObjects = m_pGameInstance->Get_GameObjects_inLayer(ENUM_CLASS(eLevelID), TEXT("Layer_Map_Objects_OBB_Ride"));
+
+    /* Cube 담기 */
+    if (!GameObjects.empty())
+    {
+        for (auto& iter : GameObjects)
+        {
+            m_CubeObjects.push_back(reinterpret_cast<CCubeObject*>(iter));
+        }
+    }
+}
+
+void CTerrain_Manager::Release_Terrain_Manager()
+{
+    DestroyInstance();
 }
 
 HRESULT CTerrain_Manager::Initialize()
@@ -112,6 +148,7 @@ void CTerrain_Manager::Check_Landing()
         _float3 vPos = pTransform->Get_State(STATE::POSITION);
 
         /*Cube 체크, Cube Ride가 가능한 녀석들만 큐브에 탄다*/
+        /* 7월 9일자 임시로 Cube로 변경한다 */
         if ((*iter)->Get_RideCube())
         {
             for (auto& pCube : m_CubeObjects)
@@ -157,17 +194,18 @@ void CTerrain_Manager::Check_Landing()
             {
                 Desc = { dynamic_cast<CTerrain*>(pNearestLand)->Get_TerrainDesc().pBuffer, dynamic_cast<CTerrain*>(pNearestLand)->Get_TerrainDesc().pTransform };
 
-                if (fMin > 0.6f && (*iter)->Get_Jump() == false)
+                if (fMin > 1.2f && (*iter)->Get_Jump() == false)
                 {
                     (*iter)->Set_Jump(true);
                     (*iter)->Set_Time(0.133334f);
                 }
             }
+
             else if (dynamic_cast<CCubeObject*>(pNearestLand) != nullptr)
             {
                 Desc = { dynamic_cast<CCubeObject*>(pNearestLand)->Get_CubeDesc().pBuffer, dynamic_cast<CCubeObject*>(pNearestLand)->Get_CubeDesc().pTransform };
 
-                if (fMin > 0.6f && (*iter)->Get_Jump() == false)
+                if (fMin > 1.2f && (*iter)->Get_Jump() == false)
                 {
                     (*iter)->Set_Jump(true);
                     (*iter)->Set_Time(0.133334f);
@@ -178,102 +216,10 @@ void CTerrain_Manager::Check_Landing()
 
         iter++;
     }
-
-    //for (auto& LandObj : m_LandObjects)
-    //{
-    //    if (LandObj->isDead())
-    //    {
-    //        m_LandObjects.erase(LandObj, LandObj);
-    //        continue;
-    //    }
-    //    _float3 vDist, vRayDir = _float3{ 0.f, -1.f, 0.f };
-    //    _float fMin = FLT_MAX;
-    //    CGameObject* pNearestLand = {};
-    //    /*
-    //    LandObject의 Transform 뽑아와서,
-    //    아래 방향으로 레이 쏘게 한다음
-
-    //    가장 가까운 거리를 가진 평면을 변수로 넘겨서,
-    //    Change Terrain 해주면 됨
-    //    */
-    //    CTransform* pTransform = static_cast<CTransform*>(LandObj->Find_Component(TEXT("Com_Transform")));
-    //    _float3 vPos = pTransform->Get_State(STATE::POSITION);
-
-    //    /*Cube 체크, Cube Ride가 가능한 녀석들만 큐브에 탄다*/
-    //    if (LandObj->Get_RideCube())
-    //    {
-    //        for (auto& pCube : m_CubeObjects)
-    //        {
-    //            CCubeObject::CUBE_DESC CubeDesc = pCube->Get_CubeDesc();
-
-    //            if (CubeDesc.pBuffer->Picking(CubeDesc.pTransform, &vDist, vPos, vRayDir))
-    //            {
-    //                _float3 vDiff = vDist - vPos;
-    //                _float fLengthDiff = D3DXVec3Length(&vDiff);
-
-    //                if (fLengthDiff < fMin)
-    //                {
-    //                    fMin = fLengthDiff;
-    //                    pNearestLand = pCube;
-    //                }
-    //            }
-    //        }
-    //    }
-
-    //    /* Terrain 체크 */
-    //    for (auto& pTerrain : m_Terrains)
-    //    {
-    //        CTerrain::TERRAIN_DESC TerrainDesc = pTerrain->Get_TerrainDesc();
-
-    //        if (TerrainDesc.pBuffer->Picking_Land(TerrainDesc.pTransform, &vDist, vPos, vRayDir))
-    //        {
-    //            _float3 fDiff = vPos - vDist;
-    //            _float fLength = D3DXVec3Length(&fDiff);
-    //            if (fLength < fMin)
-    //            {
-    //                fMin = fLength;
-    //                pNearestLand = pTerrain;
-    //            }
-    //        }
-    //    }
-
-    //    if (fMin != FLT_MAX)
-    //    {
-    //        CLandObject::LANDOBJECT_DESC Desc;
-
-    //        if (dynamic_cast<CTerrain*>(pNearestLand) != nullptr)
-    //        {
-    //            Desc = { dynamic_cast<CTerrain*>(pNearestLand)->Get_TerrainDesc().pBuffer, dynamic_cast<CTerrain*>(pNearestLand)->Get_TerrainDesc().pTransform };
-
-    //            if (fMin > 0.6f && LandObj->Get_Jump() == false)
-    //            {
-    //                LandObj->Set_Jump(true);
-    //                LandObj->Set_Time(0.133334f);
-    //            }
-    //        }
-    //        else if (dynamic_cast<CCubeObject*>(pNearestLand) != nullptr)
-    //        {
-    //            Desc = { dynamic_cast<CCubeObject*>(pNearestLand)->Get_CubeDesc().pBuffer, dynamic_cast<CCubeObject*>(pNearestLand)->Get_CubeDesc().pTransform };
-
-    //            if (fMin > 0.6f && LandObj->Get_Jump() == false)
-    //            {
-    //                LandObj->Set_Jump(true);
-    //                LandObj->Set_Time(0.133334f);
-    //            }
-    //        }
-    //        LandObj->Change_Land(&Desc);
-    //    }
-    //}
 }
 
-CTerrain_Manager* CTerrain_Manager::Create()
+void CTerrain_Manager::Clear_Terrains()
 {
-    CTerrain_Manager* pInstance = new CTerrain_Manager();
-
-    if (FAILED(pInstance->Initialize()))
-        Safe_Release(pInstance);
-
-    return pInstance;
 }
 
 void CTerrain_Manager::Free()

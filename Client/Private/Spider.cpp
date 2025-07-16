@@ -24,7 +24,15 @@ HRESULT CSpider::Initialize_Prototype()
 
 HRESULT CSpider::Initialize(void* pArg)
 {
-	m_pPlayerTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Player"), TEXT("Com_Transform")));
+	m_pObjectDesc = *static_cast<CGameObject::GAMEOBJECT_DESC*>(pArg);
+
+	m_pPlayerTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(m_pObjectDesc.iLayerLevel, TEXT("Layer_Player"), TEXT("Com_Transform")));
+	Safe_AddRef(m_pPlayerTransform);
+
+	//if (pArg != nullptr)				// 스포너의 위치를 받아온다
+	//{
+	//	m_vPos = static_cast<_float3*>(pArg);
+	//}
 
 	if (m_pPlayerTransform == nullptr)
 		return E_FAIL;
@@ -38,19 +46,37 @@ HRESULT CSpider::Initialize(void* pArg)
 	if (FAILED(Ready_Animations()))
 		return E_FAIL;
 
-	m_pTransformCom->Set_Scale({ 0.5f, 0.5f, 0.1f });
+	// m_pTransformCom 세팅
+	m_pTransformCom->Set_State(STATE::RIGHT, m_pObjectDesc.matWorld.m[0]);
+	m_pTransformCom->Set_State(STATE::UP, m_pObjectDesc.matWorld.m[1]);
+	m_pTransformCom->Set_State(STATE::LOOK, m_pObjectDesc.matWorld.m[2]);
+	m_pTransformCom->Set_State(STATE::POSITION, m_pObjectDesc.matWorld.m[3]);
+	m_pTransformCom->Set_Scale(_float3{ 1.f, 1.f, 1.f });
+	//m_pTransformCom->Set_Scale(_float3{ 1.f, 1.f, 1.f });
 
-	m_pTransformCom->Set_State(STATE::POSITION, _float3(
-		m_pGameInstance->Random(0.f, 20.f),
-		0.f,
-		m_pGameInstance->Random(0.f, 20.f)));
+	/*if (m_vPos != nullptr)
+	{
+		m_pTransformCom->Set_State(STATE::POSITION, _float3(
+			m_vPos->x + m_pGameInstance->Random(0.f, 2.f),
+			0.f,
+			m_vPos->z + m_pGameInstance->Random(0.f, 2.f)));
+	}
+	else
+	{
+		m_pTransformCom->Set_State(STATE::POSITION, _float3(
+			m_pGameInstance->Random(0.f, 2.f),
+			0.f,
+			m_pGameInstance->Random(0.f, 2.f)));
+	}*/
 
 	m_fDamage = 30.f;
 	m_fAttackRange = 1.5f;
 	m_fAttackCoolTime = 5.f;
-	m_fJumpPower = 2.5f;
-	m_fChaseRange = 7.f;
+	m_fJumpPower = 3.f;
+	m_fChaseRange = 15.f;
 	m_fMaxRange = 10.f;
+	m_fRandomMoveTime = 3.f;
+	m_fSumRandomMoveTime = 0.f;
 	//m_AttackfCoolTime = 1.f;
 
 	return S_OK;
@@ -73,13 +99,29 @@ void CSpider::Update(_float fTimeDelta)
 
 	if (m_bDying)
 	{
-		SetUp_OnTerrain(m_pTransformCom, 0.2f, &m_bJump);
+		SetUp_OnTerrain(m_pTransformCom, 0.6f, &m_bJump);
 		return;
 	}
 
 	m_bRideCube = true;
 	m_fSumAttackCoolTime += fTimeDelta;
 	m_fSumMoveCoolTime += fTimeDelta;
+
+	if (m_fSightFailTime >= 5.f)
+	{
+		do
+		{
+			_float3 vMin = { -1.f, 0.f, -1.f };
+			_float3 vMax = { 1.f, 0.f, 1.f };
+			m_pGameInstance->GetRandomVector(&m_vNextDir, &vMin, &vMax);
+			m_vNextDir.y = 0.f;
+		} while (D3DXVec3Length(&m_vNextDir) < 0.001f);
+
+		m_isRandomMove = true;
+	}
+
+	D3DXVec3Normalize(&m_vNextDir, &m_vNextDir);
+	MoveAnimationCheck();
 
 	vDiff.y = 0.f;
 	D3DXVec3Normalize(&vDiff, &vDiff);
@@ -129,11 +171,15 @@ void CSpider::Update(_float fTimeDelta)
 	}
 
 
-	if (m_fHp <= 0)
+	if (m_fCurHp <= 0)
 	{
 		m_strFrameKey = TEXT("Spider_Die_Default");
 		m_bAnimationLock = true;
 		m_bDying = true;
+
+		m_pBoxColliderCom->Set_Scale({ 1.0f, 0.7f, 1.2f });
+		m_pBoxColliderCom->Set_Position({ 0.f, -0.15f, 0.f });
+
 		m_pGameInstance->PlaySoundOnce(TEXT("Spider_Die.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
 	}
 	else if (m_pSightCom->Check_Sight(fTimeDelta) && !m_bAnimationLock)
@@ -146,6 +192,8 @@ void CSpider::Update(_float fTimeDelta)
 				m_bJump = true;
 				m_fTime = 0.f;
 				Attack();
+				m_fSumRandomMoveTime = 0.f;
+				m_fSightFailTime = 0.f;
 			}
 		}
 
@@ -157,12 +205,34 @@ void CSpider::Update(_float fTimeDelta)
 				Move(fTimeDelta);
 				m_isMove = true;
 				m_fSumMoveCoolTime = 0.f;
+				m_fSumRandomMoveTime = 0.f;
+				m_fSightFailTime = 0.f;
+			}
+		}
+	}
+	else
+	{
+		m_fSightFailTime += fTimeDelta;
+		if (m_fSumMoveCoolTime >= m_fMoveCoolTime && m_isRandomMove)
+		{
+			m_fSumRandomMoveTime += fTimeDelta;
+			m_fSumMoveCoolTime = 0.f;
+			RandomMove(fTimeDelta, m_vNextDir);
+
+			m_isMove = true;
+			m_fSightFailTime = 0.f;
+
+			if (m_fSumRandomMoveTime >= m_fRandomMoveTime)
+			{
+				m_isRandomMove = false;
+				m_fSightFailTime = 0.f;
+				m_fSumRandomMoveTime = 0.f;
 			}
 		}
 	}
 
 	Jump(fTimeDelta, m_fJumpPower);
-	SetUp_OnTerrain(m_pTransformCom, 0.25f, &m_bJump);
+	SetUp_OnTerrain(m_pTransformCom, 0.5f, &m_bJump);
 }
 
 void CSpider::Late_Update(_float fTimeDelta)
@@ -201,12 +271,12 @@ HRESULT CSpider::Render()
 	auto iter = m_pTextureComs.find(m_strFrameKey);
 	iter->second->Set_Texture(m_pAnimationCom->Get_Frame_Current_Index(m_strFrameKey));
 
-	if (FAILED(Begin_RenderState()))
+	if (FAILED(Begin_RenderTestState()))
 		return E_FAIL;
 
 	m_pVIBufferCom->Render();
 
-	if (FAILED(End_RenderState()))
+	if (FAILED(End_RenderTestState()))
 		return E_FAIL;
 
 	return S_OK;
@@ -294,22 +364,25 @@ HRESULT CSpider::Ready_Animations()
 	return S_OK;
 }
 
-void CSpider::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta)
+void CSpider::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta, CComponent* pCollider, const _float3& vPos)
 {
-	if (m_isDead || m_bDying)
-		return;
-
-	if (eColType == COLLISION::SPHERE)
+	if (eColType == COLLISION::RAY)
 	{
 		CBullet* pBullet = dynamic_cast<CBullet*>(pDst);
 		if (pBullet != nullptr)
 		{
-			if ((m_fHp -= (pBullet->Get_Damage())) > 0)
+			m_pTransformCom->Turn({ 0.f, 1.0f, 0.f }, fTimeDelta);
+			m_pTransformCom->LookAt(m_pPlayerTransform->Get_State(STATE::POSITION));
+			_float3 vTemp = m_pTransformCom->Get_State(STATE::LOOK);
+			D3DXVec3Normalize(&m_vNextDir, &vTemp);
+
+			if ((m_fCurHp -= (pBullet->Get_Damage())) > 0)
 			{
-				m_pGameInstance->PlaySoundOnce(TEXT("Spider_Hit.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
+				m_pGameInstance->PlaySoundOnce(TEXT("Spider_hit_1.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
 			}
-			CParticle_Manager::GetInstance()->Create_Particle(TEXT("Particle_Blood"), ENUM_CLASS(LEVEL::GAMEPLAY),
-				TEXT("Layer_Particle"), m_pTransformCom->Get_State(STATE::POSITION));
+
+			CParticle_Manager::GetInstance()->Create_Particle(TEXT("Particle_Blood"), m_pObjectDesc.iLayerLevel,
+				TEXT("Layer_Particle"), vPos);
 		}
 	}
 
@@ -366,17 +439,17 @@ HRESULT CSpider::Ready_Components()
 		return E_FAIL;
 
 	/* Com_Sight */
-	CSight::SIGHT_DESC		SightDesc{ 5.f, D3DXToRadian(90.0f), m_pPlayerTransform, m_pTransformCom, true };
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Sight"),
+	CSight::SIGHT_DESC		SightDesc{ m_fChaseRange, D3DXToRadian(90.0f), m_pPlayerTransform, m_pTransformCom, true };
+	if (FAILED(__super::Add_Component(m_pObjectDesc.iLayerLevel, TEXT("Prototype_Component_Sight"),
 		TEXT("Com_Sight"), reinterpret_cast<CComponent**>(&m_pSightCom), &SightDesc)))
 		return E_FAIL;
 
 	/* Com_BoxCollider */
 	CBoxCollider::BOXCOLLIDER_DESC Desc;
-	Desc.vPosition = { 0.f, 0.f, 0.f };
-	Desc.fScaleX = 0.4f;
-	Desc.fScaleZ = 0.4f;
-	Desc.fScaleY = 0.1f;
+	Desc.vPosition = { 0.f, -0.15f, 0.f };
+	Desc.fScaleX = 0.8f;
+	Desc.fScaleY = 0.2f;
+	Desc.fScaleZ = 0.8f;
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_BoxCollider"),
 		TEXT("Com_BoxCollider"), reinterpret_cast<CComponent**>(&m_pBoxColliderCom), &Desc)))
 		return E_FAIL;
@@ -421,6 +494,26 @@ HRESULT CSpider::End_RenderState()
 	return S_OK;
 }
 
+HRESULT CSpider::Begin_RenderTestState()
+{
+	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+
+	m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+	m_pGraphic_Device->SetRenderState(D3DRS_ALPHAREF, 0);
+	m_pGraphic_Device->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
+
+	return S_OK;
+}
+
+HRESULT CSpider::End_RenderTestState()
+{
+	m_pGraphic_Device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+
+	m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+
+	return S_OK;
+}
+
 void CSpider::Attack()
 {
 	m_pGameInstance->PlaySoundOnce(TEXT("Spider_Attack.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
@@ -443,14 +536,8 @@ void CSpider::Attack()
 	Desc.vDir = vDir;
 	Desc.vPos = vPos;*/
 
-	CMeleeAttack::MELEEATTACK_DESC Desc;
-	Desc.vDir = vDir;
-	Desc.vPos = vPos;
-	Desc.fDamage = m_fDamage;
-	Desc.fDurationTime = 10.f;
-
-	m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Melee_Attack"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Melee_Attack"), &Desc);
-	//m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Bullet"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Spider_Bullet"), &Desc);
+	m_pGameInstance->Add_GameObject_ToLayer(m_pObjectDesc.iLayerLevel, TEXT("Prototype_GameObject_Melee_Attack"), m_pObjectDesc.iLayerLevel, TEXT("Layer_Melee_Attack"), &m_pObjectDesc);
+	//m_pGameInstance->Add_GameObject_ToLayer(m_pObjectDesc.iLayerLevel, TEXT("Prototype_GameObject_Bullet"), m_pObjectDesc.iLayerLevel, TEXT("Layer_Spider_Bullet"), &Desc);
 }
 
 void CSpider::Move(_float fTimeDelta)
@@ -464,15 +551,14 @@ void CSpider::Move(_float fTimeDelta)
 	D3DXVec3Normalize(&fMonsterLook, &fMonsterLook);
 	D3DXVec3Normalize(&vDirection, &vDirection);
 
+	m_vNextDir = vDirection;
+
 	_float dot = D3DXVec3Dot(&fPlayerLook, &fMonsterLook);
 	float fRadian = acosf(dot);
+
 	m_pTransformCom->Rotation({ 0.f, 1.f, 0.f }, fRadian);
-
 	m_pTransformCom->Go_Direction(vDirection, fTimeDelta);
-
 	m_pTransformCom->LookAt(m_pPlayerTransform->Get_State(STATE::POSITION));
-
-	
 
 	//m_pTransformCom->Chase(m_pPlayerTransform->Get_State(STATE::POSITION), fMoveTime);
 	//m_pTransformCom->Go_Straight(fTimeDelta);
@@ -500,6 +586,61 @@ void CSpider::Move(_float fTimeDelta)
 void CSpider::Move()
 {
 	m_pTransformCom->Get_State(STATE::POSITION);
+}
+
+void CSpider::MoveAnimationCheck()
+{
+	_float3 vMonsterLook = m_vNextDir;
+	_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
+
+	_float fDist = D3DXVec3Length(&vDiff);
+
+	vDiff.y = 0.f;
+	D3DXVec3Normalize(&vDiff, &vDiff);
+
+	//_float3 vMonsterLook = m_pTransformCom->Get_State(STATE::LOOK);
+	vMonsterLook.y = 0.f;
+	D3DXVec3Normalize(&vMonsterLook, &vMonsterLook);
+
+	_float dot = D3DXVec3Dot(&vMonsterLook, &vDiff);
+	dot = max(-1.f, min(1.f, dot));
+
+	_float3 vCross;
+	D3DXVec3Cross(&vCross, &vMonsterLook, &vDiff);
+
+	_float fFov = cosf(D3DXToRadian(45.f));
+	_float angle30 = cosf(D3DXToRadian(30.f));
+	_float angle60 = cosf(D3DXToRadian(60.f));
+
+	if (!m_bAnimationLock)
+	{
+		if (dot >= fFov)
+		{
+			m_strFrameKey = TEXT("Soldier_Front");
+		}
+		else if (dot <= -fFov)
+		{
+			m_strFrameKey = TEXT("Soldier_Back");
+		}
+		else
+		{
+			if (vCross.y > 0)
+			{
+				if (dot > 0)
+					m_strFrameKey = TEXT("Soldier_Direction_SW");
+				else
+					m_strFrameKey = TEXT("Soldier_Direction_NW");
+			}
+			else
+			{
+				if (dot > 0)
+					m_strFrameKey = TEXT("Soldier_Direction_SE");
+				else
+					m_strFrameKey = TEXT("Soldier_Direction_NE");
+			}
+		}
+		m_isMove = false;
+	}
 }
 
 void CSpider::Jump(_float fTimeDelta, _float fJumpPower)								// 임시 사용 함수 LandObject꺼 오버라이딩 구조 변경 or 오버로딩할것
@@ -554,4 +695,5 @@ void CSpider::Free()
 {
 	//m_pRoot->ReleaseSubtree();
 	__super::Free();
+	Safe_Release(m_pPlayerTransform);
 }

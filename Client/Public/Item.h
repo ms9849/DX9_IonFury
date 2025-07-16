@@ -1,7 +1,6 @@
 #pragma once  
 
 #include "Client_Defines.h"
-#include "Player.h"
 #include "LandObject.h"
 
 NS_BEGIN(Engine)
@@ -15,8 +14,8 @@ NS_BEGIN(Client)
 
 class CItem abstract : public CLandObject
 {
-protected:
-    enum class BULLET {PISTOL, SHOOTGUN};
+public:
+    enum class BULLET {PISTOL, SHOOTGUN, END};
 
 protected:
     CItem(LPDIRECT3DDEVICE9 pGraphic_Device);
@@ -37,9 +36,18 @@ protected:
     CVIBuffer_Rect* m_pVIBufferCom = { nullptr };
     CSphereCollider* m_pSphereColliderCom = { nullptr };
 
-    bool    _isGoUp{ false };
+    _bool    _isGoUp{ false };
     _float  m_fItemOriginPosY{};
-    CPlayer* m_pPlayer{ nullptr };
+    class CPlayer* m_pPlayer{ nullptr };
+    _float  m_fTimeAcc = { 0.f };
+    _bool   m_bParabola = { false };
+    _float3 m_vParabolaDir = {};
+
+public:
+    void Set_Pos(const _float3& vPos);
+    void Set_Parabola(_bool bFlag, const _float3& vParabolaDir);
+    //정해진 방향으로 x,z축 이동을 하면서, y는 포물선을 그려야 한다 
+    void Parabola(_float fSpeed, _float fTimeDelta);
 
 protected:
     virtual HRESULT Ready_Components();

@@ -25,11 +25,15 @@ HRESULT CBullet_Manager::Ready_Bullet()
 {
 	list<class CBullet*> Bullets = {};
 
-	/* 총알은 300개 풀링 */
-	for (int i = 0; i < 300; ++i)
+	auto iter = m_Bullets.find(TEXT("Bullet"));
+	if (iter != m_Bullets.end())
+		return S_OK;
+
+	/* 총알은 600개 풀링 */
+	for (int i = 0; i < 600; ++i)
 	{
 		Bullets.push_back(
-			static_cast<CBullet*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::GAMEPLAY),
+			static_cast<CBullet*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC),
 				TEXT("Prototype_GameObject_Bullet"), nullptr))
 		);
 	}

@@ -27,23 +27,30 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 	virtual HRESULT Ready_Animations() override;
-	virtual void OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta) override;
+	virtual void OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta, CComponent* pCollider, const _float3& vPos) override;
 	virtual const COLLISION_DESC& Get_CollisionDesc(COLLISION eColType);
 
 	HRESULT Ready_Components() override;
 	HRESULT Begin_RenderState() override;
 	HRESULT End_RenderState() override;
+	HRESULT Begin_RenderTestState();
+	HRESULT End_RenderTestState();
 
 	virtual void Attack() override;
 	void Move(_float fTimeDelta);
 	virtual void Move() override;
+	void MoveAnimationCheck();
 
 	void Jump(_float fTimeDelta, _float fJumpPower);
 
 private:
 	_bool m_bAnimationLock = false;
+	_bool m_isRandomMove = false;
 	_bool m_bFrameBlock = false;
 	_float m_fJumpPower = 0.f;
+	_float m_fRandomMoveTime = 0.f;
+	_float m_fSightFailTime = 0.f;
+	_float3* m_vPos = {};
 
 public:
 	static	CSpider* Create(LPDIRECT3DDEVICE9 pGraphic_Device);

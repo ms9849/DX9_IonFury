@@ -30,6 +30,8 @@ private:
 	CTexture*				m_pTextureCom = { nullptr };
 	CTransform*				m_pTransformCom = { nullptr };	
 	CVIBuffer_Rect*			m_pVIBufferCom = { nullptr };
+
+	_uint					m_iTextureIndex{ 0 };
 	
 private:
 	HRESULT Ready_Components();

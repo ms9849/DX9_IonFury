@@ -3,7 +3,8 @@
 #include "GameInstance.h"
 
 #include "Level_Loading.h"
-#include "Camera.h"
+#include "UIPressEnter.h"
+#include "BackGround.h"
 
 CLevel_Logo::CLevel_Logo(LPDIRECT3DDEVICE9 pGraphic_Device, LEVEL eLevelID)
 	: CLevel { pGraphic_Device, ENUM_CLASS(eLevelID)}
@@ -14,9 +15,6 @@ CLevel_Logo::CLevel_Logo(LPDIRECT3DDEVICE9 pGraphic_Device, LEVEL eLevelID)
 
 HRESULT CLevel_Logo::Initialize()
 {
-	//if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
-	//	return E_FAIL;	
-
 	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
 		return E_FAIL;
 
@@ -25,7 +23,9 @@ HRESULT CLevel_Logo::Initialize()
 
 void CLevel_Logo::Update(_float fTimeDelta)
 {
-	if (GetKeyState(VK_SPACE) & 0x8000)
+	m_pUIPressEnter->Set_Guide(true);
+
+	if(m_pGameInstance->Key_Down(VK_RETURN))
 	{
 		if (FAILED(m_pGameInstance->Change_Level(CLevel_Loading::Create(m_pGraphic_Device, LEVEL::LOADING, LEVEL::GAMEPLAY))))
 			return;
@@ -34,36 +34,37 @@ void CLevel_Logo::Update(_float fTimeDelta)
 
 HRESULT CLevel_Logo::Render()
 {
-	SetWindowText(g_hWnd, TEXT("로고레벨이빈다"));
-
-	return S_OK;
-}
-
-
-
-HRESULT CLevel_Logo::Ready_Layer_Camera(const _wstring& strLayerTag)
-{
-	CCamera::CAMERA_DESC			CameraDesc{};
-	CameraDesc.fFov = D3DXToRadian(60.0f);
-	CameraDesc.fNear = 0.1f;
-	CameraDesc.fFar = 300.f;
-	CameraDesc.vEye = _float3(0.f, 1.f, -1.f);
-	CameraDesc.vAt = _float3(0.f, 0.f, 0.f);
-	CameraDesc.fSpeedPerSec = 5.f;
-	CameraDesc.fRotationPerSec = D3DXToRadian(90.0f);
-
-	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Camera"),
-		ENUM_CLASS(LEVEL::LOGO), strLayerTag, &CameraDesc)))
-		return E_FAIL;
+	SetWindowText(g_hWnd, TEXT("Ion Fury"));
 
 	return S_OK;
 }
 
 HRESULT CLevel_Logo::Ready_Layer_BackGround(const _wstring& strLayerTag)
 {
-	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::LOGO), TEXT("Prototype_GameObject_BackGround"),
-		ENUM_CLASS(LEVEL::LOGO), strLayerTag)))
+	_uint iTextureIndex{ 1 };
+
+	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_BackGround"),
+		ENUM_CLASS(LEVEL::LOGO), strLayerTag, &iTextureIndex)))
 		return E_FAIL;
+
+	/* 상호작용 키 */
+	CUIObject::UIOBJECT_DESC Desk_PressEnter{};
+
+	Desk_PressEnter.iTextLength = wcslen(TEXT("Press [Enter] Key"));
+	Desk_PressEnter.fSizeX = 30.f * Desk_PressEnter.iTextLength;
+	Desk_PressEnter.fSizeY = 30.f;
+	Desk_PressEnter.fX = g_iWinSizeX * 0.5f - (Desk_PressEnter.fSizeX * 0.5f);
+	Desk_PressEnter.fY = g_iWinSizeY * 0.8f;
+	Desk_PressEnter.iLayerLevelIndex = ENUM_CLASS(LEVEL::LOGO);
+	Desk_PressEnter.strLayerTag = strLayerTag;
+	Desk_PressEnter.strFontType = TEXT("Primary");
+
+	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UIPressEnter"),
+		ENUM_CLASS(LEVEL::LOGO), Desk_PressEnter.strLayerTag, &Desk_PressEnter)))
+		return E_FAIL;
+
+	m_pUIPressEnter = dynamic_cast<CUIPressEnter*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::LOGO), strLayerTag));
+	Safe_AddRef(m_pUIPressEnter);
 
 	return S_OK;
 }
@@ -81,11 +82,9 @@ CLevel_Logo* CLevel_Logo::Create(LPDIRECT3DDEVICE9 pGraphic_Device, LEVEL eLevel
 	return pInstance;
 }
 
-
-
 void CLevel_Logo::Free()
 {
 	__super::Free();
 
-
+	Safe_Release(m_pUIPressEnter);
 }

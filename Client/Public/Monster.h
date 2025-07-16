@@ -30,6 +30,9 @@ public:
 	virtual void Update(_float fTimeDelta) override;
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
+	virtual void RecoveryHp();
+	virtual _float Get_Hp();
+	virtual void Drop_Item();
 
 protected:
 	CAnimation* m_pAnimationCom = { nullptr };
@@ -44,11 +47,15 @@ protected:
 	_float m_fSumAttackCoolTime = 3.f;
 	_float m_fMoveCoolTime = 0.05f;
 	_float m_fSumMoveCoolTime = {};
+	_float m_fRandomMoveTime = {};		// 랜덤으로 움직일 시간
+	_float m_fSumRandomMoveTime = {};
 	_float m_fChaseRange = 8.f;
 	_float m_fMaxRange = 10.f;
 	_float m_fAttackRange = {};
-	_float m_fHp = 100.f;
+	_float m_fCurHp = 100.f;
+	_float m_fMaxHp = 100.f;
 	_float m_fDamage = {};
+	_float3 m_vNextDir = {};
 	_bool m_bDying = false;
 	_bool m_isMove = false;
 	_bool m_bFirstEncounter = false;
@@ -65,6 +72,7 @@ protected:
 	virtual void Attack();
 	virtual void Move() = 0;
 	virtual void RotateToPlayer(CTransform* pTranform);
+	virtual void RandomMove(_float fTimeDelta, _float3 nextDir);
 
 	virtual void Free();
 };

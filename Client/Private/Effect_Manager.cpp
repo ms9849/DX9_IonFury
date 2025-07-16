@@ -2,6 +2,9 @@
 
 #include "GameInstance.h"
 #include "Effect_Pistol_Fire.h"
+#include "Effect_ShootGun_Fire.h"
+#include "Effect_Screen_Blur.h"
+#include "BUllet_Wound.h"
 
 IMPLEMENT_SINGLETON(CEffect_Manager);
 
@@ -11,33 +14,55 @@ CEffect_Manager::CEffect_Manager() :
 	Safe_AddRef(m_pGameInstance);
 }
 
-HRESULT CEffect_Manager::Initialize()
+HRESULT CEffect_Manager::Initialize(LEVEL eLevelID)
 {
+	m_Effects = {};
 	/* 
 	이펙트들 미리 풀링. 
 	
 	수업 코드의 GameInstance에 존재하던 Clone Prototype을 통해 이펙트를 받아온다. 
 	*/
-	if(FAILED(Ready_Pistol_Fire()))
+	if(FAILED(Ready_Pistol_Fire(eLevelID)))
 		return E_FAIL;
 
-	if (FAILED(Ready_Boss_Die()))
+	if (FAILED(Ready_ShootGun_Fire(eLevelID)))
 		return E_FAIL;
 
-	if (FAILED(Ready_Grenade_Explosion()))
+	if (FAILED(Ready_Boss_Die(eLevelID)))
+		return E_FAIL;
+
+	if (FAILED(Ready_Grenade_Explosion(eLevelID)))
+		return E_FAIL;
+
+	if (FAILED(Ready_Bullet_Wound(eLevelID)))
+		return E_FAIL;
+
+	if (FAILED(Ready_Screen_Blur_Hit(eLevelID)))
+		return E_FAIL;
+
+	if (FAILED(Ready_Screen_Blur_Heal(eLevelID)))
+		return E_FAIL;
+
+	if (FAILED(Ready_Screen_Blur_Blue(eLevelID)))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-HRESULT CEffect_Manager::Ready_Pistol_Fire()
+HRESULT CEffect_Manager::Ready_Pistol_Fire(LEVEL eLevelID)
 {
+	auto iter = m_Effects.find(TEXT("Effect_Pistol_Fire"));
+
+	if (iter != m_Effects.end())
+		return S_OK;
+
 	list<class CEffect*> Effects = {};
 
-	for (int i = 0; i < 20; ++i)
+	for (int i = 0; i < 30; ++i)
 	{
+
 		Effects.push_back(
-			static_cast<CEffect*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::GAMEPLAY),
+			static_cast<CEffect*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC),
 				TEXT("Prototype_GameObject_Effect_Pistol_Fire"),
 				nullptr))
 		);
@@ -48,8 +73,36 @@ HRESULT CEffect_Manager::Ready_Pistol_Fire()
 	return S_OK;
 }
 
-HRESULT CEffect_Manager::Ready_Boss_Die()
+HRESULT CEffect_Manager::Ready_ShootGun_Fire(LEVEL eLevelID)
 {
+	auto iter = m_Effects.find(TEXT("Effect_ShootGun_Fire"));
+
+	if (iter != m_Effects.end())
+		return S_OK;
+
+	list<class CEffect*> Effects = {};
+
+	for (int i = 0; i < 30; ++i)
+	{
+		Effects.push_back(
+			static_cast<CEffect*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC),
+				TEXT("Prototype_GameObject_Effect_ShootGun_Fire"),
+				nullptr))
+		);
+	}
+
+	m_Effects.emplace(TEXT("Effect_ShootGun_Fire"), Effects);
+
+	return S_OK;
+}
+
+HRESULT CEffect_Manager::Ready_Boss_Die(LEVEL eLevelID)
+{
+	auto iter = m_Effects.find(TEXT("Effect_Boss_Die"));
+
+	if (iter != m_Effects.end())
+		return S_OK;
+
 	list<class CEffect*> Effects = {};
 
 	CEffect::EFFECT_DESC  Desc;
@@ -61,7 +114,7 @@ HRESULT CEffect_Manager::Ready_Boss_Die()
 	for (int i = 0; i < 5; ++i)
 	{
 		Effects.push_back(
-			static_cast<CEffect*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::GAMEPLAY),
+			static_cast<CEffect*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC),
 				TEXT("Prototype_GameObject_Effect"),&Desc))
 		);
 	}
@@ -71,8 +124,13 @@ HRESULT CEffect_Manager::Ready_Boss_Die()
 	return S_OK;
 }
 
-HRESULT CEffect_Manager::Ready_Grenade_Explosion()
+HRESULT CEffect_Manager::Ready_Grenade_Explosion(LEVEL eLevelID)
 {
+	auto iter = m_Effects.find(TEXT("Effect_Grenade_Explosion"));
+
+	if (iter != m_Effects.end())
+		return S_OK;
+
 	list<class CEffect*> Effects = {};
 
 	CEffect::EFFECT_DESC  Desc;
@@ -84,7 +142,7 @@ HRESULT CEffect_Manager::Ready_Grenade_Explosion()
 	for (int i = 0; i < 10; ++i)
 	{
 		Effects.push_back(
-			static_cast<CEffect*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::GAMEPLAY),
+			static_cast<CEffect*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC),
 				TEXT("Prototype_GameObject_Effect"), &Desc))
 		);
 	}
@@ -94,7 +152,90 @@ HRESULT CEffect_Manager::Ready_Grenade_Explosion()
 	return S_OK;
 }
 
-void CEffect_Manager::Create_Effect(const _wstring& strBulletTag, _uint iLayerLevelIndex, const _wstring& strLayerTag, const _float3& vPos)
+HRESULT CEffect_Manager::Ready_Bullet_Wound(LEVEL eLevelID)
+{
+	auto iter = m_Effects.find(TEXT("Effect_Bullet_Wound"));
+
+	if (iter != m_Effects.end())
+		return S_OK;
+
+	list<class CEffect*> Effects = {};
+
+	CEffect::EFFECT_DESC  Desc;
+	Desc.vPosition = { 0.f, 0.f, 0.f };
+
+
+	for (int i = 0; i < 500; ++i)
+	{
+		Effects.push_back(
+			static_cast<CEffect*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC),
+				TEXT("Prototype_GameObject_Effect_Bullet_Wound"), &Desc))
+		);
+	}
+
+	m_Effects.emplace(TEXT("Effect_Bullet_Wound"), Effects);
+
+	return S_OK;
+}
+
+HRESULT CEffect_Manager::Ready_Screen_Blur_Hit(LEVEL eLevelID)
+{
+	auto iter = m_Effects.find(TEXT("Effect_Screen_Blur_Hit"));
+
+	if (iter != m_Effects.end())
+		return S_OK;
+
+	list<class CEffect*> Effects = {};
+
+	CEffect_Screen_Blur* pEffect = static_cast<CEffect_Screen_Blur*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC),
+		TEXT("Prototype_GameObject_Effect_Screen_Blur"), nullptr));
+	pEffect->Set_TextureNum(0);
+
+	Effects.push_back(pEffect);
+	m_Effects.emplace(TEXT("Effect_Screen_Blur_Hit"), Effects);
+
+	return S_OK;
+}
+
+HRESULT CEffect_Manager::Ready_Screen_Blur_Heal(LEVEL eLevelID)
+{
+	auto iter = m_Effects.find(TEXT("Effect_Screen_Blur_Heal"));
+
+	if (iter != m_Effects.end())
+		return S_OK;
+
+	list<class CEffect*> Effects = {};
+
+	CEffect_Screen_Blur* pEffect = static_cast<CEffect_Screen_Blur*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC),
+		TEXT("Prototype_GameObject_Effect_Screen_Blur"), nullptr));
+	pEffect->Set_TextureNum(1);
+
+	Effects.push_back(pEffect);
+	m_Effects.emplace(TEXT("Effect_Screen_Blur_Heal"), Effects);
+
+	return S_OK;
+}
+
+HRESULT CEffect_Manager::Ready_Screen_Blur_Blue(LEVEL eLevelID)
+{
+	auto iter = m_Effects.find(TEXT("Effect_Screen_Blur_Blue"));
+
+	if (iter != m_Effects.end())
+		return S_OK;
+
+	list<class CEffect*> Effects = {};
+
+	CEffect_Screen_Blur* pEffect = static_cast<CEffect_Screen_Blur*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC),
+		TEXT("Prototype_GameObject_Effect_Screen_Blur"), nullptr));
+	pEffect->Set_TextureNum(2);
+
+	Effects.push_back(pEffect);
+	m_Effects.emplace(TEXT("Effect_Screen_Blur_Blue"), Effects);
+
+	return S_OK;
+}
+
+void CEffect_Manager::Create_Effect(const _wstring& strBulletTag, _uint iLayerLevelIndex, const _wstring& strLayerTag, const _float3& vPos, const _float3& vLook)
 {
 	/*
 	Object_Manager와 GameInstance에 Add_Clone_Prototype 메서드를 추가하여, 
@@ -132,16 +273,17 @@ void CEffect_Manager::Create_Effect(const _wstring& strBulletTag, _uint iLayerLe
 
 	for (auto& pEffect : Effects->second)
 	{
+		if (pEffect->Get_Frame() == 0.f && pEffect->isDead() == true)
+			pEffect->Set_Dead(false);
+
 		if (pEffect->Get_Frame() == 0.f && pEffect->isDead() == false)
 		{
 			pEffect->Set_Pos(vPos);
+			if(vLook != _float3{0.f, 0.f, 0.f})
+				pEffect->Set_Look(vLook);
 			Safe_AddRef(pEffect);
 			m_pGameInstance->Add_Clone_ToLayer(pEffect, iLayerLevelIndex, strLayerTag);
 			break;
-		}
-		else
-		{
-			pEffect->Set_Dead(false);
 		}
 	}
 }
@@ -171,6 +313,7 @@ void CEffect_Manager::Free()
 		}
 		Effects.second.clear();
 	}
+	m_Effects.clear();
 
 	Safe_Release(m_pGameInstance);
 }

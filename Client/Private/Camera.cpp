@@ -8,7 +8,7 @@ CCamera::CCamera(LPDIRECT3DDEVICE9 pGraphic_Device)
 }
 
 CCamera::CCamera(const CCamera& Prototype)
-	: CGameObject{ Prototype }
+	: CGameObject( Prototype )
 {
 }
 
@@ -77,7 +77,6 @@ void CCamera::Priority_Update(_float fTimeDelta)
 	m_pGraphic_Device->SetTransform(D3DTS_PROJECTION, D3DXMatrixPerspectiveFovLH(&m_ProjMatrix, m_fFov, m_fAspect, m_fNear, m_fFar));
 	m_pGameInstance->Calc_CameraInfo();
 	_float3 vPos = (&m_pGameInstance->Get_CameraWorld()[3]);
-	int a = 10;
 }
 
 void CCamera::Update(_float fTimeDelta)
@@ -151,7 +150,7 @@ void CCamera::Camera_Turn(bool isMouseFixCenter, _float fTimeDelta)
 	D3DXVec3Cross(&vCross, &vStd, &vCameraLook);
 	D3DXVec3Normalize(&vCross, &vCross);
 
-	if (fDot < 0.8f && fDot > -0.8f)
+	if (fDot < 0.85f && fDot > -0.85f)
 	{
 		m_pTransformCom->Turn(m_pTransformCom->Get_State(STATE::RIGHT), fTimeDelta * m_fMove.y * m_fSensor);
 		m_vOldCameraRight = vCross;
@@ -161,13 +160,13 @@ void CCamera::Camera_Turn(bool isMouseFixCenter, _float fTimeDelta)
 	}
 	else
 	{
-		if (fDot > 0.8f && m_fMove.y > 0)
+		if (fDot > 0.85f && m_fMove.y > 0)
 		{
 			m_pTransformCom->Set_State(STATE::RIGHT, m_vOldCameraRight);
 			m_pTransformCom->Set_State(STATE::UP, m_vOldCameraUp);
 			m_pTransformCom->Set_State(STATE::LOOK, m_vOldCameraLook);
 		}
-		else if (fDot < -0.8f && m_fMove.y < 0)
+		else if (fDot < -0.85f && m_fMove.y < 0)
 		{
 			m_pTransformCom->Set_State(STATE::RIGHT, m_vOldCameraRight);
 			m_pTransformCom->Set_State(STATE::UP, m_vOldCameraUp);
