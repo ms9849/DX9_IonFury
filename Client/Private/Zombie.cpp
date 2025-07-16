@@ -30,12 +30,13 @@ HRESULT CZombie::Initialize(void* pArg)
 	Safe_AddRef(m_pPlayerTransform);
 
 	m_fDamage = 30.f;
-	m_fAttackRange = 1.5f;
+	m_fAttackRange = 3.5f;
 	m_fAttackCoolTime = 4.f;
 	m_fChaseRange = 10.f;
 	m_fMaxRange = 20.f;
 	m_fRandomMoveTime = 3.f;
 	m_fSumRandomMoveTime = 0.f;
+	m_fCurHp = 40.f;
 
 	// 스포너 관련
 	//if (pArg != nullptr)				// 스포너의 위치를 받아온다
@@ -288,7 +289,7 @@ void CZombie::Update(_float fTimeDelta)
 		if (m_fSumMoveCoolTime >= m_fMoveCoolTime)
 		{
 			_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
-			if (D3DXVec3Length(&vDiff) <= m_fChaseRange && D3DXVec3Length(&vDiff) >= m_fAttackRange - 1.f)
+			if (D3DXVec3Length(&vDiff) <= m_fChaseRange && (D3DXVec3Length(&vDiff) >= m_fSafeDistance) && D3DXVec3Length(&vDiff) >= m_fAttackRange - 1.f)
 			{
 				Move(fTimeDelta);
 				m_isMove = true;

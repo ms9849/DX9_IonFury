@@ -1,7 +1,6 @@
 #include "EliteSoldier.h"
 #include "GameInstance.h"
 #include "Bullet.h"
-#include "BehaviorNode.h"
 #include "Particle_Manager.h"
 #include "Bullet_Manager.h"
 
@@ -29,12 +28,13 @@ HRESULT CEliteSoldier::Initialize(void* pArg)
 	m_pPlayerTransform = static_cast<CTransform*>(m_pGameInstance->Get_Component(m_pObjectDesc.iLayerLevel, TEXT("Layer_Player"), TEXT("Com_Transform")));
 	Safe_AddRef(m_pPlayerTransform);
 
-	m_fAttackRange = 10.f;
-	m_fChaseRange = 15.f;
+	m_fAttackRange = 15.f;
+	m_fChaseRange = 20.f;
 	m_fMaxRange = 15.f;
 	m_fAttackCoolTime = 3.f;
 	m_fRandomMoveTime = 3.f;
 	m_fSumRandomMoveTime = 0.f;
+	m_fCurHp = 50.f;
 
 	//if (pArg != nullptr)				// 스포너의 위치를 받아온다
 	//{

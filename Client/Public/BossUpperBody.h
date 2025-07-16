@@ -68,7 +68,7 @@ private:
 	//void TurnOffBooster();
 	void RotateWithParentTransform();
 	void RotateToTarget();
-	CTransform* m_pCoreTranform = { nullptr };
+	CTransform* m_pCoreTransform = { nullptr };
 
 private:
 	_bool m_bAnimationLock = false;

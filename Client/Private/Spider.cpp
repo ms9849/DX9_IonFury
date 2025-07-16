@@ -2,7 +2,6 @@
 #include "GameInstance.h"
 #include "Bullet.h"
 #include "MeleeAttack.h"
-#include "BehaviorNode.h"
 #include "Particle_Manager.h"
 
 CSpider::CSpider(LPDIRECT3DDEVICE9 pGraphic_Device)
@@ -70,13 +69,14 @@ HRESULT CSpider::Initialize(void* pArg)
 	}*/
 
 	m_fDamage = 30.f;
-	m_fAttackRange = 1.5f;
+	m_fAttackRange = 3.5f;
 	m_fAttackCoolTime = 5.f;
 	m_fJumpPower = 3.f;
 	m_fChaseRange = 15.f;
 	m_fMaxRange = 10.f;
 	m_fRandomMoveTime = 3.f;
 	m_fSumRandomMoveTime = 0.f;
+	m_fCurHp = 30.f;
 	//m_AttackfCoolTime = 1.f;
 
 	return S_OK;
@@ -200,7 +200,7 @@ void CSpider::Update(_float fTimeDelta)
 		if (m_fSumMoveCoolTime >= m_fMoveCoolTime)
 		{
 			_float3 vDiff = m_pPlayerTransform->Get_State(STATE::POSITION) - m_pTransformCom->Get_State(STATE::POSITION);
-			if (D3DXVec3Length(&vDiff) <= m_fChaseRange && D3DXVec3Length(&vDiff) >= m_fAttackRange - 1.f)
+			if (D3DXVec3Length(&vDiff) <= m_fChaseRange && (D3DXVec3Length(&vDiff) >= m_fSafeDistance) && D3DXVec3Length(&vDiff) >= m_fAttackRange - 1.f)
 			{
 				Move(fTimeDelta);
 				m_isMove = true;

@@ -231,17 +231,25 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 		{
 			if (m_bCanUseCardKey && m_bCanOpenDoor)
 			{
+				m_pGameInstance->PlaySoundOnce(TEXT("keycard_unlock.ogg"), CHANNELID::SOUND_EFFECT, 1.0f);
 				m_tInfo.strItem = TEXT("CardKey");
 				m_tInfo.strItemAction = TEXT("Up");
 				m_tInfo.strAction = TEXT("Down");
 				m_bUseCardKey = true;
 				m_pDoorLock->Set_Can_Open(m_bUseCardKey);
+
+				if (m_pObjectDesc.iLayerLevel == ENUM_CLASS(LEVEL::GAMEPLAY))
+					m_pGameInstance->PlaySoundOnce(TEXT("door_huge_metal_open.ogg"), CHANNELID::SOUND_EFFECT, 1.0f);
+				else if (m_pObjectDesc.iLayerLevel == ENUM_CLASS(LEVEL::JUSIN))
+					m_pGameInstance->PlaySoundOnce(TEXT("door_scifi02_open.ogg"), CHANNELID::SOUND_EFFECT, 1.0f);
+				
 				m_bCanUseCardKey = false;
 				m_bCanOpenDoor = false;
 			}
 
 			if (m_bCanActiveElevator)
 			{
+				m_pGameInstance->PlaySoundOnce(TEXT("elevator_start.ogg"), CHANNELID::SOUND_EFFECT, 1.0f);
 				m_pLever->Set_Active(true);
 				m_bActiveElevator = true;
 				m_bCanActiveElevator = false;
