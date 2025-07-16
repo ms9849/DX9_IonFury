@@ -15,6 +15,8 @@ CLevel_Logo::CLevel_Logo(LPDIRECT3DDEVICE9 pGraphic_Device, LEVEL eLevelID)
 
 HRESULT CLevel_Logo::Initialize()
 {
+	m_pGameInstance->PlayBGM(L"starters.xm", 0.7f);
+
 	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
 		return E_FAIL;
 

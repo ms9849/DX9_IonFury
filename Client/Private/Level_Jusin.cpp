@@ -32,7 +32,7 @@ HRESULT CLevel_Jusin::Initialize(void* pArg)
 	if (pArg != nullptr)
 		m_tPlayerInfo = *static_cast<CPlayer::PLAYER_INFO*>(pArg);
 
-	m_pGameInstance->PlayBGM(L"BackGround.mp3", 0.7f);
+	m_pGameInstance->PlayBGM(L"broken_system.xm", 0.7f);
 
 	if (FAILED(Ready_Objects_By_JSON()))
 		return E_FAIL;
@@ -96,6 +96,9 @@ HRESULT CLevel_Jusin::Initialize(void* pArg)
 		return E_FAIL;
 	
 	if (FAILED(Ready_Layer_Interaction_Objects(TEXT("Layer_Interaction_Objects"))))
+		return E_FAIL;
+
+	if (FAILED(Ready_Layer_Map_Ceiling(TEXT("Layer_Map_Ceiling"))))
 		return E_FAIL;
 
 	if (FAILED(Ready_Layer_Bullet(TEXT("Layer_Bullet"))))
@@ -1164,6 +1167,35 @@ HRESULT CLevel_Jusin::Ready_Layer_Interaction_Objects(const _wstring& strLayerTa
 	//	return E_FAIL;
 
 	//m_pTerrain_Manager->Add_Cube(LEVEL::JUSIN);
+
+	return S_OK;
+}
+
+HRESULT CLevel_Jusin::Ready_Layer_Map_Ceiling(const _wstring& strLayerTag)
+{
+	for (auto& iter : m_ObjectDescs->find(strLayerTag)->second)
+	{
+		if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(iter.iProtoLevel), iter.strProto,
+			ENUM_CLASS(iter.iLayerLevel), iter.strLayer, &iter)))
+			return E_FAIL;
+
+		dynamic_cast<CTransform*>(
+			m_pGameInstance->Get_Component(
+				ENUM_CLASS(iter.iLayerLevel), iter.strLayer, TEXT("Com_Transform"), iter.iObjectID)
+			)->Set_State(STATE::RIGHT, iter.matWorld.m[0]);
+		dynamic_cast<CTransform*>(
+			m_pGameInstance->Get_Component(
+				ENUM_CLASS(iter.iLayerLevel), iter.strLayer, TEXT("Com_Transform"), iter.iObjectID)
+			)->Set_State(STATE::UP, iter.matWorld.m[1]);
+		dynamic_cast<CTransform*>(
+			m_pGameInstance->Get_Component(
+				ENUM_CLASS(iter.iLayerLevel), iter.strLayer, TEXT("Com_Transform"), iter.iObjectID)
+			)->Set_State(STATE::LOOK, iter.matWorld.m[2]);
+		dynamic_cast<CTransform*>(
+			m_pGameInstance->Get_Component(
+				ENUM_CLASS(iter.iLayerLevel), iter.strLayer, TEXT("Com_Transform"), iter.iObjectID)
+			)->Set_State(STATE::POSITION, iter.matWorld.m[3]);
+	}
 
 	return S_OK;
 }

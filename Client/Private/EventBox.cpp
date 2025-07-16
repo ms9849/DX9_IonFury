@@ -24,7 +24,7 @@ HRESULT CEventBox::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-	m_pTransformCom->Set_State(STATE::POSITION, _float3{ 5.f, 3.f, 5.f });
+	//m_pTransformCom->Set_State(STATE::POSITION, _float3{ 5.f, 3.f, 5.f });
 
 	return S_OK;
 }

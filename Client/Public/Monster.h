@@ -31,6 +31,7 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 	virtual void RecoveryHp();
+	virtual void Set_Hp(_float fHp);
 	virtual _float Get_Hp();
 	virtual void Drop_Item();
 

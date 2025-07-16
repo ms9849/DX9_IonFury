@@ -1,7 +1,4 @@
 #include "Monster.h"
-
-#include "Bullet.h"
-#include "BehaviorNode.h"
 #include "ItemArmorPack.h"
 #include "ItemPistolBullet.h"
 #include "ItemShootGunBullet.h"
@@ -66,6 +63,11 @@ HRESULT CMonster::Render()
 void CMonster::RecoveryHp()
 {
 	m_fCurHp = m_fMaxHp;
+}
+
+void CMonster::Set_Hp(_float fHp)
+{
+	m_fMaxHp = fHp;
 }
 
 _float CMonster::Get_Hp()
