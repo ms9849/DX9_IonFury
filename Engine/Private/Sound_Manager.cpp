@@ -102,7 +102,7 @@ void CSound_Manager::PlaySoundLoop(const _wstring& pSoundKey, CHANNELID eID, flo
 	if (iter == m_mapSound.end())
 		return;
 
-	m_pSystem->playSound(iter->second, nullptr, FALSE, &m_pChannelArr[ENUM_CLASS(CHANNELID::SOUND_BGM)]);
+	m_pSystem->playSound(iter->second, nullptr, FALSE, &m_pChannelArr[ENUM_CLASS(eID)]);
 	m_pChannelArr[ENUM_CLASS(eID)]->setMode(FMOD_LOOP_NORMAL);
 	m_pChannelArr[ENUM_CLASS(eID)]->setVolume(fVolume);
 	m_pSystem->update();

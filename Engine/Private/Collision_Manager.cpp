@@ -523,18 +523,14 @@ _bool CCollision_Manager::RayToAABB_Collision(CGameObject* pRay, CGameObject* pA
     /* 가장 큰 max 값을 구해낸다. */
     fMax = fminf(fminf(fmaxf(t1, t2), fmaxf(t3, t4)), fmaxf(t5, t6));
 
-    if (fMax < 0.f || fMin > fMax)
-        return false;
-
-    // 길이 구하는 함수. 아직 이해 못함..
     fDistance = fMin < 0.f ? fMax : fMin;
 
-    if (fDistance < 0.5f)
+    if (!(fMax < 0.f || fMin > fMax) && fDistance < 0.5f)
     {
         _float3 vFirst, vSecond;
         *pCollider = CollisionDesc.pCollider;
         *vPos = vRayPos + vRayDir * fDistance; // 충돌 위치
-        
+
         _float3 vAABBPoints[8] = {
             { vColliderMin.x, vColliderMax.y, vColliderMin.z },
             { vColliderMax.x, vColliderMax.y, vColliderMin.z },
