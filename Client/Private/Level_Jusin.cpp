@@ -34,12 +34,7 @@ HRESULT CLevel_Jusin::Initialize(void* pArg)
 	if (pArg != nullptr)
 		m_tPlayerInfo = *static_cast<CPlayer::PLAYER_INFO*>(pArg);
 
-	m_pGameInstance->PlayBGM(L"BackGround.mp3", 0.7f);
-
 	if (FAILED(Ready_Objects_By_JSON()))
-		return E_FAIL;
-
-	if (FAILED(Ready_Lights()))
 		return E_FAIL;
 
 	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
@@ -54,10 +49,7 @@ HRESULT CLevel_Jusin::Initialize(void* pArg)
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
-	// if (FAILED(Ready_Layer_Spawner(TEXT("Layer_Spawner"))))
-	// 	return E_FAIL;
-
-	 if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"))))
+	if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"))))
 	 	return E_FAIL;
 
 	if (FAILED(Ready_Layer_UI(TEXT("Layer_UI"))))
@@ -71,6 +63,10 @@ HRESULT CLevel_Jusin::Initialize(void* pArg)
 
 	 if (FAILED(Ready_Layer_Items(TEXT("Layer_Items"))))
 	 	return E_FAIL;
+
+
+	 if (FAILED(Ready_Layer_Spawner(TEXT("Layer_Spawner"))))
+		 return E_FAIL;
 
 	 if (FAILED(Ready_Layer_EventBox(TEXT("Layer_EventBox"))))
 		 return E_FAIL;
@@ -435,83 +431,16 @@ HRESULT CLevel_Jusin::Ready_Layer_Spawner(const _wstring& strLayerTag)
 {
 	for (auto& iter : m_ObjectDescs->find(strLayerTag)->second)
 	{
+		/*if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(iter.iProtoLevel), iter.strProto, ENUM_CLASS(iter.iLayerLevel),
+			iter.strLayer, &iter)))
+			return E_FAIL;*/
+
 		if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(iter.iProtoLevel), iter.strProto,
 			ENUM_CLASS(iter.iLayerLevel), iter.strLayer, &iter)))
 			return E_FAIL;
 	}
 
-	/*for (size_t i = 0; i < 30; i++)
-	{
-		if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_GameObject_Spawner"),
-			ENUM_CLASS(LEVEL::JUSIN), strLayerTag, _float3(0.5f, 0.5f, 0.5f))))
-			return E_FAIL;
-	}*/
-
-	/*CSpawner::SPAWNER_DESC desc;
-	desc.vPos = _float3(22.5f, 1.f, 12.5f);
-	desc.idx = 0;
-	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_GameObject_Spawner"),
-		ENUM_CLASS(LEVEL::JUSIN), strLayerTag, &desc)))
-		return E_FAIL;
-
-	desc.vPos = _float3(12.5f, 1.f, 5.5f);
-	desc.idx = 1;
-	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_GameObject_Spawner"),
-		ENUM_CLASS(LEVEL::JUSIN), strLayerTag, &desc)))
-		return E_FAIL;
-
-	desc.vPos = _float3(15.5f, 1.f, 8.5f);
-	desc.idx = 2;
-	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_GameObject_Spawner"),
-		ENUM_CLASS(LEVEL::JUSIN), strLayerTag, &desc)))
-		return E_FAIL;
-
-	desc.vPos = _float3(17.5f, 1.f, 10.5f);
-	desc.idx = 3;
-	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_GameObject_Spawner"),
-		ENUM_CLASS(LEVEL::JUSIN), strLayerTag, &desc)))
-		return E_FAIL;
-
-	desc.vPos = _float3(20.5f, 1.f, 13.5f);
-	desc.idx = 0;
-	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_GameObject_Spawner"),
-		ENUM_CLASS(LEVEL::JUSIN), strLayerTag, &desc)))
-		return E_FAIL;
-
-	desc.vPos = _float3(23.5f, 1.f, 17.5f);
-	desc.idx = 1;
-	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_GameObject_Spawner"),
-		ENUM_CLASS(LEVEL::JUSIN), strLayerTag, &desc)))
-		return E_FAIL;
-
-	desc.vPos = _float3(26.5f, 1.f, 22.5f);
-	desc.idx = 2;
-	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_GameObject_Spawner"),
-		ENUM_CLASS(LEVEL::JUSIN), strLayerTag, &desc)))
-		return E_FAIL;
-
-	desc.vPos = _float3(16.5f, 1.f, 30.5f);
-	desc.idx = 3;
-	if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_GameObject_Spawner"),
-		ENUM_CLASS(LEVEL::JUSIN), strLayerTag, &desc)))
-		return E_FAIL;*/
-
-		// ¸Ê ¿ìÃø ·ë ½ºÆù
-		//CSpawner::SPAWNER_DESC desc;
-		//desc.vPos = _float3(45.5f, 1.f, 28.5f);
-		//desc.idx = 0;
-		//desc.isLeft = false;
-		//if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_GameObject_Spawner"),
-		//	ENUM_CLASS(LEVEL::JUSIN), strLayerTag, &desc)))
-		//	return E_FAIL;
-
-		//// ¸Ê ÁÂÃø ·ë ½ºÆù
-		//desc.vPos = _float3(45.5f, 1.f, 63.5f);
-		//desc.idx = 0;
-		//desc.isLeft = true;
-		//if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_GameObject_Spawner"),
-		//	ENUM_CLASS(LEVEL::JUSIN), strLayerTag, &desc)))
-	return E_FAIL;
+	return S_OK;
 }
 
 HRESULT CLevel_Jusin::Ready_Layer_Monster(const _wstring& strLayerTag)

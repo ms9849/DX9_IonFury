@@ -428,7 +428,7 @@ HRESULT CLoader::Loading_For_GamePlay()
 		return E_FAIL;
 
 #pragma region 몬스터
-	/* For.Prototype_GameObject_Monster_Spawner */
+	/* For.Prototype_GameObject_Spawner */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Spawner"),
 		CSpawner::Create(m_pGraphic_Device))))
 		return E_FAIL;
@@ -938,7 +938,7 @@ HRESULT CLoader::Loading_For_Jusin()
 		return E_FAIL;
 
 #pragma region 몬스터
-	/* For.Prototype_GameObject_Monster_Spawner */
+	/* For.Prototype_GameObject_Spawner */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_GameObject_Spawner"),
 		CSpawner::Create(m_pGraphic_Device))))
 		return E_FAIL;
@@ -1470,7 +1470,7 @@ HRESULT CLoader::Loading_For_BossFight()
 		return E_FAIL;
 
 #pragma region 몬스터
-	/* For.Prototype_GameObject_Monster_Spawner */
+	/* For.Prototype_GameObject_Spawner */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_GameObject_Spawner"),
 		CSpawner::Create(m_pGraphic_Device))))
 		return E_FAIL;
