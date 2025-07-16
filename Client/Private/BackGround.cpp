@@ -19,15 +19,17 @@ HRESULT CBackGround::Initialize_Prototype()
 
 HRESULT CBackGround::Initialize(void* pArg)
 {
+	m_iTextureIndex = *static_cast<_uint*>(pArg);
+
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
 	UIOBJECT_DESC	Desc{};
 
-	Desc.fSizeX = 200.0f;
-	Desc.fSizeY = 200.0f;
-	Desc.fX = 100.0f;
-	Desc.fY = 100.0f;
+	Desc.fSizeX = g_iWinSizeX;
+	Desc.fSizeY = g_iWinSizeY;
+	Desc.fX = g_iWinSizeX * 0.5f;
+	Desc.fY = g_iWinSizeY * 0.5f;
 
 	if (FAILED(__super::Initialize(&Desc)))
 		return E_FAIL;
@@ -56,7 +58,7 @@ HRESULT CBackGround::Render()
 {
 	m_pTransformCom->Set_Transform();	
 
-	m_pTextureCom->Set_Texture(1);
+	m_pTextureCom->Set_Texture(m_iTextureIndex);
 
 	__super::Begin();
 
@@ -81,7 +83,7 @@ HRESULT CBackGround::Ready_Components()
 		return E_FAIL;
 
 	/* Com_Texture */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::LOGO), TEXT("Prototype_Component_Texture_BackGround"),
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_BackGround"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 

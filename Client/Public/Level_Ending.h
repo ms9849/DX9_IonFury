@@ -5,11 +5,11 @@
 
 NS_BEGIN(Client)
 
-class CLevel_Logo final : public CLevel
+class CLevel_Ending final : public CLevel
 {
 private:
-	CLevel_Logo(LPDIRECT3DDEVICE9 pGraphic_Device, LEVEL eLevelID);
-	virtual ~CLevel_Logo() = default;
+	CLevel_Ending(LPDIRECT3DDEVICE9 pGraphic_Device, LEVEL eLevelID);
+	virtual ~CLevel_Ending() = default;
 
 public:
 	virtual HRESULT Initialize() override;
@@ -20,11 +20,8 @@ public:
 	/* 이 레벨에서 쓰기위한 객체들을 생성한다. */
 	HRESULT Ready_Layer_BackGround(const _wstring& strLayerTag);
 	
-private:
-	class CUIPressEnter* m_pUIPressEnter{nullptr};
-
 public:
-	static CLevel_Logo* Create(LPDIRECT3DDEVICE9 pGraphic_Device, LEVEL eLevelID);
+	static CLevel_Ending* Create(LPDIRECT3DDEVICE9 pGraphic_Device, LEVEL eLevelID);
 	virtual void Free() override;
 };
 
