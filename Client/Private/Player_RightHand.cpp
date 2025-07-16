@@ -45,23 +45,23 @@ void CPlayer_RightHand::Priority_Update(_float fTimeDelta)
 	_wstring strAction = dynamic_cast<CPlayer*>(m_pGameInstance->Find_GameObject_ToLayer(
 		m_pObjectDesc.iLayerLevel, TEXT("Layer_Player")))->Get_Player_Info().strAction;
 
-	if (strWeapon.compare(TEXT("Pistol")) == 0)
+	if (strWeapon == (TEXT("Pistol")))
 	{
-		if(strAction.compare(TEXT("Up")) == 0)
+		if(strAction == (TEXT("Up")))
 			vHandPos = { 0.75f, -1.5f, 1.5f };
 		else
 			vHandPos = { 0.75f, -0.6f, 1.5f };
 	}
-	else if (strWeapon.compare(TEXT("ShootGun")) == 0)
+	else if (strWeapon == (TEXT("ShootGun")))
 	{
-		if (strAction.compare(TEXT("Up")) == 0)
+		if (strAction == (TEXT("Up")))
 			vHandPos = { 0.5f, -1.5f, 1.5f };
 		else
 			vHandPos = { 0.5f, -0.6f, 1.5f };
 	}
-	else if (strWeapon.compare(TEXT("MachineGun")) == 0)
+	else if (strWeapon == (TEXT("MachineGun")))
 	{
-		if (strAction.compare(TEXT("Up")) == 0)
+		if (strAction == (TEXT("Up")))
 			vHandPos = { 0.2f, -1.4f, 1.5f };
 		else
 			vHandPos = { 0.2f, -0.5f, 1.5f };
@@ -116,6 +116,7 @@ HRESULT CPlayer_RightHand::Render()
 
 	// 텍스쳐 컴포넌트로 텍스쳐 렌더링
 	auto iter = m_pTextureComs.find(m_strFrameKey);
+
 	if(iter->second->Get_Texture_Length() == 1)
 		iter->second->Set_Texture(0);
 	else
