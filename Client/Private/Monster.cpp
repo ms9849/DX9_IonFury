@@ -2,6 +2,10 @@
 
 #include "Bullet.h"
 #include "BehaviorNode.h"
+#include "ItemArmorPack.h"
+#include "ItemPistolBullet.h"
+#include "ItemShootGunBullet.h"
+#include "ItemHealpack.h"
 
 CMonster::CMonster(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CLandObject{ pGraphic_Device }
@@ -67,6 +71,41 @@ void CMonster::RecoveryHp()
 _float CMonster::Get_Hp()
 {
 	return m_fCurHp;
+}
+
+void CMonster::Drop_Item()
+{
+	_int iRandomNum = static_cast<_int>(m_pGameInstance->Random(0.f, 6.0f));
+	CItem* pItem;
+
+	switch (iRandomNum)
+	{
+	case 0:
+		pItem = static_cast<CItem*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, m_pObjectDesc.iLayerLevel,
+			TEXT("Prototype_GameObject_Item_Healpack"), &m_pObjectDesc));
+		break;
+	case 1:
+		pItem = static_cast<CItem*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, m_pObjectDesc.iLayerLevel,
+			TEXT("Prototype_GameObject_Item_Pistol_Bullet"), &m_pObjectDesc));
+		break;
+	case 2:
+		pItem = static_cast<CItem*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, m_pObjectDesc.iLayerLevel,
+			TEXT("Prototype_GameObject_Item_ShootGun_Bullet"), &m_pObjectDesc));
+		break;
+	case 3:
+		pItem = static_cast<CItem*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, m_pObjectDesc.iLayerLevel,
+			TEXT("Prototype_GameObject_Item_ArmorPack"), &m_pObjectDesc));
+		break;
+	default:
+		pItem = nullptr;
+		break;
+	}
+
+	if (pItem != nullptr)
+	{
+		pItem->Set_Pos(m_pTransformCom->Get_State(STATE::POSITION));
+		m_pGameInstance->Add_Clone_ToLayer(pItem, m_pObjectDesc.iLayerLevel, TEXT("Layer_Items"));
+	}
 }
 
 

@@ -231,8 +231,8 @@ void CZombie::Update(_float fTimeDelta)
 			m_strFrameKey = TEXT("Zombie_Die_Default");
 
 
-		m_pBoxColliderCom->Set_Scale({ 1.7f, 0.25f, 1.75f });
-		m_pBoxColliderCom->Set_Pos({ 0.f, -0.6f, 0.f });
+		m_pBoxColliderCom->Set_Scale({ 1.2f, 0.20f, 1.2f });
+		m_pBoxColliderCom->Set_Position({ 0.f, -0.6f, 0.f });
 		m_pBoxColliderHead->Set_Scale({ 0.f, 0.f, 0.f });
 
 		m_bAnimationLock = true;
@@ -485,15 +485,15 @@ HRESULT CZombie::Ready_Components()
 
 	/* Com_BoxCollider */
 	CBoxCollider::BOXCOLLIDER_DESC Desc;
-	Desc.vPosition = { 0.f, -0.15f, 0.f };
-	Desc.fScaleX = 0.8f;
-	Desc.fScaleY = 1.25f;
-	Desc.fScaleZ = 0.8f;
+	Desc.vPosition = { 0.f, 0.05f, 0.f };
+	Desc.fScaleX = 0.7f;
+	Desc.fScaleY = 1.15f;
+	Desc.fScaleZ = 0.7f;
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_BoxCollider"),
 		TEXT("Com_BoxCollider"), reinterpret_cast<CComponent**>(&m_pBoxColliderCom), &Desc)))
 		return E_FAIL;
 
-	Desc.vPosition = { 0.f, 2.2f, 0.f };
+	Desc.vPosition = { 0.f, 0.7f, 0.f };
 	Desc.fScaleX = 0.25f;
 	Desc.fScaleY = 0.28f;
 	Desc.fScaleZ = 0.25f;
