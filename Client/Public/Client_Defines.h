@@ -5,6 +5,7 @@
 #include "../Json/json.hpp"
 
 #define JSON nlohmann::json
+#define CHEAT true
 
 namespace Client
 {

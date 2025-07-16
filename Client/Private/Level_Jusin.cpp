@@ -431,10 +431,6 @@ HRESULT CLevel_Jusin::Ready_Layer_Spawner(const _wstring& strLayerTag)
 {
 	for (auto& iter : m_ObjectDescs->find(strLayerTag)->second)
 	{
-		/*if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(iter.iProtoLevel), iter.strProto, ENUM_CLASS(iter.iLayerLevel),
-			iter.strLayer, &iter)))
-			return E_FAIL;*/
-
 		if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(iter.iProtoLevel), iter.strProto,
 			ENUM_CLASS(iter.iLayerLevel), iter.strLayer, &iter)))
 			return E_FAIL;

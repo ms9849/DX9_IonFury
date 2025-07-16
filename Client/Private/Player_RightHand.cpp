@@ -324,18 +324,20 @@ HRESULT CPlayer_RightHand::Ready_Animations()
 
 	//ShootGun_Walk
 	CAnimation::FRAME_DESC ShootGunWalkDesc{};
-	ShootGunWalkDesc.iEnd = 9;
+	ShootGunWalkDesc.iEnd = 11;
 	ShootGunWalkDesc.Poses.reserve(ShootGunWalkDesc.iEnd);
 
+	ShootGunWalkDesc.Poses.push_back(_float3{ -0.025f, 0.025f, 0.f });
 	ShootGunWalkDesc.Poses.push_back(_float3{ -0.05f, 0.05f, 0.f });
-	ShootGunWalkDesc.Poses.push_back(_float3{ -0.1f, 0.075f, 0.f });
-	ShootGunWalkDesc.Poses.push_back(_float3{ -0.15f, 0.1f, 0.f });
-	ShootGunWalkDesc.Poses.push_back(_float3{ -0.2f, 0.075f, 0.f });
-	ShootGunWalkDesc.Poses.push_back(_float3{ -0.25f, 0.05f, 0.f });
-	ShootGunWalkDesc.Poses.push_back(_float3{ -0.2f, 0.075f, 0.f });
-	ShootGunWalkDesc.Poses.push_back(_float3{ -0.15f, 0.1f, 0.f });
-	ShootGunWalkDesc.Poses.push_back(_float3{ -0.1f, 0.075f, 0.f });
+	ShootGunWalkDesc.Poses.push_back(_float3{ -0.075f, 0.075f, 0.f });
+	ShootGunWalkDesc.Poses.push_back(_float3{ -0.1f, 0.1f, 0.f });
+	ShootGunWalkDesc.Poses.push_back(_float3{ -0.125f, 0.075f, 0.f });
+	ShootGunWalkDesc.Poses.push_back(_float3{ -0.15f, 0.05f, 0.f });
+	ShootGunWalkDesc.Poses.push_back(_float3{ -0.125f, 0.075f, 0.f });
+	ShootGunWalkDesc.Poses.push_back(_float3{ -0.1f, 0.1f, 0.f });
+	ShootGunWalkDesc.Poses.push_back(_float3{ -0.075f, 0.075f, 0.f });
 	ShootGunWalkDesc.Poses.push_back(_float3{ -0.05f, 0.05f, 0.f });
+	ShootGunWalkDesc.Poses.push_back(_float3{ -0.025f, 0.025f, 0.f });
 
 	m_pAnimationCom->Set_Animation(TEXT("ShootGun_Walk"), ShootGunWalkDesc);
 
@@ -419,18 +421,20 @@ HRESULT CPlayer_RightHand::Ready_Animations()
 
 	//MachineGun_Walk
 	CAnimation::FRAME_DESC MachineGunWalkDesc{};
-	MachineGunWalkDesc.iEnd = 9;
+	MachineGunWalkDesc.iEnd = 11;
 	MachineGunWalkDesc.Poses.reserve(MachineGunWalkDesc.iEnd);
 
+	MachineGunWalkDesc.Poses.push_back(_float3{ -0.025f, 0.025f, 0.f });
 	MachineGunWalkDesc.Poses.push_back(_float3{ -0.05f, 0.05f, 0.f });
-	MachineGunWalkDesc.Poses.push_back(_float3{ -0.1f, 0.075f, 0.f });
-	MachineGunWalkDesc.Poses.push_back(_float3{ -0.15f, 0.1f, 0.f });
-	MachineGunWalkDesc.Poses.push_back(_float3{ -0.2f, 0.075f, 0.f });
-	MachineGunWalkDesc.Poses.push_back(_float3{ -0.25f, 0.05f, 0.f });
-	MachineGunWalkDesc.Poses.push_back(_float3{ -0.2f, 0.075f, 0.f });
-	MachineGunWalkDesc.Poses.push_back(_float3{ -0.15f, 0.1f, 0.f });
-	MachineGunWalkDesc.Poses.push_back(_float3{ -0.1f, 0.075f, 0.f });
+	MachineGunWalkDesc.Poses.push_back(_float3{ -0.075f, 0.075f, 0.f });
+	MachineGunWalkDesc.Poses.push_back(_float3{ -0.1f, 0.1f, 0.f });
+	MachineGunWalkDesc.Poses.push_back(_float3{ -0.125f, 0.075f, 0.f });
+	MachineGunWalkDesc.Poses.push_back(_float3{ -0.15f, 0.05f, 0.f });
+	MachineGunWalkDesc.Poses.push_back(_float3{ -0.125f, 0.075f, 0.f });
+	MachineGunWalkDesc.Poses.push_back(_float3{ -0.1f, 0.1f, 0.f });
+	MachineGunWalkDesc.Poses.push_back(_float3{ -0.075f, 0.075f, 0.f });
 	MachineGunWalkDesc.Poses.push_back(_float3{ -0.05f, 0.05f, 0.f });
+	MachineGunWalkDesc.Poses.push_back(_float3{ -0.025f, 0.025f, 0.f });
 
 	m_pAnimationCom->Set_Animation(TEXT("MachineGun_Walk"), MachineGunWalkDesc);
 

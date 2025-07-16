@@ -55,7 +55,7 @@ HRESULT CCamera::Initialize(void* pArg)
 	/* 뷰스페이스 변환행렬을 구한다. */
 	/*D3DXMatrixLookAtLH();*/
 	m_pTransformCom->Set_State(STATE::POSITION, pDesc->vEye);
-	m_pTransformCom->LookAt(pDesc->vAt);
+	//m_pTransformCom->LookAt(pDesc->vAt);
 
 	/* 투영스페이스 변환행렬 */
 	D3DXMatrixPerspectiveFovLH(&m_ProjMatrix, m_fFov, m_fAspect, m_fNear, m_fFar);
