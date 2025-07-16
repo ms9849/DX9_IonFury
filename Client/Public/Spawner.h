@@ -34,7 +34,7 @@ public:
 
 public:
 	virtual void OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta);
-	virtual void OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta, CComponent* pCollider);
+	//virtual void OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDelta, CComponent* pCollider);
 	virtual const COLLISION_DESC& Get_CollisionDesc(COLLISION eColType);
 
 public:

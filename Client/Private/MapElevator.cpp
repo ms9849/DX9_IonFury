@@ -45,16 +45,8 @@ void CMapElevator::Elevator_Animation(_float fTimeDelta)
 			m_bEnd = true;
 		}
 
-		if (m_pObjectDesc.iLayerLevel == ENUM_CLASS(LEVEL::JUSIN))
-		{
-			if (m_fTimeStack >= 0.5f)
-				vPos.y += (fTimeDelta * 5);
-		}
-		else
-		{
-			if(m_fTimeStack >= 1.f)
-				vPos.y += (fTimeDelta * 5);
-		}
+		if(m_fTimeStack >= 1.0f)
+			vPos.y += (fTimeDelta * 5);
 	}
 	else
 	{
@@ -101,14 +93,15 @@ void CMapElevator::Priority_Update(_float fTimeDelta)
 
 void CMapElevator::Update(_float fTimeDelta)
 {
-	if (m_bActive)
-	{
-		Elevator_Animation(fTimeDelta);
-	}
 }
 
 void CMapElevator::Late_Update(_float fTimeDelta)
 {
+	if (m_bActive)
+	{
+		Elevator_Animation(fTimeDelta);
+	}
+
 	m_pGameInstance->Add_RenderGroup(RENDER::NONBLEND, this);
 }
 

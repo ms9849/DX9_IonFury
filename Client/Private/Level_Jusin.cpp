@@ -34,12 +34,7 @@ HRESULT CLevel_Jusin::Initialize(void* pArg)
 	if (pArg != nullptr)
 		m_tPlayerInfo = *static_cast<CPlayer::PLAYER_INFO*>(pArg);
 
-	m_pGameInstance->PlayBGM(L"BackGround.mp3", 0.7f);
-
 	if (FAILED(Ready_Objects_By_JSON()))
-		return E_FAIL;
-
-	if (FAILED(Ready_Lights()))
 		return E_FAIL;
 
 	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
@@ -54,10 +49,7 @@ HRESULT CLevel_Jusin::Initialize(void* pArg)
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
-	// if (FAILED(Ready_Layer_Spawner(TEXT("Layer_Spawner"))))
-	// 	return E_FAIL;
-
-	 if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"))))
+	if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"))))
 	 	return E_FAIL;
 
 	if (FAILED(Ready_Layer_UI(TEXT("Layer_UI"))))
@@ -71,6 +63,9 @@ HRESULT CLevel_Jusin::Initialize(void* pArg)
 
 	 if (FAILED(Ready_Layer_Items(TEXT("Layer_Items"))))
 	 	return E_FAIL;
+
+	 if (FAILED(Ready_Layer_Spawner(TEXT("Layer_Spawner"))))
+		 return E_FAIL;
 
 	 if (FAILED(Ready_Layer_EventBox(TEXT("Layer_EventBox"))))
 		 return E_FAIL;
@@ -435,6 +430,10 @@ HRESULT CLevel_Jusin::Ready_Layer_Spawner(const _wstring& strLayerTag)
 {
 	for (auto& iter : m_ObjectDescs->find(strLayerTag)->second)
 	{
+		/*if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(iter.iProtoLevel), iter.strProto, ENUM_CLASS(iter.iLayerLevel),
+			iter.strLayer, &iter)))
+			return E_FAIL;*/
+
 		if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(iter.iProtoLevel), iter.strProto,
 			ENUM_CLASS(iter.iLayerLevel), iter.strLayer, &iter)))
 			return E_FAIL;
@@ -511,7 +510,7 @@ HRESULT CLevel_Jusin::Ready_Layer_Spawner(const _wstring& strLayerTag)
 		//desc.isLeft = true;
 		//if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_GameObject_Spawner"),
 		//	ENUM_CLASS(LEVEL::JUSIN), strLayerTag, &desc)))
-	return E_FAIL;
+	//return E_FAIL;
 }
 
 HRESULT CLevel_Jusin::Ready_Layer_Monster(const _wstring& strLayerTag)
