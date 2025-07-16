@@ -1,14 +1,15 @@
+
 #include "BoxCollider.h"
 
 CBoxCollider::CBoxCollider(LPDIRECT3DDEVICE9 pGraphic_Device) :
-	CComponent { pGraphic_Device }
+	CComponent{ pGraphic_Device }
 {
 }
 
 /* m_pVB는 각자 다 달라질 것. */
 CBoxCollider::CBoxCollider(const CBoxCollider& Prototype) :
-	CComponent ( Prototype ),
-	m_vScale { Prototype.m_vScale }
+	CComponent(Prototype),
+	m_vScale{ Prototype.m_vScale }
 	, m_iVertexStride{ Prototype.m_iVertexStride }
 	, m_iNumVertices{ Prototype.m_iNumVertices }
 	, m_iFVF{ Prototype.m_iFVF }
@@ -19,8 +20,8 @@ CBoxCollider::CBoxCollider(const CBoxCollider& Prototype) :
 	, m_eIndexFormat{ Prototype.m_eIndexFormat }
 	, m_iNumVerticesX{ Prototype.m_iNumVerticesX }
 	, m_iNumVerticesZ{ Prototype.m_iNumVerticesZ }
-	, m_vMax { Prototype.m_vMax }
-	, m_vMin { Prototype.m_vMin }
+	, m_vMax{ Prototype.m_vMax }
+	, m_vMin{ Prototype.m_vMin }
 {
 	memcpy(m_vLocalPos, Prototype.m_vLocalPos, sizeof(_float3) * 8);
 	memcpy(m_vAxis, Prototype.m_vAxis, sizeof(_float3));
@@ -67,45 +68,39 @@ void CBoxCollider::Set_Matrix(const _float4x4& matWorld)
 
 	/* vMin 찾기 */
 	_float3 vMin = { FLT_MAX, FLT_MAX, FLT_MAX };
-	_float3 vMax = { FLT_MIN, FLT_MIN, FLT_MIN };
+	_float3 vMax = { -9999.f, -9999.f, -9999.f };
 
 	for (_uint i = 0; i < 8; ++i)
 	{
-		/* 셋 다 작다면 */
-		if (m_vLocalPos[i].x <= vMin.x && m_vLocalPos[i].y <= vMin.y && m_vLocalPos[i].z <= vMin.z)
-		{
-			m_vMin = m_vLocalPos[i];
-			vMin = m_vLocalPos[i];
-		}
+		vMin.x = min(vMin.x, m_vLocalPos[i].x);
+		vMin.y = min(vMin.y, m_vLocalPos[i].y);
+		vMin.z = min(vMin.z, m_vLocalPos[i].z);
 
-		if (m_vLocalPos[i].x >= vMax.x && m_vLocalPos[i].y >= vMax.y && m_vLocalPos[i].z >= vMax.z)
-		{
-			m_vMax = m_vLocalPos[i];
-			vMax = m_vLocalPos[i];
-		}
+		vMax.x = max(vMax.x, m_vLocalPos[i].x);
+		vMax.y = max(vMax.y, m_vLocalPos[i].y);
+		vMax.z = max(vMax.z, m_vLocalPos[i].z);
 	}
+
+	m_vMax = vMax;
+	m_vMin = vMin;
 }
 
+/* vScale만큼 줄여주는 함수 */
 void CBoxCollider::Set_Scale(const _float3& vScale)
 {
-	m_vScale = vScale;
+	m_vScale.x *= vScale.x;
+	m_vScale.y *= vScale.y;
+	m_vScale.z *= vScale.z;
 
-	m_vLocalPos[0] = _float3(-0.5f, 0.5f, -0.5f);
-	m_vLocalPos[1] = _float3(0.5f, 0.5f, -0.5f);
-	m_vLocalPos[2] = _float3(0.5f, -0.5f, -0.5f);
-	m_vLocalPos[3] = _float3(-0.5f, -0.5f, -0.5f);
-	m_vLocalPos[4] = _float3(-0.5f, 0.5f, 0.5f);
-	m_vLocalPos[5] = _float3(0.5f, 0.5f, 0.5f);
-	m_vLocalPos[6] = _float3(0.5f, -0.5f, 0.5f);
-	m_vLocalPos[7] = _float3(-0.5f, -0.5f, 0.5f);
+	m_vPos.x *= vScale.x;
+	m_vPos.y *= vScale.y;
+	m_vPos.z *= vScale.z;
 
 	for (_uint i = 0; i < 8; ++i)
 	{
-		m_vLocalPos[i] += m_vPos;
-
-		m_vLocalPos[i].x *= m_vScale.x;
-		m_vLocalPos[i].y *= m_vScale.y;
-		m_vLocalPos[i].z *= m_vScale.z;
+		m_vLocalPos[i].x *= vScale.x;
+		m_vLocalPos[i].y *= vScale.y;
+		m_vLocalPos[i].z *= vScale.z;
 	}
 
 	/* 정점 정보, 즉 크기는 콜라이더마다 다르니까 일단 둔다. */
@@ -142,46 +137,62 @@ void CBoxCollider::Set_Scale(const _float3& vScale)
 
 	/* vMin 찾기 */
 	_float3 vMin = { FLT_MAX, FLT_MAX, FLT_MAX };
-	_float3 vMax = { FLT_MIN, FLT_MIN, FLT_MIN };
+	_float3 vMax = { -9999.f, -9999.f, -9999.f };
 
 	for (_uint i = 0; i < 8; ++i)
 	{
-		/* 셋 다 작다면 */
-		if (m_vLocalPos[i].x <= vMin.x && m_vLocalPos[i].y <= vMin.y && m_vLocalPos[i].z <= vMin.z)
-		{
-			m_vMin = m_vLocalPos[i];
-			vMin = m_vLocalPos[i];
-		}
+		vMin.x = min(vMin.x, m_vLocalPos[i].x);
+		vMin.y = min(vMin.y, m_vLocalPos[i].y);
+		vMin.z = min(vMin.z, m_vLocalPos[i].z);
 
-		if (m_vLocalPos[i].x >= vMax.x && m_vLocalPos[i].y >= vMax.y && m_vLocalPos[i].z >= vMax.z)
-		{
-			m_vMax = m_vLocalPos[i];
-			vMax = m_vLocalPos[i];
-		}
+		vMax.x = max(vMax.x, m_vLocalPos[i].x);
+		vMax.y = max(vMax.y, m_vLocalPos[i].y);
+		vMax.z = max(vMax.z, m_vLocalPos[i].z);
 	}
+
+	m_vMax = vMax;
+	m_vMin = vMin;
 }
 
-void CBoxCollider::Set_Pos(const _float3& vPos)
+void CBoxCollider::Set_Position(const _float3& vPos)
 {
-	m_vPos += vPos;
+	for (_uint i = 0; i < 8; ++i)
+	{
+		m_vLocalPos[i] -= m_vPos;
 
-	m_vLocalPos[0] = _float3(-0.5f, 0.5f, -0.5f);
-	m_vLocalPos[1] = _float3(0.5f, 0.5f, -0.5f);
-	m_vLocalPos[2] = _float3(0.5f, -0.5f, -0.5f);
-	m_vLocalPos[3] = _float3(-0.5f, -0.5f, -0.5f);
-	m_vLocalPos[4] = _float3(-0.5f, 0.5f, 0.5f);
-	m_vLocalPos[5] = _float3(0.5f, 0.5f, 0.5f);
-	m_vLocalPos[6] = _float3(0.5f, -0.5f, 0.5f);
-	m_vLocalPos[7] = _float3(-0.5f, -0.5f, 0.5f);
+		m_vLocalPos[i].x /= m_vScale.x;
+		m_vLocalPos[i].y /= m_vScale.y;
+		m_vLocalPos[i].z /= m_vScale.z;
+	}
+
+	m_vPos = vPos;
 
 	for (_uint i = 0; i < 8; ++i)
 	{
-		m_vLocalPos[i] += m_vPos;
-
 		m_vLocalPos[i].x *= m_vScale.x;
 		m_vLocalPos[i].y *= m_vScale.y;
 		m_vLocalPos[i].z *= m_vScale.z;
+		m_vLocalPos[i] += m_vPos;
 	}
+
+
+	/* vMin 찾기 */
+	_float3 vMin = { FLT_MAX, FLT_MAX, FLT_MAX };
+	_float3 vMax = { -9999.f, -9999.f, -9999.f };
+
+	for (_uint i = 0; i < 8; ++i)
+	{
+		vMin.x = min(vMin.x, m_vLocalPos[i].x);
+		vMin.y = min(vMin.y, m_vLocalPos[i].y);
+		vMin.z = min(vMin.z, m_vLocalPos[i].z);
+
+		vMax.x = max(vMax.x, m_vLocalPos[i].x);
+		vMax.y = max(vMax.y, m_vLocalPos[i].y);
+		vMax.z = max(vMax.z, m_vLocalPos[i].z);
+	}
+
+	m_vMax = vMax;
+	m_vMin = vMin;
 
 	/* 정점 정보, 즉 크기는 콜라이더마다 다르니까 일단 둔다. */
 	VTXCOLOR* pVertices = { nullptr };
@@ -214,26 +225,6 @@ void CBoxCollider::Set_Pos(const _float3& vPos)
 	pVertices[7].vColor = D3DCOLOR_ARGB(255, 255, 0, 0);
 
 	m_pVB->Unlock();
-
-	/* vMin 찾기 */
-	_float3 vMin = { FLT_MAX, FLT_MAX, FLT_MAX };
-	_float3 vMax = { FLT_MIN, FLT_MIN, FLT_MIN };
-
-	for (_uint i = 0; i < 8; ++i)
-	{
-		/* 셋 다 작다면 */
-		if (m_vLocalPos[i].x <= vMin.x && m_vLocalPos[i].y <= vMin.y && m_vLocalPos[i].z <= vMin.z)
-		{
-			m_vMin = m_vLocalPos[i];
-			vMin = m_vLocalPos[i];
-		}
-
-		if (m_vLocalPos[i].x >= vMax.x && m_vLocalPos[i].y >= vMax.y && m_vLocalPos[i].z >= vMax.z)
-		{
-			m_vMax = m_vLocalPos[i];
-			vMax = m_vLocalPos[i];
-		}
-	}
 }
 
 HRESULT CBoxCollider::Initialize_Prototype()
@@ -266,7 +257,7 @@ HRESULT CBoxCollider::Initialize_Prototype()
 	m_vLocalPos[7] = _float3(-0.5f, -0.5f, 0.5f);
 
 	m_vScale = { 1.f, 1.f, 1.f };
-	m_vAxis[0] = _float3(0.5f, 0.f, 0.f );
+	m_vAxis[0] = _float3(0.5f, 0.f, 0.f);
 	m_vAxis[1] = _float3(0.f, 0.5f, 0.f);
 	m_vAxis[2] = _float3(0.f, 0.f, 0.5f);
 
@@ -282,17 +273,10 @@ HRESULT CBoxCollider::Initialize(void* pArg)
 
 	if (pDesc != nullptr)
 	{
-		m_vPos = pDesc->vPosition;
-		for (_uint i = 0; i < 8; ++i)
-		{
-			m_vLocalPos[i].x += m_vPos.x;
-			m_vLocalPos[i].y += m_vPos.y;
-			m_vLocalPos[i].z += m_vPos.z;
-		}
-
 		m_vScale.x = pDesc->fScaleX;
 		m_vScale.y = pDesc->fScaleY;
 		m_vScale.z = pDesc->fScaleZ;
+		m_vPos = pDesc->vPosition;
 
 		D3DXVec3Scale(&m_vAxis[0], &m_vAxis[0], m_vScale.x);
 		D3DXVec3Scale(&m_vAxis[1], &m_vAxis[1], m_vScale.y);
@@ -303,6 +287,13 @@ HRESULT CBoxCollider::Initialize(void* pArg)
 			m_vLocalPos[i].x *= m_vScale.x;
 			m_vLocalPos[i].y *= m_vScale.y;
 			m_vLocalPos[i].z *= m_vScale.z;
+		}
+
+		for (_uint i = 0; i < 8; ++i)
+		{
+			m_vLocalPos[i].x += m_vPos.x;
+			m_vLocalPos[i].y += m_vPos.y;
+			m_vLocalPos[i].z += m_vPos.z;
 		}
 	}
 
@@ -386,7 +377,7 @@ void CBoxCollider::Render(const _float3& vPos)
 	_float4x4 m_matIdentity;
 
 	D3DXMatrixIdentity(&m_matIdentity);
-	
+
 	memcpy(&m_matIdentity.m[3][0], vPos, sizeof(_float3));
 
 	m_pGraphic_Device->SetTransform(D3DTS_WORLD, &m_matIdentity);
@@ -413,7 +404,7 @@ CBoxCollider* CBoxCollider::Create(LPDIRECT3DDEVICE9 pGraphicDev)
 {
 	CBoxCollider* pInstance = new CBoxCollider(pGraphicDev);
 
-	if(FAILED(pInstance->Initialize_Prototype()))
+	if (FAILED(pInstance->Initialize_Prototype()))
 		Safe_Release(pInstance);
 
 	return pInstance;

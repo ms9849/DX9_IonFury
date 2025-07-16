@@ -158,8 +158,8 @@ void CEliteSoldier::Update(_float fTimeDelta)
 		else
 			m_strFrameKey = TEXT("EliteSoldier_Die_Default");
 
-		m_pBoxColliderCom->Set_Scale({ 1.75f, 0.22f, 2.f });
-		m_pBoxColliderCom->Set_Pos({ 0.f, -0.6f, 0.f });
+		m_pBoxColliderCom->Set_Scale({ 1.3f, 0.22f, 1.3f });
+		m_pBoxColliderCom->Set_Position({ 0.f, -0.65f, 0.f });
 		m_pBoxColliderHead->Set_Scale({ 0.f, 0.f, 0.f });
 
 		m_bAnimationLock = true;
@@ -470,18 +470,18 @@ HRESULT CEliteSoldier::Ready_Components()
 
 	/* Com_BoxCollider */
 	CBoxCollider::BOXCOLLIDER_DESC Desc;
-	Desc.vPosition = { 0.f, -0.07f, 0.f };
+	Desc.vPosition = { 0.f, -0.15f, 0.f };
 	Desc.fScaleX = 1.f;
-	Desc.fScaleY = 1.7f;
+	Desc.fScaleY = 1.6f;
 	Desc.fScaleZ = 0.8f;
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_BoxCollider"),
 		TEXT("Com_BoxCollider"), reinterpret_cast<CComponent**>(&m_pBoxColliderCom), &Desc)))
 		return E_FAIL;
 
 	//Desc.vPosition = { -0.3f, 2.35f, -0.3f };
-	Desc.vPosition = { 0.f, 2.95f, 0.f };					// 머리 정면이랑 뒤 기준으론 맞음
+	Desc.vPosition = { 0.f, 0.8f, 0.f };					// 머리 정면이랑 뒤 기준으론 맞음
 	Desc.fScaleX = 0.5f;
-	Desc.fScaleY = 0.3f;
+	Desc.fScaleY = 0.5f;
 	Desc.fScaleZ = 0.5f;										// 0.4
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_BoxCollider"),
 		TEXT("Com_BoxCollider_Head"), reinterpret_cast<CComponent**>(&m_pBoxColliderHead), &Desc)))

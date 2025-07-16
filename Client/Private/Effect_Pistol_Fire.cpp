@@ -48,7 +48,7 @@ void CEffect_Pistol_Fire::Update(_float fTimeDelta)
 
 void CEffect_Pistol_Fire::Late_Update(_float fTimeDelta)
 {
-    m_fFrame += m_fNumFrame * fTimeDelta * 5.f;
+    m_fFrame += m_fNumFrame * fTimeDelta * 10.f;
 
     if (m_fFrame >= m_fNumFrame)
     {

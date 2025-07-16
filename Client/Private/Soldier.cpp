@@ -182,13 +182,15 @@ void CSoldier::Update(_float fTimeDelta)
 		else
 			m_strFrameKey = TEXT("Soldier_Die_Default");
 
-		m_pBoxColliderCom->Set_Scale({ 1.7f, 0.25f, 1.75f });
-		m_pBoxColliderCom->Set_Pos({ 0.f, -0.5f, 0.f });
+		m_pBoxColliderCom->Set_Scale({ 1.4f, 0.2f, 1.4f });
+		m_pBoxColliderCom->Set_Position({ 0.f, -0.6f, 0.f });
+
 		m_pBoxColliderHead->Set_Scale({ 0.f, 0.f, 0.f });
 
 		m_bAnimationLock = true;
 		m_bDying = true;
 		m_pGameInstance->PlaySoundOnce(TEXT("Soldier_Death01.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
+		Drop_Item();
 	}
 	else if (m_pSightCom->Check_Sight(fTimeDelta) && !m_bAnimationLock)
 	{
@@ -531,14 +533,14 @@ HRESULT CSoldier::Ready_Components()
 	CBoxCollider::BOXCOLLIDER_DESC Desc;
 	Desc.vPosition = { 0.f, -0.1f, 0.f };
 	Desc.fScaleX = 0.6f;
-	Desc.fScaleY = 1.22f;
+	Desc.fScaleY = 1.18f;
 	Desc.fScaleZ = 0.65f;
+
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_BoxCollider"),
 		TEXT("Com_BoxCollider"), reinterpret_cast<CComponent**>(&m_pBoxColliderCom), &Desc)))
 		return E_FAIL;
 
-
-	Desc.vPosition = { 0.f, 2.3f, 0.f };
+	Desc.vPosition = { 0.f, 0.65f, 0.f };
 	Desc.fScaleX = 0.3f;
 	Desc.fScaleY = 0.28f;
 	Desc.fScaleZ = 0.3f;
@@ -574,9 +576,9 @@ HRESULT CSoldier::Begin_RenderState()
 	//m_pGraphic_Device->SetRenderState(D3DRS_LIGHTING, FALSE);
 
 	/* 알파 테스트 : 픽셀의 알파를 비교해서 그린다 안그린다를 설정. */
-	/*m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+	m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
 	m_pGraphic_Device->SetRenderState(D3DRS_ALPHAREF, 0);
-	m_pGraphic_Device->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);*/
+	m_pGraphic_Device->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
 
 
 
@@ -589,7 +591,7 @@ HRESULT CSoldier::End_RenderState()
 	//m_pGraphic_Device->SetRenderState(D3DRS_LIGHTING, TRUE);
 
 	m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-	//m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+	m_pGraphic_Device->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
 
 	return S_OK;
 }

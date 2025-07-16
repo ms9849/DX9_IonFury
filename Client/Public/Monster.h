@@ -32,6 +32,7 @@ public:
 	virtual HRESULT Render() override;
 	virtual void RecoveryHp();
 	virtual _float Get_Hp();
+	virtual void Drop_Item();
 
 protected:
 	CAnimation* m_pAnimationCom = { nullptr };

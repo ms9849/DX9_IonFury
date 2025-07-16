@@ -47,6 +47,11 @@ public:
 public:
 	virtual void Set_Pos(const _float3& vPos);
 	virtual void Set_Look(const _float3& vLook);
+	
+	void Set_Frame(_float fFrame) {
+		m_fFrame = fFrame;
+	}
+
 	_float Get_Frame() const {
 		return m_fFrame;
 	}
