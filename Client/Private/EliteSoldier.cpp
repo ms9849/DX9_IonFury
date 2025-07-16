@@ -60,6 +60,7 @@ HRESULT CEliteSoldier::Initialize(void* pArg)
 	m_pTransformCom->Set_State(STATE::POSITION, m_pObjectDesc.matWorld.m[3]);
 	m_pTransformCom->Set_Scale(_float3{ 2.f, 2.f, 1.f });
 
+	RandomRotate();
 	m_vNextDir = m_pTransformCom->Get_State(STATE::LOOK);
 
 	/*_float3 vLook = m_pTransformCom->Get_State(STATE::LOOK);

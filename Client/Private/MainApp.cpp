@@ -56,6 +56,8 @@ HRESULT Client::CMainApp::Initialize()
 	if (FAILED(Start_Level(LEVEL::LOGO)))
 		return E_FAIL;	
 
+	srand(static_cast<unsigned>(time(NULL)));
+
 	return S_OK;
 }
 

@@ -74,6 +74,7 @@ protected:
 	virtual void Move() = 0;
 	virtual void RotateToPlayer(CTransform* pTranform);
 	virtual void RandomMove(_float fTimeDelta, _float3 nextDir);
+	virtual void RandomRotate();
 
 	virtual void Free();
 };
