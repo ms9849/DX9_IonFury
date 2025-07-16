@@ -33,7 +33,7 @@ HRESULT CEffect_Black_Sight::Initialize(void* pArg)
     m_pTransformCom->Set_Scale(_float3(m_fWinSizeX, m_fWinSizeY, 1.f));
     m_pTransformCom->Set_State(STATE::POSITION, _float3(m_fWinSizeX * 0.5f - m_fWinSizeX * 0.5f, m_fWinSizeY * 0.5f - m_fWinSizeY * 0.5f, 0.f));
 
-    m_fNumFrame = 90.f;
+    m_fNumFrame = 50.f;
 
     return S_OK;
 }
@@ -48,26 +48,29 @@ void CEffect_Black_Sight::Update(_float fTimeDelta)
 
 void CEffect_Black_Sight::Late_Update(_float fTimeDelta)
 {
-    if(m_iAlpha <= 255)
-        m_iAlpha += 10.f * fTimeDelta;
+    m_fFrame += m_fNumFrame * fTimeDelta;
 
-    if (m_iAlpha >= 255)
+    if (m_fFrame >= m_fNumFrame)
     {
-        m_iAlpha = 255;
-        m_fFrame = 0.f;
-        m_isDead = true;
+        m_fFrame = m_fNumFrame;
+        //m_fFrame = 0.f;
+        //m_isDead = true;
     }
 
     if (!m_isDead)
-        m_pGameInstance->Add_RenderGroup(RENDER::BLEND, this);
+    {
+        Compute_CamDistance(m_pTransformCom->Get_State(STATE::POSITION));
+        m_pGameInstance->Add_RenderGroup(RENDER::SCREEN, this);
+    }
 
+    m_fCamDistance = 0.1f;
 }
 
 HRESULT CEffect_Black_Sight::Render()
 {
     m_pTransformCom->Set_Transform();
 
-    m_pTextureCom->Set_Texture(0);
+    m_pTextureCom->Set_Texture(static_cast<_uint>(m_fFrame));
 
     Begin_RenderState();
 
@@ -101,18 +104,10 @@ HRESULT CEffect_Black_Sight::Ready_Components()
 
 HRESULT CEffect_Black_Sight::Begin_RenderState()
 {
-    //m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-    //m_pGraphic_Device->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
-    //m_pGraphic_Device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-    //m_pGraphic_Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-    //m_pGraphic_Device->SetRenderState(D3DRS_TEXTUREFACTOR, D3DCOLOR_ARGB(m_iAlpha, 255, 255, 255));
-
-    // 알파 블렌딩 설정
     m_pGraphic_Device->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
     m_pGraphic_Device->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
     m_pGraphic_Device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
     m_pGraphic_Device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-
 
     /*직교 투영 파트*/
     m_pGraphic_Device->SetRenderState(D3DRS_ZENABLE, FALSE);
@@ -122,7 +117,6 @@ HRESULT CEffect_Black_Sight::Begin_RenderState()
 
     m_pGraphic_Device->SetTransform(D3DTS_VIEW, &m_ViewMatrix);
     m_pGraphic_Device->SetTransform(D3DTS_PROJECTION, &m_ProjMatrix);
-
     return S_OK;
 }
 

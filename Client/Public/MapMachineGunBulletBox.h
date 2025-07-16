@@ -3,6 +3,10 @@
 #include "Client_Defines.h"
 #include "CubeObject.h"
 
+NS_BEGIN(Engine)
+class CSphereCollider;
+NS_END
+
 NS_BEGIN(Client)
 
 class CMapMachineGunBulletBox final : public CCubeObject
@@ -27,6 +31,8 @@ public:
 private:
 	virtual HRESULT Ready_Components() override;
 
+private:
+	CSphereCollider* m_pSphereColliderCom = { nullptr };
 
 public:
 	static CMapMachineGunBulletBox* Create(LPDIRECT3DDEVICE9 pGraphic_Device);

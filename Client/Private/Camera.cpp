@@ -87,10 +87,8 @@ void CCamera::Update(_float fTimeDelta)
 		{
 			Chase_Target(m_pCameraConfig.vLimitDistance, m_pCameraConfig.isSyncLook, m_pCameraConfig.isCanTurn, m_pCameraConfig.isMouseFixCenter, fTimeDelta);
 		}
-
-		if (m_bShaking == true)
-			Shaking(fTimeDelta);
-
+		//if (m_bShaking == true)
+		//	Shaking(fTimeDelta);
 	}
 	else
 	{

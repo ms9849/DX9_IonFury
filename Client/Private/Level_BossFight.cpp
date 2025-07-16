@@ -99,6 +99,9 @@ HRESULT CLevel_BossFight::Initialize(void* pArg)
 	if (FAILED(Ready_Layer_Bullet(TEXT("Layer_Bullet"))))
 	 	return E_FAIL;
 
+	m_pTerrain_Manager->Add_Terrian(LEVEL::BOSSFIGHT);
+	m_pTerrain_Manager->Add_Cube(LEVEL::BOSSFIGHT);
+
 	return S_OK;
 }
 
@@ -144,6 +147,7 @@ void CLevel_BossFight::Update(_float fTimeDelta)
 	m_pGameInstance->Check_SphereCollision(TEXT("Layer_Player"), TEXT("Layer_Items"), ENUM_CLASS(LEVEL::BOSSFIGHT), fTimeDelta);
 	m_pGameInstance->Check_SphereCollision(TEXT("Layer_Player"), TEXT("Layer_Interaction_Objects"), ENUM_CLASS(LEVEL::BOSSFIGHT), fTimeDelta);
 	m_pGameInstance->Check_SphereCollision(TEXT("Layer_Player"), TEXT("Layer_Melee_Attack"), ENUM_CLASS(LEVEL::BOSSFIGHT), fTimeDelta);
+	m_pGameInstance->Check_SphereCollision(TEXT("Layer_Player"), TEXT("Layer_Map_Objects_AABB_Ride"), ENUM_CLASS(LEVEL::BOSSFIGHT), fTimeDelta);
 
 	m_pGameInstance->Check_AABBCollision(TEXT("Layer_Player"), TEXT("Layer_Map_Objects_AABB"), ENUM_CLASS(LEVEL::BOSSFIGHT), fTimeDelta);
 	m_pGameInstance->Check_AABBCollision(TEXT("Layer_Player"), TEXT("Layer_Map_Objects_AABB_Ride"), ENUM_CLASS(LEVEL::BOSSFIGHT), fTimeDelta);
