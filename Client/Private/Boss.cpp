@@ -87,9 +87,9 @@ void CBoss::Update(_float fTimeDelta)
 	OutputDebugStringW(szBuffer);*/
 	//if (!isUpperLive)								// 상체 죽었으면 시간 누적
 	m_fCurHp = m_pBossLowerBody->Get_Hp() + m_pBossUpperBody->Get_Hp();
-	wchar_t szBuffer[128];
+	/*wchar_t szBuffer[128];
 	swprintf_s(szBuffer, 128, L"[디버그] 보스 전체 체력: %.3f\n",m_fCurHp);
-	OutputDebugStringW(szBuffer);
+	OutputDebugStringW(szBuffer);*/
 	if(m_pBossUpperBody->isDead())
 	{
 		m_fSumResurrectionTime += fTimeDelta;
@@ -127,8 +127,8 @@ void CBoss::Update(_float fTimeDelta)
 	{
 		//OutputDebugStringA("디버그 메시지: 둘 다 사망 상태\n");
 		m_isDead = true;
-
 		m_pGameInstance->PlaySoundOnce(TEXT("Boss1_Die.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
+		static_cast<CCamera*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Layer_Camera"), nullptr))->Start_Shaking(3.0f, 2.5f);
 		/*CEffect_Manager::GetInstance()->Create_Effect(TEXT("Effect_Boss_Die"), ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Effect"),
 			m_pTransformCom->Get_State(STATE::POSITION));*/
 	}

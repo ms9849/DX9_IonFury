@@ -10,6 +10,7 @@
 #include "Effect_Manager.h"
 #include "Terrain_Manager.h"
 #include "Camera.h"
+
 CBossUpperBody::CBossUpperBody(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CMonster{ pGraphic_Device }
 {
@@ -89,7 +90,7 @@ HRESULT CBossUpperBody::Initialize(void* pArg)
 	//m_pTransformCom_Down->Set_State(STATE::POSITION, m_pTransformCom->Get_State(STATE::POSITION));
 
 	m_fAttackRange = 15.f;
-	m_fAttackCoolTime = 8.f;
+	m_fAttackCoolTime = 4.f;
 	m_fSumAttackCoolTime = 5.f;
 	m_uCurBullets = 0;
 	m_uMaxBullets = 25;
@@ -141,9 +142,7 @@ void CBossUpperBody::Update(_float fTimeDelta)
 				TurnOffBooster(CHANNELID::SOUND_BOOSTER_EFFECT);
 				m_isLanding = true;
 				m_pGameInstance->PlaySoundOnce(TEXT("BossLanding.wav"), CHANNELID::SOUND_EFFECT, 0.7f);
-				/* 강도, 지속시간 순으로 입력 */
 				static_cast<CCamera*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Layer_Camera"), nullptr))->Start_Shaking(0.13f, 1.3f);
-
 			}
 
 			/*if (fabsf(m_pTransformCom->Get_State(STATE::POSITION).y - m_pCoreTranform->Get_State(STATE::POSITION).y) <= 2.0f)
@@ -1033,7 +1032,7 @@ void CBossUpperBody::Move(_float fTimeDelta)
 
 void CBossUpperBody::SummonMonster()				// 추후 필요하면 인덱스 받을 수 있도록 변경하기
 {
-	for (size_t i = 0; i < 5; i++)
+	for (size_t i = 0; i < 2; i++)
 	{
 		_float4x4 mat{
 			1.f, 0.f, 0.f, 0.f,

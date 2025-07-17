@@ -1,6 +1,6 @@
 #include "BossGrenade.h"
-
 #include "GameInstance.h"
+#include "Camera.h"
 
 CBossGrenade::CBossGrenade(LPDIRECT3DDEVICE9 pGraphicDev)
 	: CBullet{ pGraphicDev }
@@ -92,6 +92,7 @@ void CBossGrenade::Update(_float fTimeDelta)
 		{
 			m_bExplosion = true;
 			m_pGameInstance->PlaySoundOnce(TEXT("Grenade_Explosion.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
+			static_cast<CCamera*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Layer_Camera"), nullptr))->Start_Shaking(0.2f, 0.5f);
 		}
 
 		m_bAnimateionOn = true;

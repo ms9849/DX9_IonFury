@@ -58,7 +58,7 @@ HRESULT CSpider::Initialize(void* pArg)
 	m_fDamage = 30.f;
 	m_fAttackRange = 3.5f;
 	m_fAttackCoolTime = 5.f;
-	m_fJumpPower = 3.f;
+	m_fJumpPower = 3.5f;
 	m_fChaseRange = 15.f;
 	m_fMaxRange = 10.f;
 	m_fRandomMoveTime = 3.f;
@@ -364,7 +364,7 @@ const COLLISION_DESC& CSpider::Get_CollisionDesc(COLLISION eColType)
 HRESULT CSpider::Ready_Components()
 {
 	/* Com_Transform */
-	CTransform::TRANSFORM_DESC		TransformDesc{ 5.f, D3DXToRadian(90.0f) };
+	CTransform::TRANSFORM_DESC		TransformDesc{ 10.f, D3DXToRadian(90.0f) };
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Transform"),
 		TEXT("Com_Transform"), reinterpret_cast<CComponent**>(&m_pTransformCom), &TransformDesc)))
 		return E_FAIL;
