@@ -779,7 +779,7 @@ HRESULT CLevel_Jusin::Ready_Layer_EventBox(const _wstring& strLayerTag)
 			ENUM_CLASS(iter.iLayerLevel), iter.strLayer, &iter)))
 			return E_FAIL;
 
-		dynamic_cast<CTransform*>(
+		/*dynamic_cast<CTransform*>(
 			m_pGameInstance->Get_Component(
 				ENUM_CLASS(iter.iLayerLevel), iter.strLayer, TEXT("Com_Transform"), iter.iObjectID)
 			)->Set_State(STATE::RIGHT, iter.matWorld.m[0]);
@@ -794,7 +794,7 @@ HRESULT CLevel_Jusin::Ready_Layer_EventBox(const _wstring& strLayerTag)
 		dynamic_cast<CTransform*>(
 			m_pGameInstance->Get_Component(
 				ENUM_CLASS(iter.iLayerLevel), iter.strLayer, TEXT("Com_Transform"), iter.iObjectID)
-			)->Set_State(STATE::POSITION, iter.matWorld.m[3]);
+			)->Set_State(STATE::POSITION, iter.matWorld.m[3]);*/
 
 		///* 콜라이더 꺼내와서 세팅 */
 		//CBoxCollider* pCollider = dynamic_cast<CBoxCollider*>(m_pGameInstance->Get_Component(ENUM_CLASS(iter.iLayerLevel), iter.strLayer, TEXT("Com_BoxCollider"), iter.iObjectID));

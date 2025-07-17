@@ -150,15 +150,15 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 			CEffect_Black_Sight* pBlackSight = static_cast<CEffect_Black_Sight*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Effect_Black_Sight"), nullptr));
 			m_pGameInstance->Add_Clone_ToLayer(pBlackSight, ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Layer_Effect"));
 		}
+	}
 
-		if (m_pGameInstance->Key_Down(VK_LSHIFT))
-		{
-			m_bSpeedUp = !m_bSpeedUp;
-			if (m_bSpeedUp)
-				m_fSpeed = 2.f;
-			else
-				m_fSpeed = 1.f;
-		}
+	if (m_pGameInstance->Key_Down(VK_LSHIFT))
+	{
+		m_bSpeedUp = !m_bSpeedUp;
+		if (m_bSpeedUp)
+			m_fSpeed = 2.f;
+		else
+			m_fSpeed = 1.f;
 	}
 	
 	/* 점프 로직*/
@@ -582,6 +582,18 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 		Pop_ItemDesc(fTimeDelta);
 
 	if (m_bCanOpenDoor && m_bCanUseCardKey)
+	{
+		m_fColTimeStack += fTimeDelta;
+
+		if (m_fColTimeStack >= 1.f)
+			m_bCanOpenDoor = false;
+	}
+	else
+	{
+		m_fColTimeStack = 0.f;
+	}
+
+	if (m_bMachinGunBulletCharge)
 	{
 		m_fColTimeStack += fTimeDelta;
 

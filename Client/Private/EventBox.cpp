@@ -21,6 +21,8 @@ HRESULT CEventBox::Initialize_Prototype()
 
 HRESULT CEventBox::Initialize(void* pArg)
 {
+	m_pObjectDesc = *static_cast<CGameObject::GAMEOBJECT_DESC*>(pArg);
+
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
@@ -61,11 +63,16 @@ HRESULT CEventBox::Ready_Components()
 		TEXT("Com_Transform"), reinterpret_cast<CComponent**>(&m_pTransformCom))))
 		return E_FAIL;
 
+	m_pTransformCom->Set_State(STATE::RIGHT, m_pObjectDesc.matWorld.m[0]);
+	m_pTransformCom->Set_State(STATE::UP, m_pObjectDesc.matWorld.m[1]);
+	m_pTransformCom->Set_State(STATE::LOOK, m_pObjectDesc.matWorld.m[2]);
+	m_pTransformCom->Set_State(STATE::POSITION, m_pObjectDesc.matWorld.m[3]);
+
 	CBoxCollider::BOXCOLLIDER_DESC Desc;
 	Desc.vPosition = { -0.1f, -0.07f, -0.1f };
-	Desc.fScaleX = 7.0f;
-	Desc.fScaleZ = 5.0f;
-	Desc.fScaleY = 1.0f;
+	Desc.fScaleX = m_pTransformCom->Get_Scaled().z;
+	Desc.fScaleZ = m_pTransformCom->Get_Scaled().x;
+	Desc.fScaleY = m_pTransformCom->Get_Scaled().y;
 
 	/* Com_BoxCollider */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_BoxCollider"),
