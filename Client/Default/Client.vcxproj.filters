@@ -151,12 +151,6 @@
     <Filter Include="03.MapObjects\Deco">
       <UniqueIdentifier>{c3324fcf-ea37-4e00-955d-ee720e4786bc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03.MapObjects\Grinder">
-      <UniqueIdentifier>{9d8537da-c683-4836-b0af-2c92aa3569a5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.MapObjects\Fan">
-      <UniqueIdentifier>{eb9c2bcb-63f7-4e30-907c-97c7ed58c5fa}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\Bullet\Manager">
       <UniqueIdentifier>{77ae257b-8ce3-43a6-bd52-377e5abf2b10}</UniqueIdentifier>
     </Filter>
@@ -441,12 +435,6 @@
     <ClInclude Include="..\public\MapDeco.h">
       <Filter>03.MapObjects\Deco</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\MapGrinder.h">
-      <Filter>03.MapObjects\Grinder</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\MapFan.h">
-      <Filter>03.MapObjects\Fan</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Bullet_Manager.h">
       <Filter>02.GameObjects\Bullet\Manager</Filter>
     </ClInclude>
@@ -728,12 +716,6 @@
     </ClCompile>
     <ClCompile Include="..\private\MapDeco.cpp">
       <Filter>03.MapObjects\Deco</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\MapGrinder.cpp">
-      <Filter>03.MapObjects\Grinder</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\MapFan.cpp">
-      <Filter>03.MapObjects\Fan</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Bullet_Manager.cpp">
       <Filter>02.GameObjects\Bullet\Manager</Filter>

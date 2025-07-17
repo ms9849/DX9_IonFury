@@ -183,11 +183,9 @@
     <ClInclude Include="..\Public\CubeObject.h" />
     <ClInclude Include="..\public\DoorLock.h" />
     <ClInclude Include="..\public\MapElevator.h" />
-    <ClInclude Include="..\public\MapFan.h" />
     <ClInclude Include="..\public\MapGate.h" />
     <ClInclude Include="..\Public\Effect_Manager.h" />
     <ClInclude Include="..\public\ItemCardKey.h" />
-    <ClInclude Include="..\public\MapGrinder.h" />
     <ClInclude Include="..\public\MapSlope.h" />
     <ClInclude Include="..\Public\MapVenMachine.h" />
     <ClInclude Include="..\public\Spawner.h" />
@@ -276,10 +274,8 @@
     <ClCompile Include="..\private\Camera.cpp" />
     <ClCompile Include="..\private\DoorLock.cpp" />
     <ClCompile Include="..\private\MapElevator.cpp" />
-    <ClCompile Include="..\private\MapFan.cpp" />
     <ClCompile Include="..\private\MapGate.cpp" />
     <ClCompile Include="..\Private\Effect_Manager.cpp" />
-    <ClCompile Include="..\private\MapGrinder.cpp" />
     <ClCompile Include="..\private\MapSlope.cpp" />
     <ClCompile Include="..\Private\MapVenMachine.cpp" />
     <ClCompile Include="..\private\Spawner.cpp" />
