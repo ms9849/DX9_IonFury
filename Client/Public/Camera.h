@@ -47,8 +47,8 @@ public:
 	virtual HRESULT Render() override;
 
 public:
-	void Shaking(_float fIntensity);
-
+	void Shaking(_float fTimeDelta);
+	void Start_Shaking(_float fIntensity, _float fDuration);
 private:
 	CAMERA_CONFIG					m_pCameraConfig{};
 
@@ -71,6 +71,8 @@ private:
 	 _float3						m_vOldCameraLook{};
 	 //Ω¶¿Ã≈∑øÎ
 	 _bool							m_bShaking = { false };
+	 _float							m_fShakingIntensity = { 0.f };
+	 _float							m_fShakingDuration = { 0.f };
 	 _float3						m_vOriginPos = {}; 
 	 _float							m_fTimeAcc = {};
 private:

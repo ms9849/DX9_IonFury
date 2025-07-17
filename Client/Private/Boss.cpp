@@ -172,8 +172,6 @@ void CBoss::Resurrection()
 	m_pBossUpperBody = dynamic_cast<CBossUpperBody*>(m_pGameInstance->Find_GameObject_ToLayer(
 		ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Layer_Boss1_Upper")));
 
-	static_cast<CCamera*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Layer_Camera"), nullptr))->Shaking(0.2f);
-
 	Safe_AddRef(m_pBossUpperBody);
 }
 

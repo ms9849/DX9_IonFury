@@ -64,10 +64,12 @@ private:
 	class CUIBossHpFill* m_pUIBossHpFill = { nullptr };
 	class CUIBossName* m_pUIBossName = { nullptr };
 	class CUIUseableItems* m_pUIUseableItems{ nullptr };
+	class CBoss* m_pBoss = { nullptr };
 
 	CCamera::CAMERA_CONFIG m_CameraSettings;
 	vector<class CUIItemQueue*> m_pUIItemQueues{};
-
+	_float m_fTimeAcc = { 0.f };
+	_bool  m_bFlag = { false };
 private:
 	map<_wstring, vector<CGameObject::GAMEOBJECT_DESC>>* m_ObjectDescs{};
 	CPlayer::PLAYER_INFO m_tPlayerInfo{};

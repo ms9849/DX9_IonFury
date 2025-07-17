@@ -142,4 +142,6 @@ CGameObject* CMapMachineGunBulletBox::Clone(void* pArg)
 void CMapMachineGunBulletBox::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pSphereColliderCom);
 }

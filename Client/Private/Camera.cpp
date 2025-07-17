@@ -87,8 +87,9 @@ void CCamera::Update(_float fTimeDelta)
 		{
 			Chase_Target(m_pCameraConfig.vLimitDistance, m_pCameraConfig.isSyncLook, m_pCameraConfig.isCanTurn, m_pCameraConfig.isMouseFixCenter, fTimeDelta);
 		}
-		//if (m_bShaking == true)
-		//	Shaking(fTimeDelta);
+		
+		if (m_bShaking == true)
+			Shaking(fTimeDelta);
 	}
 	else
 	{
@@ -119,17 +120,28 @@ HRESULT CCamera::Render()
 	return S_OK;
 }
 
+void CCamera::Start_Shaking(_float fIntensity, _float fDuration)
+{
+	m_bShaking = true;
+	m_fShakingDuration = fDuration;
+	m_fShakingIntensity = fIntensity;
+}
+
 void CCamera::Shaking(_float fTimeDelta)
 {
-	if(m_bShaking == false)
+	if (m_bShaking)
+	{
 		m_vOriginPos = m_pTransformCom->Get_State(STATE::POSITION);
 
-	_float fRandomX = m_pGameInstance->Random(-0.2f, 0.2f);
-	_float fRandomY = m_pGameInstance->Random(-0.2f, 0.2f);
-	
-	m_pTransformCom->Set_State(STATE::POSITION, _float3{ m_vOriginPos.x + fRandomX, m_vOriginPos.y + fRandomY, m_vOriginPos.z });
-	m_bShaking = true;
-	m_fTimeAcc += fTimeDelta;
+		_float fRandomX = m_pGameInstance->Random(-1.f * m_fShakingIntensity, m_fShakingIntensity);
+		_float fRandomY = m_pGameInstance->Random(-1.f * m_fShakingIntensity, m_fShakingIntensity);
+
+		m_pTransformCom->Set_State(STATE::POSITION, _float3{ m_vOriginPos.x + fRandomX, m_vOriginPos.y + fRandomY, m_vOriginPos.z });
+		m_fTimeAcc += fTimeDelta;
+
+		if (m_fTimeAcc >= m_fShakingDuration)
+			m_bShaking = false;
+	}
 }
 
 void CCamera::Camera_Turn(bool isMouseFixCenter, _float fTimeDelta)

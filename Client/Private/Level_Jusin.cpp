@@ -174,6 +174,7 @@ void CLevel_Jusin::Update(_float fTimeDelta)
 
 	m_pGameInstance->Check_AABBCollision(TEXT("Layer_Monster"), TEXT("Layer_Monster"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta);
 	m_pGameInstance->Check_AABBCollision(TEXT("Layer_Monster"), TEXT("Layer_Map_Objects_AABB"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta);
+	m_pGameInstance->Check_AABBCollision(TEXT("Layer_Monster"), TEXT("Layer_Map_Objects_AABB_Ride"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta);
 	m_pGameInstance->Check_AABBCollision(TEXT("Layer_Monster"), TEXT("Layer_Map_Objects_Gate"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta);
 
 	m_pGameInstance->Check_OBBCollision(TEXT("Layer_Map_Objects_OBB_Ride"), TEXT("Layer_Player"), ENUM_CLASS(LEVEL::JUSIN), fTimeDelta);

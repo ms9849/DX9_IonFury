@@ -32,6 +32,8 @@ private:
 	_float4x4	m_ViewMatrix, m_ProjMatrix = {};
 	_float		m_fWinSizeY, m_fWinSizeX;
 	_int		m_iAlpha = { 0 };
+	_float		m_fTimeAcc = { 0 };
+	_bool		m_bStart = { false };
 
 public:
 	static CEffect_Black_Sight* Create(LPDIRECT3DDEVICE9 pGraphicDev);

@@ -18,11 +18,13 @@
 #include "UIBossHpBar.h"
 #include "UIBossHpFill.h"
 #include "UIBossName.h"
+#include "Boss.h"
 
 #include "Particle_Manager.h"
 #include "Bullet_Manager.h"
 #include "Terrain_Manager.h"
 #include "Effect_Manager.h"
+#include "Level_Ending.h"
 
 CLevel_BossFight::CLevel_BossFight(LPDIRECT3DDEVICE9 pGraphic_Device, LEVEL eLevelID)
 	: CLevel{ pGraphic_Device, ENUM_CLASS(eLevelID) }
@@ -169,9 +171,27 @@ void CLevel_BossFight::Update(_float fTimeDelta)
 	if (m_pGameInstance->Key_Down(VK_F9))
 	{
 		if (FAILED(m_pGameInstance->Change_Level(
-			CLevel_Loading::Create(
-				m_pGraphic_Device, LEVEL::LOADING, LEVEL::ENDING))))
+				CLevel_Ending::Create(m_pGraphic_Device, LEVEL::ENDING))))
 			return;
+
+	}
+	
+	if (m_pBoss->isDead() == true)
+	{
+		if (m_bFlag == false)
+		{
+			m_pGameInstance->Add_GameObject_ToLayer(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Effect_Black_Sight"), ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Layer_Effect"), nullptr);
+			m_bFlag = true;
+		}
+
+		m_fTimeAcc += fTimeDelta;
+
+		if (m_fTimeAcc >= 5.f)
+		{
+			if (FAILED(m_pGameInstance->Change_Level(
+				CLevel_Ending::Create(m_pGraphic_Device, LEVEL::ENDING))))
+				return;
+		}
 	}
 }
 
@@ -395,6 +415,8 @@ HRESULT CLevel_BossFight::Ready_Layer_Boss(const _wstring& strLayerTag)
 			return E_FAIL;
 	}
 
+	m_pBoss = static_cast<CBoss*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::BOSSFIGHT), strLayerTag));
+	Safe_AddRef(m_pBoss);
 	//m_pTerrain_Manager->Add_LandObject(LEVEL::BOSSFIGHT, TEXT("Layer_Boss"));
 
 	return S_OK;
@@ -989,6 +1011,8 @@ HRESULT CLevel_BossFight::Ready_Layer_Bullet(const _wstring& strLayerTag)
 
 void CLevel_BossFight::Ending()
 {
+	// 3초 하고 난 뒤에 1초 동안 재생 
+	// 
 	m_pGameInstance->StopAll();
 
 	//암전 효과 내부에서 블렌딩 처리해줌.
@@ -1025,6 +1049,7 @@ void CLevel_BossFight::Free()
 	Safe_Release(m_pUIBossHpBar);
 	Safe_Release(m_pUIBossHpFill);
 	Safe_Release(m_pUIBossName);
+	Safe_Release(m_pBoss);
 
 	Safe_Release(m_pEffect_Manager);
 	m_pEffect_Manager->Release_Effect_Manager();

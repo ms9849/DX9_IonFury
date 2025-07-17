@@ -9,7 +9,7 @@
 #include "Bullet_Manager.h"
 #include "Effect_Manager.h"
 #include "Terrain_Manager.h"
-
+#include "Camera.h"
 CBossUpperBody::CBossUpperBody(LPDIRECT3DDEVICE9 pGraphic_Device)
 	: CMonster{ pGraphic_Device }
 {
@@ -141,6 +141,9 @@ void CBossUpperBody::Update(_float fTimeDelta)
 				TurnOffBooster(CHANNELID::SOUND_BOOSTER_EFFECT);
 				m_isLanding = true;
 				m_pGameInstance->PlaySoundOnce(TEXT("BossLanding.wav"), CHANNELID::SOUND_EFFECT, 0.7f);
+				/* 강도, 지속시간 순으로 입력 */
+				static_cast<CCamera*>(m_pGameInstance->Find_GameObject_ToLayer(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Layer_Camera"), nullptr))->Start_Shaking(0.13f, 1.3f);
+
 			}
 
 			/*if (fabsf(m_pTransformCom->Get_State(STATE::POSITION).y - m_pCoreTranform->Get_State(STATE::POSITION).y) <= 2.0f)

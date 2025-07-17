@@ -1,6 +1,7 @@
 #include "Effect_Black_Sight.h"
 
 #include "GameInstance.h"
+#include "Level_Loading.h"
 
 CEffect_Black_Sight::CEffect_Black_Sight(LPDIRECT3DDEVICE9 pGraphicDev) :
     CEffect { pGraphicDev }
@@ -48,35 +49,41 @@ void CEffect_Black_Sight::Update(_float fTimeDelta)
 
 void CEffect_Black_Sight::Late_Update(_float fTimeDelta)
 {
-    m_fFrame += m_fNumFrame * fTimeDelta;
+    m_fTimeAcc += fTimeDelta;
 
-    if (m_fFrame >= m_fNumFrame)
+    if (m_fTimeAcc >= 3.0)
+        m_bStart = true;
+
+    if (m_bStart)
     {
-        m_fFrame = m_fNumFrame;
-        //m_fFrame = 0.f;
-        //m_isDead = true;
-    }
+        m_fFrame += m_fNumFrame * fTimeDelta;
+        if (m_fFrame >= m_fNumFrame)
+            m_fFrame = m_fNumFrame;
 
-    if (!m_isDead)
-    {
-        Compute_CamDistance(m_pTransformCom->Get_State(STATE::POSITION));
-        m_pGameInstance->Add_RenderGroup(RENDER::SCREEN, this);
-    }
+        if (!m_isDead)
+        {
+            Compute_CamDistance(m_pTransformCom->Get_State(STATE::POSITION));
+            m_pGameInstance->Add_RenderGroup(RENDER::SCREEN, this);
+        }
 
-    m_fCamDistance = 0.1f;
+        m_fCamDistance = 0.1f;
+    }
 }
 
 HRESULT CEffect_Black_Sight::Render()
 {
-    m_pTransformCom->Set_Transform();
+    if (m_bStart)
+    {
+        m_pTransformCom->Set_Transform();
 
-    m_pTextureCom->Set_Texture(static_cast<_uint>(m_fFrame));
+        m_pTextureCom->Set_Texture(static_cast<_uint>(m_fFrame));
 
-    Begin_RenderState();
+        Begin_RenderState();
 
-    m_pVIBufferCom->Render();
+        m_pVIBufferCom->Render();
 
-    End_RenderState();
+        End_RenderState();
+    }
 
     return S_OK;
 }

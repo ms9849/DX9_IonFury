@@ -67,6 +67,8 @@ HRESULT CButton::Render()
 		m_pTextureCom->Set_Texture(1);
 	else if (!m_bActive && !m_bOpen)
 		m_pTextureCom->Set_Texture(0);
+	else 
+		m_pTextureCom->Set_Texture(0);
 
 	if (FAILED(Begin_RenderState()))
 		return E_FAIL;
