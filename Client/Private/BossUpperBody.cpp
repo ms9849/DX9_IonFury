@@ -89,7 +89,7 @@ HRESULT CBossUpperBody::Initialize(void* pArg)
 
 	//m_pTransformCom_Down->Set_State(STATE::POSITION, m_pTransformCom->Get_State(STATE::POSITION));
 
-	m_fAttackRange = 15.f;
+	m_fAttackRange = 30.f;
 	m_fAttackCoolTime = 4.f;
 	m_fSumAttackCoolTime = 5.f;
 	m_uCurBullets = 0;
@@ -99,8 +99,8 @@ HRESULT CBossUpperBody::Initialize(void* pArg)
 	m_vUpOffset = { 0.f, 2.9f, 0.f };
 	//m_fFirstY = m_pTransformCom->Get_State(STATE::POSITION).y;
 	m_fFirstY = 3.9f;
-	m_fMoveCoolTime = 0.05f;
-	m_fChaseRange = 30.f;
+	m_fMoveCoolTime = 0.03f;
+	m_fChaseRange = 40.f;
 	m_fSumMoveCoolTime = 0.f;
 	m_fSafeDistance = 5.f;
 	Set_Hp(5000.f);
@@ -291,7 +291,7 @@ void CBossUpperBody::Late_Update(_float fTimeDelta)
 
 HRESULT CBossUpperBody::Render()
 {
-	m_pBoxColliderCom->Render(m_pTransformCom->Get_State(STATE::POSITION));
+	//m_pBoxColliderCom->Render(m_pTransformCom->Get_State(STATE::POSITION));
 
 	if (FAILED(Begin_RenderTestState()))
 		return E_FAIL;

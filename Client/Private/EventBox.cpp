@@ -51,7 +51,7 @@ HRESULT CEventBox::Render()
 {
 	m_pTransformCom->Set_Transform();
 
-	m_pBoxColliderCom->Render(m_pTransformCom->Get_State(STATE::POSITION));
+	//m_pBoxColliderCom->Render(m_pTransformCom->Get_State(STATE::POSITION));
 
 	return S_OK;
 }

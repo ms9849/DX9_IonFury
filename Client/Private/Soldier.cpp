@@ -194,7 +194,7 @@ void CSoldier::Update(_float fTimeDelta)
 		m_pGameInstance->PlaySoundOnce(TEXT("Soldier_Death01.ogg"), CHANNELID::SOUND_EFFECT, 0.7f);
 		Drop_Item();
 	}
-	else if (m_pSightCom->Check_Sight(fTimeDelta) && !m_bAnimationLock)
+	else if (m_pSightCom->Check_Sight(fTimeDelta) && !m_bAnimationLock && !CheckSafeArea(m_pPlayerTransform->Get_State(STATE::POSITION)))
 	{
 		if (!m_bFirstEncounter)
 		{

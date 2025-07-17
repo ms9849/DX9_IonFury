@@ -52,7 +52,7 @@ HRESULT CBossGrenade::Initialize(void* pArg)
 	_float height = m_vPlayerPos.y - m_vStartPos.y;													// 높이
 
 	float v0 = sqrt((m_fGravity * hDist * hDist) / (2 * cos(fAngle) * cos(fAngle) * (hDist * tan(fAngle) - height)));
-	v0 *= 7;																	// 속도 값 보정
+	v0 *= 10;																	// 속도 값 보정
 
 	_float3 dirXZ = _float3(m_vDir.x, 0, m_vDir.z);								// xz평면 방향벡터
 	D3DXVec3Normalize(&dirXZ, &dirXZ);

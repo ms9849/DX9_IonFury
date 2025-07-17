@@ -53,7 +53,7 @@ HRESULT CBossLowerBody::Initialize(void* pArg)
 	// 최초 위치 코어의 위치값으로 설정
 	m_pTransformCom->Set_State(STATE::POSITION, m_pCoreTransform->Get_State(STATE::POSITION));
 
-	m_fChaseRange = 20.f;
+	m_fChaseRange = 50.f;
 	m_fSafeDistance = 5.f;
 	m_fStopMoveTime = 2.f;
 	//m_fDefaultStopMoveTime = m_fStopMoveTime;
@@ -177,7 +177,7 @@ void CBossLowerBody::Late_Update(_float fTimeDelta)
 HRESULT CBossLowerBody::Render()
 {
 	//
-	m_pBoxColliderCom->Render(m_pTransformCom->Get_State(STATE::POSITION));
+	//m_pBoxColliderCom->Render(m_pTransformCom->Get_State(STATE::POSITION));
 	
 	if (FAILED(Begin_RenderState()))
 		return E_FAIL;
