@@ -45,6 +45,9 @@ private:
 	_int m_iHp = { 2 };
 
 private:
+	void Drop_Item();
+
+private:
 	HRESULT Begin_RenderState();
 	HRESULT End_RenderState();
 	HRESULT Ready_Components();
