@@ -87,7 +87,7 @@ void CSpawner::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTimeDe
 		Desc = m_pObjectDesc;
 
 		Desc.matWorld.m[3][0] = m_pTransformCom->Get_State(STATE::POSITION).x + m_pGameInstance->Random(-3.f, 3.f);
-		Desc.matWorld.m[3][2] = m_pTransformCom->Get_State(STATE::POSITION).z + m_pGameInstance->Random(-3.f, 3.f);
+		Desc.matWorld.m[3][2] = m_pTransformCom->Get_State(STATE::POSITION).z + m_pGameInstance->Random(3.f, 6.f);
 
 		if (FAILED(m_pGameInstance->Add_GameObject_ToLayer(m_pObjectDesc.iProtoLevel, TEXT("Prototype_GameObject_Monster_Zombie"),
 			m_pObjectDesc.iLayerLevel, TEXT("Layer_Monster"), &Desc)))
