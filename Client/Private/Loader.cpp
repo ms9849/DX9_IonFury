@@ -49,8 +49,6 @@
 #include "MapContainerBox.h"
 #include "MapDesk.h"
 #include "MapDeco.h"
-#include "MapGrinder.h"
-#include "MapFan.h"
 #include "MapSlope.h"
 #include "MapElevator.h"
 #include "MapMachineGunBulletBox.h"
@@ -326,31 +324,6 @@ HRESULT CLoader::Loading_For_GamePlay()
 	/* For.Prototype_Component_Texture_Map_Deco */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Map_Deco"),
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/MapObject/Deco/Deco_%d.png"), 32))))
-		return E_FAIL;
-
-	/* For.Prototype_Component_Texture_Map_Grinder */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Map_Grinder"),
-		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/MapObject/Grinder/Grinder_%d.png"), 8))))
-		return E_FAIL;
-
-	/* For.Prototype_Component_Texture_Map_Default_Fan_Idle */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Map_Default_Fan_Idle"),
-		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/MapObject/Fan/Default_Idle_%d.png"), 1))))
-		return E_FAIL;
-
-	/* For.Prototype_Component_Texture_Map_Default_Fan_Active */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Map_Default_Fan_Active"),
-		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/MapObject/Fan/Default_Active_%d.png"), 8))))
-		return E_FAIL;
-
-	/* For.Prototype_Component_Texture_Map_Blood_Fan_Idle */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Map_Blood_Fan_Idle"),
-		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/MapObject/Fan/Blood_Idle_%d.png"), 1))))
-		return E_FAIL;
-
-	/* For.Prototype_Component_Texture_Map_Blood_Fan_Active */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Map_Blood_Fan_Active"),
-		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/MapObject/Fan/Blood_Active_%d.png"), 8))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Map_Slope */
@@ -629,16 +602,6 @@ HRESULT CLoader::Loading_For_GamePlay()
 		CMapDeco::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
-	/* For.Prototype_GameObject_Map_Grinder */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Map_Grinder"),
-		CMapGrinder::Create(m_pGraphic_Device))))
-		return E_FAIL;
-
-	/* For.Prototype_GameObject_Map_Fan */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Map_Fan"),
-		CMapFan::Create(m_pGraphic_Device))))
-		return E_FAIL;
-
 	/* For.Prototype_GameObject_Map_Slope */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Map_Slope"),
 		CMapSlope::Create(m_pGraphic_Device))))
@@ -831,31 +794,6 @@ HRESULT CLoader::Loading_For_Jusin()
 	/* For.Prototype_Component_Texture_Map_Deco */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_Component_Texture_Map_Deco"),
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/MapObject/Deco/Deco_%d.png"), 32))))
-		return E_FAIL;
-
-	/* For.Prototype_Component_Texture_Map_Grinder */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_Component_Texture_Map_Grinder"),
-		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/MapObject/Grinder/Grinder_%d.png"), 8))))
-		return E_FAIL;
-
-	/* For.Prototype_Component_Texture_Map_Default_Fan_Idle */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_Component_Texture_Map_Default_Fan_Idle"),
-		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/MapObject/Fan/Default_Idle_%d.png"), 1))))
-		return E_FAIL;
-
-	/* For.Prototype_Component_Texture_Map_Default_Fan_Active */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_Component_Texture_Map_Default_Fan_Active"),
-		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/MapObject/Fan/Default_Active_%d.png"), 8))))
-		return E_FAIL;
-
-	/* For.Prototype_Component_Texture_Map_Blood_Fan_Idle */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_Component_Texture_Map_Blood_Fan_Idle"),
-		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/MapObject/Fan/Blood_Idle_%d.png"), 1))))
-		return E_FAIL;
-
-	/* For.Prototype_Component_Texture_Map_Blood_Fan_Active */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_Component_Texture_Map_Blood_Fan_Active"),
-		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/MapObject/Fan/Blood_Active_%d.png"), 8))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Map_Slope */
@@ -1143,16 +1081,6 @@ HRESULT CLoader::Loading_For_Jusin()
 		CMapDeco::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
-	/* For.Prototype_GameObject_Map_Grinder */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_GameObject_Map_Grinder"),
-		CMapGrinder::Create(m_pGraphic_Device))))
-		return E_FAIL;
-
-	/* For.Prototype_GameObject_Map_Fan */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_GameObject_Map_Fan"),
-		CMapFan::Create(m_pGraphic_Device))))
-		return E_FAIL;
-
 	/* For.Prototype_GameObject_Map_Slope */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::JUSIN), TEXT("Prototype_GameObject_Map_Slope"),
 		CMapSlope::Create(m_pGraphic_Device))))
@@ -1363,31 +1291,6 @@ HRESULT CLoader::Loading_For_BossFight()
 	/* For.Prototype_Component_Texture_Map_Deco */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_Component_Texture_Map_Deco"),
 		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/MapObject/Deco/Deco_%d.png"), 32))))
-		return E_FAIL;
-
-	/* For.Prototype_Component_Texture_Map_Grinder */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_Component_Texture_Map_Grinder"),
-		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/MapObject/Grinder/Grinder_%d.png"), 8))))
-		return E_FAIL;
-
-	/* For.Prototype_Component_Texture_Map_Default_Fan_Idle */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_Component_Texture_Map_Default_Fan_Idle"),
-		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/MapObject/Fan/Default_Idle_%d.png"), 1))))
-		return E_FAIL;
-
-	/* For.Prototype_Component_Texture_Map_Default_Fan_Active */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_Component_Texture_Map_Default_Fan_Active"),
-		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/MapObject/Fan/Default_Active_%d.png"), 8))))
-		return E_FAIL;
-
-	/* For.Prototype_Component_Texture_Map_Blood_Fan_Idle */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_Component_Texture_Map_Blood_Fan_Idle"),
-		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/MapObject/Fan/Blood_Idle_%d.png"), 1))))
-		return E_FAIL;
-
-	/* For.Prototype_Component_Texture_Map_Blood_Fan_Active */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_Component_Texture_Map_Blood_Fan_Active"),
-		CTexture::Create(m_pGraphic_Device, TEXTURE::PLANE, TEXT("../Bin/Resources/Textures/MapObject/Fan/Blood_Active_%d.png"), 8))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Map_Slope */
@@ -1679,16 +1582,6 @@ HRESULT CLoader::Loading_For_BossFight()
 	/* For.Prototype_GameObject_Map_Deco */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_GameObject_Map_Deco"),
 		CMapDeco::Create(m_pGraphic_Device))))
-		return E_FAIL;
-
-	/* For.Prototype_GameObject_Map_Grinder */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_GameObject_Map_Grinder"),
-		CMapGrinder::Create(m_pGraphic_Device))))
-		return E_FAIL;
-
-	/* For.Prototype_GameObject_Map_Fan */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::BOSSFIGHT), TEXT("Prototype_GameObject_Map_Fan"),
-		CMapFan::Create(m_pGraphic_Device))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_Map_Slope */
