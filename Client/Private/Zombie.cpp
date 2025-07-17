@@ -32,7 +32,7 @@ HRESULT CZombie::Initialize(void* pArg)
 	m_fDamage = 30.f;
 	m_fAttackRange = 3.5f;
 	m_fAttackCoolTime = 4.f;
-	m_fChaseRange = 10.f;
+	m_fChaseRange = 13.f;
 	m_fMaxRange = 20.f;
 	m_fRandomMoveTime = 3.f;
 	m_fSumRandomMoveTime = 0.f;
