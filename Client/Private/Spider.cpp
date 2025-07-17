@@ -56,7 +56,7 @@ HRESULT CSpider::Initialize(void* pArg)
 	m_vNextDir = m_pTransformCom->Get_State(STATE::LOOK);
 
 	m_fDamage = 30.f;
-	m_fAttackRange = 3.5f;
+	m_fAttackRange = 2.0f;
 	m_fAttackCoolTime = 5.f;
 	m_fJumpPower = 3.5f;
 	m_fChaseRange = 15.f;

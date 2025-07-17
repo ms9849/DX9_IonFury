@@ -30,7 +30,7 @@ HRESULT CZombie::Initialize(void* pArg)
 	Safe_AddRef(m_pPlayerTransform);
 
 	m_fDamage = 30.f;
-	m_fAttackRange = 3.5f;
+	m_fAttackRange = 2.f;
 	m_fAttackCoolTime = 4.f;
 	m_fChaseRange = 13.f;
 	m_fMaxRange = 20.f;

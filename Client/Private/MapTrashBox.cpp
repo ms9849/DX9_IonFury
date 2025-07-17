@@ -33,26 +33,39 @@ void CMapTrashBox::OnCollision(CGameObject* pDst, COLLISION eColType, _float fTi
 
 		if (m_iHp < 0)
 		{
-			CItem* pItem = static_cast<CItem*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, m_pObjectDesc.iLayerLevel, TEXT("Prototype_GameObject_Item_Healpack"), &m_pObjectDesc));
-			/* 아이템 떨구는 로직도 추가할 것 */
 			m_isDead = true;
 			
-			//_int iRandNum = m_pGameInstance->Random(0.f, ENUM_CLASS(CItem::BULLET::END));
-			//CItem* pItem;
+			_int iRandomNum = static_cast<_int>(m_pGameInstance->Random(0.f, 4.0f));
+			CItem* pItem;
 
-			//if (iRandNum == ENUM_CLASS(CItem::BULLET::PISTOL))
-			//	pItem = static_cast<CItem*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, m_pObjectDesc.iLayerLevel, TEXT("Prototype_GameObject_Item_Pistol_Bullet"), &m_pObjectDesc));
-			//
-			//else if (iRandNum == ENUM_CLASS(CItem::BULLET::SHOOTGUN))
-			//	pItem = static_cast<CItem*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, m_pObjectDesc.iLayerLevel, TEXT("Prototype_GameObject_Item_ShootGun_Bullet"), &m_pObjectDesc));
-			//	
-			//else
-			//	return;
+			switch (iRandomNum)
+			{
+			case 0:
+				pItem = static_cast<CItem*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, m_pObjectDesc.iLayerLevel,
+					TEXT("Prototype_GameObject_Item_Healpack"), &m_pObjectDesc));
+				break;
+			case 1:
+				pItem = static_cast<CItem*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, m_pObjectDesc.iLayerLevel,
+					TEXT("Prototype_GameObject_Item_Pistol_Bullet"), &m_pObjectDesc));
+				break;
+			case 2:
+				pItem = static_cast<CItem*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, m_pObjectDesc.iLayerLevel,
+					TEXT("Prototype_GameObject_Item_ShootGun_Bullet"), &m_pObjectDesc));
+				break;
+			case 3:
+				pItem = static_cast<CItem*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, m_pObjectDesc.iLayerLevel,
+					TEXT("Prototype_GameObject_Item_ArmorPack"), &m_pObjectDesc));
+				break;
+			default:
+				pItem = nullptr;
+				break;
+			}
 
-		/*	_float3 vPos = m_pTransformCom->Get_State(STATE::POSITION);
-			vPos.y -= 0.3;
-			pItem->Set_Pos(vPos);*/
-			m_pGameInstance->Add_Clone_ToLayer(pItem, m_pObjectDesc.iLayerLevel,TEXT("Layer_Items"));
+			if (pItem != nullptr)
+			{
+				pItem->Set_Pos(m_pTransformCom->Get_State(STATE::POSITION));
+				m_pGameInstance->Add_Clone_ToLayer(pItem, m_pObjectDesc.iLayerLevel, TEXT("Layer_Items"));
+			}
 		}
 	}
 }
