@@ -122,7 +122,7 @@ void CMapVenMachine::Item_Dispense(_float fTimeDelta)
 			break;
 		case 3:
 			pItem = static_cast<CItem*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, m_pObjectDesc.iLayerLevel,
-				TEXT("Prototype_GameObject_Item_ArmorPack"), &m_pObjectDesc));
+				TEXT("Prototype_GameObject_Item_Burger"), &m_pObjectDesc));
 			break;
 		case 4:
 			pItem = static_cast<CItem*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::GAMEOBJECT, m_pObjectDesc.iLayerLevel,

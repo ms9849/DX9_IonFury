@@ -168,7 +168,7 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 		m_fTime = 0.f;
 	}
 
-	__super::Jump(fTimeDelta);
+	__super::Jump(fTimeDelta * 1.1f);
 
 	/* 애니메이션 제어 */
 	auto iter = m_tInfo.Weapons.find(m_tInfo.strWeapon);
@@ -182,6 +182,8 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 				m_tInfo.iHp = 100;
 			m_tInfo.iHealpacks -= 1;
 			CEffect_Manager::GetInstance()->Create_Effect(TEXT("Effect_Screen_Blur_Heal"), m_pObjectDesc.iLayerLevel, TEXT("Layer_Effect"), { 0.f, 0.f, 0.f });
+			m_pGameInstance->PlaySoundOnce(TEXT("Get_Healpack.ogg"), CHANNELID::SOUND_EFFECT, 0.5f);
+			m_pGameInstance->PlaySoundOnce(TEXT("I_Really_Need_That.ogg"), CHANNELID::SOUND_EFFECT, 0.5f);
 		}
 	}
 
@@ -338,12 +340,16 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 		&& m_pRightHandAnimationCom->Check_Animation_Finish()
 		&& m_tInfo.strAction != TEXT("Walk"))
 	{
-		/* 장전이 끝났을 때 철컥 소리 나게 */
+		/* 장전이 끝났을 때 피스톨 철컥 소리 나게 */
 		if (m_tInfo.strWeapon == TEXT("Pistol") && m_tInfo.strAction == TEXT("Reload"))
 		{
 			m_pGameInstance->PlaySoundOnce(TEXT("Pistol_Reload_3.ogg"), CHANNELID::SOUND_EFFECT, 0.2f);
 		}
-
+		/* 장전이 끝났을 때 샷건 철컥 소리 나게 */
+		if (m_tInfo.strWeapon == TEXT("ShootGun") && m_tInfo.strAction == TEXT("Reload"))
+		{
+			m_pGameInstance->PlaySoundOnce(TEXT("ShotGun_reload_2.ogg"), CHANNELID::SOUND_EFFECT, 0.2f);
+		}
 		if (m_tInfo.strWeapon == TEXT("MachineGun") && m_tInfo.strAction == TEXT("Shoot"))
 			m_tInfo.strAction = TEXT("Shoot");
 		else
@@ -386,7 +392,7 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 		m_tInfo.strAction = TEXT("Idle");
 	}
 
-	// 장전
+	// 재장전
 	if (m_pGameInstance->Key_Down('R'))
 	{
 		if (!m_bWeaponChange
@@ -406,7 +412,7 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 
 			if (m_tInfo.strWeapon == TEXT("ShootGun"))
 			{
-				m_pGameInstance->PlaySoundOnce(TEXT("ShotGun_Reload_1.ogg"), CHANNELID::SOUND_EFFECT, 0.5f);
+				m_pGameInstance->PlaySoundOnce(TEXT("ShotGun_reload_1.ogg"), CHANNELID::SOUND_EFFECT, 0.5f);
 			}
 		}
 	}
