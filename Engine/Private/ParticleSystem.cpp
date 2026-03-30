@@ -116,6 +116,14 @@ HRESULT CParticleSystem::Render()
 
         m_pVertexBuffer->Unlock();
 
+        if (iNumParticlesInBatch > 0)
+        {
+            m_pGraphic_Device->DrawPrimitive(
+                D3DPT_POINTLIST,
+                m_vertexBufferOffset,
+                iNumParticlesInBatch);
+        }
+        
         if (FAILED(End_RenderState()))
             return E_FAIL;
     }
