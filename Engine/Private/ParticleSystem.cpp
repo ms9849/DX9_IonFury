@@ -46,19 +46,19 @@ HRESULT CParticleSystem::Render()
 {
     if (!m_Particles.empty())
     {
-        // ¸ÕÀú ·»´õ »óÅÂ¸¦ ÁöÁ¤ÇÏÀÚ
+        // ë¨¼ì € ë Œë” ìƒíƒœë¥¼ ì§€ì •í•˜ìž
         if (FAILED(Begin_RenderState()))
             return E_FAIL;
 
         m_pGraphic_Device->SetFVF(PARTICLE::FVF);
         m_pGraphic_Device->SetStreamSource(0, m_pVertexBuffer, 0, sizeof(PARTICLE));
 
-        // ÇÒ´çÇÒ ¹öÅØ½º ¹öÆÛÀÇ ¿ÀÇÁ¼Â°ú Å©±â¸¦ ÁöÁ¤ÇØÁÖÀÚ
-        // ¹öÅØ½º ¹öÆÛÀÇ Å©±â¸¦ ¹þ¾î³¯ °æ¿ì ¿ÀÇÁ¼ÂÀ» 0À¸·Î ÃÊ±âÈ­ÇØÁØ´Ù
+        // í• ë‹¹í•  ë²„í…ìŠ¤ ë²„í¼ì˜ ì˜¤í”„ì…‹ê³¼ í¬ê¸°ë¥¼ ì§€ì •í•´ì£¼ìž
+        // ë²„í…ìŠ¤ ë²„í¼ì˜ í¬ê¸°ë¥¼ ë²—ì–´ë‚  ê²½ìš° ì˜¤í”„ì…‹ì„ 0ìœ¼ë¡œ ì´ˆê¸°í™”í•´ì¤€ë‹¤
         if (m_vertexBufferOffset >= m_vertexBufferSize)
             m_vertexBufferOffset = 0;
 
-        // ±×·¡ÇÈÄ«µå°¡ ±×¸± ¹öÅØ½º ¹öÆÛ ¼¼±×¸ÕÆ®
+        // ê·¸ëž˜í”½ì¹´ë“œê°€ ê·¸ë¦´ ë²„í…ìŠ¤ ë²„í¼ ì„¸ê·¸ë¨¼íŠ¸
         PARTICLE* pParticles = {};
 
         m_pVertexBuffer->Lock(
@@ -69,20 +69,20 @@ HRESULT CParticleSystem::Render()
 
         DWORD iNumParticlesInBatch = 0;
 
-        // ¹öÅØ½º ¹öÆÛÀÇ ¿ÀÇÁ¼Â°ú Å©±â¸¦ ¾Ë¾Æ³ÂÀ¸´Ï º¹»ç¸¦ ½ÃÀÛÇÏÀÚ
+        // ë²„í…ìŠ¤ ë²„í¼ì˜ ì˜¤í”„ì…‹ê³¼ í¬ê¸°ë¥¼ ì•Œì•„ëƒˆìœ¼ë‹ˆ ë³µì‚¬ë¥¼ ì‹œìž‘í•˜ìž
         list<PARTICLE_ATTRIBUTE>::iterator iter;
         for (iter = m_Particles.begin(); iter != m_Particles.end(); ++iter)
         {
             if (iter->bisAlive)
             {
-                // ÀÏ´Ü Àü ÇÁ·¹ÀÓ¿¡¼­ »ýÁ¸ÇÑ ÆÄÆ¼Å¬À»
-                // ´ÙÀ½ ¹öÅØ½º ¹öÆÛ ¼¼±×¸ÕÆ®·Î º¹»çÇÏÀÚ
+                // ì¼ë‹¨ ì „ í”„ë ˆìž„ì—ì„œ ìƒì¡´í•œ íŒŒí‹°í´ì„
+                // ë‹¤ìŒ ë²„í…ìŠ¤ ë²„í¼ ì„¸ê·¸ë¨¼íŠ¸ë¡œ ë³µì‚¬í•˜ìž
                 pParticles->vPosition = iter->vPosition;
                 pParticles->Color = iter->Color;
                 ++pParticles;
                 ++iNumParticlesInBatch;
 
-                // ÀÌ¹ø ÇÁ·¹ÀÓÀÇ º¹»çÀÛ¾÷À» ¸¶ÃÆ´Ù¸é ÆÄÆ¼Å¬À» ±×¸®ÀÚ
+                // ì´ë²ˆ í”„ë ˆìž„ì˜ ë³µì‚¬ìž‘ì—…ì„ ë§ˆì³¤ë‹¤ë©´ íŒŒí‹°í´ì„ ê·¸ë¦¬ìž
                 if (iNumParticlesInBatch == m_vertexBufferBatchSize)
                 {
                     m_pVertexBuffer->Unlock();
@@ -92,12 +92,12 @@ HRESULT CParticleSystem::Render()
                         m_vertexBufferOffset,
                         m_vertexBufferBatchSize);
 
-                    // ±×·¡ÇÈÄ«µå¿Í µ¿½Ã¿¡ ÀÛ¾÷ÇÒ °ÍÀÌ±â¿¡
-                    // ´ÙÀ½ ÇÁ·¹ÀÓÀÇ ÆÄÆ¼Å¬À» Ã¤¿ìÀÚ
+                    // ê·¸ëž˜í”½ì¹´ë“œì™€ ë™ì‹œì— ìž‘ì—…í•  ê²ƒì´ê¸°ì—
+                    // ë‹¤ìŒ í”„ë ˆìž„ì˜ íŒŒí‹°í´ì„ ì±„ìš°ìž
                     m_vertexBufferOffset += m_vertexBufferBatchSize;
 
-                    // ÇÒ´çÇÒ ¹öÅØ½º ¹öÆÛÀÇ ¿ÀÇÁ¼Â°ú Å©±â¸¦ ÁöÁ¤ÇØÁÖÀÚ
-                  // ¹öÅØ½º ¹öÆÛÀÇ Å©±â¸¦ ¹þ¾î³¯ °æ¿ì ¿ÀÇÁ¼ÂÀ» 0À¸·Î ÃÊ±âÈ­ÇØÁØ´Ù
+                    // í• ë‹¹í•  ë²„í…ìŠ¤ ë²„í¼ì˜ ì˜¤í”„ì…‹ê³¼ í¬ê¸°ë¥¼ ì§€ì •í•´ì£¼ìž
+                  // ë²„í…ìŠ¤ ë²„í¼ì˜ í¬ê¸°ë¥¼ ë²—ì–´ë‚  ê²½ìš° ì˜¤í”„ì…‹ì„ 0ìœ¼ë¡œ ì´ˆê¸°í™”í•´ì¤€ë‹¤
                     if (m_vertexBufferOffset >= m_vertexBufferSize)
                         m_vertexBufferOffset = 0;
 
@@ -116,20 +116,6 @@ HRESULT CParticleSystem::Render()
 
         m_pVertexBuffer->Unlock();
 
-        // °£ÇæÀûÀ¸·Î ¹èÄ¡Å©±âº¸´Ù ÆÄÆ¼Å¬ ¼ö°¡ Àû¾î
-        // µå·ÎÀ×ÀÌ ¾ÈµÇ±âµµ ÇÏ±â¿¡
-        // ¿¹ºñ¿ªÀ¸·Î ³²°ÜÁÖÀÚ
-        // ±Ùµ¥ ÀÌ·¯¸é ±×·¡ÇÈÄ«µå°¡ ¹öÅØ½º ¹öÆÛ ¹èÄ¡ ´Ü°è¿¡¼± ½¬°Ô µÈ´Ù.
-        if (iNumParticlesInBatch)
-        {
-            m_pGraphic_Device->DrawPrimitive(
-                D3DPT_POINTLIST,
-                m_vertexBufferOffset,
-                iNumParticlesInBatch);
-        }
-
-        m_vertexBufferOffset += m_vertexBufferBatchSize;
-
         if (FAILED(End_RenderState()))
             return E_FAIL;
     }
@@ -138,7 +124,7 @@ HRESULT CParticleSystem::Render()
 }
 
 /*
-ÆÄÆ¼Å¬µéÀ» ¸®¼ÂÇØÁÖ´Â ÇÔ¼ö
+íŒŒí‹°í´ë“¤ì„ ë¦¬ì…‹í•´ì£¼ëŠ” í•¨ìˆ˜
 */
 void CParticleSystem::Reset()
 {
@@ -146,8 +132,8 @@ void CParticleSystem::Reset()
 
     for (iter = m_Particles.begin(); iter != m_Particles.end(); ++iter)
     {
-        // ResetParticle ÇÔ¼ö´Â Ãß»ó ¸Þ¼ÒµåÀÌ±â‹š¹®¿¡
-        // ¹«Á¶°Ç ÀÚ½Ä Å¬·¡½º¿¡¼­ ÀçÁ¤ÀÇ ÇØÁà¾ßÇÑ´Ù.
+        // ResetParticle í•¨ìˆ˜ëŠ” ì¶”ìƒ ë©”ì†Œë“œì´ê¸°Â‹Âšë¬¸ì—
+        // ë¬´ì¡°ê±´ ìžì‹ í´ëž˜ìŠ¤ì—ì„œ ìž¬ì •ì˜ í•´ì¤˜ì•¼í•œë‹¤.
         ResetParticle(&(*iter));
     }
 
@@ -189,13 +175,13 @@ HRESULT CParticleSystem::Begin_RenderState()
     m_pGraphic_Device->SetRenderState(D3DRS_POINTSIZE, TypetoDW(m_fSize));
     m_pGraphic_Device->SetRenderState(D3DRS_POINTSIZE_MIN, TypetoDW(0.f));
 
-    // POINTSCALE_A,B,C¸¦ ÅëÇØ °Å¸®¿¡ µû¸¥ ÆÄÆ¼Å¬ Å©±â¸¦ Á¦¾îÇÏÀÚ
+    // POINTSCALE_A,B,Cë¥¼ í†µí•´ ê±°ë¦¬ì— ë”°ë¥¸ íŒŒí‹°í´ í¬ê¸°ë¥¼ ì œì–´í•˜ìž
     m_pGraphic_Device->SetRenderState(D3DRS_POINTSCALE_A, TypetoDW(0.f));
     m_pGraphic_Device->SetRenderState(D3DRS_POINTSCALE_B, TypetoDW(0.f));
     m_pGraphic_Device->SetRenderState(D3DRS_POINTSCALE_C, TypetoDW(1.f));
 
-    // ¾ËÆÄ ºí·»µùÀ» Àû¿ë½ÃÅ°ÀÚ
-    // ÅØ½ºÃÄÀÇ ¾ËÆÄÃ¤³ÎÀ» ¹Þ¾Æ¿Í ºí·»µùÀ» ÇØÁØ´Ù
+    // ì•ŒíŒŒ ë¸”ë Œë”©ì„ ì ìš©ì‹œí‚¤ìž
+    // í…ìŠ¤ì³ì˜ ì•ŒíŒŒì±„ë„ì„ ë°›ì•„ì™€ ë¸”ë Œë”©ì„ í•´ì¤€ë‹¤
     m_pGraphic_Device->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
     m_pGraphic_Device->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
 
