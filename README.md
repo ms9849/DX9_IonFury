@@ -5,9 +5,7 @@
 
 ---
 
-### [Video](https://www.youtube.com/watch?v=K6hyTfhu0RM)
-
----
+## [Video](https://www.youtube.com/watch?v=K6hyTfhu0RM)
 
 ## 파트
 - [ ] 서민석(팀장) : 프레임워크, 파티클 시스템 & 이펙트, 기타 컨텐츠
