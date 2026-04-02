@@ -3,7 +3,7 @@
 개발 환경 : DX9, C++, Git<br/>
 개발 기간 : 2025.08.28 ~ 2025.10.30 (63일)<br/>
 
-## [Video](https://www.youtube.com/watch?v=K6hyTfhu0RM)
+[Video](https://www.youtube.com/watch?v=K6hyTfhu0RM)
 
 ## 파트
 - [ ] 서민석(팀장) : 프레임워크, 파티클 시스템 & 이펙트, 기타 컨텐츠
