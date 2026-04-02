@@ -3,7 +3,7 @@
 개발 환경 : DX9, C++, Git<br/>
 개발 기간 : 2025.08.28 ~ 2025.10.30 (63일)<br/>
 
-### 영상
+## 영상 링크
 [Link](https://www.youtube.com/watch?v=K6hyTfhu0RM)
 
 ## 파트
